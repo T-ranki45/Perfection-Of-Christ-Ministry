@@ -1,0 +1,316 @@
+/* --- Page Hero (Sub-pages) --- */
+.page-hero {
+  position: relative;
+  height: 60vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  color: var(--light-text-color);
+  background: url("./image/About.jpg") no-repeat center center/cover;
+  background-attachment: fixed;
+  margin-top: 0;
+  z-index: 1;
+}
+
+.page-hero h1 {
+  font-family: "Cinzel", serif;
+  font-size: 3.5rem;
+  font-weight: 900;
+  text-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
+}
+
+.page-hero p {
+  font-size: 1.3rem;
+  font-weight: 500;
+  text-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+  max-width: 700px;
+}
+
+/* --- Leadership Section --- */
+#leadership {
+  background-color: #fdfdfd;
+  background-image:
+    linear-gradient(rgba(0, 0, 0, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+  padding: 5rem 0;
+}
+
+/* --- Lead Couple Section --- */
+.lead-couple {
+  text-align: center;
+  margin-bottom: 4rem;
+  padding: 2rem;
+  background: #fff;
+  background: linear-gradient(to bottom, #fff, #fffbf0);
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(179, 135, 40, 0.1);
+}
+
+.couple-photos {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.couple-photos::before {
+  content: "";
+  position: absolute;
+  width: 280px;
+  height: 280px;
+  border: 1px dashed rgba(179, 135, 40, 0.4);
+  border-radius: 50%;
+  z-index: 0;
+  animation: spin 30s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.couple-photos img {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid #fff;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease;
+}
+
+.couple-photos img.husband {
+  z-index: 1;
+  margin-right: -30px; /* Overlap effect */
+}
+
+.couple-photos img.wife {
+  z-index: 0;
+}
+
+.couple-photos:hover img {
+  transform: scale(1.05);
+  z-index: 2;
+}
+
+.couple-details h3 {
+  font-family: "Cinzel", serif;
+  font-size: 1.8rem;
+  margin-bottom: 0.5rem;
+  background: var(--gold-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.couple-role {
+  color: var(--accent-color);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+}
+
+.couple-tagline {
+  font-style: italic;
+  color: #777;
+}
+
+.lead-couple::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 5px;
+  background: var(--gold-gradient);
+}
+
+/* --- Team Section --- */
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+  margin-top: 3rem;
+}
+.team-member {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 10px;
+  text-align: center;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  background: linear-gradient(to bottom, #fff, #fcfcfc);
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+  border-bottom: 3px solid transparent;
+  border: 1px solid rgba(0, 0, 0, 0.03);
+}
+.team-member:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+  border-bottom-color: var(--accent-color);
+}
+.team-member img {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #fff;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  margin-bottom: 1rem;
+}
+
+.team-member h3 {
+  background: var(--gold-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.team-role {
+  color: var(--accent-color);
+  font-weight: bold;
+  text-transform: uppercase;
+  font-size: 0.9rem;
+}
+
+/* --- Our Story Section --- */
+#our-story {
+  background-color: #fdfdfd;
+  padding: 5rem 0;
+  background-image: radial-gradient(
+    rgba(179, 135, 40, 0.15) 1px,
+    transparent 1px
+  );
+  background-size: 30px 30px;
+}
+
+.story-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 3rem;
+  align-items: center;
+}
+
+.story-content h2 {
+  text-align: left;
+}
+
+.story-content h2::after {
+  margin: 1rem 0 0;
+}
+
+.story-content p {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  color: #555;
+  margin-bottom: 1.5rem;
+}
+
+.story-content p:first-of-type::first-letter {
+  float: left;
+  font-family: "Cinzel", serif;
+  font-size: 3.5rem;
+  line-height: 0.8;
+  padding-right: 10px;
+  padding-top: 5px;
+  color: var(--accent-color);
+  font-weight: 900;
+}
+
+.story-content blockquote {
+  border-left: 4px solid var(--accent-color);
+  padding-left: 1.5rem;
+  margin: 2rem 0;
+  font-style: italic;
+  color: #333;
+  font-family: "Cinzel", serif;
+  font-size: 1.2rem;
+  background: rgba(179, 135, 40, 0.05);
+  padding: 1.5rem;
+  border-radius: 0 10px 10px 0;
+}
+
+.story-image {
+  position: relative;
+  padding: 1rem;
+}
+
+.story-image img {
+  width: 100%;
+  border-radius: 10px;
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+  position: relative;
+  z-index: 2;
+}
+
+.story-image::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: 3px solid var(--accent-color);
+  border-radius: 10px;
+  z-index: 1;
+  transform: translate(-15px, -15px);
+}
+
+.story-badge {
+  position: absolute;
+  bottom: -20px;
+  right: -10px;
+  background: var(--gold-gradient);
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+  z-index: 3;
+  color: #1a1a1a;
+  font-family: "Cinzel", serif;
+  border: 4px solid #fff;
+  animation: floatBadge 3s ease-in-out infinite;
+}
+
+@keyframes floatBadge {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+.story-badge strong {
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+@media (min-width: 768px) {
+  .story-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 5rem;
+  }
+  .couple-photos img {
+    width: 250px;
+    height: 250px;
+  }
+}

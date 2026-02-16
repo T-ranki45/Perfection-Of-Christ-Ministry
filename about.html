@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>About Us | Perfection Of Christ Ministry</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="about.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Montserrat:wght@400;700;900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+  </head>
+  <body>
+    <header class="main-header">
+      <div class="container">
+        <a href="index.html" class="logo">
+          <img src="./image/logo.png" alt="Logo" />
+          <span>Perfection Of Christ Ministry</span>
+        </a>
+        <nav class="main-nav">
+          <ul>
+            <li><a href="about.html" class="active">About</a></li>
+            <li><a href="index.html#ministries">Ministries</a></li>
+            <li><a href="index.html#sermons">Sermons</a></li>
+            <li><a href="index.html#events">Events</a></li>
+            <li><a href="index.html#visit">Visit</a></li>
+            <li><a href="#" class="button">Give</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <!-- Page Hero -->
+      <section class="page-hero">
+        <div class="hero-overlay"></div>
+        <div class="container">
+          <h1>About Us</h1>
+          <p>
+            Discover our story, our mission, and our heart for the community.
+          </p>
+        </div>
+      </section>
+
+      <!-- Our Story -->
+      <section id="our-story">
+        <div class="container">
+          <div class="story-grid">
+            <div class="story-image">
+              <img
+                src="https://images.unsplash.com/photo-1438232992991-995b7058bbb3?q=80&w=2073"
+                alt="Church Congregation"
+              />
+              <div class="story-badge">
+                <span>Est.</span>
+                <strong>2010</strong>
+              </div>
+            </div>
+            <div class="story-content">
+              <h2>Our Story</h2>
+              <p>
+                Perfection Of Christ Ministry began with a vision to see lives
+                transformed by the Gospel. From humble beginnings, God has grown
+                us into a vibrant community of believers passionate about
+                worship, discipleship, and service.
+              </p>
+              <blockquote>
+                "A place where faith grows and love overflows."
+              </blockquote>
+              <p>
+                We believe that the church is not just a building, but a family.
+                We are committed to walking life together, supporting one
+                another, and reaching out to our city with the love of Christ.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Mission & Vision -->
+      <section id="mission" style="background-color: #f4f4f4">
+        <div class="container">
+          <h2>Mission & Vision</h2>
+          <div class="ministry-grid">
+            <div class="ministry-card">
+              <div class="ministry-icon"><i class="fas fa-bullseye"></i></div>
+              <h3>Our Mission</h3>
+              <p>
+                To lead people into a growing relationship with Jesus Christ and
+                to equip them to serve others.
+              </p>
+            </div>
+            <div class="ministry-card">
+              <div class="ministry-icon"><i class="fas fa-eye"></i></div>
+              <h3>Our Vision</h3>
+              <p>
+                To see a city transformed by the Gospel, one life at a time,
+                creating a legacy of faith for generations.
+              </p>
+            </div>
+            <div class="ministry-card">
+              <div class="ministry-icon"><i class="fas fa-heart"></i></div>
+              <h3>Our Values</h3>
+              <p>
+                Biblical Truth, Authentic Community, Passionate Worship, and
+                Generous Living.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Leadership -->
+      <section id="leadership">
+        <div class="container">
+          <h2>Our Leadership</h2>
+
+          <!-- Lead Couple -->
+          <div class="lead-couple">
+            <div class="couple-photos">
+              <img
+                src="./image/Profile.png"
+                alt="Pastor John Jeremiah"
+                class="husband"
+              />
+              <img
+                src="./image/Mama.jpg"
+                alt="Pastor Chioma Jeremiah"
+                class="wife"
+              />
+            </div>
+            <div class="couple-details">
+              <h3>John & Chioma Jeremiah</h3>
+              <p class="couple-role">Senior Pastors</p>
+              <p class="couple-tagline">Serving God Together as One</p>
+            </div>
+          </div>
+
+          <div class="team-grid">
+            <div class="team-member">
+              <img src="./image/Choir-master.png" alt="Worship Leader" />
+              <h3>IDK MAN</h3>
+              <p class="team-role">
+                Am looking for the assistant pastor to replace this with
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="main-footer">
+      <!-- Same footer content as index.html -->
+      <div class="container">
+        <div class="footer-bottom">
+          <p>&copy; 2024 Perfection Of Christ Ministry. All Rights Reserved.</p>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      const header = document.querySelector(".main-header");
+      window.addEventListener("scroll", () => {
+        if (window.scrollY > 50) header.classList.add("scrolled");
+        else header.classList.remove("scrolled");
+      });
+    </script>
+  </body>
+</html>

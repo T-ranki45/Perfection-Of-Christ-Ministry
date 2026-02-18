@@ -30,7 +30,8 @@ body {
   color: var(--text-color);
   background-color: var(--background-color);
   /* Fixed background image for the glassy effect to work over */
-  background: url("https://images.unsplash.com/photo-1497294815431-9365093b7331?q=80&w=2070") no-repeat center center/cover;
+  background: url("https://images.unsplash.com/photo-1497294815431-9365093b7331?q=80&w=2070")
+    no-repeat center center/cover;
   background-attachment: fixed;
   overflow-x: hidden; /* Prevent horizontal scroll causing zoom issues */
 }
@@ -276,8 +277,15 @@ section h2::after {
 }
 
 @keyframes liveNavPulse {
-  0%, 100% { transform: scale(1); box-shadow: 0 0 4px 1px rgba(229, 9, 20, 0.7); }
-  50% { transform: scale(1.1); box-shadow: 0 0 8px 3px rgba(229, 9, 20, 1); }
+  0%,
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 4px 1px rgba(229, 9, 20, 0.7);
+  }
+  50% {
+    transform: scale(1.1);
+    box-shadow: 0 0 8px 3px rgba(229, 9, 20, 1);
+  }
 }
 
 /* Hide live elements by default, JS will show them */
@@ -302,6 +310,11 @@ section h2::after {
 
 /* --- Mobile Responsive Styles --- */
 @media (max-width: 768px) {
+  /* Disable fixed backgrounds on mobile to prevent zoom/performance issues */
+  body, #welcome, #new-here, #events {
+    background-attachment: scroll !important;
+  }
+
   .menu-btn {
     display: block;
   }
@@ -335,9 +348,20 @@ section h2::after {
     color: #333; /* Dark text for mobile menu background */
   }
 
+  section {
+    padding: 3rem 0;
+  }
+
+  section h2 {
+    font-size: 1.8rem;
+  }
+
   /* Fix Hero Text Size */
   #hero h1 {
-    font-size: 2rem;
+    font-size: 1.8rem;
+  }
+  #hero p {
+    font-size: 1.1rem;
   }
 
   /* Stack Hero Buttons */
@@ -352,6 +376,10 @@ section h2::after {
     text-align: center;
   }
 
+  #hero {
+    padding-top: 80px;
+  }
+
   /* Fix Visit Section Grid */
   .visit-content {
     grid-template-columns: 1fr;
@@ -360,11 +388,52 @@ section h2::after {
 
   /* Fix Welcome Card Padding */
   .welcome-card {
-    padding: 2rem 1.5rem;
+    padding: 2rem 1rem;
+    width: 95%;
+  }
+
+  #welcome h2 span {
+    font-size: 2rem;
   }
 
   #hero .hero-content {
     padding: 2rem 1rem;
+    width: 95%;
+  }
+
+  /* Fix Flyer Stack for Mobile */
+  .flyer-stack-container {
+    aspect-ratio: 1/1;
+    margin: 2rem auto;
+  }
+
+  .flyer-card {
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+  }
+
+  /* Footer Mobile Layout */
+  .footer-grid {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+
+  .social-links {
+    justify-content: center;
+  }
+
+  .verse-scroll {
+    font-size: 1.5rem;
+  }
+
+  /* Adjust Logo size */
+  .logo img {
+    height: 35px;
+  }
+  .logo span {
+    font-size: 0.9rem;
   }
 }
 
@@ -551,6 +620,12 @@ section h2::after {
 }
 
 .btn-live i {
+  font-size: 1rem; /* Make FB icon a bit bigger */
+  animation: none; /* Remove blinking from FB icon */
+}
+
+/* Blinking dot inside the button if we wanted it */
+.btn-live .fa-circle {
   font-size: 0.7rem;
   color: #fff;
   animation: blinkLive 1.5s infinite ease-in-out;
@@ -577,8 +652,15 @@ section h2::after {
 }
 
 @keyframes blinkLive {
-  0%, 100% { opacity: 1; text-shadow: 0 0 10px #fff; }
-  50% { opacity: 0.3; text-shadow: none; }
+  0%,
+  100% {
+    opacity: 1;
+    text-shadow: 0 0 10px #fff;
+  }
+  50% {
+    opacity: 0.3;
+    text-shadow: none;
+  }
 }
 
 @keyframes satelliteRipple {
@@ -809,7 +891,7 @@ section h2::after {
   overflow: hidden;
   padding: 3rem 0;
   z-index: 1;
-  
+
   /* Glassy Effect */
   background: rgba(0, 0, 0, 0.6);
   backdrop-filter: blur(15px);
@@ -855,7 +937,7 @@ section h2::after {
 }
 #sermons .sermon-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 2rem;
   margin-top: 2rem;
 }
@@ -953,7 +1035,8 @@ section h2::after {
 /* --- Events Section --- */
 #events {
   position: relative;
-  background: url("https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?q=80&w=2070") no-repeat center center/cover;
+  background: url("https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?q=80&w=2070")
+    no-repeat center center/cover;
   background-attachment: fixed;
   overflow: hidden; /* Contain animations */
 }
@@ -1016,6 +1099,17 @@ section h2::after {
   margin: 3rem auto;
   perspective: 1000px;
   touch-action: pan-y;
+}
+
+/* Center loading text */
+.flyer-stack-container p {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  padding: 0 !important;
+  margin: 0;
 }
 
 /* Shine Effect Overlay */
@@ -1356,6 +1450,74 @@ section h2::after {
   position: relative;
   animation: modalOpen 0.4s ease-out;
   box-shadow: 0 5px 30px rgba(0, 0, 0, 0.3);
+}
+
+/* --- Live Stream Modal --- */
+.live-modal-content {
+  max-width: 1200px; /* Wider for video + chat */
+  padding: 1rem;
+  background-color: #1a1a1a;
+  border: 1px solid var(--accent-color);
+}
+
+.live-modal-content h2 {
+  color: #fff;
+  text-align: left;
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+}
+
+.live-modal-content h2::after {
+  display: none; /* No underline for modal title */
+}
+
+.live-modal-content .close-btn {
+  color: #fff;
+  top: 10px;
+  right: 20px;
+  font-size: 35px;
+}
+
+.live-stream-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 1rem;
+  align-items: start;
+}
+
+.chat-column {
+  background: #fff;
+  height: 100%;
+  min-height: 400px;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.video-container {
+  position: relative;
+  padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+  height: 0;
+  overflow: hidden;
+  background: #000;
+  border-radius: 5px;
+}
+
+.video-container iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+@media (max-width: 900px) {
+  .live-stream-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .chat-column {
+    min-height: 300px;
+  }
 }
 
 @keyframes modalOpen {

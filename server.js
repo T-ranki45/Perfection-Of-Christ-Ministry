@@ -1,7 +1,11 @@
 const express = require("express");
 const cors = require("cors");
+const { MongoClient, ObjectId } = require("mongodb");
 const app = express();
 const port = process.env.PORT || 3000;
+
+const DATABASE_URL = process.env.DATABASE_URL;
+const DB_NAME = process.env.DB_NAME || "pocm-db";
 
 // Middleware
 app.use(cors()); // Allow frontend to communicate with backend
@@ -9,133 +13,76 @@ app.use(express.json({ limit: "50mb" })); // Parse JSON bodies (increased limit 
 
 // Security: Prevent access to server code and config
 app.use((req, res, next) => {
-  if (req.path === '/server.js' || req.path === '/package.json' || req.path === '/.env') {
-    return res.status(403).send('Forbidden');
+  if (
+    req.path === "/server.js" ||
+    req.path === "/package.json" ||
+    req.path === "/.env"
+  ) {
+    return res.status(403).send("Forbidden");
   }
   next();
 });
 
 app.use(express.static(".")); // Serve static files from current directory
 
-// --- MOCK DATABASE ---
-// In a real app, this would be MongoDB or SQL
-const events = [
-  {
-    title: "Special Worship Night",
-    date: new Date().toISOString().split("T")[0], // Today
-    description: "A night of soaking in His presence. Join us live!",
-  },
-  {
-    title: "Community Potluck",
-    date: "2024-02-28",
-    description: "Join us after the service for food and fellowship.",
-  },
-  {
-    title: "Youth Group Night",
-    date: "2024-03-04",
-    description: "Fun, games, and a message for students grades 6-12.",
-  },
-  {
-    title: "Easter Sunday Service",
-    date: "2024-03-31",
-    description: "Celebrate the resurrection of our King!",
-  },
-];
+// --- DATABASE CONNECTION ---
+let db;
 
-const sermons = [
-  {
-    title: "The Book of John",
-    preacher: "Pastor John Jeremiah",
-    date: "2024-01-21",
-    image:
-      "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?q=80&w=1220",
-    videoUrl: "#",
-  },
-  {
-    title: "Living with Purpose",
-    preacher: "Pastor John Jeremiah",
-    date: "2024-01-14",
-    image:
-      "https://images.unsplash.com/photo-1597739221543-9952f15543a4?q=80&w=1287",
-    videoUrl: "#",
-  },
-  {
-    title: "Foundations of Faith",
-    preacher: "Pastor John Jeremiah",
-    date: "2024-01-07",
-    image:
-      "https://images.unsplash.com/photo-1516528387632-607b518053c4?q=80&w=1287",
-    videoUrl: "#",
-  },
-];
-
-const prayerRequests = [];
-
-const flyers = []; // Store flyer objects
-
-let liveStreamConfig = {
-  videoId: "dQw4w9WgXcQ", // Default placeholder ID
-  isLive: false,
-};
+async function connectToDb() {
+  try {
+    if (!DATABASE_URL) {
+      throw new Error("DATABASE_URL environment variable is not set.");
+    }
+    const client = new MongoClient(DATABASE_URL);
+    await client.connect();
+    db = client.db(DB_NAME);
+    console.log("Successfully connected to MongoDB Atlas.");
+  } catch (error) {
+    console.error("Failed to connect to MongoDB", error);
+    process.exit(1);
+  }
+}
 
 // --- AUTHENTICATION ---
 const ADMIN_PASSWORD = "admin123"; // CHANGE THIS PASSWORD!
 
 // --- ROUTES ---
 
-// Get all events
-app.get("/api/events", (req, res) => {
-  // Sort events by date
-  const sortedEvents = events.sort(
-    (a, b) => new Date(a.date) - new Date(b.date),
-  );
-  res.json(sortedEvents);
-});
-
-// Add new event
-app.post("/api/events", (req, res) => {
-  const { title, date, description } = req.body;
-  if (!title || !date || !description) {
-    return res.status(400).json({ error: "All fields are required" });
-  }
-  const newEvent = { title, date, description };
-  events.push(newEvent);
-  res
-    .status(201)
-    .json({ message: "Event added successfully", event: newEvent });
-});
-
 // Get all flyers
-app.get("/api/flyers", (req, res) => {
+app.get("/api/flyers", async (req, res) => {
+  const flyers = await db
+    .collection("flyers")
+    .find({})
+    .sort({ createdAt: -1 })
+    .toArray();
   res.json(flyers);
 });
 
 // Add new flyers (Bulk)
-app.post("/api/flyers", (req, res) => {
+app.post("/api/flyers", async (req, res) => {
   const newFlyers = req.body; // Expecting array of { image }
   if (!Array.isArray(newFlyers)) {
     return res.status(400).json({ error: "Expected an array of flyers" });
   }
 
-  // Assign unique IDs to new flyers
-  const flyersWithIds = newFlyers.map((f, index) => ({
+  const flyersWithTimestamp = newFlyers.map((f) => ({
     ...f,
-    id: Date.now().toString() + index,
+    createdAt: new Date(),
   }));
 
-  // Add to start of array so newest are first
-  flyers.unshift(...flyersWithIds);
+  await db.collection("flyers").insertMany(flyersWithTimestamp);
   res
     .status(201)
     .json({ message: "Flyers added successfully", count: newFlyers.length });
 });
 
 // Delete a flyer
-app.delete("/api/flyers/:id", (req, res) => {
+app.delete("/api/flyers/:id", async (req, res) => {
   const { id } = req.params;
-  const index = flyers.findIndex((f) => f.id === id);
-  if (index !== -1) {
-    flyers.splice(index, 1);
+  const result = await db
+    .collection("flyers")
+    .deleteOne({ _id: new ObjectId(id) });
+  if (result.deletedCount === 1) {
     res.json({ message: "Flyer deleted successfully" });
   } else {
     res.status(404).json({ error: "Flyer not found" });
@@ -143,16 +90,50 @@ app.delete("/api/flyers/:id", (req, res) => {
 });
 
 // Get all sermons
-app.get("/api/sermons", (req, res) => {
+app.get("/api/sermons", async (req, res) => {
   // Sort sermons by date descending
-  const sortedSermons = sermons.sort(
-    (a, b) => new Date(b.date) - new Date(a.date),
-  );
+  const sortedSermons = await db
+    .collection("sermons")
+    .find({})
+    .sort({ date: -1 })
+    .toArray();
   res.json(sortedSermons);
 });
 
+// Add new sermon/message
+app.post("/api/sermons", async (req, res) => {
+  const { title, preacher, date, videoUrl, image } = req.body;
+  if (!title || !date || !videoUrl) {
+    return res.status(400).json({ error: "All fields are required" });
+  }
+  const newSermon = {
+    title,
+    preacher: preacher || "Pastor John Jeremiah",
+    date,
+    videoUrl,
+    image: image || "https://via.placeholder.com/300x200?text=No+Image",
+  };
+  await db.collection("sermons").insertOne(newSermon);
+  res
+    .status(201)
+    .json({ message: "Message added successfully", sermon: newSermon });
+});
+
+// Delete sermon
+app.delete("/api/sermons/:id", async (req, res) => {
+  const { id } = req.params;
+  const result = await db
+    .collection("sermons")
+    .deleteOne({ _id: new ObjectId(id) });
+  if (result.deletedCount === 1) {
+    res.json({ message: "Message deleted successfully" });
+  } else {
+    res.status(404).json({ error: "Message not found" });
+  }
+});
+
 // Submit prayer request
-app.post("/api/prayer-requests", (req, res) => {
+app.post("/api/prayer-requests", async (req, res) => {
   const { name, email, request } = req.body;
 
   if (!name || !email || !request) {
@@ -160,35 +141,46 @@ app.post("/api/prayer-requests", (req, res) => {
   }
 
   const newRequest = {
-    id: prayerRequests.length + 1,
     name,
     email,
     request,
     timestamp: new Date(),
   };
 
-  prayerRequests.push(newRequest);
+  await db.collection("prayerRequests").insertOne(newRequest);
   console.log("New Prayer Request Received:", newRequest);
 
   res.status(201).json({ message: "Prayer request saved successfully" });
 });
 
 // Get all prayer requests (Admin)
-app.get("/api/prayer-requests", (req, res) => {
+app.get("/api/prayer-requests", async (req, res) => {
   // Return most recent first
-  res.json(prayerRequests.reverse());
+  const requests = await db
+    .collection("prayerRequests")
+    .find({})
+    .sort({ timestamp: -1 })
+    .toArray();
+  res.json(requests);
 });
 
 // Live Stream Routes
-app.get("/api/livestream", (req, res) => {
-  res.json(liveStreamConfig);
+app.get("/api/livestream", async (req, res) => {
+  const config = await db.collection("config").findOne({ name: "liveStream" });
+  res.json(config ? config.data : { videoId: "", isLive: false });
 });
 
-app.post("/api/livestream", (req, res) => {
+app.post("/api/livestream", async (req, res) => {
   const { videoId, isLive } = req.body;
-  if (videoId !== undefined) liveStreamConfig.videoId = videoId;
-  if (isLive !== undefined) liveStreamConfig.isLive = isLive;
-  res.json({ message: "Live stream updated", config: liveStreamConfig });
+  const newConfig = { videoId, isLive };
+  await db
+    .collection("config")
+    .updateOne(
+      { name: "liveStream" },
+      { $set: { data: newConfig } },
+      { upsert: true },
+    );
+  res.json({ message: "Live stream updated", config: newConfig });
 });
 
 // Login Route
@@ -202,6 +194,11 @@ app.post("/api/login", (req, res) => {
 });
 
 // Start Server
-app.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}`);
-});
+async function startServer() {
+  await connectToDb();
+  app.listen(port, () => {
+    console.log(`Server running at http://localhost:${port}`);
+  });
+}
+
+startServer();

@@ -27,7 +27,7 @@
         <nav class="main-nav">
           <ul>
             <li><a href="about.html">About</a></li>
-            <li><a href="#sermons">Sermons</a></li>
+            <li><a href="#messages">Messages</a></li>
             <li><a href="#events">Events</a></li>
             <li class="live-nav-item"><a href="#" class="live-nav-link">Live <span class="live-badge-nav"></span></a></li>
             <li><a href="#visit">Visit</a></li>
@@ -114,14 +114,27 @@
         </div>
       </section>
 
-      <section id="sermons">
+      <section id="messages">
         <div class="container">
-          <h2>Latest Sermons</h2>
-          <div class="sermon-grid" id="dynamic-sermons-list">
-            <p style="text-align:center; width:100%;">Loading sermons...</p>
+          <h2>Recent Messages</h2>
+          <div class="messages-scroll-wrapper">
+            <div class="messages-track" id="dynamic-messages-list">
+              <p style="text-align:center; width:100%; color: #fff;">Loading messages...</p>
+            </div>
           </div>
         </div>
       </section>
+
+      <!-- Message Player Modal -->
+      <div id="message-modal" class="modal">
+        <div class="modal-content live-modal-content">
+          <span class="close-btn message-close-btn">&times;</span>
+          <h2 id="message-modal-title">Message</h2>
+          <div class="video-container" id="message-video-container">
+            <!-- Iframe will be injected here -->
+          </div>
+        </div>
+      </div>
 
       <section id="new-here">
         <div class="verse-container">
@@ -138,9 +151,15 @@
           <h2>We'd Love For You To Visit</h2>
           <div class="visit-content">
             <div class="visit-info">
-              <h3>Service Time</h3>
-              <p><strong>Sundays: First Service at 7:00 - 10:00 AM</strong>
-                                  Second Service at 10:00 - 12:30 PM</p>
+              <h3>Service Times</h3>
+              <p>
+                <strong>Sundays</strong><br />
+                1st Service: 7:00 AM - 10:00 AM<br />
+                2nd Service: 10:00 AM - 12:30 PM
+              </p>
+              <p>
+                <strong>Wednesdays</strong><br />
+                Bible Study: 6:00 PM
               </p>
               <h3>Location</h3>
               <p>123 Church Street<br />Anytown, USA 12345</p>
@@ -222,7 +241,7 @@
             <h3>Quick Links</h3>
             <ul>
               <li><a href="#welcome">About Us</a></li>
-              <li><a href="#sermons">Sermons</a></li>
+              <li><a href="#messages">Messages</a></li>
               <li><a href="#events">Events</a></li>
             </ul>
           </div>
@@ -568,47 +587,115 @@
         }
       }
 
-      // --- Dynamic Sermons System (From Database) ---
-      async function loadSermons() {
-        const sermonsContainer = document.getElementById("dynamic-sermons-list");
-        if (!sermonsContainer) return;
+      // --- Dynamic Messages System (From Database) ---
+      const messagesTrack = document.getElementById("dynamic-messages-list");
+      async function loadMessages() {
+        if (!messagesTrack) return;
 
         try {
           // Fetch sermons from our custom server
           const response = await fetch(`${API_URL}/sermons`);
-          const sermons = await response.json();
+          const messages = await response.json();
           
-          let html = "";
-          
-          sermons.forEach((sermon) => {
-            html += `
-              <div class="sermon-card">
-                <img src="${sermon.image}" alt="${sermon.title}" />
-                <div class="sermon-card-content">
-                  <h3>${sermon.title}</h3>
-                  <p class="sermon-meta">
-                    By ${sermon.preacher} | ${sermon.date}
+          if (messages.length === 0) {
+            messagesTrack.innerHTML = "<p style='color:white; padding: 2rem;'>No messages available.</p>";
+            return;
+          }
+
+          const createCard = (msg) => `
+              <div class="message-card">
+                <div class="message-thumbnail">
+                    <img src="${msg.image}" alt="${msg.title}" />
+                    <a href="#" class="play-overlay open-message-modal" data-videourl="${msg.videoUrl}" data-title="${msg.title}"><i class="fas fa-play"></i></a>
+                </div>
+                <div class="message-content">
+                  <h3>${msg.title}</h3>
+                  <p class="message-meta">
+                    ${msg.preacher} <br> ${msg.date}
                   </p>
-                  <a href="${sermon.videoUrl}" class="button">Watch Now</a>
+                  <a href="#" class="button btn-sm open-message-modal" data-videourl="${msg.videoUrl}" data-title="${msg.title}">Watch Video</a>
                 </div>
               </div>
             `;
-          });
+          
+          // Duplicate content for seamless scrolling loop
+          // We map twice to create the infinite effect
+          let html = messages.map(createCard).join('');
+          html += messages.map(createCard).join(''); 
+          
+          messagesTrack.innerHTML = html;
 
-          if (html === "") {
-            sermonsContainer.innerHTML = "<p>No sermons available yet.</p>";
-          } else {
-            sermonsContainer.innerHTML = html;
-          }
         } catch (error) {
-          console.error("Error loading sermons:", error);
-          sermonsContainer.innerHTML = "<p>Unable to load sermons.</p>";
+          console.error("Error loading messages:", error);
+          messagesTrack.innerHTML = "<p style='color:white;'>Unable to load messages.</p>";
         }
       }
 
+      // --- Message Modal Logic ---
+      const messageModal = document.getElementById("message-modal");
+      const messageCloseBtn = document.querySelector(".message-close-btn");
+      const messageVideoContainer = document.getElementById("message-video-container");
+      const messageModalTitle = document.getElementById("message-modal-title");
+
+      function getEmbedUrl(url) {
+        let embedUrl = '';
+        try {
+            const urlObj = new URL(url);
+            if (urlObj.hostname.includes('facebook.com')) {
+                // Facebook video
+                embedUrl = `https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(url)}&show_text=false&width=734&autoplay=true`;
+            } else if (urlObj.hostname.includes('youtube.com') || urlObj.hostname.includes('youtu.be')) {
+                // YouTube video
+                let videoId;
+                if (urlObj.hostname.includes('youtu.be')) {
+                    videoId = urlObj.pathname.slice(1);
+                } else {
+                    videoId = urlObj.searchParams.get('v');
+                }
+                if (videoId) {
+                    embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+                }
+            }
+        } catch (e) {
+            console.error("Invalid video URL:", e);
+            return null;
+        }
+        return embedUrl;
+      }
+
+      function openMessageModal(videoUrl, title) {
+        const embedUrl = getEmbedUrl(videoUrl);
+        if (!embedUrl) {
+            alert("Sorry, this video link is not valid or supported.");
+            return;
+        }
+        messageModalTitle.innerText = title;
+        messageVideoContainer.innerHTML = `<iframe src="${embedUrl}" width="100%" height="100%" style="border:none;overflow:hidden" scrolling="no" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share" allowfullscreen="true"></iframe>`;
+        messageModal.style.display = "block";
+      }
+
+      function closeMessageModal() {
+        messageModal.style.display = "none";
+        messageVideoContainer.innerHTML = ""; // Stop video
+      }
+
+      if (messagesTrack) {
+        messagesTrack.addEventListener('click', (e) => {
+            const trigger = e.target.closest('.open-message-modal');
+            if (trigger) {
+                e.preventDefault();
+                const videoUrl = trigger.dataset.videourl;
+                const title = trigger.dataset.title;
+                openMessageModal(videoUrl, title);
+            }
+        });
+      }
+
+      if (messageCloseBtn) messageCloseBtn.addEventListener('click', closeMessageModal);
+
       // Initialize Data Loading
       loadFlyers();
-      loadSermons();
+      loadMessages();
       loadLiveStream();
 
       // Welcome Text Typewriter Effect
@@ -723,6 +810,9 @@
       window.addEventListener("click", (e) => {
         if (e.target == prayerModal) {
           prayerModal.style.display = "none";
+        }
+        if (e.target == messageModal) {
+          closeMessageModal();
         }
       });
 

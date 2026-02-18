@@ -144,7 +144,8 @@
           <h2>Live Stream Configuration</h2>
           <div class="card">
             <p class="helper-text">
-              Enter the Facebook Live URL to update the Live Stream button on the homepage.
+              Enter the Facebook Live URL to update the Live Stream button on
+              the homepage.
             </p>
             <form id="livestream-form">
               <div class="form-group">
@@ -190,7 +191,10 @@
     </div>
 
     <script>
-      const API_URL = "http://localhost:3000/api";
+      // Use a relative path for the API URL. This works for both local
+      // development (http://localhost:3000/api) and the live server
+      // (https://your-app-name.onrender.com/api).
+      const API_URL = "/api";
 
       // --- SECURITY CHECK ---
       if (!localStorage.getItem("admin_token")) {

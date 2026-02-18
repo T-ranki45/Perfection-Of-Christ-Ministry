@@ -31,22 +31,34 @@ let db;
 async function connectToDb() {
   try {
     if (!DATABASE_URL) {
-      throw new Error("DATABASE_URL environment variable is not set.");
+      console.error("❌ DATABASE_URL environment variable is not set.");
+      return; // Don't crash, just return
     }
     const client = new MongoClient(DATABASE_URL);
     await client.connect();
     db = client.db(DB_NAME);
-    console.log("Successfully connected to MongoDB Atlas.");
+    console.log("✅ Successfully connected to MongoDB Atlas.");
   } catch (error) {
-    console.error("Failed to connect to MongoDB", error);
-    process.exit(1);
+    console.error("❌ Failed to connect to MongoDB", error);
+    // process.exit(1); // Removed so server stays alive for logs
   }
 }
 
 // --- AUTHENTICATION ---
-const ADMIN_PASSWORD = "admin123"; // CHANGE THIS PASSWORD!
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "admin123";
 
 // --- ROUTES ---
+
+// Middleware to check DB connection
+app.use("/api", (req, res, next) => {
+  if (req.path === "/login") return next(); // Allow login without DB
+  if (!db) {
+    return res.status(503).json({
+      error: "Database not connected. Check server logs.",
+    });
+  }
+  next();
+});
 
 // Get all flyers
 app.get("/api/flyers", async (req, res) => {

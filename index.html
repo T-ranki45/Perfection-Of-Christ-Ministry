@@ -9,7 +9,10 @@
       href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Montserrat:wght@400;700;900&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
   </head>
   <body>
     <header class="main-header">
@@ -18,12 +21,15 @@
           <img src="./image/logo.png" alt="Logo" />
           <span>Perfection Of Christ Ministry</span>
         </a>
+        <div class="menu-btn">
+          <i class="fas fa-bars"></i>
+        </div>
         <nav class="main-nav">
           <ul>
             <li><a href="about.html">About</a></li>
-            <li><a href="#ministries">Ministries</a></li>
             <li><a href="#sermons">Sermons</a></li>
             <li><a href="#events">Events</a></li>
+            <li class="live-nav-item"><a href="#" class="live-nav-link">Live <span class="live-badge-nav"></span></a></li>
             <li><a href="#visit">Visit</a></li>
             <li><a href="#" id="prayer-btn">Prayer</a></li>
             <li><a href="#" class="button">Give</a></li>
@@ -51,107 +57,33 @@
           <p>Join us for worship this Sunday at 10:00 AM</p>
           <div class="hero-buttons">
             <a href="#visit" class="button">Join Us This Sunday</a>
-            <a href="#" class="button btn-outline">Watch Live</a>
+            <a href="#" class="button btn-live"><i class="fas fa-circle"></i> Watch Live</a>
           </div>
-          <div id="countdown" class="countdown">
-            <div class="time-unit">
-              <span id="days">00</span>
-              <span>Days</span>
-            </div>
-            <div class="time-unit">
-              <span id="hours">00</span>
-              <span>Hours</span>
-            </div>
-            <div class="time-unit">
-              <span id="minutes">00</span>
-              <span>Minutes</span>
-            </div>
-            <div class="time-unit">
-              <span id="seconds">00</span>
-              <span>Seconds</span>
-            </div>
-          </div>
-        </div>
-        <div class="scroll-indicator">
-          <span></span>
-          <span></span>
         </div>
       </section>
 
       <section id="welcome">
-        <div class="container">
-          <h2>Welcome to Perfection Of Christ Ministry</h2>
-          <p>
-            We are a community of believers dedicated to knowing God and making
-            Him known. Whether you're curious about faith or a lifelong follower
-            of Jesus, you are welcome here. We invite you to join us as we seek
-            to grow in our relationship with God and with one another.
-          </p>
-        </div>
-      </section>
-
-      <section id="new-here">
-        <div class="container">
-          <div class="new-here-grid">
-            <div class="new-here-text">
-              <h2>New Here?</h2>
-              <p>
-                We are so glad you are checking us out! Watch a special welcome
-                message from our Senior Pastor, John Jeremiah. We want you to
-                feel at home and know that there is a place for you here.
-              </p>
-              <a href="#visit" class="button">Plan Your Visit</a>
-            </div>
-            <div class="new-here-video">
-              <!-- Replace 'your-video-id' with your actual YouTube video ID -->
-              <iframe
-                src="https://www.youtube.com/embed/your-video-id"
-                title="Welcome Video"
-                frameborder="0"
-                allow="
-                  accelerometer;
-                  autoplay;
-                  clipboard-write;
-                  encrypted-media;
-                  gyroscope;
-                  picture-in-picture;
-                "
-                allowfullscreen
-              ></iframe>
-            </div>
+        <div class="container welcome-container">
+          <div class="welcome-card">
+            <div class="welcome-icon"><i class="fas fa-dove"></i></div>
+            <h2>Welcome to <br /><span>Perfection Of Christ Ministry</span></h2>
+            <p id="welcome-text">
+              We are a community of believers dedicated to knowing God and
+              making Him known. Whether you're curious about faith or a lifelong
+              follower of Jesus, you are welcome here. We invite you to join us
+              as we seek to grow in our relationship with God and with one
+              another.
+            </p>
           </div>
         </div>
       </section>
 
-      <section id="ministries">
+      <section id="events">
         <div class="container">
-          <h2>Our Ministries</h2>
-          <div class="ministry-grid">
-            <div class="ministry-card">
-              <div class="ministry-icon"><i class="fas fa-users"></i></div>
-              <h3>Men's Ministry</h3>
-              <p>
-                Equipping men to be spiritual leaders in their homes and
-                community.
-              </p>
-            </div>
-            <div class="ministry-card">
-              <div class="ministry-icon"><i class="fas fa-female"></i></div>
-              <h3>Women's Ministry</h3>
-              <p>Empowering women to grow in faith and fellowship together.</p>
-            </div>
-            <div class="ministry-card">
-              <div class="ministry-icon"><i class="fas fa-fire"></i></div>
-              <h3>Youth Ministry</h3>
-              <p>
-                Inspiring the next generation to live passionately for Christ.
-              </p>
-            </div>
-            <div class="ministry-card">
-              <div class="ministry-icon"><i class="fas fa-child"></i></div>
-              <h3>Children's Church</h3>
-              <p>A fun and safe environment for kids to learn about Jesus.</p>
-            </div>
+          <h2>Upcoming Services</h2>
+          <div class="flyer-stack-container" id="flyer-stack">
+            <!-- Flyers will be injected here by JavaScript -->
+            <p style="text-align:center; width:100%; padding-top: 200px;">Loading services...</p>
           </div>
         </div>
       </section>
@@ -159,67 +91,19 @@
       <section id="sermons">
         <div class="container">
           <h2>Latest Sermons</h2>
-          <div class="sermon-grid">
-            <div class="sermon-card">
-              <img
-                src="https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?q=80&w=1220"
-                alt="Sermon series art"
-              />
-              <div class="sermon-card-content">
-                <h3>The Book of John</h3>
-                <p class="sermon-meta">
-                  By Pastor John Jeremiah | January 21, 2024
-                </p>
-                <a href="#" class="button">Watch Now</a>
-              </div>
-            </div>
-            <div class="sermon-card">
-              <img
-                src="https://images.unsplash.com/photo-1597739221543-9952f15543a4?q=80&w=1287"
-                alt="Sermon series art"
-              />
-              <div class="sermon-card-content">
-                <h3>Living with Purpose</h3>
-                <p class="sermon-meta">
-                  By Pastor John Jeremiah | January 14, 2024
-                </p>
-                <a href="#" class="button">Watch Now</a>
-              </div>
-            </div>
-            <div class="sermon-card">
-              <img
-                src="https://images.unsplash.com/photo-1516528387632-607b518053c4?q=80&w=1287"
-                alt="Sermon series art"
-              />
-              <div class="sermon-card-content">
-                <h3>Foundations of Faith</h3>
-                <p class="sermon-meta">
-                  By Pastor John Jeremiah | January 7, 2024
-                </p>
-                <a href="#" class="button">Watch Now</a>
-              </div>
-            </div>
+          <div class="sermon-grid" id="dynamic-sermons-list">
+            <p style="text-align:center; width:100%;">Loading sermons...</p>
           </div>
         </div>
       </section>
 
-      <section id="events" class="container">
-        <h2>Upcoming Events</h2>
-        <div class="event-list">
-          <div class="event-item">
-            <div class="event-date">JAN<span>28</span></div>
-            <div class="event-details">
-              <h3>Community Potluck</h3>
-              <p>Join us after the service for food and fellowship.</p>
-            </div>
-          </div>
-          <div class="event-item">
-            <div class="event-date">FEB<span>04</span></div>
-            <div class="event-details">
-              <h3>Youth Group Night</h3>
-              <p>Fun, games, and a message for students grades 6-12.</p>
-            </div>
-          </div>
+      <section id="new-here">
+        <div class="verse-container">
+          <p class="verse-scroll">
+            "For I know the plans I have for you,” declares the Lord, “plans to
+            prosper you and not to harm you, plans to give you hope and a
+            future." - Jeremiah 29:11 &nbsp; &nbsp; &nbsp; &nbsp;
+          </p>
         </div>
       </section>
 
@@ -229,7 +113,9 @@
           <div class="visit-content">
             <div class="visit-info">
               <h3>Service Time</h3>
-              <p><strong>Sundays at 10:00 AM</strong></p>
+              <p><strong>Sundays: First Service at 7:00 - 10:00 AM</strong>
+                                  Second Service at 10:00 - 12:30 PM</p>
+              </p>
               <h3>Location</h3>
               <p>123 Church Street<br />Anytown, USA 12345</p>
               <h3>What to Expect</h3>
@@ -241,7 +127,7 @@
             </div>
             <div class="map-placeholder">
               <!-- You can embed a Google Map here -->
-              <p>[Google Map Placeholder]</p>
+              <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d274.8321947326735!2d7.06268486800465!3d4.869733911480246!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e1!3m2!1sen!2sng!4v1771406938486!5m2!1sen!2sng" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
             </div>
           </div>
         </div>
@@ -301,7 +187,7 @@
             <h3>Perfection Of Christ Ministry</h3>
             <p>Knowing God and making Him known to the nations.</p>
             <div class="social-links">
-              <a href="#" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+              <a href="https://www.facebook.com/john.jeremiah.128614" title="Facebook"><i class="fab fa-facebook-f"></i></a>
               <a href="#" title="Instagram"><i class="fab fa-instagram"></i></a>
               <a href="#" title="YouTube"><i class="fab fa-youtube"></i></a>
             </div>
@@ -310,16 +196,26 @@
             <h3>Quick Links</h3>
             <ul>
               <li><a href="#welcome">About Us</a></li>
-              <li><a href="#ministries">Ministries</a></li>
               <li><a href="#sermons">Sermons</a></li>
               <li><a href="#events">Events</a></li>
             </ul>
           </div>
           <div class="footer-col">
+            <h3>Service Times</h3>
+            <p><strong>Sundays</strong></p>
+            <p>1st Service: 7:00 AM - 10:00 AM</p>
+            <p>2nd Service: 10:00 AM - 12:30 PM</p>
+            <p><strong>Wednesdays</strong></p>
+            <p>Bible Study: 6:00 PM</p>
+          </div>
+          <div class="footer-col">
             <h3>Contact Us</h3>
-            <p><i class="fas fa-map-marker-alt"></i> 123 Church St, Anytown, USA</p>
+            <p>
+              <i class="fas fa-map-marker-alt"></i> 123 Church St, Anytown, USA
+            </p>
             <p><i class="fas fa-phone"></i> (555) 123-4567</p>
             <p><i class="fas fa-envelope"></i> info@church.com</p>
+            <p style="margin-top: 15px;"><a href="login.html" title="Admin Login" style="color: #333; font-size: 0.8rem;"><i class="fas fa-lock"></i> Admin</a></p>
           </div>
         </div>
         <div class="footer-bottom">
@@ -329,6 +225,9 @@
     </footer>
 
     <script>
+      // API Base URL
+      const API_URL = "http://localhost:3000/api";
+
       // Script to change header background on scroll
       const header = document.querySelector(".main-header");
       window.addEventListener("scroll", () => {
@@ -361,55 +260,6 @@
           }
         });
       });
-
-      // Countdown Timer
-      function updateCountdown() {
-        const now = new Date();
-        const countdown = document.getElementById("countdown");
-        let nextService = new Date();
-
-        // Set to next Sunday (0 is Sunday)
-        nextService.setDate(now.getDate() + ((7 - now.getDay()) % 7));
-        nextService.setHours(10, 0, 0, 0); // 10:00 AM
-
-        // Service ends at 12:30 PM
-        const serviceEnd = new Date(nextService);
-        serviceEnd.setHours(12, 30, 0, 0);
-
-        // If currently in service (Sunday 10AM - 12:30PM)
-        if (now >= nextService && now < serviceEnd) {
-          countdown.style.display = "none";
-          return;
-        }
-
-        countdown.style.display = "flex";
-
-        // If it's already past the service end, set to next Sunday
-        if (now >= serviceEnd) {
-          nextService.setDate(nextService.getDate() + 7);
-        }
-
-        const diff = nextService - now;
-
-        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-        const hours = Math.floor(
-          (diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60),
-        );
-        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-
-        document.getElementById("days").innerText =
-          days < 10 ? "0" + days : days;
-        document.getElementById("hours").innerText =
-          hours < 10 ? "0" + hours : hours;
-        document.getElementById("minutes").innerText =
-          minutes < 10 ? "0" + minutes : minutes;
-        document.getElementById("seconds").innerText =
-          seconds < 10 ? "0" + seconds : seconds;
-      }
-
-      setInterval(updateCountdown, 1000);
-      updateCountdown(); // Run immediately
 
       // TypeWriter Class
       // Adapted from ADG-VIT/Portfolio-Website-3
@@ -469,6 +319,309 @@
         }
       });
 
+      // --- Events Section Intro Animation ---
+      const eventsSection = document.getElementById("events");
+
+      if (eventsSection) {
+        const eventsObserver = new IntersectionObserver(
+          (entries, observer) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                eventsSection.classList.add("in-view");
+                observer.unobserve(entry.target); // Animate only once
+              }
+            });
+          },
+          { threshold: 0.2 } // Trigger when 20% of the section is visible
+        );
+
+        eventsObserver.observe(eventsSection);
+      }
+
+      // --- Dynamic Flyers System (Shuffle Animation) ---
+      async function loadFlyers() {
+        const stackContainer = document.getElementById("flyer-stack");
+        if (!stackContainer) return;
+
+        try {
+          const response = await fetch(`${API_URL}/flyers`);
+          const flyers = await response.json();
+
+          if (flyers.length === 0) {
+            stackContainer.innerHTML = "<p style='text-align:center; padding-top:200px;'>No upcoming services posted.</p>";
+            return;
+          }
+
+          let html = "";
+          flyers.forEach(flyer => {
+            html += `<div class="flyer-card flyer-enter"><img src="${flyer.image}" alt="Service Flyer"></div>`;
+          });
+          stackContainer.innerHTML = html;
+
+          // Animate cards in sequence
+          const cards = stackContainer.querySelectorAll('.flyer-card');
+          cards.forEach((card, index) => {
+            setTimeout(() => {
+              card.classList.remove('flyer-enter');
+            }, index * 1000 + 500);
+          });
+
+          // Function to shuffle top card
+          const shuffleTopCard = () => {
+             const cards = document.querySelectorAll('.flyer-card');
+             if (cards.length > 1) {
+               const topCard = cards[0];
+               topCard.classList.add('shuffle-out');
+               
+               setTimeout(() => {
+                 stackContainer.appendChild(topCard); // Move to bottom
+                 topCard.classList.remove('shuffle-out');
+                 // Reset inline styles if any
+                 topCard.style.transform = '';
+                 topCard.style.transition = '';
+                 topCard.style.opacity = '';
+               }, 1500); 
+             }
+          };
+
+          // Auto Shuffle Loop
+          let autoShuffleInterval;
+          setTimeout(() => {
+            autoShuffleInterval = setInterval(shuffleTopCard, 6000);
+          }, cards.length * 1000 + 2000);
+
+          // --- Swipe & Drag Logic ---
+          let startX = 0;
+          let isDragging = false;
+          let currentTopCard = null;
+
+          const dragStart = (e) => {
+            if (e.target.closest('.flyer-card') !== document.querySelector('.flyer-card:first-child')) return;
+
+            const cards = document.querySelectorAll('.flyer-card');
+            if (cards.length <= 1) return;
+            
+            currentTopCard = cards[0];
+            currentTopCard.style.cursor = 'grabbing';
+            
+            startX = e.clientX || e.touches[0].clientX;
+            isDragging = true;
+            
+            clearInterval(autoShuffleInterval);
+            currentTopCard.style.transition = 'none';
+          };
+
+          const dragging = (e) => {
+            if (!isDragging || !currentTopCard) return;
+            e.preventDefault(); // Prevent scrolling while dragging
+            
+            const currentX = e.clientX || e.touches[0].clientX;
+            const diffX = currentX - startX;
+            
+            currentTopCard.style.transform = `translateX(${diffX}px) rotate(${diffX * 0.05}deg)`;
+          };
+
+          const dragEnd = (e) => {
+            if (!isDragging || !currentTopCard) return;
+            
+            currentTopCard.style.cursor = 'grab';
+            isDragging = false;
+            
+            const endX = e.clientX !== undefined ? e.clientX : e.changedTouches[0].clientX;
+            const diffX = endX - startX;
+            const threshold = 100;
+
+            if (Math.abs(diffX) > threshold) {
+              // Swipe Success
+              const direction = diffX > 0 ? 1 : -1;
+              currentTopCard.style.transition = 'transform 1s ease-out, opacity 1s';
+              currentTopCard.style.transform = `translateX(${direction * 120}%) rotate(${direction * 20}deg)`;
+              currentTopCard.style.opacity = '0';
+
+              setTimeout(() => {
+                currentTopCard.style.transition = '';
+                currentTopCard.style.transform = '';
+                currentTopCard.style.opacity = '';
+                stackContainer.appendChild(currentTopCard);
+                currentTopCard = null;
+              }, 1000);
+            } else {
+              // Swipe Cancel
+              currentTopCard.style.transition = 'transform 0.8s ease-out';
+              currentTopCard.style.transform = '';
+              setTimeout(() => {
+                currentTopCard.style.transition = '';
+                currentTopCard = null;
+              }, 800);
+            }
+
+            autoShuffleInterval = setInterval(shuffleTopCard, 6000);
+          };
+
+          // Mouse Events
+          stackContainer.addEventListener('mousedown', dragStart);
+          window.addEventListener('mousemove', dragging);
+          window.addEventListener('mouseup', dragEnd);
+
+          // Touch Events
+          stackContainer.addEventListener('touchstart', dragStart, { passive: false }); // passive: false to allow preventDefault
+          stackContainer.addEventListener('touchmove', dragging, { passive: false });
+          stackContainer.addEventListener('touchend', dragEnd);
+
+        } catch (error) {
+          console.error("Error loading flyers:", error);
+          stackContainer.innerHTML = "<p style='text-align:center; padding-top:200px;'>Unable to load services.</p>";
+        }
+      }
+
+      // --- Load Live Stream Config ---
+      async function loadLiveStream() {
+        try {
+          const res = await fetch(`${API_URL}/livestream`);
+          const config = await res.json();
+
+          if (config.isLive) {
+            // Show live elements
+            const liveButton = document.querySelector(".btn-live");
+            const liveNavItem = document.querySelector(".live-nav-item");
+
+            if (liveButton) {
+              liveButton.style.display = "inline-flex";
+              liveButton.href = config.videoId;
+              liveButton.target = "_blank";
+            }
+            if (liveNavItem) {
+              liveNavItem.style.display = "block";
+              const navLink = liveNavItem.querySelector("a");
+              if (navLink) {
+                navLink.href = config.videoId;
+                navLink.target = "_blank";
+              }
+            }
+          }
+        } catch (e) {
+          console.error("Error loading live stream config", e);
+        }
+      }
+
+      // --- Dynamic Sermons System (From Database) ---
+      async function loadSermons() {
+        const sermonsContainer = document.getElementById("dynamic-sermons-list");
+        if (!sermonsContainer) return;
+
+        try {
+          // Fetch sermons from our custom server
+          const response = await fetch(`${API_URL}/sermons`);
+          const sermons = await response.json();
+          
+          let html = "";
+          
+          sermons.forEach((sermon) => {
+            html += `
+              <div class="sermon-card">
+                <img src="${sermon.image}" alt="${sermon.title}" />
+                <div class="sermon-card-content">
+                  <h3>${sermon.title}</h3>
+                  <p class="sermon-meta">
+                    By ${sermon.preacher} | ${sermon.date}
+                  </p>
+                  <a href="${sermon.videoUrl}" class="button">Watch Now</a>
+                </div>
+              </div>
+            `;
+          });
+
+          if (html === "") {
+            sermonsContainer.innerHTML = "<p>No sermons available yet.</p>";
+          } else {
+            sermonsContainer.innerHTML = html;
+          }
+        } catch (error) {
+          console.error("Error loading sermons:", error);
+          sermonsContainer.innerHTML = "<p>Unable to load sermons.</p>";
+        }
+      }
+
+      // Initialize Data Loading
+      loadFlyers();
+      loadSermons();
+      loadLiveStream();
+
+      // Welcome Text Typewriter Effect
+      const welcomeSection = document.getElementById("welcome");
+      const welcomeText = document.getElementById("welcome-text");
+
+      if (welcomeSection && welcomeText) {
+        // Clean up text to remove extra whitespace from HTML formatting
+        const originalText = welcomeText.innerText.replace(/\s+/g, " ").trim();
+
+        // Prepare text structure: Wrap every character in a span for stable layout
+        // This ensures the text is perfectly arranged (centered/wrapped) before we start revealing it.
+        welcomeText.innerHTML = originalText
+          .split("")
+          .map(
+            (char) =>
+              `<span class="char-reveal" style="opacity: 0;">${char}</span>`,
+          )
+          .join("");
+
+        const chars = welcomeText.querySelectorAll(".char-reveal");
+
+        let typeInterval;
+        let loopTimeout;
+        let isAnimating = false;
+
+        function startTyping() {
+          if (isAnimating) return;
+          isAnimating = true;
+
+          // Reset all to invisible
+          chars.forEach((c) => (c.style.opacity = "0"));
+
+          let i = 0;
+          clearInterval(typeInterval);
+          clearTimeout(loopTimeout);
+
+          typeInterval = setInterval(() => {
+            if (chars[i]) {
+              chars[i].style.opacity = "1";
+              i++;
+            }
+
+            if (i >= chars.length) {
+              clearInterval(typeInterval);
+              // Loop after delay (Repeat until scroll out)
+              loopTimeout = setTimeout(() => {
+                isAnimating = false;
+                startTyping();
+              }, 5000); // 5 seconds pause before repeating
+            }
+          }, 40); // 40ms is roughly normal reading speed
+        }
+
+        function resetTyping() {
+          clearInterval(typeInterval);
+          clearTimeout(loopTimeout);
+          chars.forEach((c) => (c.style.opacity = "0"));
+          isAnimating = false;
+        }
+
+        const observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                startTyping();
+              } else {
+                resetTyping();
+              }
+            });
+          },
+          { threshold: 0.4 },
+        ); // Trigger when 40% visible
+
+        observer.observe(welcomeSection);
+      }
+
       // Back to Top Button
       const backToTopBtn = document.getElementById("back-to-top");
 
@@ -508,6 +661,67 @@
           prayerModal.style.display = "none";
         }
       });
+
+      // --- Handle Prayer Form Submission ---
+      const prayerForm = document.getElementById("prayer-form");
+      if (prayerForm) {
+        prayerForm.addEventListener("submit", async (e) => {
+          e.preventDefault();
+          
+          const submitBtn = prayerForm.querySelector("button[type='submit']");
+          const originalBtnText = submitBtn.innerText;
+          submitBtn.innerText = "Sending...";
+          submitBtn.disabled = true;
+
+          const name = document.getElementById("prayer-name").value;
+          const email = document.getElementById("prayer-email").value;
+          const request = document.getElementById("prayer-request").value;
+
+          try {
+            // Send data to our custom server
+            const response = await fetch(`${API_URL}/prayer-requests`, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ name, email, request }),
+            });
+
+            if (response.ok) {
+              alert("Prayer request sent successfully! We will be praying for you.");
+              prayerForm.reset();
+              prayerModal.style.display = "none";
+            } else {
+              throw new Error("Server responded with an error");
+            }
+          } catch (error) {
+            console.error("Error adding document: ", error);
+            alert("Error sending request. Check your internet connection or API keys.");
+          } finally {
+            submitBtn.innerText = originalBtnText;
+            submitBtn.disabled = false;
+          }
+        });
+      }
+
+      // Mobile Menu Toggle
+      const menuBtn = document.querySelector(".menu-btn");
+      const mainNav = document.querySelector(".main-nav ul");
+
+      if (menuBtn && mainNav) {
+        menuBtn.addEventListener("click", () => {
+          mainNav.classList.toggle("show");
+          // Toggle icon between bars and times
+          const icon = menuBtn.querySelector("i");
+          if (mainNav.classList.contains("show")) {
+            icon.classList.remove("fa-bars");
+            icon.classList.add("fa-times");
+          } else {
+            icon.classList.remove("fa-times");
+            icon.classList.add("fa-bars");
+          }
+        });
+      }
     </script>
   </body>
 </html>

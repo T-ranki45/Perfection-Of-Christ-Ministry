@@ -22,12 +22,13 @@
           <img src="./image/logo.png" alt="Logo" />
           <span>Perfection Of Christ Ministry</span>
         </a>
+        <div class="menu-btn">
+          <i class="fas fa-bars"></i>
+        </div>
         <nav class="main-nav">
           <ul>
             <li><a href="about.html" class="active">About</a></li>
-            <li><a href="index.html#ministries">Ministries</a></li>
             <li><a href="index.html#sermons">Sermons</a></li>
-            <li><a href="index.html#events">Events</a></li>
             <li><a href="index.html#visit">Visit</a></li>
             <li><a href="#" class="button">Give</a></li>
           </ul>
@@ -155,8 +156,42 @@
     </main>
 
     <footer class="main-footer">
-      <!-- Same footer content as index.html -->
       <div class="container">
+        <div class="footer-grid">
+          <div class="footer-col">
+            <h3>Perfection Of Christ Ministry</h3>
+            <p>Knowing God and making Him known to the nations.</p>
+            <div class="social-links">
+              <a href="#" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+              <a href="#" title="Instagram"><i class="fab fa-instagram"></i></a>
+              <a href="#" title="YouTube"><i class="fab fa-youtube"></i></a>
+            </div>
+          </div>
+          <div class="footer-col">
+            <h3>Quick Links</h3>
+            <ul>
+              <li><a href="about.html">About Us</a></li>
+              <li><a href="index.html#sermons">Sermons</a></li>
+              <li><a href="index.html#events">Events</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h3>Service Times</h3>
+            <p><strong>Sundays</strong></p>
+            <p>1st Service: 7:00 AM - 10:00 AM</p>
+            <p>2nd Service: 10:00 AM - 12:30 PM</p>
+            <p><strong>Wednesdays</strong></p>
+            <p>Bible Study: 6:00 PM</p>
+          </div>
+          <div class="footer-col">
+            <h3>Contact Us</h3>
+            <p>
+              <i class="fas fa-map-marker-alt"></i> 123 Church St, Anytown, USA
+            </p>
+            <p><i class="fas fa-phone"></i> (555) 123-4567</p>
+            <p><i class="fas fa-envelope"></i> info@church.com</p>
+          </div>
+        </div>
         <div class="footer-bottom">
           <p>&copy; 2024 Perfection Of Christ Ministry. All Rights Reserved.</p>
         </div>
@@ -164,11 +199,58 @@
     </footer>
 
     <script>
+      // API Base URL
+      const API_URL = "http://localhost:3000/api";
+
+      // --- Check Live Status ---
+      async function checkLiveStatus() {
+        try {
+          const res = await fetch(`${API_URL}/livestream`);
+          const config = await res.json();
+
+          if (config.isLive) {
+            const liveNavItem = document.querySelector(".live-nav-item");
+            if (liveNavItem) {
+              // Use 'list-item' for semantic correctness, though 'block' also works in flex
+              liveNavItem.style.display = "list-item";
+              const navLink = liveNavItem.querySelector("a");
+              if (navLink) {
+                navLink.href = config.videoId;
+                navLink.target = "_blank";
+              }
+            }
+          }
+        } catch (e) {
+          console.error("Error loading live stream config", e);
+        }
+      }
+
+      checkLiveStatus();
+
       const header = document.querySelector(".main-header");
       window.addEventListener("scroll", () => {
         if (window.scrollY > 50) header.classList.add("scrolled");
         else header.classList.remove("scrolled");
       });
+
+      // Mobile Menu Toggle
+      const menuBtn = document.querySelector(".menu-btn");
+      const mainNav = document.querySelector(".main-nav ul");
+
+      if (menuBtn && mainNav) {
+        menuBtn.addEventListener("click", () => {
+          mainNav.classList.toggle("show");
+          // Toggle icon between bars and times
+          const icon = menuBtn.querySelector("i");
+          if (mainNav.classList.contains("show")) {
+            icon.classList.remove("fa-bars");
+            icon.classList.add("fa-times");
+          } else {
+            icon.classList.remove("fa-times");
+            icon.classList.add("fa-bars");
+          }
+        });
+      }
     </script>
   </body>
 </html>

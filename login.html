@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login | Perfection Of Christ Ministry</title>
+    <link rel="stylesheet" href="admin.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body class="login-body">
+    <div class="login-container">
+        <div class="login-card">
+            <div class="login-header">
+                <i class="fas fa-church"></i>
+                <h2>Admin Portal</h2>
+                <p>Please sign in to continue</p>
+            </div>
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" placeholder="Enter Admin Password" required>
+                </div>
+                <button type="submit" class="btn-primary" style="width: 100%;">Login</button>
+                <p id="error-msg" style="color: red; margin-top: 10px; display: none; text-align: center;">Invalid Password</p>
+            </form>
+            <div style="text-align: center; margin-top: 1rem;">
+                <a href="index.html" style="color: #666; text-decoration: none; font-size: 0.9rem;">&larr; Back to Website</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = "http://localhost:3000/api";
+
+        // Check if already logged in
+        if (localStorage.getItem('admin_token')) {
+            window.location.href = 'admin.html';
+        }
+
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const password = document.getElementById('password').value;
+            const errorMsg = document.getElementById('error-msg');
+            const btn = e.target.querySelector('button');
+
+            btn.innerText = "Verifying...";
+            
+            try {
+                const res = await fetch(`${API_URL}/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ password })
+                });
+                const data = await res.json();
+
+                if (data.success) {
+                    localStorage.setItem('admin_token', data.token);
+                    window.location.href = 'admin.html';
+                } else {
+                    errorMsg.style.display = 'block';
+                    btn.innerText = "Login";
+                }
+            } catch (err) {
+                console.error(err);
+                errorMsg.innerText = "Server Error";
+                errorMsg.style.display = 'block';
+                btn.innerText = "Login";
+            }
+        });
+    </script>
+</body>
+</html>

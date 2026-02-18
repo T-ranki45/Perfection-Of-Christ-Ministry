@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Database Setup Tool</title>
+    <style>
+        body { font-family: sans-serif; padding: 2rem; max-width: 800px; margin: 0 auto; line-height: 1.6; }
+        h1 { color: #333; }
+        .status { padding: 1rem; background: #f0f0f0; border-radius: 5px; margin-top: 1rem; white-space: pre-wrap; }
+        button { padding: 1rem 2rem; font-size: 1.2rem; background: #b38728; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        button:hover { background: #926f21; }
+    </style>
+</head>
+<body>
+    <h1>Database Setup Tool</h1>
+    <p>Click the button below to populate your Firebase Firestore database with initial <strong>Events</strong> and <strong>Sermons</strong> data.</p>
+    <p><em>Note: Make sure you have updated the Firebase Config in the code of this file before clicking.</em></p>
+    
+    <button id="seed-btn">Build Database Data</button>
+    
+    <div id="status" class="status">Waiting for action...</div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        // TODO: PASTE YOUR FIREBASE CONFIG HERE (Same as index.html)
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY_HERE",
+            authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_PROJECT_ID.appspot.com",
+            messagingSenderId: "YOUR_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const statusDiv = document.getElementById('status');
+
+        // --- INITIAL DATA ---
+        const initialEvents = [
+            {
+                title: "Special Worship Night",
+                date: new Date().toISOString().split('T')[0], // Today
+                description: "A night of soaking in His presence. Join us live!",
+            },
+            {
+                title: "Community Potluck",
+                date: "2024-02-28",
+                description: "Join us after the service for food and fellowship.",
+            },
+            {
+                title: "Youth Group Night",
+                date: "2024-03-04",
+                description: "Fun, games, and a message for students grades 6-12.",
+            },
+            {
+                title: "Easter Sunday Service",
+                date: "2024-03-31",
+                description: "Celebrate the resurrection of our King!",
+            }
+        ];
+
+        const initialSermons = [
+            {
+                title: "The Book of John",
+                preacher: "Pastor John Jeremiah",
+                date: "2024-01-21",
+                image: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?q=80&w=1220",
+                videoUrl: "#" 
+            },
+            {
+                title: "Living with Purpose",
+                preacher: "Pastor John Jeremiah",
+                date: "2024-01-14",
+                image: "https://images.unsplash.com/photo-1597739221543-9952f15543a4?q=80&w=1287",
+                videoUrl: "#"
+            },
+            {
+                title: "Foundations of Faith",
+                preacher: "Pastor John Jeremiah",
+                date: "2024-01-07",
+                image: "https://images.unsplash.com/photo-1516528387632-607b518053c4?q=80&w=1287",
+                videoUrl: "#"
+            }
+        ];
+
+        document.getElementById('seed-btn').addEventListener('click', async () => {
+            statusDiv.innerText = "Starting database build...\n";
+            
+            try {
+                // Add Events
+                statusDiv.innerText += "Adding Events...\n";
+                for (const event of initialEvents) {
+                    await addDoc(collection(db, "events"), event);
+                    statusDiv.innerText += ` - Added event: ${event.title}\n`;
+                }
+
+                // Add Sermons
+                statusDiv.innerText += "\nAdding Sermons...\n";
+                for (const sermon of initialSermons) {
+                    await addDoc(collection(db, "sermons"), sermon);
+                    statusDiv.innerText += ` - Added sermon: ${sermon.title}\n`;
+                }
+
+                statusDiv.innerText += "\nSUCCESS! Database populated.";
+                statusDiv.style.backgroundColor = "#d4edda";
+                statusDiv.style.color = "#155724";
+
+            } catch (error) {
+                console.error(error);
+                statusDiv.innerText += `\nERROR: ${error.message}`;
+                statusDiv.style.backgroundColor = "#f8d7da";
+                statusDiv.style.color = "#721c24";
+            }
+        });
+    </script>
+</body>
+</html>

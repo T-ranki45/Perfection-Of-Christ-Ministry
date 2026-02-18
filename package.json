@@ -1,0 +1,26 @@
+{
+  "name": "perfection-of-christ-ministry",
+  "version": "1.0.0",
+  "description": "��#\u0000 \u0000P\u0000e\u0000r\u0000f\u0000e\u0000c\u0000t\u0000i\u0000o\u0000n\u0000-\u0000O\u0000f\u0000-\u0000C\u0000h\u0000r\u0000i\u0000s\u0000t\u0000-\u0000M\u0000i\u0000n\u0000i\u0000s\u0000t\u0000r\u0000y\u0000\r\u0000 \u0000",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/T-ranki45/Perfection-Of-Christ-Ministry.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/T-ranki45/Perfection-Of-Christ-Ministry/issues"
+  },
+  "homepage": "https://github.com/T-ranki45/Perfection-Of-Christ-Ministry#readme",
+  "dependencies": {
+    "cors": "^2.8.6",
+    "express": "^5.2.1"
+  }
+}

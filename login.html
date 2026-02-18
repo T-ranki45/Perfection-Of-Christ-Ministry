@@ -1,73 +1,253 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Admin Login | Perfection Of Christ Ministry</title>
-    <link rel="stylesheet" href="admin.css">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-</head>
-<body class="login-body">
+    <link rel="stylesheet" href="style.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Montserrat:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+    <style>
+      /* Specific Login Styles */
+      body.login-body {
+        background: url("https://images.unsplash.com/photo-1438232992991-995b7058bbb3?q=80&w=2073")
+          no-repeat center center/cover;
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        margin: 0;
+        overflow: hidden;
+      }
+
+      body.login-body::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.75);
+        backdrop-filter: blur(8px);
+        z-index: 0;
+      }
+
+      .login-container {
+        position: relative;
+        z-index: 1;
+        width: 100%;
+        max-width: 420px;
+        padding: 1rem;
+      }
+
+      .login-card {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        padding: 3rem 2.5rem;
+        border-radius: 20px;
+        border: 1px solid rgba(255, 215, 0, 0.2);
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+        text-align: center;
+        animation: fadeInUp 1.5s ease-out;
+      }
+
+      .login-header i {
+        font-size: 3.5rem;
+        margin-bottom: 1rem;
+        background: var(--gold-gradient);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+      }
+
+      .login-header h2 {
+        font-family: "Cinzel", serif;
+        color: #fff;
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+        text-transform: uppercase;
+      }
+
+      .login-header p {
+        color: #ccc;
+        font-size: 0.95rem;
+        margin-bottom: 2.5rem;
+      }
+
+      .form-group {
+        margin-bottom: 1.5rem;
+        text-align: left;
+      }
+
+      .form-group label {
+        color: #b38728;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        display: block;
+      }
+
+      .form-group input {
+        background: rgba(0, 0, 0, 0.4);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        color: #fff;
+        padding: 1rem;
+        border-radius: 8px;
+        width: 100%;
+        transition: all 0.3s ease;
+        font-family: "Montserrat", sans-serif;
+      }
+
+      .form-group input:focus {
+        border-color: #b38728;
+        box-shadow: 0 0 15px rgba(179, 135, 40, 0.2);
+        outline: none;
+        background: rgba(0, 0, 0, 0.6);
+      }
+
+      .btn-primary {
+        background: var(--gold-gradient);
+        border: none;
+        color: #1a1a1a;
+        font-weight: 800;
+        padding: 1rem;
+        border-radius: 50px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-family: "Montserrat", sans-serif;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        width: 100%;
+        margin-top: 1rem;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      }
+
+      .btn-primary:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px rgba(179, 135, 40, 0.4);
+        color: #000;
+      }
+
+      .back-link {
+        color: rgba(255, 255, 255, 0.5);
+        text-decoration: none;
+        font-size: 0.9rem;
+        transition: color 0.3s;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+      }
+
+      .back-link:hover {
+        color: #b38728;
+      }
+
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+    </style>
+  </head>
+  <body class="login-body">
     <div class="login-container">
-        <div class="login-card">
-            <div class="login-header">
-                <i class="fas fa-church"></i>
-                <h2>Admin Portal</h2>
-                <p>Please sign in to continue</p>
-            </div>
-            <form id="login-form">
-                <div class="form-group">
-                    <label for="password">Password</label>
-                    <input type="password" id="password" placeholder="Enter Admin Password" required>
-                </div>
-                <button type="submit" class="btn-primary" style="width: 100%;">Login</button>
-                <p id="error-msg" style="color: red; margin-top: 10px; display: none; text-align: center;">Invalid Password</p>
-            </form>
-            <div style="text-align: center; margin-top: 1rem;">
-                <a href="index.html" style="color: #666; text-decoration: none; font-size: 0.9rem;">&larr; Back to Website</a>
-            </div>
+      <div class="login-card">
+        <div class="login-header">
+          <i class="fas fa-church"></i>
+          <h2>Admin Portal</h2>
+          <p>Please sign in to continue</p>
         </div>
+        <form id="login-form">
+          <div class="form-group">
+            <label for="password">Password</label>
+            <input
+              type="password"
+              id="password"
+              placeholder="Enter Admin Password"
+              required
+            />
+          </div>
+          <button type="submit" class="btn-primary">Login</button>
+          <p
+            id="error-msg"
+            style="
+              color: #ff4d4d;
+              margin-top: 15px;
+              display: none;
+              text-align: center;
+              font-size: 0.9rem;
+              background: rgba(0, 0, 0, 0.3);
+              padding: 5px;
+              border-radius: 4px;
+            "
+          >
+            Invalid Password
+          </p>
+        </form>
+        <div style="text-align: center; margin-top: 1rem">
+          <a href="index.html" class="back-link"
+            ><i class="fas fa-arrow-left"></i> Back to Website</a
+          >
+        </div>
+      </div>
     </div>
 
     <script>
-        const API_URL = "/api";
+      const API_URL = "/api";
 
-        // Check if already logged in
-        if (localStorage.getItem('admin_token')) {
-            window.location.href = 'admin.html';
-        }
+      // Check if already logged in
+      if (localStorage.getItem("admin_token")) {
+        window.location.href = "admin.html";
+      }
 
-        document.getElementById('login-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const password = document.getElementById('password').value;
-            const errorMsg = document.getElementById('error-msg');
-            const btn = e.target.querySelector('button');
+      document
+        .getElementById("login-form")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const password = document.getElementById("password").value;
+          const errorMsg = document.getElementById("error-msg");
+          const btn = e.target.querySelector("button");
 
-            btn.innerText = "Verifying...";
-            
-            try {
-                const res = await fetch(`${API_URL}/login`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ password })
-                });
-                const data = await res.json();
+          btn.innerText = "Verifying...";
 
-                if (data.success) {
-                    localStorage.setItem('admin_token', data.token);
-                    window.location.href = 'admin.html';
-                } else {
-                    errorMsg.style.display = 'block';
-                    btn.innerText = "Login";
-                }
-            } catch (err) {
-                console.error(err);
-                errorMsg.innerText = "Server Error";
-                errorMsg.style.display = 'block';
-                btn.innerText = "Login";
+          try {
+            const res = await fetch(`${API_URL}/login`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ password }),
+            });
+            const data = await res.json();
+
+            if (data.success) {
+              localStorage.setItem("admin_token", data.token);
+              window.location.href = "admin.html";
+            } else {
+              errorMsg.style.display = "block";
+              btn.innerText = "Login";
             }
+          } catch (err) {
+            console.error(err);
+            errorMsg.innerText = "Server Error";
+            errorMsg.style.display = "block";
+            btn.innerText = "Login";
+          }
         });
     </script>
-</body>
+  </body>
 </html>

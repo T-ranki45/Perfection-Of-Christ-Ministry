@@ -335,7 +335,7 @@
 
           this.txtElement.innerHTML = `<span class="txt">${this.txt}</span>`;
 
-          let typeSpeed = 200;
+          let typeSpeed = 300;
 
           if (this.isDeleting) {
             typeSpeed /= 2;
@@ -347,7 +347,7 @@
           } else if (this.isDeleting && this.txt === "") {
             this.isDeleting = false;
             this.wordIndex++;
-            typeSpeed = 500;
+            typeSpeed = 1000;
           }
 
           setTimeout(() => this.type(), typeSpeed);
@@ -747,7 +747,7 @@
                 startTyping();
               }, 5000); // 5 seconds pause before repeating
             }
-          }, 40); // 40ms is roughly normal reading speed
+          }, 80); // 80ms is slower reading speed
         }
 
         function resetTyping() {

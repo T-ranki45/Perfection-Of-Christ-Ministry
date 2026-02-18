@@ -45,7 +45,7 @@ async function connectToDb() {
 }
 
 // --- AUTHENTICATION ---
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "admin123";
+const ADMIN_PASSWORD = "Admin123";
 
 // --- ROUTES ---
 

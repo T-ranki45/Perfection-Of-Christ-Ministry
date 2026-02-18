@@ -6,6 +6,15 @@ const port = process.env.PORT || 3000;
 // Middleware
 app.use(cors()); // Allow frontend to communicate with backend
 app.use(express.json({ limit: "50mb" })); // Parse JSON bodies (increased limit for images)
+
+// Security: Prevent access to server code and config
+app.use((req, res, next) => {
+  if (req.path === '/server.js' || req.path === '/package.json' || req.path === '/.env') {
+    return res.status(403).send('Forbidden');
+  }
+  next();
+});
+
 app.use(express.static(".")); // Serve static files from current directory
 
 // --- MOCK DATABASE ---

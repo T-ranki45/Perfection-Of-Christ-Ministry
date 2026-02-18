@@ -30,7 +30,11 @@
             <li><a href="about.html" class="active">About</a></li>
             <li><a href="index.html#sermons">Sermons</a></li>
             <li><a href="index.html#events">Events</a></li>
-            <li class="live-nav-item"><a href="index.html#live" class="live-nav-link">Live <span class="live-badge-nav"></span></a></li>
+            <li class="live-nav-item">
+              <a href="index.html#live" class="live-nav-link"
+                >Live <span class="live-badge-nav"></span
+              ></a>
+            </li>
             <li><a href="index.html#visit">Visit</a></li>
             <li><a href="#" class="button">Give</a></li>
           </ul>
@@ -202,7 +206,7 @@
 
     <script>
       // API Base URL
-      const API_URL = "http://localhost:3000/api";
+      const API_URL = "/api";
 
       // --- Check Live Status ---
       async function checkLiveStatus() {

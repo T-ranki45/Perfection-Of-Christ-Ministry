@@ -65,37 +65,29 @@ const ADMIN_PASSWORD = "Admin123";
 // --- ROUTES ---
 
 // Middleware to check DB connection
-app.use("/api", async (req, res, next) => {
-  if (req.path === "/login") return next(); // Allow login without DB
-
+app.use("/api", (req, res, next) => {
+  // If DB is not connected, we just proceed and use local storage in the routes
   if (!db) {
-    console.log("⚠️ Database connection missing. Attempting to reconnect...");
-    const connectionError = await connectToDb();
-    if (connectionError) {
-      // Send the specific error back to the client
-      return res.status(503).json({
-        error: "Database connection failed: " + connectionError.message,
-      });
-    }
-  }
-
-  if (!db) {
-    // This is a fallback, should ideally not be reached if the above works
-    return res.status(503).json({
-      error: "Database not connected. Check server logs.",
-    });
+    console.warn("⚠️ Using In-Memory Storage (Database not connected)");
   }
   next();
 });
 
 // Get all flyers
 app.get("/api/flyers", async (req, res) => {
-  const flyers = await db
-    .collection("flyers")
-    .find({})
-    .sort({ createdAt: -1 })
-    .toArray();
-  res.json(flyers);
+  if (db) {
+    const flyers = await db
+      .collection("flyers")
+      .find({})
+      .sort({ createdAt: -1 })
+      .toArray();
+    res.json(flyers);
+  } else {
+    // Return local flyers sorted by date
+    res.json(
+      localFlyers.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)),
+    );
+  }
 });
 
 // Add new flyers (Bulk)
@@ -108,10 +100,16 @@ app.post("/api/flyers", async (req, res) => {
 
     const flyersWithTimestamp = newFlyers.map((f) => ({
       ...f,
+      _id: new ObjectId(), // Generate ID locally
       createdAt: new Date(),
     }));
 
-    await db.collection("flyers").insertMany(flyersWithTimestamp);
+    if (db) {
+      await db.collection("flyers").insertMany(flyersWithTimestamp);
+    } else {
+      localFlyers.push(...flyersWithTimestamp);
+    }
+
     res
       .status(201)
       .json({ message: "Flyers added successfully", count: newFlyers.length });
@@ -124,25 +122,37 @@ app.post("/api/flyers", async (req, res) => {
 // Delete a flyer
 app.delete("/api/flyers/:id", async (req, res) => {
   const { id } = req.params;
-  const result = await db
-    .collection("flyers")
-    .deleteOne({ _id: new ObjectId(id) });
-  if (result.deletedCount === 1) {
-    res.json({ message: "Flyer deleted successfully" });
+
+  if (db) {
+    const result = await db
+      .collection("flyers")
+      .deleteOne({ _id: new ObjectId(id) });
+    if (result.deletedCount === 1) {
+      return res.json({ message: "Flyer deleted successfully" });
+    }
   } else {
-    res.status(404).json({ error: "Flyer not found" });
+    const initialLength = localFlyers.length;
+    localFlyers = localFlyers.filter((f) => f._id.toString() !== id);
+    if (localFlyers.length < initialLength) {
+      return res.json({ message: "Flyer deleted successfully" });
+    }
   }
+
+  res.status(404).json({ error: "Flyer not found" });
 });
 
 // Get all sermons
 app.get("/api/sermons", async (req, res) => {
-  // Sort sermons by date descending
-  const sortedSermons = await db
-    .collection("sermons")
-    .find({})
-    .sort({ date: -1 })
-    .toArray();
-  res.json(sortedSermons);
+  if (db) {
+    const sortedSermons = await db
+      .collection("sermons")
+      .find({})
+      .sort({ date: -1 })
+      .toArray();
+    res.json(sortedSermons);
+  } else {
+    res.json(localSermons.sort((a, b) => new Date(b.date) - new Date(a.date)));
+  }
 });
 
 // Add new sermon/message
@@ -158,8 +168,15 @@ app.post("/api/sermons", async (req, res) => {
       date,
       videoUrl,
       image: image || "https://via.placeholder.com/300x200?text=No+Image",
+      _id: new ObjectId(),
     };
-    await db.collection("sermons").insertOne(newSermon);
+
+    if (db) {
+      await db.collection("sermons").insertOne(newSermon);
+    } else {
+      localSermons.push(newSermon);
+    }
+
     res
       .status(201)
       .json({ message: "Message added successfully", sermon: newSermon });
@@ -172,14 +189,23 @@ app.post("/api/sermons", async (req, res) => {
 // Delete sermon
 app.delete("/api/sermons/:id", async (req, res) => {
   const { id } = req.params;
-  const result = await db
-    .collection("sermons")
-    .deleteOne({ _id: new ObjectId(id) });
-  if (result.deletedCount === 1) {
-    res.json({ message: "Message deleted successfully" });
+
+  if (db) {
+    const result = await db
+      .collection("sermons")
+      .deleteOne({ _id: new ObjectId(id) });
+    if (result.deletedCount === 1) {
+      return res.json({ message: "Message deleted successfully" });
+    }
   } else {
-    res.status(404).json({ error: "Message not found" });
+    const initialLength = localSermons.length;
+    localSermons = localSermons.filter((s) => s._id.toString() !== id);
+    if (localSermons.length < initialLength) {
+      return res.json({ message: "Message deleted successfully" });
+    }
   }
+
+  res.status(404).json({ error: "Message not found" });
 });
 
 // Submit prayer request
@@ -195,9 +221,15 @@ app.post("/api/prayer-requests", async (req, res) => {
     email,
     request,
     timestamp: new Date(),
+    _id: new ObjectId(),
   };
 
-  await db.collection("prayerRequests").insertOne(newRequest);
+  if (db) {
+    await db.collection("prayerRequests").insertOne(newRequest);
+  } else {
+    localPrayerRequests.push(newRequest);
+  }
+
   console.log("New Prayer Request Received:", newRequest);
 
   res.status(201).json({ message: "Prayer request saved successfully" });
@@ -205,31 +237,50 @@ app.post("/api/prayer-requests", async (req, res) => {
 
 // Get all prayer requests (Admin)
 app.get("/api/prayer-requests", async (req, res) => {
-  // Return most recent first
-  const requests = await db
-    .collection("prayerRequests")
-    .find({})
-    .sort({ timestamp: -1 })
-    .toArray();
-  res.json(requests);
+  if (db) {
+    const requests = await db
+      .collection("prayerRequests")
+      .find({})
+      .sort({ timestamp: -1 })
+      .toArray();
+    res.json(requests);
+  } else {
+    res.json(
+      localPrayerRequests.sort(
+        (a, b) => new Date(b.timestamp) - new Date(a.timestamp),
+      ),
+    );
+  }
 });
 
 // Live Stream Routes
 app.get("/api/livestream", async (req, res) => {
-  const config = await db.collection("config").findOne({ name: "liveStream" });
-  res.json(config ? config.data : { videoId: "", isLive: false });
+  if (db) {
+    const config = await db
+      .collection("config")
+      .findOne({ name: "liveStream" });
+    res.json(config ? config.data : { videoId: "", isLive: false });
+  } else {
+    res.json(localLiveStreamConfig);
+  }
 });
 
 app.post("/api/livestream", async (req, res) => {
   const { videoId, isLive } = req.body;
   const newConfig = { videoId, isLive };
-  await db
-    .collection("config")
-    .updateOne(
-      { name: "liveStream" },
-      { $set: { data: newConfig } },
-      { upsert: true },
-    );
+
+  if (db) {
+    await db
+      .collection("config")
+      .updateOne(
+        { name: "liveStream" },
+        { $set: { data: newConfig } },
+        { upsert: true },
+      );
+  } else {
+    localLiveStreamConfig = newConfig;
+  }
+
   res.json({ message: "Live stream updated", config: newConfig });
 });
 

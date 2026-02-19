@@ -38,16 +38,18 @@ let db;
 async function connectToDb() {
   try {
     if (!DATABASE_URL) {
-      console.error("❌ DATABASE_URL environment variable is not set.");
-      return; // Don't crash, just return
+      const err = new Error("DATABASE_URL environment variable is not set.");
+      console.error("❌", err.message);
+      return err; // Return the error
     }
     const client = new MongoClient(DATABASE_URL);
     await client.connect();
     db = client.db(DB_NAME);
     console.log("✅ Successfully connected to MongoDB Atlas.");
+    return null; // Return null on success
   } catch (error) {
     console.error("❌ Failed to connect to MongoDB", error);
-    // process.exit(1); // Removed so server stays alive for logs
+    return error; // Return the error
   }
 }
 
@@ -57,9 +59,22 @@ const ADMIN_PASSWORD = "Admin123";
 // --- ROUTES ---
 
 // Middleware to check DB connection
-app.use("/api", (req, res, next) => {
+app.use("/api", async (req, res, next) => {
   if (req.path === "/login") return next(); // Allow login without DB
+
   if (!db) {
+    console.log("⚠️ Database connection missing. Attempting to reconnect...");
+    const connectionError = await connectToDb();
+    if (connectionError) {
+      // Send the specific error back to the client
+      return res.status(503).json({
+        error: "Database connection failed: " + connectionError.message,
+      });
+    }
+  }
+
+  if (!db) {
+    // This is a fallback, should ideally not be reached if the above works
     return res.status(503).json({
       error: "Database not connected. Check server logs.",
     });

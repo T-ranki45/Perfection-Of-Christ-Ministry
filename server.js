@@ -35,6 +35,12 @@ app.get("/admin", (req, res) => {
 // --- DATABASE CONNECTION ---
 let db;
 
+// --- IN-MEMORY STORAGE (FALLBACK) ---
+let localFlyers = [];
+let localSermons = [];
+let localPrayerRequests = [];
+let localLiveStreamConfig = { videoId: "", isLive: false };
+
 async function connectToDb() {
   try {
     if (!DATABASE_URL) {

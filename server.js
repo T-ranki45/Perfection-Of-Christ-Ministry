@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const { MongoClient, ObjectId } = require("mongodb");
+const https = require("https");
 const app = express();
 const port = process.env.PORT || 3000;
 
@@ -210,6 +211,18 @@ async function startServer() {
   await connectToDb();
   app.listen(port, () => {
     console.log(`Server running at http://localhost:${port}`);
+
+    // --- KEEP-ALIVE SCRIPT ---
+    // Pings the server every 14 minutes to prevent Render free tier from sleeping
+    setInterval(() => {
+      const host = process.env.RENDER_EXTERNAL_HOSTNAME || "perfection-of-christ-ministry.onrender.com";
+      https.get(`https://${host}/api/flyers`, (res) => {
+        res.on('data', () => {}); // Consume response
+        console.log(`✅ Keep-alive ping to ${host}: ${res.statusCode}`);
+      }).on('error', (err) => {
+        console.error(`❌ Keep-alive ping failed: ${err.message}`);
+      });
+    }, 14 * 60 * 1000); // 14 minutes
   });
 }
 

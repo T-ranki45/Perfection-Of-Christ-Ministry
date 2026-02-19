@@ -63,10 +63,7 @@
         <section id="dashboard" class="content-section active">
           <div class="stats-grid">
             <div class="stat-card">
-              <div
-                class="stat-icon"
-                style="background: #e8f5e9; color: #2e7d32"
-              >
+              <div class="stat-icon icon-prayer">
                 <i class="fas fa-praying-hands"></i>
               </div>
               <div class="stat-info">
@@ -75,10 +72,7 @@
               </div>
             </div>
             <div class="stat-card">
-              <div
-                class="stat-icon"
-                style="background: #fff3e0; color: #ef6c00"
-              >
+              <div class="stat-icon icon-live">
                 <i class="fas fa-video"></i>
               </div>
               <div class="stat-info">
@@ -134,34 +128,54 @@
         <section id="messages" class="content-section">
           <h2>Manage Messages</h2>
           <div class="card">
-            <p class="helper-text">Post a new message link (e.g., Facebook video) with a thumbnail.</p>
+            <p class="helper-text">
+              Post a new message link (e.g., Facebook video) with a thumbnail.
+            </p>
             <form id="add-message-form">
               <div class="form-group">
                 <label>Message Title</label>
-                <input type="text" id="msg-title" required placeholder="e.g. The Power of Faith">
+                <input
+                  type="text"
+                  id="msg-title"
+                  required
+                  placeholder="e.g. The Power of Faith"
+                />
               </div>
               <div class="form-group">
                 <label>Preacher</label>
-                <input type="text" id="msg-preacher" value="Pastor John Jeremiah">
+                <input
+                  type="text"
+                  id="msg-preacher"
+                  value="Pastor John Jeremiah"
+                />
               </div>
               <div class="form-group">
                 <label>Date</label>
-                <input type="date" id="msg-date" required>
+                <input type="date" id="msg-date" required />
               </div>
               <div class="form-group">
                 <label>Video Link (Facebook/YouTube)</label>
-                <input type="url" id="msg-url" required placeholder="https://facebook.com/...">
+                <input
+                  type="url"
+                  id="msg-url"
+                  required
+                  placeholder="https://facebook.com/..."
+                />
               </div>
               <div class="form-group">
                 <label>Thumbnail Image</label>
-                <input type="file" id="msg-image" accept="image/*" required>
+                <input type="file" id="msg-image" accept="image/*" required />
               </div>
               <button type="submit" class="btn-primary">Post Message</button>
             </form>
           </div>
 
           <h3>Recent Messages</h3>
-          <div id="messages-list" class="preview-grid" style="margin-top: 1rem;"></div>
+          <div
+            id="messages-list"
+            class="preview-grid"
+            style="margin-top: 1rem"
+          ></div>
         </section>
 
         <!-- Live Stream Section -->
@@ -363,79 +377,97 @@
       }
 
       // --- Messages Logic ---
-      document.getElementById('add-message-form').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const btn = e.target.querySelector('button');
-        const originalText = btn.innerText;
-        btn.innerText = "Posting...";
-        btn.disabled = true;
+      document
+        .getElementById("add-message-form")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const btn = e.target.querySelector("button");
+          const originalText = btn.innerText;
+          btn.innerText = "Posting...";
+          btn.disabled = true;
 
-        const title = document.getElementById('msg-title').value;
-        const preacher = document.getElementById('msg-preacher').value;
-        const date = document.getElementById('msg-date').value;
-        const videoUrl = document.getElementById('msg-url').value;
-        const fileInput = document.getElementById('msg-image');
+          const title = document.getElementById("msg-title").value;
+          const preacher = document.getElementById("msg-preacher").value;
+          const date = document.getElementById("msg-date").value;
+          const videoUrl = document.getElementById("msg-url").value;
+          const fileInput = document.getElementById("msg-image");
 
-        if (fileInput.files.length === 0) {
+          if (fileInput.files.length === 0) {
             alert("Please select a thumbnail image.");
             btn.innerText = originalText;
             btn.disabled = false;
             return;
-        }
+          }
 
-        const reader = new FileReader();
-        reader.readAsDataURL(fileInput.files[0]);
-        reader.onload = async () => {
+          const reader = new FileReader();
+          reader.readAsDataURL(fileInput.files[0]);
+          reader.onload = async () => {
             const image = reader.result;
             try {
-                const res = await fetch(`${API_URL}/sermons`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ title, preacher, date, videoUrl, image })
-                });
-                if (res.ok) {
-                    alert("Message Posted Successfully!");
-                    e.target.reset();
-                    loadMessagesList();
-                } else {
-                    alert("Failed to post message.");
-                }
+              const res = await fetch(`${API_URL}/sermons`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  title,
+                  preacher,
+                  date,
+                  videoUrl,
+                  image,
+                }),
+              });
+              if (res.ok) {
+                alert("Message Posted Successfully!");
+                e.target.reset();
+                loadMessagesList();
+              } else {
+                alert("Failed to post message.");
+              }
             } catch (err) {
-                console.error(err);
-                alert("Error posting message.");
+              console.error(err);
+              alert("Error posting message.");
             } finally {
-                btn.innerText = originalText;
-                btn.disabled = false;
+              btn.innerText = originalText;
+              btn.disabled = false;
             }
-        };
-      });
+          };
+        });
 
       async function loadMessagesList() {
         try {
-            const res = await fetch(`${API_URL}/sermons`);
-            const messages = await res.json();
-            const container = document.getElementById('messages-list');
-            container.innerHTML = messages.map(msg => `
+          const res = await fetch(`${API_URL}/sermons`);
+          const messages = await res.json();
+          const container = document.getElementById("messages-list");
+          container.innerHTML = messages
+            .map(
+              (msg) => `
                 <div class="flyer-manage-item" style="flex-direction:column; align-items: flex-start; gap: 0.5rem;">
                     <img src="${msg.image}" alt="${msg.title}" style="width:100%; height: 120px; object-fit:cover;">
                     <div style="font-size:0.9rem; font-weight:bold;">${msg.title}</div>
                     <div style="font-size:0.8rem; color:#666;">${msg.date}</div>
                     <button onclick="deleteMessage('${msg._id}')" class="delete-btn" style="position:absolute; top:5px; right:5px;"><i class="fas fa-trash"></i></button>
                 </div>
-            `).join('');
-        } catch(e) { console.error(e); }
+            `,
+            )
+            .join("");
+        } catch (e) {
+          console.error(e);
+        }
       }
 
       async function deleteMessage(id) {
-        if(!confirm("Delete this message?")) return;
+        if (!confirm("Delete this message?")) return;
         try {
-            const res = await fetch(`${API_URL}/sermons/${id}`, { method: 'DELETE' });
-            if (res.ok) {
-              loadMessagesList();
-            } else {
-              alert("Failed to delete message. The server might have restarted or the item was already removed.");
-            }
-        } catch(e) { 
+          const res = await fetch(`${API_URL}/sermons/${id}`, {
+            method: "DELETE",
+          });
+          if (res.ok) {
+            loadMessagesList();
+          } else {
+            alert(
+              "Failed to delete message. The server might have restarted or the item was already removed.",
+            );
+          }
+        } catch (e) {
           console.error(e);
           alert("An error occurred while trying to delete the message.");
         }

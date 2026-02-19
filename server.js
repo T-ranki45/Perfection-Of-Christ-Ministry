@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const { MongoClient, ObjectId } = require("mongodb");
 const https = require("https");
+const path = require("path");
 const app = express();
 const port = process.env.PORT || 3000;
 
@@ -25,6 +26,11 @@ app.use((req, res, next) => {
 });
 
 app.use(express.static(".")); // Serve static files from current directory
+
+// Serve admin.html explicitly at /admin
+app.get("/admin", (req, res) => {
+  res.sendFile(path.join(__dirname, "admin.html"));
+});
 
 // --- DATABASE CONNECTION ---
 let db;

@@ -121,20 +121,24 @@ section h2::after {
 /* --- Header & Navigation --- */
 .main-header {
   background-color: transparent;
-  padding: 1.5rem 0;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0) 100%);
+  padding: 1rem 0;
   position: fixed;
   width: 100%;
   top: 0;
   z-index: 1000;
   transition: all 0.3s ease;
+  height: 90px;
+  display: flex;
+  align-items: center;
 }
 
 .main-header.scrolled {
-  background-color: #fff;
+  background-color: rgba(10, 10, 10, 0.95);
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  padding: 0.8rem 0;
-  background-color: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(10px);
+  padding: 0;
+  height: 70px;
+  border-bottom: 1px solid rgba(179, 135, 40, 0.3);
 }
 
 .main-header .container {
@@ -152,7 +156,7 @@ section h2::after {
 
 .logo span {
   font-family: "Cinzel", serif;
-  font-size: 1.1rem;
+  font-size: 1.4rem;
   font-weight: 800;
   background: var(--gold-gradient);
   -webkit-background-clip: text;
@@ -161,6 +165,7 @@ section h2::after {
   text-transform: uppercase;
   letter-spacing: 1px;
   filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.8));
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
   transition: filter 0.3s ease;
   animation: logoFadeIn 2s ease-out forwards;
 }
@@ -178,7 +183,7 @@ section h2::after {
 }
 
 .logo img {
-  height: 45px;
+  height: 55px;
   width: auto;
   filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.4));
   transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -186,6 +191,10 @@ section h2::after {
 
 .logo:hover img {
   transform: rotate(15deg) scale(1.1);
+}
+
+.main-header.scrolled .logo img {
+  height: 45px;
 }
 
 @keyframes logoFadeIn {
@@ -228,7 +237,7 @@ section h2::after {
 }
 
 .main-header.scrolled .main-nav ul li a {
-  color: var(--primary-color);
+  color: #e0e0e0;
 }
 
 .main-header.scrolled .main-nav ul li a:hover,
@@ -305,7 +314,7 @@ section h2::after {
 }
 
 .main-header.scrolled .menu-btn {
-  color: var(--primary-color);
+  color: var(--accent-color);
 }
 
 
@@ -373,7 +382,7 @@ section h2::after {
 
   /* Hero Section */
   #hero {
-    padding-top: 100px;
+    padding-top: 80px;
     padding-left: 0;
     padding-right: 0;
     height: auto;
@@ -382,7 +391,7 @@ section h2::after {
   }
 
   #hero h1 {
-    font-size: 2.8rem; /* Keep hero title large */
+    font-size: 2.5rem; /* Keep hero title large */
     line-height: 1.3;
   }
   #hero p {
@@ -404,7 +413,7 @@ section h2::after {
   #hero .hero-content {
     padding: 2rem 1.5rem;
     width: 100%;
-    min-height: 65vh; /* Fixed height to prevent shrinking/jittering */
+    min-height: auto; /* Fixed height to prevent shrinking/jittering */
     border-radius: 0;
     border-left: none;
     border-right: none;
@@ -465,6 +474,9 @@ section h2::after {
   .logo span {
     font-size: 0.9rem;
   }
+  .main-header {
+    height: 70px;
+  }
 
   /* --- ABOUT PAGE MOBILE STYLES --- */
   .page-hero {
@@ -517,7 +529,7 @@ section h2::after {
   align-items: center;
   text-align: center;
   color: var(--light-text-color);
-  padding: 140px 2rem 0;
+  padding: 0;
   overflow: hidden;
 }
 
@@ -567,15 +579,16 @@ section h2::after {
 }
 
 #hero .hero-content {
-  max-width: 960px;
+  max-width: 1200px;
+  width: 90%;
   position: relative;
   z-index: 1;
-  background: rgba(0, 0, 0, 0.4);
+  background: rgba(0, 0, 0, 0.3);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  padding: 4rem;
+  padding: 5rem 2rem;
   border-radius: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 215, 0, 0.3);
   box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
 }
 
@@ -592,7 +605,7 @@ section h2::after {
 
 #hero h1 {
   font-family: "Cinzel", serif;
-  font-size: 2.5rem;
+  font-size: 4.5rem;
   font-weight: 900;
   text-transform: uppercase;
   letter-spacing: 2px;
@@ -1499,7 +1512,7 @@ section h2::after {
 /* Responsive Font Size for Hero */
 @media (min-width: 768px) {
   #hero h1 {
-    font-size: 5rem;
+    font-size: 4.5rem;
   }
   .countdown {
     gap: 2rem;
@@ -1528,6 +1541,14 @@ section h2::after {
   .visit-content {
     grid-template-columns: 1fr 1fr;
   }
+}
+
+/* Tablet Specific */
+@media (min-width: 769px) and (max-width: 1024px) {
+    #hero h1 { font-size: 3.5rem; }
+    .hero-content { padding: 3rem; }
+    .logo span { font-size: 1rem; }
+    .main-nav ul li { margin-left: 1rem; }
 }
 
 /* Back to Top Button */

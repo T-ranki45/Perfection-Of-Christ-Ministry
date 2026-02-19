@@ -79,20 +79,25 @@ app.get("/api/flyers", async (req, res) => {
 
 // Add new flyers (Bulk)
 app.post("/api/flyers", async (req, res) => {
-  const newFlyers = req.body; // Expecting array of { image }
-  if (!Array.isArray(newFlyers)) {
-    return res.status(400).json({ error: "Expected an array of flyers" });
+  try {
+    const newFlyers = req.body; // Expecting array of { image }
+    if (!Array.isArray(newFlyers)) {
+      return res.status(400).json({ error: "Expected an array of flyers" });
+    }
+
+    const flyersWithTimestamp = newFlyers.map((f) => ({
+      ...f,
+      createdAt: new Date(),
+    }));
+
+    await db.collection("flyers").insertMany(flyersWithTimestamp);
+    res
+      .status(201)
+      .json({ message: "Flyers added successfully", count: newFlyers.length });
+  } catch (error) {
+    console.error("Error adding flyers:", error);
+    res.status(500).json({ error: "Internal Server Error: " + error.message });
   }
-
-  const flyersWithTimestamp = newFlyers.map((f) => ({
-    ...f,
-    createdAt: new Date(),
-  }));
-
-  await db.collection("flyers").insertMany(flyersWithTimestamp);
-  res
-    .status(201)
-    .json({ message: "Flyers added successfully", count: newFlyers.length });
 });
 
 // Delete a flyer
@@ -121,21 +126,26 @@ app.get("/api/sermons", async (req, res) => {
 
 // Add new sermon/message
 app.post("/api/sermons", async (req, res) => {
-  const { title, preacher, date, videoUrl, image } = req.body;
-  if (!title || !date || !videoUrl) {
-    return res.status(400).json({ error: "All fields are required" });
+  try {
+    const { title, preacher, date, videoUrl, image } = req.body;
+    if (!title || !date || !videoUrl) {
+      return res.status(400).json({ error: "All fields are required" });
+    }
+    const newSermon = {
+      title,
+      preacher: preacher || "Pastor John Jeremiah",
+      date,
+      videoUrl,
+      image: image || "https://via.placeholder.com/300x200?text=No+Image",
+    };
+    await db.collection("sermons").insertOne(newSermon);
+    res
+      .status(201)
+      .json({ message: "Message added successfully", sermon: newSermon });
+  } catch (error) {
+    console.error("Error adding sermon:", error);
+    res.status(500).json({ error: "Internal Server Error: " + error.message });
   }
-  const newSermon = {
-    title,
-    preacher: preacher || "Pastor John Jeremiah",
-    date,
-    videoUrl,
-    image: image || "https://via.placeholder.com/300x200?text=No+Image",
-  };
-  await db.collection("sermons").insertOne(newSermon);
-  res
-    .status(201)
-    .json({ message: "Message added successfully", sermon: newSermon });
 });
 
 // Delete sermon

@@ -332,9 +332,15 @@
               selectedFiles = [];
               previewContainer.innerHTML = "";
               loadFlyersList(); // Refresh the list
+            } else {
+              const data = await res.json();
+              alert(
+                "Failed to post flyers: " + (data.error || "Unknown error"),
+              );
             }
           } catch (err) {
-            alert("Failed to post flyers");
+            console.error(err);
+            alert("Error posting flyers. Check console for details.");
           }
         });
 
@@ -369,7 +375,8 @@
           if (res.ok) {
             loadFlyersList();
           } else {
-            alert("Failed to delete flyer");
+            const data = await res.json();
+            alert("Failed to delete flyer: " + (data.error || "Unknown error"));
           }
         } catch (e) {
           console.error(e);
@@ -420,11 +427,14 @@
                 e.target.reset();
                 loadMessagesList();
               } else {
-                alert("Failed to post message.");
+                const data = await res.json();
+                alert(
+                  "Failed to post message: " + (data.error || "Unknown error"),
+                );
               }
             } catch (err) {
               console.error(err);
-              alert("Error posting message.");
+              alert("Error posting message. Check console for details.");
             } finally {
               btn.innerText = originalText;
               btn.disabled = false;
@@ -463,8 +473,9 @@
           if (res.ok) {
             loadMessagesList();
           } else {
+            const data = await res.json();
             alert(
-              "Failed to delete message. The server might have restarted or the item was already removed.",
+              "Failed to delete message: " + (data.error || "Unknown error"),
             );
           }
         } catch (e) {

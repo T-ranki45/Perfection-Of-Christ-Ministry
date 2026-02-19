@@ -213,16 +213,20 @@ async function startServer() {
     console.log(`Server running at http://localhost:${port}`);
 
     // --- KEEP-ALIVE SCRIPT ---
-    // Pings the server every 14 minutes to prevent Render free tier from sleeping
+    // Pings the server every 30 seconds to prevent Render free tier from sleeping
     setInterval(() => {
-      const host = process.env.RENDER_EXTERNAL_HOSTNAME || "perfection-of-christ-ministry.onrender.com";
-      https.get(`https://${host}/api/flyers`, (res) => {
-        res.on('data', () => {}); // Consume response
-        console.log(`✅ Keep-alive ping to ${host}: ${res.statusCode}`);
-      }).on('error', (err) => {
-        console.error(`❌ Keep-alive ping failed: ${err.message}`);
-      });
-    }, 14 * 60 * 1000); // 14 minutes
+      const host =
+        process.env.RENDER_EXTERNAL_HOSTNAME ||
+        "perfection-of-christ-ministry.onrender.com";
+      https
+        .get(`https://${host}/api/flyers`, (res) => {
+          res.on("data", () => {}); // Consume response
+          console.log(`✅ Keep-alive ping to ${host}: ${res.statusCode}`);
+        })
+        .on("error", (err) => {
+          console.error(`❌ Keep-alive ping failed: ${err.message}`);
+        });
+    }, 30 * 1000); // 30 seconds
   });
 }
 

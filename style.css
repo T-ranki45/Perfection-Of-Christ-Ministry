@@ -333,6 +333,7 @@ section h2::after {
 
   .menu-btn {
     display: block;
+    margin-left: auto;
   }
 
   .main-nav ul {
@@ -500,6 +501,11 @@ section h2::after {
   }
   .main-header {
     height: 70px;
+  }
+  .main-header .container {
+    padding: 0 10px;
+    width: 100%;
+    justify-content: space-between;
   }
 
   /* --- ABOUT PAGE MOBILE STYLES --- */

@@ -408,7 +408,7 @@ section h2::after {
   }
 
   #hero h1 {
-    font-size: 2.5rem; /* Keep hero title large */
+    font-size: 2rem; /* Slightly smaller for mobile */
     line-height: 1.3;
   }
   #hero p {
@@ -588,10 +588,7 @@ section h2::after {
   top: 0;
   left: 0;
   width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.75);
-  z-index: -1;
-}
+  height: 100%;}
 
 @keyframes glassPulse {
   0% {

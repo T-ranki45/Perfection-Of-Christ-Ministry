@@ -382,7 +382,7 @@ section h2::after {
 
   /* Hero Section */
   #hero {
-    padding-top: 80px;
+    padding-top: 150px;
     padding-left: 0;
     padding-right: 0;
     height: auto;
@@ -472,7 +472,7 @@ section h2::after {
     height: 35px;
   }
   .logo span {
-    font-size: 0.9rem;
+    font-size: 0.8rem;
   }
   .main-header {
     height: 70px;

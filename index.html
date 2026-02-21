@@ -50,6 +50,7 @@
         </video>
         <div class="hero-overlay"></div>
         <div class="hero-content">
+          <p class="hero-pretitle">Welcome to Perfection Of Christ Ministry</p>
           <h1>
             Faith, Hope, and<br />
             <span
@@ -58,6 +59,7 @@
               data-words='["Love", "Grace", "Truth", "Miracles"]'
             ></span>
           </h1>
+          <div class="hero-divider"></div>
           <p>Join us for worship this Sunday at 10:00 AM</p>
           <div class="hero-buttons">
             <a href="#visit" class="button">Join Us This Sunday</a>
@@ -65,6 +67,9 @@
               ><i class="fab fa-facebook-f"></i> Watch Live</a
             >
           </div>
+        </div>
+        <div class="scroll-indicator">
+          <span></span>
         </div>
       </section>
 
@@ -110,7 +115,7 @@
 
       <section id="welcome">
         <div class="container welcome-container">
-          <div class="welcome-card">
+          <div class="welcome-card reveal-scale">
             <div class="welcome-icon"><i class="fas fa-dove"></i></div>
             <h2>Welcome to <br /><span>Perfection Of Christ Ministry</span></h2>
             <p id="welcome-text">
@@ -354,8 +359,13 @@
 
       // Script to change header background on scroll
       const header = document.querySelector(".main-header");
+      const welcomeSection = document.getElementById("welcome");
+
       window.addEventListener("scroll", () => {
-        if (window.scrollY > 50) {
+        const scrollY = window.scrollY;
+
+        // Sticky Header Background
+        if (scrollY > 300) {
           header.classList.add("scrolled");
         } else {
           header.classList.remove("scrolled");
@@ -486,12 +496,6 @@
         try {
           const response = await fetch(`${API_URL}/flyers`);
           const flyers = await response.json();
-
-          if (flyers.length === 0) {
-            stackContainer.innerHTML =
-              "<p style='text-align:center; padding-top:200px;'>No upcoming services posted.</p>";
-            return;
-          }
 
           let html = "";
           flyers.forEach((flyer) => {
@@ -705,15 +709,8 @@
         if (!messagesTrack) return;
 
         try {
-          // Fetch sermons from our custom server
           const response = await fetch(`${API_URL}/sermons`);
           const messages = await response.json();
-
-          if (messages.length === 0) {
-            messagesTrack.innerHTML =
-              "<p style='color:white; padding: 2rem;'>No messages available.</p>";
-            return;
-          }
 
           const createCard = (msg) => `
               <div class="message-card">
@@ -817,79 +814,23 @@
       loadMessages();
       loadLiveStream();
 
-      // Welcome Text Typewriter Effect
-      const welcomeSection = document.getElementById("welcome");
-      const welcomeText = document.getElementById("welcome-text");
+      // Prayer Modal Logic
+      const prayerModal = document.getElementById("prayer-modal");
+      const prayerBtn = document.getElementById("prayer-btn");
+      const prayerCloseBtn = prayerModal
+        ? prayerModal.querySelector(".close-btn")
+        : null;
 
-      if (welcomeSection && welcomeText) {
-        // Clean up text to remove extra whitespace from HTML formatting
-        const originalText = welcomeText.innerText.replace(/\s+/g, " ").trim();
-
-        // Prepare text structure: Wrap every character in a span for stable layout
-        // This ensures the text is perfectly arranged (centered/wrapped) before we start revealing it.
-        welcomeText.innerHTML = originalText
-          .split("")
-          .map(
-            (char) =>
-              `<span class="char-reveal" style="opacity: 0;">${char}</span>`,
-          )
-          .join("");
-
-        const chars = welcomeText.querySelectorAll(".char-reveal");
-
-        let typeInterval;
-        let loopTimeout;
-        let isAnimating = false;
-
-        function startTyping() {
-          if (isAnimating) return;
-          isAnimating = true;
-
-          // Reset all to invisible
-          chars.forEach((c) => (c.style.opacity = "0"));
-
-          let i = 0;
-          clearInterval(typeInterval);
-          clearTimeout(loopTimeout);
-
-          typeInterval = setInterval(() => {
-            if (chars[i]) {
-              chars[i].style.opacity = "1";
-              i++;
-            }
-
-            if (i >= chars.length) {
-              clearInterval(typeInterval);
-              // Loop after delay (Repeat until scroll out)
-              loopTimeout = setTimeout(() => {
-                isAnimating = false;
-                startTyping();
-              }, 5000); // 5 seconds pause before repeating
-            }
-          }, 80); // 80ms is slower reading speed
-        }
-
-        function resetTyping() {
-          clearInterval(typeInterval);
-          clearTimeout(loopTimeout);
-          chars.forEach((c) => (c.style.opacity = "0"));
-          isAnimating = false;
-        }
-
-        const observer = new IntersectionObserver(
-          (entries) => {
-            entries.forEach((entry) => {
-              if (entry.isIntersecting) {
-                startTyping();
-              } else {
-                resetTyping();
-              }
-            });
-          },
-          { threshold: 0.4 },
-        ); // Trigger when 40% visible
-
-        observer.observe(welcomeSection);
+      if (prayerBtn && prayerModal) {
+        prayerBtn.addEventListener("click", (e) => {
+          e.preventDefault();
+          prayerModal.style.display = "block";
+        });
+      }
+      if (prayerCloseBtn && prayerModal) {
+        prayerCloseBtn.addEventListener("click", () => {
+          prayerModal.style.display = "none";
+        });
       }
 
       // Back to Top Button
@@ -908,7 +849,6 @@
         window.scrollTo({ top: 0, behavior: "smooth" });
       });
 
-      // 
       window.addEventListener("click", (e) => {
         if (e.target == prayerModal) {
           prayerModal.style.display = "none";
@@ -981,6 +921,50 @@
             icon.classList.add("fa-bars");
           }
         });
+      }
+
+      // --- Welcome Section Auto-Type Animation ---
+      const welcomeParagraph = document.getElementById("welcome-text");
+      const welcomeSectionEl = document.getElementById("welcome");
+
+      if (welcomeParagraph && welcomeSectionEl) {
+        const textToType = welcomeParagraph.innerText
+          .replace(/\s+/g, " ")
+          .trim();
+        let hasTyped = false;
+
+        // Create a span inside the paragraph to hold the text and cursor
+        // but first, clear the original paragraph content
+        welcomeParagraph.innerHTML = '<span class="typed-text"></span>';
+        const typedTextSpan = welcomeParagraph.querySelector(".typed-text");
+
+        const typeWriterObserver = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              // Start typing when 50% of the section is visible
+              if (entry.isIntersecting && !hasTyped) {
+                hasTyped = true;
+                typedTextSpan.classList.add("typing-cursor");
+
+                let i = 0;
+                const typeInterval = setInterval(() => {
+                  typedTextSpan.textContent += textToType.charAt(i);
+                  i++;
+                  if (i >= textToType.length) {
+                    clearInterval(typeInterval);
+                    // Remove cursor after a short delay
+                    setTimeout(() => {
+                      typedTextSpan.classList.remove("typing-cursor");
+                    }, 1500);
+                  }
+                }, 80); // Typing speed (ms) - slower
+              }
+            });
+          },
+          { threshold: 0.5 },
+        );
+
+        typeWriterObserver.observe(welcomeSectionEl);
       }
     </script>
   </body>

@@ -67,9 +67,6 @@ const ADMIN_PASSWORD = "Admin123";
 // Middleware to check DB connection
 app.use("/api", (req, res, next) => {
   // If DB is not connected, we just proceed and use local storage in the routes
-  if (!db) {
-    console.warn("⚠️ Using In-Memory Storage (Database not connected)");
-  }
   next();
 });
 
@@ -92,6 +89,11 @@ app.get("/api/flyers", async (req, res) => {
 
 // Add new flyers (Bulk)
 app.post("/api/flyers", async (req, res) => {
+  if (!db) {
+    return res
+      .status(503)
+      .json({ error: "Database not connected. Cannot save data." });
+  }
   try {
     const newFlyers = req.body; // Expecting array of { image }
     if (!Array.isArray(newFlyers)) {
@@ -104,11 +106,7 @@ app.post("/api/flyers", async (req, res) => {
       createdAt: new Date(),
     }));
 
-    if (db) {
-      await db.collection("flyers").insertMany(flyersWithTimestamp);
-    } else {
-      localFlyers.push(...flyersWithTimestamp);
-    }
+    await db.collection("flyers").insertMany(flyersWithTimestamp);
 
     res
       .status(201)
@@ -121,24 +119,20 @@ app.post("/api/flyers", async (req, res) => {
 
 // Delete a flyer
 app.delete("/api/flyers/:id", async (req, res) => {
+  if (!db) {
+    return res
+      .status(503)
+      .json({ error: "Database not connected. Cannot modify data." });
+  }
   const { id } = req.params;
 
-  if (db) {
-    const result = await db
-      .collection("flyers")
-      .deleteOne({ _id: new ObjectId(id) });
-    if (result.deletedCount === 1) {
-      return res.json({ message: "Flyer deleted successfully" });
-    }
-  } else {
-    const initialLength = localFlyers.length;
-    localFlyers = localFlyers.filter((f) => f._id.toString() !== id);
-    if (localFlyers.length < initialLength) {
-      return res.json({ message: "Flyer deleted successfully" });
-    }
+  const result = await db
+    .collection("flyers")
+    .deleteOne({ _id: new ObjectId(id) });
+  if (result.deletedCount === 1) {
+    return res.json({ message: "Flyer deleted successfully" });
   }
-
-  res.status(404).json({ error: "Flyer not found" });
+  return res.status(404).json({ error: "Flyer not found" });
 });
 
 // Get all sermons
@@ -157,6 +151,11 @@ app.get("/api/sermons", async (req, res) => {
 
 // Add new sermon/message
 app.post("/api/sermons", async (req, res) => {
+  if (!db) {
+    return res
+      .status(503)
+      .json({ error: "Database not connected. Cannot save data." });
+  }
   try {
     const { title, preacher, date, videoUrl, image } = req.body;
     if (!title || !date || !videoUrl) {
@@ -171,11 +170,7 @@ app.post("/api/sermons", async (req, res) => {
       _id: new ObjectId(),
     };
 
-    if (db) {
-      await db.collection("sermons").insertOne(newSermon);
-    } else {
-      localSermons.push(newSermon);
-    }
+    await db.collection("sermons").insertOne(newSermon);
 
     res
       .status(201)
@@ -188,28 +183,30 @@ app.post("/api/sermons", async (req, res) => {
 
 // Delete sermon
 app.delete("/api/sermons/:id", async (req, res) => {
+  if (!db) {
+    return res
+      .status(503)
+      .json({ error: "Database not connected. Cannot modify data." });
+  }
   const { id } = req.params;
 
-  if (db) {
-    const result = await db
-      .collection("sermons")
-      .deleteOne({ _id: new ObjectId(id) });
-    if (result.deletedCount === 1) {
-      return res.json({ message: "Message deleted successfully" });
-    }
-  } else {
-    const initialLength = localSermons.length;
-    localSermons = localSermons.filter((s) => s._id.toString() !== id);
-    if (localSermons.length < initialLength) {
-      return res.json({ message: "Message deleted successfully" });
-    }
+  const result = await db
+    .collection("sermons")
+    .deleteOne({ _id: new ObjectId(id) });
+  if (result.deletedCount === 1) {
+    return res.json({ message: "Message deleted successfully" });
   }
 
-  res.status(404).json({ error: "Message not found" });
+  return res.status(404).json({ error: "Message not found" });
 });
 
 // Submit prayer request
 app.post("/api/prayer-requests", async (req, res) => {
+  if (!db) {
+    return res
+      .status(503)
+      .json({ error: "Database not connected. Cannot save data." });
+  }
   const { name, email, request } = req.body;
 
   if (!name || !email || !request) {
@@ -224,11 +221,7 @@ app.post("/api/prayer-requests", async (req, res) => {
     _id: new ObjectId(),
   };
 
-  if (db) {
-    await db.collection("prayerRequests").insertOne(newRequest);
-  } else {
-    localPrayerRequests.push(newRequest);
-  }
+  await db.collection("prayerRequests").insertOne(newRequest);
 
   console.log("New Prayer Request Received:", newRequest);
 
@@ -266,20 +259,21 @@ app.get("/api/livestream", async (req, res) => {
 });
 
 app.post("/api/livestream", async (req, res) => {
+  if (!db) {
+    return res
+      .status(503)
+      .json({ error: "Database not connected. Cannot save data." });
+  }
   const { videoId, isLive } = req.body;
   const newConfig = { videoId, isLive };
 
-  if (db) {
-    await db
-      .collection("config")
-      .updateOne(
-        { name: "liveStream" },
-        { $set: { data: newConfig } },
-        { upsert: true },
-      );
-  } else {
-    localLiveStreamConfig = newConfig;
-  }
+  await db
+    .collection("config")
+    .updateOne(
+      { name: "liveStream" },
+      { $set: { data: newConfig } },
+      { upsert: true },
+    );
 
   res.json({ message: "Live stream updated", config: newConfig });
 });
@@ -298,7 +292,7 @@ app.post("/api/login", (req, res) => {
 async function startServer() {
   await connectToDb();
   app.listen(port, () => {
-    console.log(`Server running at http://localhost:${port}`);
+    console.log(`Server running on port ${port}`);
 
     // --- KEEP-ALIVE SCRIPT ---
     // Pings the server every 30 seconds to prevent Render free tier from sleeping

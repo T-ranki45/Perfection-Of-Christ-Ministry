@@ -30,9 +30,12 @@
 /* --- Leadership Section --- */
 #leadership {
   background-color: #fdfdfd;
+  background-color: #121212;
   background-image:
     linear-gradient(rgba(0, 0, 0, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0, 0, 0, 0.03) 1px, transparent 1px);
+    linear-gradient(90deg, rgba(0, 0, 0, 0.03) 1px, transparent 1px),
+    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
   background-size: 40px 40px;
   padding: 5rem 0;
 }
@@ -44,11 +47,15 @@
   padding: 2rem;
   background: #fff;
   background: linear-gradient(to bottom, #fff, #fffbf0);
+  background: #1a1a1a;
+  background: linear-gradient(to bottom, #1a1a1a, #0f0f0f);
   border-radius: 15px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
   position: relative;
   overflow: hidden;
   border: 1px solid rgba(179, 135, 40, 0.1);
+  border: 1px solid rgba(179, 135, 40, 0.2);
 }
 
 .couple-photos {
@@ -85,6 +92,7 @@
   border-radius: 50%;
   object-fit: cover;
   border: 4px solid #fff;
+  border: 4px solid #b38728;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
   transition: transform 0.3s ease;
 }
@@ -125,6 +133,7 @@
 .couple-tagline {
   font-style: italic;
   color: #777;
+  color: #aaa;
 }
 
 .lead-couple::before {
@@ -146,28 +155,57 @@
 }
 .team-member {
   background: #fff;
+  background: #1a1a1a;
   padding: 2rem;
   border-radius: 10px;
   text-align: center;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
   background: linear-gradient(to bottom, #fff, #fcfcfc);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  background: linear-gradient(to bottom, #1a1a1a, #111);
   transition:
     transform 0.3s ease,
     box-shadow 0.3s ease;
   border-bottom: 3px solid transparent;
   border: 1px solid rgba(0, 0, 0, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  position: relative;
+  overflow: hidden;
 }
 .team-member:hover {
   transform: translateY(-10px);
   box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
   border-bottom-color: var(--accent-color);
 }
+
+/* Team Member Shine */
+.team-member::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.1),
+    transparent
+  );
+  transition: 0.5s;
+}
+.team-member:hover::after {
+  left: 100%;
+}
+
 .team-member img {
   width: 150px;
   height: 150px;
   border-radius: 50%;
   object-fit: cover;
   border: 3px solid #fff;
+  border: 3px solid #333;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
   margin-bottom: 1rem;
 }
@@ -189,9 +227,11 @@
 /* --- Our Story Section --- */
 #our-story {
   background-color: #fdfdfd;
+  background-color: #0a0a0a;
   padding: 5rem 0;
   background-image: radial-gradient(
     rgba(179, 135, 40, 0.15) 1px,
+    rgba(179, 135, 40, 0.1) 1px,
     transparent 1px
   );
   background-size: 30px 30px;
@@ -216,6 +256,7 @@
   font-size: 1.1rem;
   line-height: 1.8;
   color: #555;
+  color: #ccc;
   margin-bottom: 1.5rem;
 }
 
@@ -236,9 +277,11 @@
   margin: 2rem 0;
   font-style: italic;
   color: #333;
+  color: #e0e0e0;
   font-family: "Cinzel", serif;
   font-size: 1.2rem;
   background: rgba(179, 135, 40, 0.05);
+  background: rgba(179, 135, 40, 0.1);
   padding: 1.5rem;
   border-radius: 0 10px 10px 0;
 }
@@ -254,6 +297,7 @@
   box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
   position: relative;
   z-index: 2;
+  transition: transform 0.5s ease;
 }
 
 .story-image::before {
@@ -267,6 +311,14 @@
   border-radius: 10px;
   z-index: 1;
   transform: translate(-15px, -15px);
+  transition: transform 0.5s ease;
+}
+
+.story-image:hover img {
+  transform: scale(1.02);
+}
+.story-image:hover::before {
+  transform: translate(-20px, -20px);
 }
 
 .story-badge {

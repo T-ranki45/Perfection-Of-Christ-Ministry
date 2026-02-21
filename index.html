@@ -29,7 +29,11 @@
             <li><a href="about.html">About</a></li>
             <li><a href="#messages">Messages</a></li>
             <li><a href="#events">Events</a></li>
-            <li class="live-nav-item"><a href="#" class="live-nav-link">Live <span class="live-badge-nav"></span></a></li>
+            <li class="live-nav-item">
+              <a href="#" class="live-nav-link"
+                >Live <span class="live-badge-nav"></span
+              ></a>
+            </li>
             <li><a href="#visit">Visit</a></li>
             <li><a href="#" id="prayer-btn">Prayer</a></li>
             <li><a href="#" class="button">Give</a></li>
@@ -47,7 +51,7 @@
         <div class="hero-overlay"></div>
         <div class="hero-content">
           <h1>
-            Faith, Hope, and<br>
+            Faith, Hope, and<br />
             <span
               class="txt-type"
               data-wait="3000"
@@ -57,7 +61,9 @@
           <p>Join us for worship this Sunday at 10:00 AM</p>
           <div class="hero-buttons">
             <a href="#visit" class="button">Join Us This Sunday</a>
-            <a href="#" class="button btn-live"><i class="fab fa-facebook-f"></i> Watch Live</a>
+            <a href="#" class="button btn-live"
+              ><i class="fab fa-facebook-f"></i> Watch Live</a
+            >
           </div>
         </div>
       </section>
@@ -74,15 +80,29 @@
                   id="live-video-iframe"
                   width="100%"
                   height="100%"
-                  style="border:none;overflow:hidden"
+                  style="border: none; overflow: hidden"
                   scrolling="no"
                   frameborder="0"
-                  allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+                  allow="
+                    autoplay;
+                    clipboard-write;
+                    encrypted-media;
+                    picture-in-picture;
+                    web-share;
+                  "
                 ></iframe>
               </div>
             </div>
             <div class="chat-column">
-              <iframe id="live-chat-iframe" width="100%" height="100%" style="border:none;overflow:hidden" scrolling="yes" frameborder="0" allowTransparency="true"></iframe>
+              <iframe
+                id="live-chat-iframe"
+                width="100%"
+                height="100%"
+                style="border: none; overflow: hidden"
+                scrolling="yes"
+                frameborder="0"
+                allowTransparency="true"
+              ></iframe>
             </div>
           </div>
         </div>
@@ -109,40 +129,10 @@
           <h2>Upcoming Services</h2>
           <div class="flyer-stack-container" id="flyer-stack">
             <!-- Flyers will be injected here by JavaScript -->
-            <p style="text-align:center; width:100%; padding-top: 200px;">Loading services...</p>
+            <p style="text-align: center; width: 100%; padding-top: 200px">
+              Loading services...
+            </p>
           </div>
-        </div>
-      </section>
-
-      <section id="messages">
-        <div class="container">
-          <h2>Recent Messages</h2>
-          <div class="messages-scroll-wrapper">
-            <div class="messages-track" id="dynamic-messages-list">
-              <p style="text-align:center; width:100%; color: #fff;">Loading messages...</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Message Player Modal -->
-      <div id="message-modal" class="modal">
-        <div class="modal-content live-modal-content">
-          <span class="close-btn message-close-btn">&times;</span>
-          <h2 id="message-modal-title">Message</h2>
-          <div class="video-container" id="message-video-container">
-            <!-- Iframe will be injected here -->
-          </div>
-        </div>
-      </div>
-
-      <section id="new-here">
-        <div class="verse-container">
-          <p class="verse-scroll">
-            "For I know the plans I have for you,” declares the Lord, “plans to
-            prosper you and not to harm you, plans to give you hope and a
-            future." - Jeremiah 29:11 &nbsp; &nbsp; &nbsp; &nbsp;
-          </p>
         </div>
       </section>
 
@@ -174,6 +164,86 @@
               <!-- You can embed a Google Map here -->
               <p>[Google Map Placeholder]</p>
             </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="messages">
+        <div class="container">
+          <h2>Recent Messages</h2>
+          <div class="messages-scroll-wrapper">
+            <div class="messages-track" id="dynamic-messages-list">
+              <p style="text-align: center; width: 100%; color: #fff">
+                Loading messages...
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Message Player Modal -->
+      <div id="message-modal" class="modal">
+        <div class="modal-content live-modal-content">
+          <span class="close-btn message-close-btn">&times;</span>
+          <h2 id="message-modal-title">Message</h2>
+          <div class="video-container" id="message-video-container">
+            <!-- Iframe will be injected here -->
+          </div>
+        </div>
+      </div>
+
+      <section id="new-here">
+        <div class="verse-container">
+          <p class="verse-scroll">
+            "For I know the plans I have for you,” declares the Lord, “plans to
+            prosper you and not to harm you, plans to give you hope and a
+            future." - Jeremiah 29:11 &nbsp; &nbsp; &nbsp; &nbsp;
+          </p>
+        </div>
+      </section>
+
+      <section id="give-section">
+        <div class="give-overlay"></div>
+        <div class="container">
+          <div class="give-content reveal-scale">
+            <h2>Generosity</h2>
+            <p class="give-scripture">
+              "Each of you should give what you have decided in your heart to
+              give, not reluctantly or under compulsion, for God loves a
+              cheerful giver." <br />— 2 Corinthians 9:7
+            </p>
+
+            <div class="giving-reasons-grid">
+              <div class="give-card">
+                <i class="fas fa-heart"></i>
+                <h3>Why We Give</h3>
+                <p>
+                  Giving is an act of worship and obedience. It acknowledges God
+                  as the provider of everything we have and demonstrates our
+                  trust in Him.
+                </p>
+              </div>
+              <div class="give-card">
+                <i class="fas fa-globe"></i>
+                <h3>Kingdom Impact</h3>
+                <p>
+                  Your generosity supports local outreach, global missions, and
+                  the day-to-day operations of the church, helping us spread the
+                  Gospel.
+                </p>
+              </div>
+              <div class="give-card">
+                <i class="fas fa-hand-holding-usd"></i>
+                <h3>Stewardship</h3>
+                <p>
+                  We are committed to financial integrity and transparency,
+                  ensuring that every seed sown is used effectively for the
+                  expansion of God's Kingdom.
+                </p>
+              </div>
+            </div>
+
+            <a href="#" class="button btn-outline">Give Online</a>
           </div>
         </div>
       </section>
@@ -232,7 +302,11 @@
             <h3>Perfection Of Christ Ministry</h3>
             <p>Knowing God and making Him known to the nations.</p>
             <div class="social-links">
-              <a href="https://www.facebook.com/john.jeremiah.128614" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+              <a
+                href="https://www.facebook.com/john.jeremiah.128614"
+                title="Facebook"
+                ><i class="fab fa-facebook-f"></i
+              ></a>
               <a href="#" title="Instagram"><i class="fab fa-instagram"></i></a>
               <a href="#" title="YouTube"><i class="fab fa-youtube"></i></a>
             </div>
@@ -255,12 +329,17 @@
           </div>
           <div class="footer-col">
             <h3>Contact Us</h3>
-            <p>
-              <i class="fas fa-map-marker-alt"></i> Still loading..........
-            </p>
+            <p><i class="fas fa-map-marker-alt"></i> Still loading..........</p>
             <p><i class="fas fa-phone"></i> (+234) 123 456 7890</p>
             <p><i class="fas fa-envelope"></i> info@church.com</p>
-            <p style="margin-top: 15px;"><a href="login.html" title="Admin Login" style="color: #333; font-size: 0.8rem;"><i class="fas fa-lock"></i> Admin</a></p>
+            <p style="margin-top: 15px">
+              <a
+                href="login.html"
+                title="Admin Login"
+                style="color: #333; font-size: 0.8rem"
+                ><i class="fas fa-lock"></i> Admin</a
+              >
+            </p>
           </div>
         </div>
         <div class="footer-bottom">
@@ -377,11 +456,27 @@
               }
             });
           },
-          { threshold: 0.2 } // Trigger when 20% of the section is visible
+          { threshold: 0.2 }, // Trigger when 20% of the section is visible
         );
 
         eventsObserver.observe(eventsSection);
       }
+
+      // --- General Scroll Animations (Reveal on Scroll) ---
+      const scrollObserver = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("active");
+            }
+          });
+        },
+        { threshold: 0.1 },
+      );
+
+      document.querySelectorAll(".reveal-up, .reveal-scale").forEach((el) => {
+        scrollObserver.observe(el);
+      });
 
       // --- Dynamic Flyers System (Shuffle Animation) ---
       async function loadFlyers() {
@@ -393,47 +488,54 @@
           const flyers = await response.json();
 
           if (flyers.length === 0) {
-            stackContainer.innerHTML = "<p style='text-align:center; padding-top:200px;'>No upcoming services posted.</p>";
+            stackContainer.innerHTML =
+              "<p style='text-align:center; padding-top:200px;'>No upcoming services posted.</p>";
             return;
           }
 
           let html = "";
-          flyers.forEach(flyer => {
+          flyers.forEach((flyer) => {
             html += `<div class="flyer-card flyer-enter"><img src="${flyer.image}" alt="Service Flyer"></div>`;
           });
           stackContainer.innerHTML = html;
 
           // Animate cards in sequence
-          const cards = stackContainer.querySelectorAll('.flyer-card');
+          const cards = stackContainer.querySelectorAll(".flyer-card");
           cards.forEach((card, index) => {
-            setTimeout(() => {
-              card.classList.remove('flyer-enter');
-            }, index * 1000 + 500);
+            setTimeout(
+              () => {
+                card.classList.remove("flyer-enter");
+              },
+              index * 1000 + 500,
+            );
           });
 
           // Function to shuffle top card
           const shuffleTopCard = () => {
-             const cards = document.querySelectorAll('.flyer-card');
-             if (cards.length > 1) {
-               const topCard = cards[0];
-               topCard.classList.add('shuffle-out');
-               
-               setTimeout(() => {
-                 stackContainer.appendChild(topCard); // Move to bottom
-                 topCard.classList.remove('shuffle-out');
-                 // Reset inline styles if any
-                 topCard.style.transform = '';
-                 topCard.style.transition = '';
-                 topCard.style.opacity = '';
-               }, 1500); 
-             }
+            const cards = document.querySelectorAll(".flyer-card");
+            if (cards.length > 1) {
+              const topCard = cards[0];
+              topCard.classList.add("shuffle-out");
+
+              setTimeout(() => {
+                stackContainer.appendChild(topCard); // Move to bottom
+                topCard.classList.remove("shuffle-out");
+                // Reset inline styles if any
+                topCard.style.transform = "";
+                topCard.style.transition = "";
+                topCard.style.opacity = "";
+              }, 1500);
+            }
           };
 
           // Auto Shuffle Loop
           let autoShuffleInterval;
-          setTimeout(() => {
-            autoShuffleInterval = setInterval(shuffleTopCard, 6000);
-          }, cards.length * 1000 + 2000);
+          setTimeout(
+            () => {
+              autoShuffleInterval = setInterval(shuffleTopCard, 6000);
+            },
+            cards.length * 1000 + 2000,
+          );
 
           // --- Swipe & Drag Logic ---
           let startX = 0;
@@ -441,61 +543,67 @@
           let currentTopCard = null;
 
           const dragStart = (e) => {
-            if (e.target.closest('.flyer-card') !== document.querySelector('.flyer-card:first-child')) return;
+            if (
+              e.target.closest(".flyer-card") !==
+              document.querySelector(".flyer-card:first-child")
+            )
+              return;
 
-            const cards = document.querySelectorAll('.flyer-card');
+            const cards = document.querySelectorAll(".flyer-card");
             if (cards.length <= 1) return;
-            
+
             currentTopCard = cards[0];
-            currentTopCard.style.cursor = 'grabbing';
-            
+            currentTopCard.style.cursor = "grabbing";
+
             startX = e.clientX || e.touches[0].clientX;
             isDragging = true;
-            
+
             clearInterval(autoShuffleInterval);
-            currentTopCard.style.transition = 'none';
+            currentTopCard.style.transition = "none";
           };
 
           const dragging = (e) => {
             if (!isDragging || !currentTopCard) return;
             e.preventDefault(); // Prevent scrolling while dragging
-            
+
             const currentX = e.clientX || e.touches[0].clientX;
             const diffX = currentX - startX;
-            
+
             currentTopCard.style.transform = `translateX(${diffX}px) rotate(${diffX * 0.05}deg)`;
           };
 
           const dragEnd = (e) => {
             if (!isDragging || !currentTopCard) return;
-            
-            currentTopCard.style.cursor = 'grab';
+
+            currentTopCard.style.cursor = "grab";
             isDragging = false;
-            
-            const endX = e.clientX !== undefined ? e.clientX : e.changedTouches[0].clientX;
+
+            const endX =
+              e.clientX !== undefined ? e.clientX : e.changedTouches[0].clientX;
             const diffX = endX - startX;
             const threshold = 100;
 
             if (Math.abs(diffX) > threshold) {
               // Swipe Success
               const direction = diffX > 0 ? 1 : -1;
-              currentTopCard.style.transition = 'transform 1s ease-out, opacity 1s';
+              currentTopCard.style.transition =
+                "transform 1s ease-out, opacity 1s";
               currentTopCard.style.transform = `translateX(${direction * 120}%) rotate(${direction * 20}deg)`;
-              currentTopCard.style.opacity = '0';
+              currentTopCard.style.opacity = "0";
 
               setTimeout(() => {
-                currentTopCard.style.transition = '';
-                currentTopCard.style.transform = '';
-                currentTopCard.style.opacity = '';
+                currentTopCard.style.transition = "";
+                currentTopCard.style.transform = "";
+                currentTopCard.style.opacity = "";
                 stackContainer.appendChild(currentTopCard);
                 currentTopCard = null;
               }, 1000);
             } else {
               // Swipe Cancel
-              currentTopCard.style.transition = 'transform 0.8s ease-out';
-              currentTopCard.style.transform = '';
+              currentTopCard.style.transition = "transform 0.8s ease-out";
+              currentTopCard.style.transform = "";
               setTimeout(() => {
-                currentTopCard.style.transition = '';
+                currentTopCard.style.transition = "";
                 currentTopCard = null;
               }, 800);
             }
@@ -504,18 +612,22 @@
           };
 
           // Mouse Events
-          stackContainer.addEventListener('mousedown', dragStart);
-          window.addEventListener('mousemove', dragging);
-          window.addEventListener('mouseup', dragEnd);
+          stackContainer.addEventListener("mousedown", dragStart);
+          window.addEventListener("mousemove", dragging);
+          window.addEventListener("mouseup", dragEnd);
 
           // Touch Events
-          stackContainer.addEventListener('touchstart', dragStart, { passive: false }); // passive: false to allow preventDefault
-          stackContainer.addEventListener('touchmove', dragging, { passive: false });
-          stackContainer.addEventListener('touchend', dragEnd);
-
+          stackContainer.addEventListener("touchstart", dragStart, {
+            passive: false,
+          }); // passive: false to allow preventDefault
+          stackContainer.addEventListener("touchmove", dragging, {
+            passive: false,
+          });
+          stackContainer.addEventListener("touchend", dragEnd);
         } catch (error) {
           console.error("Error loading flyers:", error);
-          stackContainer.innerHTML = "<p style='text-align:center; padding-top:200px;'>Unable to load services.</p>";
+          stackContainer.innerHTML =
+            "<p style='text-align:center; padding-top:200px;'>Unable to load services.</p>";
         }
       }
 
@@ -578,7 +690,7 @@
             });
 
             // Check for #live hash on page load
-            if (window.location.hash === '#live') {
+            if (window.location.hash === "#live") {
               openLiveModal();
             }
           }
@@ -596,9 +708,10 @@
           // Fetch sermons from our custom server
           const response = await fetch(`${API_URL}/sermons`);
           const messages = await response.json();
-          
+
           if (messages.length === 0) {
-            messagesTrack.innerHTML = "<p style='color:white; padding: 2rem;'>No messages available.</p>";
+            messagesTrack.innerHTML =
+              "<p style='color:white; padding: 2rem;'>No messages available.</p>";
             return;
           }
 
@@ -617,48 +730,53 @@
                 </div>
               </div>
             `;
-          
+
           // Duplicate content for seamless scrolling loop
           // We map twice to create the infinite effect
-          let html = messages.map(createCard).join('');
-          html += messages.map(createCard).join(''); 
-          
-          messagesTrack.innerHTML = html;
+          let html = messages.map(createCard).join("");
+          html += messages.map(createCard).join("");
 
+          messagesTrack.innerHTML = html;
         } catch (error) {
           console.error("Error loading messages:", error);
-          messagesTrack.innerHTML = "<p style='color:white;'>Unable to load messages.</p>";
+          messagesTrack.innerHTML =
+            "<p style='color:white;'>Unable to load messages.</p>";
         }
       }
 
       // --- Message Modal Logic ---
       const messageModal = document.getElementById("message-modal");
       const messageCloseBtn = document.querySelector(".message-close-btn");
-      const messageVideoContainer = document.getElementById("message-video-container");
+      const messageVideoContainer = document.getElementById(
+        "message-video-container",
+      );
       const messageModalTitle = document.getElementById("message-modal-title");
 
       function getEmbedUrl(url) {
-        let embedUrl = '';
+        let embedUrl = "";
         try {
-            const urlObj = new URL(url);
-            if (urlObj.hostname.includes('facebook.com')) {
-                // Facebook video
-                embedUrl = `https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(url)}&show_text=false&width=734&autoplay=true`;
-            } else if (urlObj.hostname.includes('youtube.com') || urlObj.hostname.includes('youtu.be')) {
-                // YouTube video
-                let videoId;
-                if (urlObj.hostname.includes('youtu.be')) {
-                    videoId = urlObj.pathname.slice(1);
-                } else {
-                    videoId = urlObj.searchParams.get('v');
-                }
-                if (videoId) {
-                    embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
-                }
+          const urlObj = new URL(url);
+          if (urlObj.hostname.includes("facebook.com")) {
+            // Facebook video
+            embedUrl = `https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(url)}&show_text=false&width=734&autoplay=true`;
+          } else if (
+            urlObj.hostname.includes("youtube.com") ||
+            urlObj.hostname.includes("youtu.be")
+          ) {
+            // YouTube video
+            let videoId;
+            if (urlObj.hostname.includes("youtu.be")) {
+              videoId = urlObj.pathname.slice(1);
+            } else {
+              videoId = urlObj.searchParams.get("v");
             }
+            if (videoId) {
+              embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+            }
+          }
         } catch (e) {
-            console.error("Invalid video URL:", e);
-            return null;
+          console.error("Invalid video URL:", e);
+          return null;
         }
         return embedUrl;
       }
@@ -666,8 +784,8 @@
       function openMessageModal(videoUrl, title) {
         const embedUrl = getEmbedUrl(videoUrl);
         if (!embedUrl) {
-            alert("Sorry, this video link is not valid or supported.");
-            return;
+          alert("Sorry, this video link is not valid or supported.");
+          return;
         }
         messageModalTitle.innerText = title;
         messageVideoContainer.innerHTML = `<iframe src="${embedUrl}" width="100%" height="100%" style="border:none;overflow:hidden" scrolling="no" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share" allowfullscreen="true"></iframe>`;
@@ -680,18 +798,19 @@
       }
 
       if (messagesTrack) {
-        messagesTrack.addEventListener('click', (e) => {
-            const trigger = e.target.closest('.open-message-modal');
-            if (trigger) {
-                e.preventDefault();
-                const videoUrl = trigger.dataset.videourl;
-                const title = trigger.dataset.title;
-                openMessageModal(videoUrl, title);
-            }
+        messagesTrack.addEventListener("click", (e) => {
+          const trigger = e.target.closest(".open-message-modal");
+          if (trigger) {
+            e.preventDefault();
+            const videoUrl = trigger.dataset.videourl;
+            const title = trigger.dataset.title;
+            openMessageModal(videoUrl, title);
+          }
         });
       }
 
-      if (messageCloseBtn) messageCloseBtn.addEventListener('click', closeMessageModal);
+      if (messageCloseBtn)
+        messageCloseBtn.addEventListener("click", closeMessageModal);
 
       // Initialize Data Loading
       loadFlyers();
@@ -789,24 +908,7 @@
         window.scrollTo({ top: 0, behavior: "smooth" });
       });
 
-      // Prayer Modal Logic
-      const prayerModal = document.getElementById("prayer-modal");
-      const prayerBtn = document.getElementById("prayer-btn");
-      const closeBtn = document.querySelector(".close-btn");
-
-      if (prayerBtn) {
-        prayerBtn.addEventListener("click", (e) => {
-          e.preventDefault();
-          prayerModal.style.display = "block";
-        });
-      }
-
-      if (closeBtn) {
-        closeBtn.addEventListener("click", () => {
-          prayerModal.style.display = "none";
-        });
-      }
-
+      // 
       window.addEventListener("click", (e) => {
         if (e.target == prayerModal) {
           prayerModal.style.display = "none";
@@ -821,7 +923,7 @@
       if (prayerForm) {
         prayerForm.addEventListener("submit", async (e) => {
           e.preventDefault();
-          
+
           const submitBtn = prayerForm.querySelector("button[type='submit']");
           const originalBtnText = submitBtn.innerText;
           submitBtn.innerText = "Sending...";
@@ -842,7 +944,9 @@
             });
 
             if (response.ok) {
-              alert("Prayer request sent successfully! We will be praying for you.");
+              alert(
+                "Prayer request sent successfully! We will be praying for you.",
+              );
               prayerForm.reset();
               prayerModal.style.display = "none";
             } else {
@@ -850,7 +954,9 @@
             }
           } catch (error) {
             console.error("Error adding document: ", error);
-            alert("Error sending request. Check your internet connection or API keys.");
+            alert(
+              "Error sending request. Check your internet connection or API keys.",
+            );
           } finally {
             submitBtn.innerText = originalBtnText;
             submitBtn.disabled = false;

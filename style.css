@@ -7,12 +7,12 @@
   --light-text-color: #fff;
   --background-color: #fdfdfd;
   --gold-gradient: linear-gradient(
-    to right,
-    #bf953f,
-    #fcf6ba,
-    #b38728,
-    #fbf5b7,
-    #aa771c
+    135deg,
+    #bf953f 0%,
+    #fcf6ba 25%,
+    #b38728 50%,
+    #fbf5b7 75%,
+    #aa771c 100%
   );
 }
 
@@ -34,6 +34,7 @@ body {
     no-repeat center center/cover;
   background-attachment: fixed;
   overflow-x: hidden; /* Prevent horizontal scroll causing zoom issues */
+  scroll-behavior: smooth;
 }
 
 h1,
@@ -102,20 +103,44 @@ section h2::after {
   background: var(--gold-gradient);
   background-size: 200% auto;
   color: #1a1a1a;
-  padding: 0.8rem 1.5rem;
+  padding: 1rem 2rem;
   border-radius: 5px;
   font-weight: bold;
   font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1px;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 20px rgba(179, 135, 40, 0.4);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Button Shine Effect */
+.button::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.4),
+    transparent
+  );
+  transition: 0.5s;
 }
 
 .button:hover {
   background-position: right center;
   color: #000;
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
-  box-shadow: 0 0 25px rgba(255, 215, 0, 0.6);
+  box-shadow: 0 0 30px rgba(255, 215, 0, 0.6);
+}
+
+.button:hover::after {
+  left: 100%;
 }
 
 /* --- Header & Navigation --- */
@@ -588,7 +613,15 @@ section h2::after {
   top: 0;
   left: 0;
   width: 100%;
-  height: 100%;}
+  height: 100%;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.5) 0%,
+    rgba(0, 0, 0, 0.2) 50%,
+    rgba(0, 0, 0, 0.9) 100%
+  );
+  z-index: 0;
+}
 
 @keyframes glassPulse {
   0% {
@@ -610,13 +643,7 @@ section h2::after {
   width: 90%;
   position: relative;
   z-index: 1;
-  background: rgba(0, 0, 0, 0.3);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  padding: 5rem 2rem;
-  border-radius: 20px;
-  border: 1px solid rgba(255, 215, 0, 0.3);
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+  padding: 0 1rem;
 }
 
 @keyframes fadeInUp {
@@ -637,7 +664,7 @@ section h2::after {
   text-transform: uppercase;
   letter-spacing: 2px;
   margin-bottom: 1rem;
-  text-shadow: 0 4px 30px rgba(0, 0, 0, 0.6);
+  text-shadow: 0 5px 30px rgba(0, 0, 0, 1);
   opacity: 0; /* Start hidden */
   animation: fadeInUp 2s ease-out forwards;
 }
@@ -675,7 +702,7 @@ section h2::after {
   font-size: 1.4rem;
   font-weight: 600;
   letter-spacing: 1px;
-  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+  text-shadow: 0 2px 15px rgba(0, 0, 0, 0.9);
   margin-bottom: 2rem;
   opacity: 0; /* Start hidden */
   animation: fadeInUp 2s ease-out 1s forwards; /* 1s delay */
@@ -900,14 +927,18 @@ section h2::after {
 }
 
 .welcome-card {
-  background: rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(10px);
+  background: linear-gradient(
+    145deg,
+    rgba(20, 20, 20, 0.95),
+    rgba(10, 10, 10, 0.98)
+  );
+  backdrop-filter: blur(20px);
   padding: 4rem 3rem;
   border-radius: 20px;
-  border: 1px solid rgba(255, 215, 0, 0.2);
+  border: 1px solid rgba(179, 135, 40, 0.3);
   text-align: center;
   max-width: 900px;
-  box-shadow: 0 0 40px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
   position: relative;
   overflow: hidden;
   transition: transform 0.5s ease;
@@ -915,7 +946,7 @@ section h2::after {
 
 .welcome-card:hover {
   transform: translateY(-5px);
-  border-color: rgba(255, 215, 0, 0.4);
+  border-color: rgba(255, 215, 0, 0.6);
   box-shadow: 0 10px 50px rgba(179, 135, 40, 0.2);
 }
 
@@ -973,10 +1004,6 @@ section h2::after {
 #new-here {
   position: relative;
   padding: 10rem 0;
-  /* ------------------------------------------------------- */
-  /* REPLACE THE URL BELOW WITH YOUR OWN IMAGE PATH          */
-  /* Example: background: url("./image/my-bg.jpg") ...       */
-  /* ------------------------------------------------------- */
   background: url("./image/bg.jpg") no-repeat center center/cover;
   background-color: #1a1a1a; /* Fallback color */
   background-attachment: fixed;
@@ -990,7 +1017,11 @@ section h2::after {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.7);
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.6),
+    rgba(179, 135, 40, 0.2)
+  );
   backdrop-filter: blur(5px);
   -webkit-backdrop-filter: blur(5px);
   z-index: 0;
@@ -1097,12 +1128,12 @@ section h2::after {
 .message-card {
   min-width: 300px;
   width: 300px;
-  background: #333;
-  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 15px;
   overflow: hidden;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
   transition: transform 0.3s ease;
-  border: 1px solid #444;
+  border: 1px solid rgba(255, 215, 0, 0.1);
 }
 
 .message-card:hover {
@@ -1151,12 +1182,14 @@ section h2::after {
   padding: 1.5rem;
 }
 .message-content h3 {
-  font-size: 1.1rem;
+  font-family: "Cinzel", serif;
+  font-size: 1.2rem;
   margin-bottom: 0.5rem;
   color: #fff;
 }
 .message-meta {
   font-size: 0.85rem;
+  font-weight: 600;
   color: #aaa;
   margin-bottom: 1rem;
 }
@@ -1176,13 +1209,13 @@ section h2::after {
   margin-top: 3rem;
 }
 .ministry-card {
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(5px);
+  background: rgba(20, 20, 20, 0.8);
+  backdrop-filter: blur(10px);
   padding: 3rem 2rem;
   border-radius: 15px;
   text-align: center;
   transition: all 0.4s ease;
-  border: 1px solid rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
   position: relative;
   overflow: hidden;
@@ -1204,7 +1237,8 @@ section h2::after {
 }
 .ministry-card:hover {
   transform: translateY(-10px);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+  border-color: rgba(179, 135, 40, 0.3);
 }
 .ministry-card:hover::after {
   transform: scaleX(1);
@@ -1224,7 +1258,7 @@ section h2::after {
 }
 .ministry-card p {
   margin-bottom: 1.5rem;
-  color: #666;
+  color: #ccc;
 }
 
 /* --- Events Section --- */
@@ -1484,7 +1518,7 @@ section h2::after {
 
 /* --- Footer --- */
 .main-footer {
-  background-color: #1a1a1a;
+  background-color: #050505;
   color: var(--light-text-color);
   padding: 4rem 0 2rem;
   border-top: 3px solid #b38728;
@@ -1804,6 +1838,145 @@ section h2::after {
   object-fit: cover;
   border: 3px solid var(--accent-color);
   margin-bottom: 1rem;
+}
+
+/* --- Global Scroll Animations --- */
+.reveal-up {
+  opacity: 0;
+  transform: translateY(50px);
+  transition: all 1s cubic-bezier(0.5, 0, 0, 1);
+}
+
+.reveal-up.active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Staggered Delays for Grids */
+.reveal-up.delay-100 {
+  transition-delay: 0.1s;
+}
+.reveal-up.delay-200 {
+  transition-delay: 0.2s;
+}
+.reveal-up.delay-300 {
+  transition-delay: 0.3s;
+}
+
+/* Scale Animation */
+.reveal-scale {
+  opacity: 0;
+  transform: scale(0.9);
+  transition: all 1s cubic-bezier(0.5, 0, 0, 1);
+}
+
+.reveal-scale.active {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* --- Give Section (New Feature) --- */
+#give-section {
+  position: relative;
+  background-image: url("https://images.unsplash.com/photo-1532629345422-7515f3d16bb6?q=80&w=2070");
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
+  padding: 10rem 0;
+  text-align: center;
+  color: #fff;
+  overflow: hidden;
+}
+
+.give-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.8),
+    rgba(20, 20, 20, 0.7),
+    #050505
+  );
+  z-index: 1;
+}
+
+.give-content {
+  position: relative;
+  z-index: 2;
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  padding: 4rem 2rem;
+  border-radius: 20px;
+  border: 1px solid rgba(179, 135, 40, 0.3);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+}
+
+#give-section h2 {
+  font-size: 3.5rem;
+  margin-bottom: 1.5rem;
+  background: var(--gold-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.give-scripture {
+  font-family: "Cinzel", serif;
+  font-style: italic;
+  font-size: 1.2rem;
+  color: #fcf6ba;
+  margin-bottom: 3rem;
+  line-height: 1.6;
+}
+
+.giving-reasons-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+  margin-bottom: 3rem;
+  text-align: left;
+}
+
+.give-card {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 2rem;
+  border-radius: 15px;
+  border: 1px solid rgba(255, 215, 0, 0.1);
+  transition: transform 0.3s ease;
+  text-align: center;
+}
+
+.give-card:hover {
+  transform: translateY(-5px);
+  border-color: var(--accent-color);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.give-card i {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  background: var(--gold-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.give-card h3 {
+  color: #fff;
+  font-size: 1.3rem;
+  margin-bottom: 1rem;
+  font-family: "Cinzel", serif;
+}
+
+.give-card p {
+  color: #ccc;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  margin-bottom: 0;
 }
 
 /* --- Our Story Section --- */

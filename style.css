@@ -358,7 +358,8 @@ section h2::after {
   body,
   #welcome,
   #new-here,
-  #events {
+  #events,
+  .page-hero {
     background-attachment: scroll;
   }
 
@@ -583,7 +584,7 @@ section h2::after {
   }
 
   .couple-photos .wife {
-    margin-top: -50px; /* Overlap them vertically */
+    margin-top: 1rem; /* Add a small gap on mobile to prevent overlap */
     margin-left: 0;
   }
 
@@ -1093,8 +1094,9 @@ section h2::after {
   line-height: 1.8;
   color: #e0e0e0;
   max-width: 700px;
-  margin: 0 auto;
   min-height: 130px; /* Reserve space for paragraph typing */
+  display: inline-block; /* Makes the container only as wide as its content */
+  text-align: left; /* Stops the text from jittering as it types */
 }
 
 /* --- New Here Section --- */
@@ -1173,6 +1175,7 @@ section h2::after {
   color: #fff;
   overflow: hidden;
   padding: 4rem 0;
+  position: relative; /* For loader positioning */
 }
 
 #messages h2 {
@@ -1199,6 +1202,7 @@ section h2::after {
     black 95%,
     transparent
   );
+  min-height: 300px; /* Reserve space for loader to be visible */
 }
 
 .messages-track {
@@ -1207,6 +1211,10 @@ section h2::after {
   width: max-content;
   /* Slow moving animation */
   animation: scrollMessages 80s linear infinite;
+}
+
+.messages-scroll-wrapper.loading .messages-track {
+  visibility: hidden;
 }
 .messages-track:hover {
   animation-play-state: paused;
@@ -1294,6 +1302,32 @@ section h2::after {
   font-size: 0.8rem;
   width: 100%;
   text-align: center;
+}
+
+/* --- Messages Loader --- */
+.loader {
+  position: absolute;
+  top: calc(50% - 25px); /* 50% minus half of height */
+  left: calc(50% - 25px); /* 50% minus half of width */
+  width: 50px;
+  height: 50px;
+  border: 5px solid rgba(255, 255, 255, 0.2);
+  border-top-color: var(--accent-color);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  z-index: 10;
+  display: none; /* Hidden by default */
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Control visibility with a class on the wrapper */
+.messages-scroll-wrapper.loading .loader {
+  display: block;
 }
 
 /* --- Ministries Section --- */
@@ -1972,6 +2006,30 @@ section h2::after {
   filter: blur(0);
 }
 
+/* Left/Right Animations */
+.reveal-left {
+  opacity: 0;
+  transform: translateX(-80px);
+  filter: blur(5px);
+  transition: all 1.5s cubic-bezier(0.23, 1, 0.32, 1);
+}
+.reveal-left.active {
+  opacity: 1;
+  transform: translateX(0);
+  filter: blur(0);
+}
+.reveal-right {
+  opacity: 0;
+  transform: translateX(80px);
+  filter: blur(5px);
+  transition: all 1.5s cubic-bezier(0.23, 1, 0.32, 1);
+}
+.reveal-right.active {
+  opacity: 1;
+  transform: translateX(0);
+  filter: blur(0);
+}
+
 /* --- Give Section (New Feature) --- */
 #give-section {
   position: relative;
@@ -2100,6 +2158,18 @@ section h2::after {
   margin: 1rem 0 0;
 }
 
+.story-content blockquote {
+  border-left: 4px solid var(--accent-color);
+  padding: 1.5rem;
+  margin: 2rem 0;
+  font-style: italic;
+  color: #333;
+  font-family: "Cinzel", serif;
+  font-size: 1.2rem;
+  background: rgba(179, 135, 40, 0.05);
+  border-radius: 0 10px 10px 0;
+}
+
 .story-content p {
   font-size: 1.1rem;
   line-height: 1.8;
@@ -2132,10 +2202,208 @@ section h2::after {
   z-index: 1;
   transform: translate(-15px, -15px);
 }
+.story-badge {
+  position: absolute;
+  bottom: -10px;
+  right: 0px;
+  background: var(--gold-gradient);
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+  z-index: 3;
+  color: #1a1a1a;
+  font-family: "Cinzel", serif;
+  border: 4px solid #fff;
+  animation: floatBadge 3s ease-in-out infinite;
+}
+
+@keyframes floatBadge {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+.story-badge strong {
+  font-size: 1.5rem;
+  line-height: 1;
+}
 
 @media (min-width: 768px) {
   .story-grid {
     grid-template-columns: 1fr 1fr;
     gap: 5rem;
+  }
+}
+
+/* --- About Page Theme (White & Gold) --- */
+.page-hero {
+  position: relative;
+  padding: 10rem 0 6rem;
+  background: url("./image/About.jpg") no-repeat center center/cover;
+  background-attachment: fixed;
+  color: #333;
+  text-align: center;
+}
+
+/* Override the dark overlay with a light one */
+.page-hero .hero-overlay {
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.3),
+    rgba(0, 0, 0, 0.6)
+  );
+}
+
+.page-hero .container {
+  position: relative;
+  z-index: 2;
+}
+
+.page-hero h1 {
+  font-size: 4rem;
+  font-weight: 800;
+  margin-bottom: 1rem;
+  background: var(--gold-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: none;
+  opacity: 0;
+  animation: fadeInUp 1s ease-out forwards;
+}
+
+.page-hero p {
+  font-size: 1.4rem;
+  color: #f0f0f0;
+  max-width: 800px;
+  margin: 0 auto;
+  font-weight: 500;
+  opacity: 0;
+  animation: fadeInUp 1s ease-out 0.3s forwards;
+  text-shadow: 0 2px 5px rgba(0, 0, 0, 0.8);
+}
+
+/* Mission Section - Light Theme */
+#mission {
+  background-color: #fff !important;
+}
+
+#mission .ministry-card {
+  background: #fff;
+  border: 1px solid rgba(179, 135, 40, 0.15);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.05);
+}
+
+#mission .ministry-card h3 {
+  color: var(--primary-color);
+}
+
+#mission .ministry-card p {
+  color: #666;
+}
+
+/* Leadership Section - Light Theme */
+#leadership {
+  background-color: #fcfcfc;
+  border-top: 1px solid #eee;
+}
+
+#leadership h2 {
+  color: var(--primary-color);
+}
+
+.couple-details h3,
+.team-member h3 {
+  color: var(--primary-color);
+  margin-top: 1rem;
+}
+
+.couple-role,
+.team-role {
+  color: var(--accent-color);
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 0.9rem;
+  letter-spacing: 1px;
+}
+
+.couple-tagline {
+  font-style: italic;
+  color: #777;
+}
+
+/* --- Leadership Couple Styles --- */
+.lead-couple {
+  text-align: center;
+  margin: 2rem auto 4rem;
+  padding: 2rem;
+  position: relative;
+  max-width: 800px;
+}
+
+.couple-photos {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.couple-photos img {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 5px solid #fff;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  transition: transform 0.3s ease;
+}
+
+.couple-photos img.husband {
+  z-index: 1;
+  margin-right: -50px; /* Overlap effect */
+}
+
+.couple-photos img.wife {
+  z-index: 0;
+}
+
+.couple-photos:hover img {
+  transform: scale(1.05);
+  z-index: 2;
+}
+
+.couple-photos::before {
+  content: "";
+  position: absolute;
+  width: 320px;
+  height: 320px;
+  border: 1px dashed rgba(179, 135, 40, 0.4);
+  border-radius: 50%;
+  z-index: 0;
+  animation: spin 30s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 768px) {
+  .page-hero {
+    padding: 6rem 1rem 4rem;
   }
 }

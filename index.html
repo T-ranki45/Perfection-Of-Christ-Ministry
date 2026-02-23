@@ -335,7 +335,7 @@
           <div class="footer-col">
             <h3>Contact Us</h3>
             <p><i class="fas fa-map-marker-alt"></i> Still loading..........</p>
-            <p><i class="fas fa-phone"></i> (+234) 123 456 7890</p>
+            <p><i class="fas fa-phone">  </i> <a href="https://wa.link/p2brgq" target="_blank">(+234)803 5526 633</a></p>
             <p><i class="fas fa-envelope"></i> info@church.com</p>
             <p style="margin-top: 15px">
               <a
@@ -484,7 +484,9 @@
         { threshold: 0.1 },
       );
 
-      document.querySelectorAll(".reveal-up, .reveal-scale").forEach((el) => {
+      document
+        .querySelectorAll(".reveal-up, .reveal-scale, .reveal-left, .reveal-right")
+        .forEach((el) => {
         scrollObserver.observe(el);
       });
 

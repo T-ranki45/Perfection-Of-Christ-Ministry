@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>About Us | Perfection Of Christ Ministry</title>
     <link rel="stylesheet" href="style.css" />
-    <link rel="stylesheet" href="about.css" />
     <link
       href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Montserrat:wght@400;700;900&display=swap"
       rel="stylesheet"
@@ -58,7 +57,7 @@
       <section id="our-story">
         <div class="container">
           <div class="story-grid">
-            <div class="story-image">
+            <div class="story-image reveal-left">
               <img
                 src="https://images.unsplash.com/photo-1438232992991-995b7058bbb3?q=80&w=2073"
                 alt="Church Congregation"
@@ -68,7 +67,7 @@
                 <strong>2010</strong>
               </div>
             </div>
-            <div class="story-content">
+            <div class="story-content reveal-right">
               <h2>Our Story</h2>
               <p>
                 Perfection Of Christ Ministry began with a vision to see lives
@@ -90,11 +89,11 @@
       </section>
 
       <!-- Mission & Vision -->
-      <section id="mission" style="background-color: #f4f4f4">
+      <section id="mission">
         <div class="container">
           <h2>Mission & Vision</h2>
           <div class="ministry-grid">
-            <div class="ministry-card">
+            <div class="ministry-card reveal-up">
               <div class="ministry-icon"><i class="fas fa-bullseye"></i></div>
               <h3>Our Mission</h3>
               <p>
@@ -102,7 +101,7 @@
                 to equip them to serve others.
               </p>
             </div>
-            <div class="ministry-card">
+            <div class="ministry-card reveal-up delay-100">
               <div class="ministry-icon"><i class="fas fa-eye"></i></div>
               <h3>Our Vision</h3>
               <p>
@@ -110,7 +109,7 @@
                 creating a legacy of faith for generations.
               </p>
             </div>
-            <div class="ministry-card">
+            <div class="ministry-card reveal-up delay-200">
               <div class="ministry-icon"><i class="fas fa-heart"></i></div>
               <h3>Our Values</h3>
               <p>
@@ -122,13 +121,12 @@
         </div>
       </section>
 
-      <!-- Leadership -->
       <section id="leadership">
         <div class="container">
           <h2>Our Leadership</h2>
 
           <!-- Lead Couple -->
-          <div class="lead-couple">
+          <div class="lead-couple reveal-scale">
             <div class="couple-photos">
               <img
                 src="./image/Profile.png"
@@ -142,14 +140,14 @@
               />
             </div>
             <div class="couple-details">
-              <h3>John & Chioma Jeremiah</h3>
+              <h3>Pastor John & Chioma Jeremiah</h3>
               <p class="couple-role">Senior Pastors</p>
               <p class="couple-tagline">Serving God Together as One</p>
             </div>
           </div>
 
           <div class="team-grid">
-            <div class="team-member">
+            <div class="team-member reveal-up">
               <img src="./image/Choir-master.png" alt="Worship Leader" />
               <h3>IDK MAN</h3>
               <p class="team-role">
@@ -252,6 +250,24 @@
           }
         });
       }
+
+      // --- Scroll Animations ---
+      const scrollObserver = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("active");
+            }
+          });
+        },
+        { threshold: 0.1 },
+      );
+
+      document
+        .querySelectorAll(".reveal-up, .reveal-scale, .reveal-left, .reveal-right")
+        .forEach((el) => {
+        scrollObserver.observe(el);
+      });
     </script>
   </body>
 </html>

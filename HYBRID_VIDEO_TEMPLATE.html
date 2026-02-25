@@ -1,0 +1,74 @@
+<!-- 
+  HYBRID VIDEO APPROACH - For use once optimized videos are in place
+  
+  This approach:
+  - Loads desktop video (1920x1080) on screens >= 768px
+  - Loads mobile video (1280x720) on screens < 768px  
+  - Falls back to poster image if video not supported
+  - Respects prefers-reduced-motion for accessibility
+-->
+
+<section id="hero">
+  <picture>
+    <!-- Fallback static image for browsers without video support -->
+    <img
+      src="./image/About.jpg"
+      alt="Perfection Of Christ Ministry - Welcome"
+      class="hero-bg-fallback"
+    />
+  </picture>
+
+  <video
+    id="hero-video"
+    autoplay
+    muted
+    loop
+    playsinline
+    preload="metadata"
+    poster="./image/About.jpg"
+    class="hero-video"
+  >
+    <!-- Desktop: High resolution, larger file size for faster connections -->
+    <source
+      media="(min-width: 768px)"
+      src="./image/hero-bg-desktop.mp4"
+      type="video/mp4"
+    />
+
+    <!-- Mobile: Lower resolution, optimized for mobile networks -->
+    <source
+      media="(max-width: 767px)"
+      src="./image/hero-bg-mobile.mp4"
+      type="video/mp4"
+    />
+
+    <!-- Fallback message if video cannot play -->
+    Your browser does not support the video tag.
+  </video>
+
+  <div class="hero-overlay"></div>
+
+  <div class="hero-content">
+    <p class="hero-pretitle">Welcome to Perfection Of Christ Ministry</p>
+    <h1>
+      Faith, Hope, and<br />
+      <span
+        class="txt-type"
+        data-wait="3000"
+        data-words='["Love", "Grace", "Truth", "Miracles"]'
+      ></span>
+    </h1>
+    <div class="hero-divider"></div>
+    <p>Join us for worship this Sunday at 10:00 AM</p>
+    <div class="hero-buttons">
+      <a href="#visit" class="button">Join Us This Sunday</a>
+      <a href="#" class="button btn-live">
+        <i class="fab fa-facebook-f"></i> Watch Live
+      </a>
+    </div>
+  </div>
+
+  <div class="scroll-indicator">
+    <span></span>
+  </div>
+</section>

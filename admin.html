@@ -13,6 +13,126 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
     />
+    <style>
+      .read-row {
+        opacity: 0.6;
+        background-color: #f9f9f9;
+      }
+      .unread-row {
+        background-color: #fff;
+        font-weight: 600;
+        border-left: 4px solid #b38728;
+      }
+      .action-btn {
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: #555;
+        margin-right: 10px;
+        font-size: 1.1rem;
+        transition: color 0.3s;
+      }
+      .action-btn:hover {
+        color: #b38728;
+      }
+
+      /* --- Enhanced Form & Search Styles --- */
+      
+      /* Search Bar Area */
+      .search-wrapper {
+        padding: 1.5rem;
+        border-bottom: 1px solid #eee;
+        background: #fcfcfc;
+      }
+      
+      .search-container {
+        position: relative;
+        width: 100%;
+        max-width: 450px;
+      }
+      
+      .search-container input {
+        width: 100%;
+        padding: 12px 45px 12px 45px; /* Space for icon and clear button */
+        border: 1px solid #e0e0e0;
+        border-radius: 30px;
+        font-size: 0.95rem;
+        background-color: #fff;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+      }
+      
+      .search-container input:focus {
+        border-color: #b38728;
+        box-shadow: 0 4px 12px rgba(179, 135, 40, 0.15);
+        outline: none;
+      }
+      
+      .search-container .search-icon {
+        position: absolute;
+        left: 18px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #aaa;
+        font-size: 1rem;
+        pointer-events: none;
+      }
+
+      .clear-search-btn {
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: transparent;
+        border: none;
+        font-size: 1.4rem;
+        line-height: 1;
+        color: #999;
+        cursor: pointer;
+        display: none; /* JS will toggle this */
+        padding: 5px;
+        transition: color 0.2s;
+      }
+      .clear-search-btn:hover {
+        color: #333;
+      }
+
+      /* General Input Styling for other forms */
+      .form-group input, .form-group textarea, .form-group select {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: border-color 0.3s, box-shadow 0.3s;
+        background-color: #fff;
+      }
+
+      .form-group input:focus, .form-group textarea:focus {
+        border-color: #b38728;
+        box-shadow: 0 0 0 3px rgba(179, 135, 40, 0.1);
+        outline: none;
+      }
+
+      /* Table Polish */
+      .data-table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      .data-table th {
+        background-color: #f8f9fa;
+        color: #444;
+        font-weight: 600;
+        padding: 1rem;
+        text-align: left;
+        border-bottom: 2px solid #eee;
+      }
+      .data-table td {
+        padding: 1rem;
+        border-bottom: 1px solid #f0f0f0;
+        vertical-align: top;
+      }
+    </style>
   </head>
   <body>
     <div class="admin-container">
@@ -211,13 +331,23 @@
         <section id="prayer" class="content-section">
           <h2>Incoming Prayer Requests</h2>
           <div class="card no-padding">
+            <div class="search-wrapper">
+                <div class="search-container">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" id="prayer-search" placeholder="Search requests by name or email..." onkeyup="filterPrayerRequests()" autocomplete="off">
+                    <button id="clear-search-btn" class="clear-search-btn" onclick="clearSearch()">&times;</button>
+                </div>
+            </div>
             <table class="data-table">
               <thead>
                 <tr>
-                  <th>Date</th>
+                  <th onclick="sortPrayerRequestsByDate()" style="cursor: pointer;" id="prayer-date-header">
+                    Date <i class="fas fa-sort"></i>
+                  </th>
                   <th>Name</th>
                   <th>Email</th>
                   <th>Request</th>
+                  <th>Actions</th>
                 </tr>
               </thead>
               <tbody id="prayer-table-body">
@@ -234,6 +364,10 @@
       // development (http://localhost:3000/api) and the live server
       // (https://your-app-name.onrender.com/api).
       const API_URL = "/api";
+
+      // --- GLOBAL STATE ---
+      let allPrayerRequests = [];
+      let prayerSortOrder = 'desc'; // 'asc' or 'desc'
 
       // --- SECURITY CHECK ---
       if (!localStorage.getItem("admin_token")) {
@@ -527,28 +661,122 @@
       async function loadPrayerRequests() {
         try {
           const res = await fetch(`${API_URL}/prayer-requests`);
-          const requests = await res.json();
+          allPrayerRequests = await res.json(); // Store globally
+          // The server sends them sorted by desc by default, which matches our initial state.
+          renderPrayerTable(allPrayerRequests);
+          // Set initial sort icon
+          const headerIcon = document.querySelector('#prayer-date-header i');
+          headerIcon.className = 'fas fa-sort-down';
+        } catch (e) {
+          console.error(e);
+        }
+      }
+
+      function renderPrayerTable(requests) {
           const tbody = document.getElementById("prayer-table-body");
           tbody.innerHTML = "";
 
           if (requests.length === 0) {
             tbody.innerHTML =
-              '<tr><td colspan="4" style="text-align:center">No prayer requests yet.</td></tr>';
+              '<tr><td colspan="5" style="text-align:center">No prayer requests yet.</td></tr>';
             return;
           }
 
           requests.forEach((req) => {
             const date = new Date(req.timestamp).toLocaleDateString();
+            const isRead = !!req.isRead;
+            const rowClass = isRead ? 'read-row' : 'unread-row';
             const row = `
-                        <tr>
-                            <td>${date}</td>
-                            <td>${req.name}</td>
-                            <td>${req.email}</td>
-                            <td>${req.request}</td>
-                        </tr>
-                    `;
+                <tr class="${rowClass}">
+                    <td>${date}</td>
+                    <td>${req.name}</td>
+                    <td>${req.email}</td>
+                    <td>${req.request}</td>
+                    <td>
+                        <button onclick="togglePrayerReadStatus('${req._id}', ${!isRead})" class="action-btn" title="${isRead ? 'Mark as Unread' : 'Mark as Read'}">
+                            <i class="fas ${isRead ? 'fa-envelope-open' : 'fa-envelope'}"></i>
+                        </button>
+                        <button onclick="deletePrayerRequest('${req._id}')" class="delete-btn" title="Delete">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            `;
             tbody.innerHTML += row;
           });
+      }
+
+      function filterPrayerRequests() {
+        const searchInput = document.getElementById('prayer-search');
+        const clearBtn = document.getElementById('clear-search-btn');
+        const searchTerm = searchInput.value.toLowerCase();
+
+        if (searchTerm.length > 0) {
+            clearBtn.style.display = 'block';
+        } else {
+            clearBtn.style.display = 'none';
+        }
+
+        const filteredRequests = allPrayerRequests.filter(req => 
+            (req.name && req.name.toLowerCase().includes(searchTerm)) || 
+            (req.email && req.email.toLowerCase().includes(searchTerm))
+        );
+        renderPrayerTable(filteredRequests);
+      }
+
+      function clearSearch() {
+        const searchInput = document.getElementById('prayer-search');
+        searchInput.value = '';
+        filterPrayerRequests(); // This will re-render and hide the button
+        searchInput.focus();
+      }
+
+      function sortPrayerRequestsByDate() {
+        prayerSortOrder = prayerSortOrder === 'desc' ? 'asc' : 'desc';
+
+        allPrayerRequests.sort((a, b) => {
+            const dateA = new Date(a.timestamp);
+            const dateB = new Date(b.timestamp);
+            return prayerSortOrder === 'asc' ? dateA - dateB : dateB - dateA;
+        });
+
+        filterPrayerRequests();
+
+        // Update header icon
+        const headerIcon = document.querySelector('#prayer-date-header i');
+        headerIcon.className = prayerSortOrder === 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down';
+      }
+
+      async function togglePrayerReadStatus(id, newStatus) {
+        try {
+          const res = await fetch(`${API_URL}/prayer-requests/${id}/read`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ isRead: newStatus }),
+          });
+          if (res.ok) {
+            // Update local state and re-render to avoid full reload
+            const req = allPrayerRequests.find((r) => r._id === id);
+            if (req) req.isRead = newStatus;
+            renderPrayerTable(allPrayerRequests);
+          }
+        } catch (e) {
+          console.error(e);
+        }
+      }
+
+      async function deletePrayerRequest(id) {
+        if (!confirm("Are you sure you want to delete this prayer request?")) return;
+        try {
+          const res = await fetch(`${API_URL}/prayer-requests/${id}`, {
+            method: "DELETE",
+          });
+          if (res.ok) {
+            loadPrayerRequests();
+          } else {
+            const data = await res.json();
+            alert("Failed to delete request: " + (data.error || "Unknown error"));
+          }
         } catch (e) {
           console.error(e);
         }

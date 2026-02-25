@@ -27,35 +27,41 @@
   max-width: 700px;
 }
 
-/* --- Leadership Section --- */
+/* --- Leadership Section (Warm Charcoal + Gold theme) --- */
 #leadership {
-  background-color: #fdfdfd;
-  background-color: #121212;
-  background-image:
-    linear-gradient(rgba(0, 0, 0, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0, 0, 0, 0.03) 1px, transparent 1px),
-    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-  background-size: 40px 40px;
+  --lead-bg-1: #0b0f12; /* deep charcoal */
+  --lead-bg-2: #111316; /* slightly lighter */
+  --lead-accent: #c59a43; /* warm gold */
+  --lead-accent-2: #ffd89a; /* pale gold */
+  background:
+    radial-gradient(
+      900px 300px at 10% 14%,
+      rgba(197, 154, 67, 0.06),
+      transparent 12%
+    ),
+    linear-gradient(180deg, var(--lead-bg-1) 0%, var(--lead-bg-2) 100%);
+  color: rgba(250, 245, 238, 0.98);
   padding: 5rem 0;
+  position: relative;
 }
 
 /* --- Lead Couple Section --- */
 .lead-couple {
   text-align: center;
   margin-bottom: 4rem;
-  padding: 2rem;
-  background: #fff;
-  background: linear-gradient(to bottom, #fff, #fffbf0);
-  background: #1a1a1a;
-  background: linear-gradient(to bottom, #1a1a1a, #0f0f0f);
-  border-radius: 15px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  padding: 2.2rem 1.8rem;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.01),
+    rgba(255, 255, 255, 0.005)
+  );
+  border-radius: 12px;
+  box-shadow:
+    0 20px 48px rgba(2, 4, 8, 0.7),
+    inset 0 1px 0 rgba(255, 255, 255, 0.01);
   position: relative;
-  overflow: hidden;
-  border: 1px solid rgba(179, 135, 40, 0.1);
-  border: 1px solid rgba(179, 135, 40, 0.2);
+  overflow: visible;
+  border: 1px solid rgba(197, 154, 67, 0.06);
 }
 
 .couple-photos {
@@ -69,12 +75,17 @@
 .couple-photos::before {
   content: "";
   position: absolute;
-  width: 280px;
-  height: 280px;
-  border: 1px dashed rgba(179, 135, 40, 0.4);
+  width: 340px;
+  height: 340px;
   border-radius: 50%;
+  background: radial-gradient(
+    circle at 40% 40%,
+    rgba(197, 154, 67, 0.06),
+    transparent 30%
+  );
+  filter: blur(14px);
   z-index: 0;
-  animation: spin 30s linear infinite;
+  animation: spin 34s linear infinite;
 }
 
 @keyframes spin {
@@ -91,49 +102,49 @@
   height: 150px;
   border-radius: 50%;
   object-fit: cover;
-  border: 4px solid #fff;
-  border: 4px solid #b38728;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-  transition: transform 0.3s ease;
+  border: 4px solid rgba(197, 154, 67, 0.12);
+  box-shadow:
+    0 10px 30px rgba(16, 18, 22, 0.6),
+    0 0 18px rgba(197, 154, 67, 0.05);
+  transition:
+    transform 0.35s ease,
+    box-shadow 0.35s ease;
 }
 
 .couple-photos img.husband {
-  z-index: 1;
-  margin-right: -30px; /* Overlap effect */
-}
-
-.couple-photos img.wife {
-  z-index: 0;
-}
-
-.couple-photos:hover img {
-  transform: scale(1.05);
   z-index: 2;
+  margin-right: -30px;
+}
+.couple-photos img.wife {
+  z-index: 1;
+}
+.couple-photos:hover img {
+  transform: scale(1.06);
+  z-index: 3;
 }
 
 .couple-details h3 {
   font-family: "Cinzel", serif;
   font-size: 1.8rem;
   margin-bottom: 0.5rem;
-  background: var(--gold-gradient);
+  background: linear-gradient(90deg, var(--lead-accent), var(--lead-accent-2));
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
 }
 
 .couple-role {
-  color: var(--accent-color);
+  color: var(--lead-accent);
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 2px;
-  font-size: 1.1rem;
+  font-size: 1.05rem;
   margin-bottom: 0.5rem;
 }
 
 .couple-tagline {
   font-style: italic;
-  color: #777;
-  color: #aaa;
+  color: rgba(220, 210, 190, 0.85);
 }
 
 .lead-couple::before {
@@ -143,7 +154,11 @@
   left: 0;
   width: 100%;
   height: 5px;
-  background: var(--gold-gradient);
+  background: linear-gradient(
+    90deg,
+    rgba(197, 154, 67, 0.95),
+    rgba(255, 216, 154, 0.6)
+  );
 }
 
 /* --- Team Section --- */
@@ -365,4 +380,544 @@
     width: 250px;
     height: 250px;
   }
+}
+
+/* --- Story Features --- */
+.story-features {
+  display: flex;
+  gap: 1.5rem;
+  margin-top: 2rem;
+  flex-wrap: wrap;
+}
+
+.feature-item {
+  flex: 1;
+  min-width: 120px;
+  text-align: center;
+  padding: 1rem;
+  background: rgba(179, 135, 40, 0.05);
+  background: rgba(179, 135, 40, 0.1);
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.feature-item:hover {
+  background: rgba(179, 135, 40, 0.15);
+  background: rgba(179, 135, 40, 0.2);
+  transform: translateY(-5px);
+}
+
+.feature-item i {
+  font-size: 1.8rem;
+  color: var(--accent-color);
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.feature-item span {
+  font-weight: bold;
+  display: block;
+  color: #333;
+  color: #ddd;
+}
+
+/* --- Card List Styling ---*/
+.card-list {
+  list-style: none;
+  text-align: left;
+  margin-top: 1rem;
+}
+
+.card-list li {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 0;
+  font-size: 0.95rem;
+  color: #666;
+  color: #bbb;
+}
+
+.card-list i {
+  color: var(--accent-color);
+  margin-right: 0.8rem;
+  min-width: 20px;
+}
+
+/* --- Mission & Vision Cards --- */
+.ministry-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.5rem;
+  align-items: stretch;
+}
+.ministry-card {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.02),
+    rgba(255, 255, 255, 0.01)
+  );
+  padding: 2rem;
+  border-radius: 12px;
+  text-align: center;
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.45);
+  transition:
+    transform 0.45s cubic-bezier(0.2, 0.9, 0.2, 1),
+    box-shadow 0.35s,
+    background 0.35s;
+  transform-origin: center;
+  perspective: 800px;
+  overflow: hidden;
+}
+.ministry-card:hover {
+  transform: translateY(-12px) rotateX(2deg);
+  box-shadow: 0 22px 42px rgba(0, 0, 0, 0.6);
+  background: linear-gradient(
+    135deg,
+    rgba(179, 135, 40, 0.12),
+    rgba(255, 255, 255, 0.02)
+  );
+}
+.ministry-icon {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--gold-gradient);
+  color: #111;
+  font-size: 1.6rem;
+  margin: 0 auto 1rem;
+  box-shadow: 0 6px 18px rgba(179, 135, 40, 0.2);
+  transition: transform 0.4s ease;
+}
+.ministry-card:hover .ministry-icon {
+  transform: rotate(-10deg) scale(1.05);
+}
+.ministry-card h3 {
+  margin-top: 0.4rem;
+  margin-bottom: 0.6rem;
+  color: #fff;
+  font-family: "Cinzel", serif;
+}
+.ministry-card p {
+  color: #e6e6e6;
+  font-size: 0.95rem;
+  margin-bottom: 0.6rem;
+}
+
+/* Reveal animations used by IntersectionObserver in the page script */
+.reveal-up {
+  opacity: 0;
+  transform: translateY(22px);
+  transition:
+    opacity 0.6s ease,
+    transform 0.6s cubic-bezier(0.2, 0.9, 0.2, 1);
+}
+.reveal-up.active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Subtle icon pulse */
+@keyframes iconPulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.06);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+.ministry-icon.active,
+.ministry-card.active .ministry-icon {
+  animation: iconPulse 2.6s ease-in-out infinite;
+}
+
+/* --- Impact Stats Section --- */
+#impact-stats {
+  background: linear-gradient(
+    135deg,
+    rgba(179, 135, 40, 0.95),
+    rgba(179, 135, 40, 0.85)
+  );
+  padding: 5rem 0;
+  border-radius: 10px;
+  margin: 3rem 0;
+}
+
+#impact-stats h2 {
+  color: #fff !important;
+}
+
+#impact-stats h2::after {
+  background: rgba(255, 255, 255, 0.4);
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.stat-card {
+  background: rgba(255, 255, 255, 0.95);
+  padding: 2rem;
+  border-radius: 10px;
+  text-align: center;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.25);
+}
+
+.stat-number {
+  font-size: 3rem;
+  font-weight: 900;
+  color: #b38728;
+  font-family: "Cinzel", serif;
+  line-height: 1;
+  margin-bottom: 0.5rem;
+}
+
+.stat-label {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.stat-card p {
+  color: #666;
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+/* --- Testimonials Section --- */
+#testimonials {
+  background: linear-gradient(
+    135deg,
+    rgba(26, 26, 26, 0.95),
+    rgba(15, 15, 15, 0.95)
+  );
+  padding: 5rem 0;
+  background-image: radial-gradient(
+    rgba(179, 135, 40, 0.1) 1px,
+    rgba(179, 135, 40, 0.05) 1px,
+    transparent 1px
+  );
+  background-size: 50px 50px;
+}
+
+#testimonials h2 {
+  color: #fff;
+}
+
+#testimonials h2::after {
+  background: var(--gold-gradient);
+}
+
+.testimonials-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.testimonial-card {
+  background: linear-gradient(to bottom, #2a2a2a, #1f1f1f);
+  padding: 2rem;
+  border-radius: 10px;
+  border: 1px solid rgba(179, 135, 40, 0.2);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Animated outer ring and accent shape */
+.testimonial-card::after {
+  content: "";
+  position: absolute;
+  left: -12px;
+  top: -12px;
+  right: -12px;
+  bottom: -12px;
+  border-radius: 14px;
+  background: conic-gradient(
+    from 0deg,
+    rgba(179, 135, 40, 0.16),
+    rgba(255, 255, 255, 0.02),
+    rgba(58, 80, 107, 0.12)
+  );
+  filter: blur(18px) saturate(120%);
+  opacity: 0;
+  transform: scale(0.98) rotate(0deg);
+  transition:
+    opacity 0.45s ease,
+    transform 0.6s ease;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.testimonial-card .accent-shape {
+  position: absolute;
+  right: -40px;
+  top: -30px;
+  width: 220px;
+  height: 120px;
+  background: linear-gradient(
+    135deg,
+    rgba(179, 135, 40, 0.12),
+    rgba(58, 80, 107, 0.06)
+  );
+  filter: blur(24px);
+  transform: rotate(-12deg) translateY(6px);
+  opacity: 0.9;
+  transition:
+    transform 0.6s ease,
+    opacity 0.4s ease;
+  z-index: 0;
+}
+
+.testimonial-card::before {
+  content: '"';
+  position: absolute;
+  top: -20px;
+  left: 10px;
+  font-size: 5rem;
+  color: rgba(179, 135, 40, 0.1);
+  font-family: "Cinzel", serif;
+}
+
+.testimonial-card:hover {
+  transform: translateY(-12px) scale(1.02) rotateX(2deg);
+  box-shadow: 0 28px 60px rgba(34, 34, 34, 0.28);
+  border-color: rgba(179, 135, 40, 0.5);
+}
+
+.testimonial-card:hover::after,
+.testimonial-card.is-hovered::after {
+  opacity: 1;
+  animation: spinRing 6s linear infinite;
+}
+
+.testimonial-card:hover .accent-shape,
+.testimonial-card.is-hovered .accent-shape {
+  transform: rotate(-6deg) translateY(-8px) translateX(-6px) scale(1.02);
+  opacity: 1;
+}
+
+.testimonial-stars {
+  color: #ffc107;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+  letter-spacing: 2px;
+}
+
+.testimonial-stars i {
+  transition:
+    transform 0.25s ease,
+    color 0.25s ease;
+}
+.testimonial-card:hover .testimonial-stars i,
+.testimonial-card.is-hovered .testimonial-stars i {
+  transform: translateY(-4px) scale(1.08);
+  color: #ffd54a;
+}
+
+.testimonial-text {
+  color: #e0e0e0;
+  font-size: 1rem;
+  line-height: 1.8;
+  margin-bottom: 1.5rem;
+  font-style: italic;
+}
+
+.testimonial-text {
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+}
+
+.testimonial-author {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(179, 135, 40, 0.2);
+}
+
+.testimonial-author img {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #fff;
+  box-shadow:
+    0 6px 18px rgba(0, 0, 0, 0.25),
+    0 0 0 4px rgba(179, 135, 40, 0.06);
+}
+
+.testimonial-author h4 {
+  margin: 0;
+  color: #fff;
+  font-size: 1rem;
+}
+
+.testimonial-author p {
+  margin: 0;
+  color: var(--accent-color);
+  font-size: 0.85rem;
+}
+
+/* make name pop on hover */
+.testimonial-card:hover .testimonial-author h4,
+.testimonial-card.is-hovered .testimonial-author h4 {
+  transform: translateY(-4px);
+  color: #fff;
+}
+
+/* small responsive tweaks */
+@media (max-width: 700px) {
+  .testimonial-card::after {
+    display: none;
+  }
+  .testimonial-card .accent-shape {
+    display: none;
+  }
+}
+
+/* --- Call to Action Section --- */
+.cta-section {
+  background: linear-gradient(
+    135deg,
+    var(--primary-color) 0%,
+    rgba(58, 80, 107, 0.8) 100%
+  );
+  color: #fff;
+  text-align: center;
+  padding: 4rem 2rem;
+  border-radius: 10px;
+  margin: 3rem 0;
+}
+
+.cta-section h2 {
+  color: #fff;
+  margin-bottom: 1rem;
+}
+
+.cta-section h2::after {
+  background: rgba(255, 255, 255, 0.4);
+}
+
+.cta-section p {
+  font-size: 1.1rem;
+  margin-bottom: 2rem;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.cta-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.button {
+  display: inline-block;
+  padding: 0.75rem 2rem;
+  border-radius: 5px;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  text-decoration: none;
+  border: none;
+}
+
+.button-primary {
+  background: var(--gold-gradient);
+  color: #1a1a1a;
+}
+
+.button-primary:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 20px rgba(179, 135, 40, 0.3);
+}
+
+.button-secondary {
+  background: transparent;
+  color: #fff;
+  border: 2px solid #fff;
+}
+
+.button-secondary:hover {
+  background: #fff;
+  color: var(--primary-color);
+  transform: translateY(-3px);
+}
+
+/* --- Enhanced Team Member Component --- */
+.member-image {
+  position: relative;
+  width: 150px;
+  height: 150px;
+  margin: 0 auto 1rem;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 3px solid var(--accent-color);
+}
+
+.member-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.team-member:hover .member-image img {
+  transform: scale(1.1);
+}
+
+.team-bio {
+  color: #888;
+  color: #999;
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+/* Utility heading for the ministry team section to replace inline styles */
+.team-title {
+  text-align: center;
+  margin: 3rem 0 2rem;
+}
+
+/* --- Animation Delays --- */
+.delay-100 {
+  animation-delay: 0.1s;
+}
+
+.delay-200 {
+  animation-delay: 0.2s;
+}
+
+.delay-300 {
+  animation-delay: 0.3s;
+}
+
+.couple-bio {
+  color: #777;
+  color: #aaa;
+  margin-top: 0.5rem;
+  line-height: 1.6;
 }

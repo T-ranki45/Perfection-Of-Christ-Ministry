@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/T-ranki45/Perfection-Of-Christ-Ministry#readme",
   "dependencies": {
+    "choco": "^0.2.1",
     "cors": "^2.8.5",
     "debug": "^4.3.4",
     "express": "^4.19.2",

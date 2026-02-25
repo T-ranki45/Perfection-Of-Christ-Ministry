@@ -36,7 +36,7 @@
             </li>
             <li><a href="#visit">Visit</a></li>
             <li><a href="#" id="prayer-btn">Prayer</a></li>
-            <li><a href="#" class="button">Give</a></li>
+            <li><a href="#" class="button open-give-modal">Give</a></li>
           </ul>
         </nav>
       </div>
@@ -44,9 +44,18 @@
 
     <main>
       <section id="hero">
-        <video autoplay muted loop playsinline class="hero-video">
+        <video
+          id="hero-video"
+          autoplay
+          muted
+          loop
+          playsinline
+          preload="metadata"
+          poster="./image/About.jpg"
+          class="hero-video"
+        >
           <!-- Replace 'video.mp4' with the path to your actual video file -->
-          <source src="./image/Backup-image.mp4" type="video/mp4" />
+          <source src="./image/Another.mp4" type="video/mp4" />
         </video>
         <div class="hero-overlay"></div>
         <div class="hero-content">
@@ -248,7 +257,7 @@
               </div>
             </div>
 
-            <a href="#" class="button btn-outline">Give Online</a>
+            <a href="#" class="button btn-outline open-give-modal">Give Online</a>
           </div>
         </div>
       </section>
@@ -300,6 +309,30 @@
       </div>
     </div>
 
+    <!-- Give/Donation Modal -->
+    <div id="give-modal" class="modal">
+      <div class="modal-content">
+        <span class="close-btn give-close-btn">&times;</span>
+        <h2>Ways to Give</h2>
+        <p>Thank you for your generosity. You can give via direct bank transfer using the details below:</p>
+        
+        <div class="bank-card">
+          <div class="bank-info">
+            <span class="bank-label">Bank Name</span>
+            <span class="bank-value">Zenith Bank</span>
+          </div>
+          <div class="bank-info">
+            <span class="bank-label">Account Name</span>
+            <span class="bank-value">Perfection Of Christ Ministry</span>
+          </div>
+          <div class="bank-info">
+            <span class="bank-label">Account Number</span>
+            <span class="bank-value highlight-number">1010101010</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <footer class="main-footer">
       <div class="container">
         <div class="footer-grid">
@@ -335,7 +368,12 @@
           <div class="footer-col">
             <h3>Contact Us</h3>
             <p><i class="fas fa-map-marker-alt"></i> Still loading..........</p>
-            <p><i class="fas fa-phone">  </i> <a href="https://wa.link/p2brgq" target="_blank">(+234)803 5526 633</a></p>
+            <p>
+              <i class="fas fa-phone"> </i>
+              <a href="https://wa.link/p2brgq" target="_blank"
+                >(+234)803 5526 633</a
+              >
+            </p>
             <p><i class="fas fa-envelope"></i> info@church.com</p>
             <p style="margin-top: 15px">
               <a
@@ -348,7 +386,10 @@
           </div>
         </div>
         <div class="footer-bottom">
-          <p>&copy; 2024 Perfection Of Christ Ministry. All Rights Reserved.</p>
+          <p>
+            &copy; @2024 Perfection Of Christ Ministry. All Rights Reserved.
+          </p>
+          <p>@the_aces_made_it</p>
         </div>
       </div>
     </footer>
@@ -485,10 +526,12 @@
       );
 
       document
-        .querySelectorAll(".reveal-up, .reveal-scale, .reveal-left, .reveal-right")
+        .querySelectorAll(
+          ".reveal-up, .reveal-scale, .reveal-left, .reveal-right",
+        )
         .forEach((el) => {
-        scrollObserver.observe(el);
-      });
+          scrollObserver.observe(el);
+        });
 
       // --- Dynamic Flyers System (Shuffle Animation) ---
       async function loadFlyers() {
@@ -860,6 +903,28 @@
         }
       });
 
+      // --- Give Modal Logic ---
+      const giveModal = document.getElementById("give-modal");
+      const giveBtns = document.querySelectorAll(".open-give-modal");
+      const giveCloseBtn = document.querySelector(".give-close-btn");
+
+      if (giveModal) {
+        giveBtns.forEach((btn) => {
+          btn.addEventListener("click", (e) => {
+            e.preventDefault();
+            giveModal.style.display = "block";
+          });
+        });
+
+        if (giveCloseBtn) {
+          giveCloseBtn.addEventListener("click", () => {
+            giveModal.style.display = "none";
+          });
+        }
+
+        // Window click to close is handled by the generic window listener below
+      }
+
       // --- Handle Prayer Form Submission ---
       const prayerForm = document.getElementById("prayer-form");
       if (prayerForm) {
@@ -968,6 +1033,35 @@
 
         typeWriterObserver.observe(welcomeSectionEl);
       }
+    </script>
+
+    <script>
+      // Hero video: gentle slowdown, smoothing and fade-in
+      (function () {
+        const v = document.getElementById("hero-video");
+        if (!v) return;
+        try {
+          v.preload = "auto";
+          // Use a slightly slower playbackRate for cinematic motion
+          v.playbackRate = 0.78;
+          // Apply subtle color/contrast tweak to improve perceived quality
+          v.style.filter = "brightness(0.9) contrast(1.05) saturate(1.06)";
+          v.style.willChange = "transform, opacity";
+          v.style.transition = "opacity 1.2s ease, filter 1s ease";
+          v.style.opacity = "0";
+          v.addEventListener("loadedmetadata", function () {
+            setTimeout(() => {
+              v.style.opacity = "0.96";
+            }, 220);
+          });
+
+          // Keep normal speed on low-end mobile to avoid stutter
+          const isMobile = /Mobi|Android|iPhone|iPad/.test(navigator.userAgent);
+          if (isMobile) v.playbackRate = 1.0;
+        } catch (e) {
+          console.warn("Hero video enhancements skipped:", e);
+        }
+      })();
     </script>
   </body>
 </html>

@@ -396,6 +396,10 @@ section h2::after {
   .main-nav ul li a {
     font-size: 1.3rem;
     color: #e0e0e0;
+    padding: 1rem 1.5rem;
+    min-height: 50px;
+    display: flex;
+    align-items: center;
   }
 
   /* Layout & Spacing */
@@ -415,6 +419,11 @@ section h2::after {
   #our-story,
   #give-section {
     padding: 3rem 0;
+  }
+
+  .hero-video {
+    /* Disable animations on mobile for performance */
+    animation: none !important;
   }
 
   h1 {
@@ -460,18 +469,37 @@ section h2::after {
   .hero-buttons .button {
     width: 100%;
     text-align: center;
+    padding: 1.2rem 1.5rem;
+    font-size: 1rem;
+    min-height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   #hero .hero-content {
     padding: 2rem 1.5rem;
     width: 100%;
-    min-height: auto; /* Fixed height to prevent shrinking/jittering */
+    min-height: auto;
     border-radius: 0;
     border-left: none;
     border-right: none;
     display: flex;
     flex-direction: column;
     justify-content: center;
+  }
+
+  .hero-pretitle {
+    font-size: 0.8rem;
+    letter-spacing: 4px;
+  }
+
+  #hero .hero-divider {
+    margin: 1.5rem auto 2rem;
+  }
+
+  #hero h1 {
+    font-size: 1.6rem;
   }
 
   /* Grids & Cards */
@@ -495,6 +523,138 @@ section h2::after {
 
   #welcome h2 span {
     font-size: 1.8rem; /* Reduced to prevent overflow */
+  }
+
+  /* Button Accessibility on Mobile */
+  .button {
+    min-height: 48px;
+    min-width: 48px;
+    padding: 0.9rem 1.5rem;
+    font-size: 0.95rem;
+  }
+
+  /* Modal Improvements for Mobile */
+  .modal-content {
+    width: 95vw;
+    max-width: 95vw;
+    max-height: 90vh;
+    border-radius: 12px;
+    padding: 1.5rem;
+    top: 5vh !important;
+  }
+
+  .live-modal-content {
+    max-height: 85vh;
+  }
+
+  .live-stream-grid {
+    flex-direction: column !important;
+    gap: 1rem;
+  }
+
+  .video-column,
+  .chat-column {
+    width: 100% !important;
+    min-height: 300px !important;
+  }
+
+  .close-btn {
+    font-size: 1.8rem;
+    padding: 0.5rem;
+    min-height: 44px;
+    min-width: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Card Spacing for Mobile */
+  .welcome-card,
+  .team-member,
+  .testimonial-card,
+  .ministry-card {
+    padding: 1.5rem !important;
+  }
+
+  .team-member:hover {
+    transform: translateY(-8px) !important;
+  }
+
+  .testimonial-card:hover {
+    transform: translateY(-8px) !important;
+  }
+
+  /* Testimonial Optimizations */
+  .testimonial-card .accent-shape {
+    display: none;
+  }
+
+  /* Touch-Friendly Links and Form Elements */
+  input,
+  textarea,
+  select,
+  .button {
+    font-size: 16px;
+  }
+
+  input,
+  textarea,
+  select {
+    padding: 0.9rem;
+    min-height: 48px;
+    border-radius: 8px;
+  }
+
+  /* Optimize Font Sizes for Readability */
+  p {
+    line-height: 1.7;
+  }
+
+  h3 {
+    font-size: 1.3rem;
+  }
+
+  /* Better Spacing for Lists */
+  .card-list li {
+    padding: 0.8rem 0;
+    font-size: 1rem;
+  }
+
+  /* Faster Animations on Mobile */
+  @media (prefers-reduced-motion: no-preference) {
+    .reveal-up,
+    .reveal-scale,
+    .reveal-left,
+    .reveal-right {
+      animation-duration: 0.4s !important;
+    }
+  }
+
+  /* Improve Ministry Grid for Mobile */
+  .ministry-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ministry-card:hover {
+    transform: translateY(-8px);
+  }
+
+  /* Testimonials Grid */
+  .testimonials-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  /* Team Grid */
+  .team-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  /* Better Stats Grid */
+  .stats-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
   }
 
   /* Flyers */
@@ -616,7 +776,7 @@ section h2::after {
     transform: scale(1);
   }
   100% {
-    transform: scale(1.1);
+    transform: scale(1.05);
   }
 }
 
@@ -628,7 +788,25 @@ section h2::after {
   height: 100%;
   object-fit: cover;
   z-index: -2;
-  animation: zoomEffect 40s linear infinite alternate;
+  /* Removed animation for smooth video playback - can be enabled via media query for prefers-reduced-motion */
+  transform: scale(1);
+  transform-origin: center center;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  will-change: auto;
+  filter: brightness(0.92) contrast(1.03) saturate(1.03);
+}
+
+/* Fallback image for when video doesn't load */
+.hero-bg-fallback {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -2;
+  filter: brightness(0.92) contrast(1.03) saturate(1.03);
 }
 
 .hero-overlay {
@@ -638,12 +816,26 @@ section h2::after {
   width: 100%;
   height: 100%;
   background: radial-gradient(
-    circle at center,
-    rgba(0, 0, 0, 0.3) 0%,
-    rgba(0, 0, 0, 0.6) 60%,
-    #000 100%
+    circle at 40% 35%,
+    rgba(0, 0, 0, 0.18) 0%,
+    rgba(0, 0, 0, 0.5) 55%,
+    rgba(0, 0, 0, 0.85) 100%
   );
   z-index: 0;
+}
+
+.hero-overlay::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at 60% 20%,
+    rgba(255, 215, 0, 0.02),
+    transparent 18%
+  );
+  pointer-events: none;
+  mix-blend-mode: overlay;
+  opacity: 0.9;
 }
 
 @keyframes glassPulse {
@@ -1337,37 +1529,259 @@ section h2::after {
   gap: 2rem;
   margin-top: 3rem;
 }
-.ministry-card {
-  background: rgba(20, 20, 20, 0.8);
-  backdrop-filter: blur(10px);
-  padding: 3rem 2rem;
-  border-radius: 15px;
+#mission .ministry-card {
+  /* Use CSS variables so JS can drive subtle 3D tilt */
+  --rx: 0deg; /* rotateX */
+  --ry: 0deg; /* rotateY */
+  --scale: 1;
+  --ty: 0px; /* translateY */
+
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.98),
+    rgba(252, 250, 245, 0.95)
+  );
+  padding: 2.2rem 1.6rem;
+  border-radius: 14px;
   text-align: center;
-  transition: all 0.4s ease;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-  position: relative;
+  color: var(--text-color);
+  border: 1px solid rgba(179, 135, 40, 0.12);
+  box-shadow: 0 18px 40px rgba(34, 34, 34, 0.06);
+  transition:
+    box-shadow 0.35s,
+    border-color 0.35s,
+    transform 0.18s ease-out;
+  transform-origin: center center;
+  perspective: 900px;
   overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  transform: translateY(var(--ty)) rotateX(var(--rx)) rotateY(var(--ry))
+    scale(var(--scale));
 }
-.ministry-card::after {
+
+/* subtle glossy overlay */
+#mission .ministry-card::before {
   content: "";
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 4px;
-  background: var(--gold-gradient);
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform 0.4s ease;
+  left: -40%;
+  top: -60%;
+  width: 220%;
+  height: 200%;
+  background: radial-gradient(
+    circle at 30% 20%,
+    rgba(255, 255, 255, 0.08),
+    transparent 25%
+  );
+  transform: rotate(-12deg);
+  transition:
+    transform 0.6s ease,
+    opacity 0.45s ease;
+  pointer-events: none;
+  opacity: 0.9;
+}
+
+/* hover state uses css variables for smoother coordination with JS tilt */
+#mission .ministry-card:hover {
+  --ty: -12px;
+  --scale: 1.02;
+  box-shadow: 0 30px 60px rgba(34, 34, 34, 0.12);
+  border-color: rgba(179, 135, 40, 0.22);
+}
+
+#mission .ministry-card:hover::before {
+  transform: rotate(-18deg) translateX(-6%);
+  opacity: 1;
+}
+
+#mission .ministry-card::after {
+  /* animated outer ring using conic-gradient + blur */
+  content: "";
+  position: absolute;
+  left: -8px;
+  top: -8px;
+  right: -8px;
+  bottom: -8px;
+  border-radius: 16px;
+  background: conic-gradient(
+    from 0deg,
+    rgba(179, 135, 40, 0.15),
+    rgba(252, 246, 190, 0.12),
+    rgba(179, 135, 40, 0.1)
+  );
+  filter: blur(18px);
+  opacity: 0;
+  transform: scale(0.98) rotate(0deg);
+  transition:
+    opacity 0.45s ease,
+    transform 0.6s ease;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* spin the ring when hovered to give motion */
+@keyframes spinRing {
+  from {
+    transform: scale(0.98) rotate(0deg);
+  }
+  to {
+    transform: scale(0.98) rotate(360deg);
+  }
+}
+
+#mission .ministry-card:hover::after,
+#mission .ministry-card.is-hovered::after {
+  opacity: 1;
+  animation: spinRing 6s linear infinite;
+}
+
+/* stronger icon pop and halo when explicitly hovered */
+#mission .ministry-card.is-hovered .ministry-icon {
+  transform: translateY(-10px) rotate(-12deg) scale(1.12);
+  box-shadow:
+    0 18px 40px rgba(179, 135, 40, 0.28),
+    0 6px 18px rgba(0, 0, 0, 0.25);
+  filter: drop-shadow(0 6px 18px rgba(179, 135, 40, 0.25));
+}
+
+/* content lift and color accent */
+#mission .ministry-card.is-hovered h3 {
+  transform: translateY(-6px);
+}
+
+#mission .ministry-card.is-hovered p {
+  color: #333;
+}
+
+/* add a stronger shadow and slight rotation to emphasize depth */
+#mission .ministry-card.is-hovered {
+  box-shadow: 0 38px 80px rgba(34, 34, 34, 0.16);
 }
 .ministry-card:hover {
   transform: translateY(-10px);
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
   border-color: rgba(179, 135, 40, 0.3);
+}
+/* Particles (subtle moving lights behind cards) */
+.mission-decor .particle {
+  position: absolute;
+  display: block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 30% 30%,
+    rgba(255, 255, 255, 0.9),
+    rgba(179, 135, 40, 0.95)
+  );
+  filter: blur(6px) saturate(120%);
+  opacity: 0;
+  pointer-events: none;
+  mix-blend-mode: screen;
+}
+
+.mission-decor .particle.p1 {
+  left: 8%;
+  top: 18%;
+  width: 12px;
+  height: 12px;
+  animation: particleFloat 10s -1s ease-in-out infinite;
+}
+.mission-decor .particle.p2 {
+  left: 24%;
+  top: 6%;
+  width: 10px;
+  height: 10px;
+  animation: particleFloat 13s -2s ease-in-out infinite;
+}
+.mission-decor .particle.p3 {
+  left: 40%;
+  top: 22%;
+  width: 8px;
+  height: 8px;
+  animation: particleFloat 11s -3s ease-in-out infinite;
+}
+.mission-decor .particle.p4 {
+  left: 60%;
+  top: 10%;
+  width: 14px;
+  height: 14px;
+  animation: particleFloat 14s -2.5s ease-in-out infinite;
+}
+.mission-decor .particle.p5 {
+  left: 78%;
+  top: 22%;
+  width: 10px;
+  height: 10px;
+  animation: particleFloat 9s -4s ease-in-out infinite;
+}
+.mission-decor .particle.p6 {
+  left: 12%;
+  top: 68%;
+  width: 10px;
+  height: 10px;
+  animation: particleFloat 12s -1.2s ease-in-out infinite;
+}
+.mission-decor .particle.p7 {
+  left: 30%;
+  top: 62%;
+  width: 8px;
+  height: 8px;
+  animation: particleFloat 10s -3.7s ease-in-out infinite;
+}
+.mission-decor .particle.p8 {
+  left: 50%;
+  top: 72%;
+  width: 12px;
+  height: 12px;
+  animation: particleFloat 15s -5s ease-in-out infinite;
+}
+.mission-decor .particle.p9 {
+  left: 70%;
+  top: 64%;
+  width: 9px;
+  height: 9px;
+  animation: particleFloat 11s -2.8s ease-in-out infinite;
+}
+.mission-decor .particle.p10 {
+  left: 86%;
+  top: 52%;
+  width: 8px;
+  height: 8px;
+  animation: particleFloat 13s -3.2s ease-in-out infinite;
+}
+.mission-decor .particle.p11 {
+  left: 44%;
+  top: 40%;
+  width: 10px;
+  height: 10px;
+  animation: particleFloat 12s -0.6s ease-in-out infinite;
+}
+.mission-decor .particle.p12 {
+  left: 58%;
+  top: 36%;
+  width: 12px;
+  height: 12px;
+  animation: particleFloat 14s -4.4s ease-in-out infinite;
+}
+
+@keyframes particleFloat {
+  0% {
+    transform: translateY(0) scale(0.9);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.4;
+  }
+  50% {
+    transform: translateY(-28px) scale(1.15);
+    opacity: 0.9;
+  }
+  90% {
+    opacity: 0.3;
+  }
+  100% {
+    transform: translateY(0) scale(0.95);
+    opacity: 0;
+  }
 }
 .ministry-card:hover::after {
   transform: scaleX(1);
@@ -1810,20 +2224,77 @@ section h2::after {
   width: 100%;
   height: 100%;
   overflow: auto;
-  background-color: rgba(0, 0, 0, 0.8);
-  backdrop-filter: blur(5px);
+  background-color: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(8px);
 }
 
 .modal-content {
-  background-color: #fff;
-  margin: 10% auto;
-  padding: 2rem;
-  border-radius: 10px;
+  background: linear-gradient(
+    145deg,
+    rgba(20, 20, 20, 0.95) 0%,
+    rgba(35, 35, 35, 0.98) 100%
+  );
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  margin: 8% auto;
+  padding: 3rem 2.5rem;
+  border-radius: 16px;
   width: 90%;
-  max-width: 500px;
+  max-width: 550px;
   position: relative;
-  animation: modalOpen 0.4s ease-out;
-  box-shadow: 0 5px 30px rgba(0, 0, 0, 0.3);
+  animation:
+    modalOpen 0.5s cubic-bezier(0.19, 1, 0.22, 1),
+    modalGlow 4s infinite ease-in-out;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(179, 135, 40, 0.2);
+  color: #f0f0f0;
+}
+
+/* Gold Top Border Accent */
+.modal-content::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: var(--gold-gradient);
+  border-radius: 16px 16px 0 0;
+  box-shadow: 0 2px 15px rgba(255, 215, 0, 0.3);
+}
+
+/* Modal Form Elements Styling */
+.modal-content h2 {
+  text-align: center;
+  background: var(--gold-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  margin-bottom: 2rem;
+}
+
+.modal-content .form-group label {
+  color: var(--accent-color);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+}
+
+.modal-content input,
+.modal-content textarea,
+.modal-content select {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #fff;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.modal-content input:focus,
+.modal-content textarea:focus {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: var(--accent-color);
+  box-shadow: 0 0 15px rgba(179, 135, 40, 0.15);
 }
 
 /* --- Live Stream Modal --- */
@@ -1905,6 +2376,22 @@ section h2::after {
   }
 }
 
+@keyframes modalGlow {
+  0%,
+  100% {
+    border-color: rgba(179, 135, 40, 0.3);
+    box-shadow:
+      0 25px 50px rgba(0, 0, 0, 0.6),
+      0 0 5px rgba(179, 135, 40, 0.1);
+  }
+  50% {
+    border-color: rgba(179, 135, 40, 0.8);
+    box-shadow:
+      0 25px 50px rgba(0, 0, 0, 0.6),
+      0 0 25px rgba(179, 135, 40, 0.4);
+  }
+}
+
 .close-btn {
   color: #aaa;
   float: right;
@@ -1953,20 +2440,44 @@ section h2::after {
 /* --- Team Section --- */
 .team-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
   gap: 2rem;
   margin-top: 3rem;
 }
 .team-member {
   text-align: center;
+  padding: 1.4rem;
+  border-radius: 12px;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.98),
+    rgba(252, 250, 245, 0.95)
+  );
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.06);
+  transition:
+    transform 0.35s ease,
+    box-shadow 0.35s,
+    border-color 0.35s;
+  border: 1px solid rgba(179, 135, 40, 0.05);
+}
+.team-member:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 30px 60px rgba(34, 34, 34, 0.12);
+  border-color: rgba(179, 135, 40, 0.12);
 }
 .team-member img {
-  width: 200px;
-  height: 200px;
-  border-radius: 50%;
+  width: 160px;
+  height: 160px;
+  border-radius: 12px;
   object-fit: cover;
-  border: 3px solid var(--accent-color);
   margin-bottom: 1rem;
+  transition:
+    transform 0.35s ease,
+    box-shadow 0.35s;
+}
+.team-member:hover img {
+  transform: translateY(-6px) scale(1.03);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
 }
 
 /* --- Global Scroll Animations --- */
@@ -2292,23 +2803,345 @@ section h2::after {
   text-shadow: 0 2px 5px rgba(0, 0, 0, 0.8);
 }
 
-/* Mission Section - Light Theme */
+/* Mission Section - Enhanced Visuals & Animations */
 #mission {
-  background-color: #fff !important;
+  background: linear-gradient(
+    180deg,
+    rgba(250, 250, 250, 0.98),
+    rgba(245, 243, 238, 0.98)
+  );
+  padding: 4rem 0 5rem 0;
+  position: relative;
+  overflow: visible;
+}
+
+/* Decorative mission background and animated blobs */
+#mission::before,
+#mission::after {
+  content: none;
+}
+
+.mission-decor {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  mix-blend-mode: screen;
+  background-image:
+    repeating-linear-gradient(
+      120deg,
+      rgba(255, 255, 255, 0.02) 0 2px,
+      transparent 2px 10px
+    ),
+    radial-gradient(
+      circle at 10% 20%,
+      rgba(179, 135, 40, 0.035),
+      transparent 15%
+    ),
+    radial-gradient(circle at 85% 80%, rgba(58, 80, 107, 0.03), transparent 18%);
+  background-size: auto, cover, cover;
+}
+
+.mission-decor::before,
+.mission-decor::after {
+  content: "";
+  position: absolute;
+  width: 420px;
+  height: 420px;
+  border-radius: 48%;
+  filter: blur(48px);
+  opacity: 0.9;
+  pointer-events: none;
+}
+.mission-decor::before {
+  right: -80px;
+  top: -120px;
+  background: radial-gradient(
+    circle at 30% 30%,
+    rgba(179, 135, 40, 0.95),
+    rgba(179, 135, 40, 0.06) 40%,
+    transparent 60%
+  );
+  transform: translate3d(0, 0, 0);
+  animation: floatSlow 9s ease-in-out infinite;
+}
+.mission-decor::after {
+  left: -120px;
+  bottom: -100px;
+  background: radial-gradient(
+    circle at 70% 70%,
+    rgba(58, 80, 107, 0.85),
+    rgba(58, 80, 107, 0.03) 35%,
+    transparent 60%
+  );
+  animation: floatSlowReverse 11s ease-in-out infinite;
+}
+
+.mission-inner {
+  position: relative;
+  z-index: 2;
+  padding: 2rem 1.2rem;
+  border-radius: 14px;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.75),
+    rgba(255, 255, 255, 0.7)
+  );
+  box-shadow: 0 12px 40px rgba(34, 34, 34, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(6px) saturate(110%);
+}
+
+#mission .ministry-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.5rem;
+  align-items: stretch;
+  position: relative;
+  z-index: 3;
+}
+
+@keyframes floatSlowReverse {
+  0% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-18px) rotate(-6deg);
+  }
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+}
+
+/* Heading filigree and sweep */
+.mission-filigree {
+  display: block;
+  margin: 0 auto 0.5rem;
+  opacity: 0.85;
+  transform-origin: center;
+  filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.06));
+  animation: filigreeFloat 10s ease-in-out infinite;
+}
+
+@keyframes filigreeFloat {
+  0% {
+    transform: translateY(0) rotate(0.2deg);
+    opacity: 0.85;
+  }
+  50% {
+    transform: translateY(-6px) rotate(-0.6deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(0) rotate(0.2deg);
+    opacity: 0.85;
+  }
+}
+
+.mission-inner h2 {
+  position: relative;
+  display: inline-block;
+  margin: 0 auto 1.2rem;
+}
+
+.mission-inner h2::after {
+  content: "";
+  display: block;
+  height: 6px;
+  width: 120%;
+  background: linear-gradient(
+    90deg,
+    rgba(179, 135, 40, 0.95),
+    rgba(252, 246, 190, 0.95)
+  );
+  border-radius: 6px;
+  margin: 8px auto 0;
+  transform-origin: left center;
+  transform: scaleX(0);
+  transition: transform 0.8s cubic-bezier(0.2, 0.9, 0.2, 1);
+}
+
+.mission-inner h2.visible::after,
+.mission-inner h2:hover::after {
+  transform: scaleX(1);
+}
+
+/* Animated border ring inside each card (card-ring) */
+.ministry-card {
+  position: relative;
+  z-index: 2;
+}
+.ministry-card .card-ring {
+  position: absolute;
+  left: -10px;
+  top: -10px;
+  right: -10px;
+  bottom: -10px;
+  border-radius: 16px;
+  background: conic-gradient(
+    from 0deg,
+    rgba(179, 135, 40, 0.22),
+    rgba(252, 246, 190, 0.18),
+    rgba(58, 80, 107, 0.1)
+  );
+  filter: blur(12px) saturate(120%);
+  opacity: 0;
+  transform: scale(0.98) rotate(0deg);
+  transition:
+    opacity 0.45s ease,
+    transform 0.6s ease;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.ministry-card.is-hovered .card-ring,
+.ministry-card:hover .card-ring {
+  opacity: 1;
+  animation: spinRing 5.5s linear infinite;
+}
+
+/* ensure content sits above ring */
+.ministry-card > .ministry-icon,
+.ministry-card > h3,
+.ministry-card > p {
+  position: relative;
+  z-index: 3;
 }
 
 #mission .ministry-card {
-  background: #fff;
-  border: 1px solid rgba(179, 135, 40, 0.15);
-  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.05);
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.98),
+    rgba(252, 250, 245, 0.95)
+  );
+  padding: 2.2rem 1.6rem;
+  border-radius: 14px;
+  text-align: center;
+  color: var(--text-color);
+  border: 1px solid rgba(179, 135, 40, 0.12);
+  box-shadow: 0 18px 40px rgba(34, 34, 34, 0.06);
+  transition:
+    transform 0.5s cubic-bezier(0.2, 0.9, 0.2, 1),
+    box-shadow 0.35s,
+    border-color 0.35s;
+  transform-origin: center center;
+  perspective: 900px;
+  overflow: hidden;
+}
+
+#mission .ministry-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.02),
+    transparent 40%
+  );
+  pointer-events: none;
+}
+
+#mission .ministry-card:hover {
+  transform: translateY(-12px) rotateX(3deg) scale(1.01);
+  box-shadow: 0 30px 60px rgba(34, 34, 34, 0.12);
+  border-color: rgba(179, 135, 40, 0.22);
+}
+
+#mission .ministry-icon {
+  width: 82px;
+  height: 82px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(
+    135deg,
+    rgba(187, 134, 40, 0.95),
+    rgba(252, 246, 190, 0.95)
+  );
+  color: #111;
+  font-size: 1.6rem;
+  margin: 0 auto 1rem;
+  box-shadow: 0 8px 18px rgba(179, 135, 40, 0.18);
+  transition:
+    transform 0.45s ease,
+    box-shadow 0.35s;
+}
+
+#mission .ministry-card:hover .ministry-icon {
+  transform: translateY(-6px) rotate(-8deg) scale(1.05);
+  box-shadow: 0 14px 30px rgba(179, 135, 40, 0.22);
 }
 
 #mission .ministry-card h3 {
-  color: var(--primary-color);
+  margin-top: 0.4rem;
+  margin-bottom: 0.5rem;
+  font-family: "Cinzel", serif;
+  font-size: 1.2rem;
+  background: var(--gold-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
 #mission .ministry-card p {
-  color: #666;
+  color: #555;
+  font-size: 0.98rem;
+  line-height: 1.6;
+  margin-bottom: 0.6rem;
+}
+
+/* subtle underline that animates on hover */
+#mission .ministry-card h3::after {
+  content: "";
+  display: block;
+  width: 40px;
+  height: 4px;
+  margin: 8px auto 0;
+  background: linear-gradient(
+    90deg,
+    rgba(179, 135, 40, 0.95),
+    rgba(252, 246, 190, 0.95)
+  );
+  border-radius: 2px;
+  transform-origin: center;
+  transform: scaleX(0);
+  transition: transform 0.45s cubic-bezier(0.2, 0.9, 0.2, 1);
+}
+
+#mission .ministry-card:hover h3::after,
+#mission .ministry-card.active h3::after {
+  transform: scaleX(1);
+}
+
+/* reveal animation (works with existing IntersectionObserver that adds .active) */
+#mission .ministry-card {
+  opacity: 0;
+  transform: translateY(30px) rotateX(0deg);
+}
+#mission .ministry-card.active {
+  opacity: 1;
+  transform: translateY(0) rotateX(0deg);
+  transition:
+    opacity 0.7s ease,
+    transform 0.7s cubic-bezier(0.2, 0.9, 0.2, 1);
+}
+
+/* small stagger helpers already present: .delay-100/.delay-200 */
+@keyframes missionFloat {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+#mission .ministry-card.active .ministry-icon {
+  animation: missionFloat 4s ease-in-out infinite;
 }
 
 /* Leadership Section - Light Theme */
@@ -2347,7 +3180,15 @@ section h2::after {
   margin: 2rem auto 4rem;
   padding: 2rem;
   position: relative;
-  max-width: 800px;
+  max-width: 1100px;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.98),
+    rgba(255, 250, 240, 0.95)
+  );
+  border-radius: 18px;
+  box-shadow: 0 20px 50px rgba(34, 34, 34, 0.08);
+  border: 1px solid rgba(179, 135, 40, 0.06);
 }
 
 .couple-photos {
@@ -2359,41 +3200,50 @@ section h2::after {
 }
 
 .couple-photos img {
-  width: 200px;
-  height: 200px;
+  width: 220px;
+  height: 220px;
   border-radius: 50%;
   object-fit: cover;
-  border: 5px solid #fff;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-  transition: transform 0.3s ease;
+  border: 6px solid #fff;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.12);
+  transition:
+    transform 0.35s ease,
+    box-shadow 0.35s;
 }
 
 .couple-photos img.husband {
-  z-index: 1;
-  margin-right: -50px; /* Overlap effect */
+  z-index: 2;
+  margin-right: -60px; /* Overlap effect */
 }
 
 .couple-photos img.wife {
-  z-index: 0;
+  z-index: 1;
 }
 
 .couple-photos:hover img {
-  transform: scale(1.05);
-  z-index: 2;
+  transform: scale(1.06);
+  z-index: 3;
 }
 
+/* decorative spinning wreath */
 .couple-photos::before {
   content: "";
   position: absolute;
-  width: 320px;
-  height: 320px;
-  border: 1px dashed rgba(179, 135, 40, 0.4);
+  width: 420px;
+  height: 420px;
   border-radius: 50%;
+  background: conic-gradient(
+    from 0deg,
+    rgba(179, 135, 40, 0.06),
+    rgba(58, 80, 107, 0.03)
+  );
+  filter: blur(20px);
   z-index: 0;
-  animation: spin 30s linear infinite;
+  transform: translateZ(0);
+  animation: slowSpin 28s linear infinite;
 }
 
-@keyframes spin {
+@keyframes slowSpin {
   from {
     transform: rotate(0deg);
   }
@@ -2402,8 +3252,323 @@ section h2::after {
   }
 }
 
+/* --- Testimonials Section --- */
+#testimonials {
+  padding: 6rem 0;
+  background: url("https://images.unsplash.com/photo-1542018211-52739483307c?q=80&w=2070")
+    no-repeat center center/cover;
+  background-attachment: fixed;
+  position: relative;
+  overflow: hidden;
+  color: #fff;
+}
+
+/* Overlay for background image */
+#testimonials::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(10, 10, 10, 0.9);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  z-index: 1;
+}
+
+#testimonials h2 {
+  text-align: center;
+  margin-bottom: 4rem;
+  font-size: 2.8rem;
+  background: var(--gold-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  position: relative;
+  z-index: 2;
+}
+
+.testimonials-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 2.5rem;
+  position: relative;
+  z-index: 2;
+}
+
+.testimonial-card {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  padding: 3rem 2rem;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative;
+  overflow: hidden;
+  /* Scroll Animation */
+  animation: testimonialFadeIn linear both;
+  animation-timeline: view();
+  animation-range: entry 0% entry 50%;
+}
+
+.testimonial-card:hover {
+  transform: translateY(-10px) scale(1.02);
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(179, 135, 40, 0.3);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+}
+
+.testimonial-card::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: var(--gold-gradient);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s ease;
+}
+
+.testimonial-card:hover::after {
+  transform: scaleX(1);
+}
+
+.testimonial-stars {
+  color: #ffd700;
+  margin-bottom: 1.5rem;
+  font-size: 0.9rem;
+  letter-spacing: 2px;
+}
+
+.testimonial-text {
+  font-family: "Montserrat", sans-serif;
+  font-size: 1.05rem;
+  line-height: 1.8;
+  color: #ccc;
+  margin-bottom: 2rem;
+  font-style: italic;
+}
+
+.testimonial-author {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding-top: 1.5rem;
+}
+
+.testimonial-author img {
+  width: 55px;
+  height: 55px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid rgba(179, 135, 40, 0.5);
+}
+
+.testimonial-author h4 {
+  color: #fff;
+  font-family: "Cinzel", serif;
+  font-size: 1.1rem;
+  margin-bottom: 0.2rem;
+}
+
+.testimonial-author p {
+  color: var(--accent-color);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 600;
+  margin: 0;
+}
+
+/* Staggered animation delays for cards */
+.testimonial-card:nth-child(2) {
+  animation-range: entry 15% entry 65%;
+}
+.testimonial-card:nth-child(3) {
+  animation-range: entry 30% entry 80%;
+}
+.testimonial-card:nth-child(n + 4) {
+  animation-range: entry 45% entry 95%;
+}
+
+@keyframes testimonialFadeIn {
+  from {
+    opacity: 0;
+    translate: 0 50px;
+    scale: 0.9;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+    scale: 1;
+  }
+}
+
+/* Enable subtle zoom for users who prefer motion */
+@media (prefers-reduced-motion: no-preference) {
+  .hero-video {
+    animation: zoomEffect 180s ease-in-out infinite alternate;
+  }
+}
+
+/* Disable animations for users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .hero-video,
+  .scroll-indicator,
+  .btn-live::before,
+  .btn-live::after {
+    animation: none !important;
+  }
+}
+
 @media (max-width: 768px) {
   .page-hero {
     padding: 6rem 1rem 4rem;
+  }
+}
+
+/* --- Give Modal Styles --- */
+.bank-card {
+  background: linear-gradient(145deg, #1a1a1a, #252525);
+  border: 1px solid rgba(179, 135, 40, 0.3);
+  padding: 2rem;
+  margin-top: 2rem;
+  border-radius: 16px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.bank-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 40px rgba(179, 135, 40, 0.2);
+  border-color: var(--accent-color);
+}
+
+.bank-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: var(--gold-gradient);
+}
+
+.bank-info {
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 1rem;
+  position: relative;
+  z-index: 2;
+}
+
+.bank-info:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.bank-label {
+  display: block;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  color: var(--accent-color);
+  margin-bottom: 0.5rem;
+  letter-spacing: 2px;
+  font-weight: 700;
+}
+
+.bank-value {
+  display: block;
+  font-size: 1.4rem;
+  font-weight: 500;
+  color: #f0f0f0;
+  font-family: "Cinzel", serif;
+}
+
+.highlight-number {
+  font-family: "Montserrat", sans-serif;
+  font-size: 2.2rem;
+  font-weight: 700;
+  background: var(--gold-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  letter-spacing: 3px;
+  margin-top: 0.5rem;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+  display: block;
+}
+
+.copy-btn {
+  background: rgba(0, 0, 0, 0.4);
+  color: #fff;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  transition: all 0.3s;
+  margin-left: 1rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.copy-btn:hover {
+  background: var(--accent-color);
+  color: #1a1a1a;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+}
+
+.copy-btn i {
+  font-size: 1rem;
+}
+
+.highlight-number {
+  position: relative;
+}
+
+/* --- Prominent Nav Give Button --- */
+.nav-give-btn {
+  background: linear-gradient(90deg, #ffd700, #fdb931, #ffd700);
+  background-size: 200% auto;
+  color: #000 !important;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+  animation: givePulse 2s infinite;
+  font-weight: 900;
+}
+
+.nav-give-btn:hover {
+  box-shadow: 0 0 25px rgba(255, 215, 0, 0.8);
+  transform: scale(1.05);
+}
+
+@keyframes givePulse {
+  0% {
+    background-position: 0% 50%;
+    box-shadow: 0 0 0 0 rgba(255, 215, 0, 0.7);
+  }
+  70% {
+    background-position: 100% 50%;
+    box-shadow: 0 0 0 10px rgba(255, 215, 0, 0);
+  }
+  100% {
+    background-position: 0% 50%;
+    box-shadow: 0 0 0 0 rgba(255, 215, 0, 0);
   }
 }

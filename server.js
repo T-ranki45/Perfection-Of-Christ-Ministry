@@ -218,6 +218,7 @@ app.post("/api/prayer-requests", async (req, res) => {
     email,
     request,
     timestamp: new Date(),
+    isRead: false,
     _id: new ObjectId(),
   };
 
@@ -244,6 +245,43 @@ app.get("/api/prayer-requests", async (req, res) => {
       ),
     );
   }
+});
+
+// Delete prayer request
+app.delete("/api/prayer-requests/:id", async (req, res) => {
+  if (!db) {
+    return res
+      .status(503)
+      .json({ error: "Database not connected. Cannot modify data." });
+  }
+  const { id } = req.params;
+
+  const result = await db
+    .collection("prayerRequests")
+    .deleteOne({ _id: new ObjectId(id) });
+  if (result.deletedCount === 1) {
+    return res.json({ message: "Request deleted successfully" });
+  }
+  return res.status(404).json({ error: "Request not found" });
+});
+
+// Toggle prayer request read status
+app.patch("/api/prayer-requests/:id/read", async (req, res) => {
+  if (!db) {
+    return res
+      .status(503)
+      .json({ error: "Database not connected. Cannot modify data." });
+  }
+  const { id } = req.params;
+  const { isRead } = req.body;
+
+  const result = await db
+    .collection("prayerRequests")
+    .updateOne({ _id: new ObjectId(id) }, { $set: { isRead: isRead } });
+  if (result.matchedCount === 1) {
+    return res.json({ message: "Request updated successfully" });
+  }
+  return res.status(404).json({ error: "Request not found" });
 });
 
 // Live Stream Routes

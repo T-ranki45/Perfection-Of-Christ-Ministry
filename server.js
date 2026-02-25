@@ -12,7 +12,8 @@ const DB_NAME = process.env.DB_NAME || "pocm-db";
 
 // Middleware
 app.use(cors()); // Allow frontend to communicate with backend
-app.use(express.json({ limit: "50mb" })); // Parse JSON bodies (increased limit for images)
+app.use(express.json({ limit: "200mb" })); // Increased limit for large image uploads
+app.use(express.urlencoded({ limit: "200mb", extended: true }));
 
 // Security: Prevent access to server code and config
 app.use((req, res, next) => {
@@ -82,7 +83,9 @@ function saveImageToDisk(base64Data, folder) {
     // If it's not base64 (e.g. already a URL), return it as is
     if (!base64Data || !base64Data.startsWith("data:image")) return base64Data;
 
-    const matches = base64Data.match(/^data:image\/([a-zA-Z]+);base64,(.+)$/);
+    const matches = base64Data.match(
+      /^data:image\/([a-zA-Z0-9\+\-\.]+);base64,(.+)$/,
+    );
     if (!matches || matches.length !== 3) return base64Data;
 
     const ext = matches[1];

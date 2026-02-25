@@ -566,10 +566,14 @@
               previewContainer.innerHTML = "";
               loadFlyersList(); // Refresh the list
             } else {
-              const data = await res.json();
-              alert(
-                "Failed to post flyers: " + (data.error || "Unknown error"),
-              );
+              let errorMsg = "Unknown error";
+              try {
+                const data = await res.json();
+                errorMsg = data.error || JSON.stringify(data);
+              } catch (e) {
+                errorMsg = `Server Error (${res.status}): ${res.statusText}`;
+              }
+              alert("Failed to post flyers: " + errorMsg);
             }
           } catch (err) {
             console.error(err);

@@ -132,6 +132,51 @@
         border-bottom: 1px solid #f0f0f0;
         vertical-align: top;
       }
+
+      /* DB Status Badge */
+      .status-badge {
+        padding: 6px 15px;
+        border-radius: 30px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.3s ease;
+      }
+      .status-connected {
+        background: rgba(46, 204, 113, 0.15);
+        color: #2ecc71;
+        border: 1px solid rgba(46, 204, 113, 0.3);
+      }
+      .status-local {
+        background: rgba(241, 196, 15, 0.15);
+        color: #f1c40f;
+        border: 1px solid rgba(241, 196, 15, 0.3);
+        animation: pulse-warning 2s infinite;
+      }
+      @keyframes pulse-warning {
+        0% { box-shadow: 0 0 0 0 rgba(241, 196, 15, 0.4); }
+        70% { box-shadow: 0 0 0 6px rgba(241, 196, 15, 0); }
+        100% { box-shadow: 0 0 0 0 rgba(241, 196, 15, 0); }
+      }
+
+      .retry-btn {
+        background: rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        color: inherit;
+        padding: 2px 8px;
+        border-radius: 4px;
+        font-size: 0.7rem;
+        cursor: pointer;
+        margin-left: 8px;
+        transition: background 0.2s;
+      }
+      .retry-btn:hover {
+        background: rgba(0, 0, 0, 0.2);
+      }
     </style>
   </head>
   <body>
@@ -173,9 +218,12 @@
       <main class="main-content">
         <header class="top-bar">
           <h1>Welcome, Administrator</h1>
-          <div class="user-info">
-            <span>Admin User</span>
-            <div class="avatar"><i class="fas fa-user"></i></div>
+          <div style="display: flex; align-items: center; gap: 15px;">
+            <div id="db-status" class="status-badge" style="display: none;"></div>
+            <div class="user-info">
+              <span>Admin User</span>
+              <div class="avatar"><i class="fas fa-user"></i></div>
+            </div>
           </div>
         </header>
 
@@ -394,12 +442,63 @@
 
       // Fetch Data on Load
       document.addEventListener("DOMContentLoaded", () => {
+        checkDbStatus();
         loadDashboardStats();
         loadPrayerRequests();
         loadLiveStreamConfig();
         loadFlyersList();
         loadMessagesList();
       });
+
+      async function checkDbStatus() {
+        try {
+          const res = await fetch(`${API_URL}/status`);
+          const data = await res.json();
+          const badge = document.getElementById("db-status");
+          badge.style.display = "flex";
+          
+          if (data.connected) {
+            badge.className = "status-badge status-connected";
+            badge.innerHTML = '<i class="fas fa-database"></i> Online';
+            badge.title = "Connected to MongoDB Atlas";
+          } else {
+            badge.className = "status-badge status-local";
+            badge.innerHTML = '<i class="fas fa-hdd"></i> Local Mode <button onclick="retryDbConnection()" class="retry-btn" title="Retry Connection"><i class="fas fa-sync-alt"></i></button>';
+            badge.title = "Using temporary local storage. Data will be lost on restart.";
+          }
+        } catch (e) {
+          console.error("Status check failed", e);
+        }
+      }
+
+      async function retryDbConnection() {
+        const badge = document.getElementById("db-status");
+        const originalHtml = badge.innerHTML;
+        badge.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Connecting...';
+        
+        try {
+          const res = await fetch(`${API_URL}/connect-db`, { method: 'POST' });
+          const data = await res.json();
+          
+          if (data.connected) {
+            checkDbStatus(); // Refresh status badge
+            alert("Database connected successfully! Reloading data...");
+            // Reload all data sections to sync with the now-connected DB
+            loadDashboardStats();
+            loadPrayerRequests();
+            loadFlyersList();
+            loadMessagesList();
+            loadLiveStreamConfig();
+          } else {
+            alert("Connection failed: " + (data.error || "Unknown error"));
+            badge.innerHTML = originalHtml; // Revert to retry button
+          }
+        } catch (e) {
+          console.error(e);
+          alert("Connection attempt failed.");
+          badge.innerHTML = originalHtml;
+        }
+      }
 
       async function loadDashboardStats() {
         try {

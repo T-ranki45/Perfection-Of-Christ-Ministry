@@ -3572,3 +3572,96 @@ section h2::after {
     box-shadow: 0 0 0 0 rgba(255, 215, 0, 0);
   }
 }
+
+/* --- Small Mobile Enhancements (480px and below) --- */
+@media screen and (max-width: 480px) {
+  /* --- GLOBAL & INDEX PAGE --- */
+
+  /* Further reduce hero text size for very small screens (index.html) */
+  #hero h1 {
+    font-size: 2.2rem;
+  }
+  #hero p {
+    font-size: 1rem;
+  }
+  .hero-pretitle {
+    letter-spacing: 3px;
+  }
+
+  /* Adjust Welcome section for better readability (index.html) */
+  .welcome-card {
+    padding: 2rem 1rem;
+  }
+  #welcome h2 span {
+    font-size: 1.6rem; /* Further reduce size */
+  }
+  #welcome p {
+    font-size: 1rem; /* Make paragraph text slightly smaller */
+    line-height: 1.7;
+    min-height: 150px; /* Adjust min-height for smaller text */
+  }
+
+  /* Make all section titles a bit smaller */
+  section h2,
+  #events h2,
+  .cta-section h2 {
+    font-size: 1.8rem;
+  }
+
+  /* Adjust message cards for small screens (index.html) */
+  .message-card {
+    min-width: 240px;
+    width: 75vw;
+  }
+  .verse-scroll {
+    font-size: 1.2rem;
+  }
+
+  /* --- ABOUT PAGE --- */
+
+  /* About Page Hero */
+  .page-hero h1 {
+    font-size: 2.4rem;
+  }
+  .page-hero p {
+    font-size: 1rem;
+  }
+
+  /* Our Story Section */
+  #our-story .story-content blockquote {
+    font-size: 1.1rem;
+    padding: 1rem;
+  }
+  #our-story .story-badge {
+    width: 80px;
+    height: 80px;
+    bottom: -10px;
+  }
+  #our-story .story-badge strong {
+    font-size: 1.2rem;
+  }
+
+  /* Leadership & Team Section */
+  #leadership .couple-photos img,
+  #leadership .team-member .member-image {
+    width: 120px;
+    height: 120px;
+  }
+  #leadership .couple-details h3 {
+    font-size: 1.5rem;
+  }
+
+  /* Testimonials Section */
+  #testimonials .testimonial-card {
+    padding: 2rem 1.5rem;
+  }
+  #testimonials .testimonial-text {
+    font-size: 0.95rem;
+  }
+
+  /* CTA Section */
+  #cta-section .cta-buttons .button {
+    width: 100%;
+    text-align: center;
+  }
+}

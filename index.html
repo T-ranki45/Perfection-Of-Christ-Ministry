@@ -71,7 +71,7 @@
           <div class="hero-divider"></div>
           <p>Join us for worship this Sunday at 10:00 AM</p>
           <div class="hero-buttons">
-            <a href="#visit" class="button">Join Us This Sunday</a>
+            <a href="#" class="button open-plan-visit-modal">Join Us This Sunday</a>
             <a href="#" class="button btn-live"
               ><i class="fab fa-facebook-f"></i> Watch Live</a
             >
@@ -125,8 +125,8 @@
       <section id="welcome">
         <div class="container welcome-container">
           <div class="welcome-card reveal-scale">
-            <div class="welcome-icon"><i class="fas fa-dove"></i></div>
-            <h2>Welcome to <br /><span>Perfection Of Christ Ministry</span></h2>
+            <div class="welcome-icon"><i class="fas fa-dove" id="perfection"></i></div>
+            <h2 id="welcome-to">Welcome to <br /><span>Perfection Of Christ Ministry</span></h2>
             <p id="welcome-text">
               We are a community of believers dedicated to knowing God and
               making Him known. Whether you're curious about faith or a lifelong
@@ -175,6 +175,7 @@
               </p>
             </div>
             <div class="map-placeholder">
+              <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d252.02222395074406!2d7.062773212262664!3d4.8697601204154894!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e1!3m2!1sen!2sng!4v1772015739031!5m2!1sen!2sng" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
               <!-- You can embed a Google Map here -->
               <p>[Google Map Placeholder]</p>
             </div>
@@ -305,6 +306,34 @@
           <button type="submit" class="button" style="width: 100%">
             Submit Request
           </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Plan Visit Modal -->
+    <div id="plan-visit-modal" class="modal">
+      <div class="modal-content">
+        <span class="close-btn plan-visit-close-btn">&times;</span>
+        <h2>Plan Your Visit</h2>
+        <p>We can't wait to meet you! Let us know you're coming so we can welcome you.</p>
+        <form id="plan-visit-form">
+          <div class="form-group">
+            <label for="visit-name">Name</label>
+            <input type="text" id="visit-name" name="name" placeholder="Your Name" required />
+          </div>
+          <div class="form-group">
+            <label for="visit-date">Date of Visit</label>
+            <input type="date" id="visit-date" name="date" required />
+          </div>
+          <div class="form-group">
+            <label for="visit-phone">Phone Number (Optional)</label>
+            <input type="tel" id="visit-phone" name="phone" placeholder="Your Phone Number" />
+          </div>
+          <div class="form-group">
+            <label for="visit-guests">Number of Guests</label>
+            <input type="number" id="visit-guests" name="guests" min="1" value="1" />
+          </div>
+          <button type="submit" class="button" style="width: 100%">Plan My Visit</button>
         </form>
       </div>
     </div>
@@ -901,6 +930,9 @@
         if (e.target == messageModal) {
           closeMessageModal();
         }
+        if (document.getElementById("plan-visit-modal") && e.target == document.getElementById("plan-visit-modal")) {
+          document.getElementById("plan-visit-modal").style.display = "none";
+        }
       });
 
       // --- Give Modal Logic ---
@@ -967,6 +999,65 @@
           } finally {
             submitBtn.innerText = originalBtnText;
             submitBtn.disabled = false;
+          }
+        });
+      }
+
+      // --- Plan Visit Modal Logic ---
+      const planVisitModal = document.getElementById("plan-visit-modal");
+      const planVisitBtns = document.querySelectorAll(".open-plan-visit-modal");
+      const planVisitCloseBtn = document.querySelector(".plan-visit-close-btn");
+
+      if (planVisitModal) {
+        planVisitBtns.forEach((btn) => {
+          btn.addEventListener("click", (e) => {
+            e.preventDefault();
+            planVisitModal.style.display = "block";
+          });
+        });
+
+        if (planVisitCloseBtn) {
+          planVisitCloseBtn.addEventListener("click", () => {
+            planVisitModal.style.display = "none";
+          });
+        }
+      }
+
+      // Handle Plan Visit Form
+      const planVisitForm = document.getElementById("plan-visit-form");
+      if (planVisitForm) {
+        planVisitForm.addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const btn = planVisitForm.querySelector("button[type='submit']");
+          const originalText = btn.innerText;
+          btn.innerText = "Sending...";
+          btn.disabled = true;
+
+          const name = document.getElementById("visit-name").value;
+          const date = document.getElementById("visit-date").value;
+          const phone = document.getElementById("visit-phone").value;
+          const guests = document.getElementById("visit-guests").value;
+
+          try {
+            const response = await fetch(`${API_URL}/plan-visit`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ name, date, phone, guests }),
+            });
+
+            if (response.ok) {
+              alert("We look forward to seeing you! Your visit has been planned.");
+              planVisitForm.reset();
+              planVisitModal.style.display = "none";
+            } else {
+              throw new Error("Server error");
+            }
+          } catch (error) {
+            console.error(error);
+            alert("Error sending request. Please try again.");
+          } finally {
+            btn.innerText = originalText;
+            btn.disabled = false;
           }
         });
       }

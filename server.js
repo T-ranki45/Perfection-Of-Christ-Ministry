@@ -327,6 +327,102 @@ app.post("/api/prayer-requests", async (req, res) => {
   res.status(201).json({ message: "Prayer request saved successfully" });
 });
 
+// Submit plan visit
+app.post("/api/plan-visit", async (req, res) => {
+  const { name, date, phone, guests } = req.body;
+
+  if (!name || !date) {
+    return res.status(400).json({ error: "Name and Date are required" });
+  }
+
+  const newVisit = {
+    name,
+    date,
+    phone,
+    guests,
+    timestamp: new Date(),
+    _id: new ObjectId(),
+  };
+
+  if (db) {
+    await db.collection("plannedVisits").insertOne(newVisit);
+  } else {
+    const localVisits = getLocalData("plannedVisits");
+    localVisits.push(newVisit);
+    saveLocalData("plannedVisits", localVisits);
+  }
+
+  res.status(201).json({ message: "Visit planned successfully" });
+});
+
+// Get all planned visits
+app.get("/api/plan-visit", async (req, res) => {
+  if (db) {
+    const visits = await db
+      .collection("plannedVisits")
+      .find({})
+      .sort({ timestamp: -1 })
+      .toArray();
+    res.json(visits);
+  } else {
+    const localVisits = getLocalData("plannedVisits");
+    res.json(
+      localVisits.sort(
+        (a, b) => new Date(b.timestamp) - new Date(a.timestamp),
+      ),
+    );
+  }
+});
+
+// Delete planned visit
+app.delete("/api/plan-visit/:id", async (req, res) => {
+  const { id } = req.params;
+
+  if (db) {
+    const result = await db
+      .collection("plannedVisits")
+      .deleteOne({ _id: new ObjectId(id) });
+    if (result.deletedCount === 1) {
+      return res.json({ message: "Visit deleted successfully" });
+    }
+  } else {
+    let localVisits = getLocalData("plannedVisits");
+    const initialLength = localVisits.length;
+    localVisits = localVisits.filter((v) => v._id.toString() !== id);
+    saveLocalData("plannedVisits", localVisits);
+    if (localVisits.length < initialLength) {
+      return res.json({ message: "Visit deleted successfully" });
+    }
+  }
+  return res.status(404).json({ error: "Visit not found" });
+});
+
+// Toggle planned visit visited status
+app.patch("/api/plan-visit/:id/visited", async (req, res) => {
+  const { id } = req.params;
+  const { visited } = req.body;
+
+  if (db) {
+    const result = await db
+      .collection("plannedVisits")
+      .updateOne({ _id: new ObjectId(id) }, { $set: { visited: visited } });
+    if (result.matchedCount === 1) {
+      return res.json({ message: "Visit updated successfully" });
+    }
+  } else {
+    const localVisits = getLocalData("plannedVisits");
+    const visitIndex = localVisits.findIndex(
+      (v) => v._id.toString() === id,
+    );
+    if (visitIndex !== -1) {
+      localVisits[visitIndex].visited = visited;
+      saveLocalData("plannedVisits", localVisits);
+      return res.json({ message: "Visit updated successfully" });
+    }
+  }
+  return res.status(404).json({ error: "Visit not found" });
+});
+
 // Get all prayer requests (Admin)
 app.get("/api/prayer-requests", async (req, res) => {
   if (db) {

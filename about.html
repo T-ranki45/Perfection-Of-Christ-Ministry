@@ -452,6 +452,7 @@
 
       if (menuBtn && mainNav) {
         menuBtn.addEventListener("click", () => {
+          document.body.classList.toggle("no-scroll");
           mainNav.classList.toggle("show");
           // Toggle icon between bars and times
           const icon = menuBtn.querySelector("i");

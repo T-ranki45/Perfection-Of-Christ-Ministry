@@ -175,9 +175,7 @@
               </p>
             </div>
             <div class="map-placeholder">
-              <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d252.02222395074406!2d7.062773212262664!3d4.8697601204154894!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e1!3m2!1sen!2sng!4v1772015739031!5m2!1sen!2sng" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-              <!-- You can embed a Google Map here -->
-              <p>[Google Map Placeholder]</p>
+              <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d252.02222395074406!2d7.062773212262664!3d4.8697601204154894!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e1!3m2!1sen!2sng!4v1772015739031!5m2!1sen!2sng" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
             </div>
           </div>
         </div>
@@ -1068,6 +1066,7 @@
 
       if (menuBtn && mainNav) {
         menuBtn.addEventListener("click", () => {
+          document.body.classList.toggle("no-scroll");
           mainNav.classList.toggle("show");
           // Toggle icon between bars and times
           const icon = menuBtn.querySelector("i");

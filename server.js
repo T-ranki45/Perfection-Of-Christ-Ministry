@@ -49,6 +49,7 @@ const UPLOADS_DIR = path.join(STORAGE_DIR, "uploads");
   UPLOADS_DIR,
   path.join(UPLOADS_DIR, "flyers"),
   path.join(UPLOADS_DIR, "sermons"),
+  path.join(UPLOADS_DIR, "blog"),
 ].forEach((dir) => {
   if (!fs.existsSync(dir)) {
     fs.mkdirSync(dir, { recursive: true });
@@ -295,6 +296,82 @@ app.delete("/api/sermons/:id", async (req, res) => {
   }
 
   return res.status(404).json({ error: "Message not found" });
+});
+
+// --- BLOG ROUTES ---
+// Get all blog posts
+app.get("/api/blog", async (req, res) => {
+  if (db) {
+    const posts = await db
+      .collection("blog")
+      .find({})
+      .sort({ date: -1 })
+      .toArray();
+    res.json(posts);
+  } else {
+    const localBlog = getLocalData("blog");
+    res.json(localBlog.sort((a, b) => new Date(b.date) - new Date(a.date)));
+  }
+});
+
+// Add new blog post
+app.post("/api/blog", async (req, res) => {
+  try {
+    const { title, author, date, category, videoUrl, content, image } = req.body;
+    if (!title || !date || !content || !image) {
+      return res.status(400).json({ error: "Title, Date, Content, and Image are required" });
+    }
+
+    const newPost = {
+      title,
+      author: author || "Admin",
+      date,
+      category,
+      videoUrl,
+      content,
+      image, // Will be processed if local
+      _id: new ObjectId(),
+      createdAt: new Date()
+    };
+
+    if (db) {
+      await db.collection("blog").insertOne(newPost);
+    } else {
+      const localBlog = getLocalData("blog");
+      newPost.image = saveImageToDisk(image, "blog"); // Save image to folder
+      localBlog.push(newPost);
+      saveLocalData("blog", localBlog);
+    }
+
+    res.status(201).json({ message: "Blog post published successfully", post: newPost });
+  } catch (error) {
+    console.error("Error adding blog post:", error);
+    res.status(500).json({ error: "Internal Server Error: " + error.message });
+  }
+});
+
+// Delete blog post
+app.delete("/api/blog/:id", async (req, res) => {
+  const { id } = req.params;
+
+  if (db) {
+    const result = await db
+      .collection("blog")
+      .deleteOne({ _id: new ObjectId(id) });
+    if (result.deletedCount === 1) {
+      return res.json({ message: "Blog post deleted successfully" });
+    }
+  } else {
+    let localBlog = getLocalData("blog");
+    const initialLength = localBlog.length;
+    localBlog = localBlog.filter((p) => p._id.toString() !== id);
+    saveLocalData("blog", localBlog);
+    if (localBlog.length < initialLength) {
+      return res.json({ message: "Blog post deleted successfully" });
+    }
+  }
+
+  return res.status(404).json({ error: "Blog post not found" });
 });
 
 // Submit prayer request

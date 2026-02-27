@@ -289,6 +289,9 @@
             <li onclick="showSection('messages')">
               <i class="fas fa-video"></i> Manage Messages
             </li>
+            <li onclick="showSection('blog')">
+              <i class="fas fa-newspaper"></i> Manage Blog
+            </li>
             <li onclick="showSection('livestream')">
               <i class="fas fa-video"></i> Live Stream
             </li>
@@ -438,6 +441,56 @@
             class="preview-grid"
             style="margin-top: 1rem"
           ></div>
+        </section>
+
+        <!-- Blog Section -->
+        <section id="blog" class="content-section">
+          <h2>Manage Blog Posts</h2>
+          <div class="card">
+            <p class="helper-text">
+              Create a new blog post, video entry, or gallery highlight.
+            </p>
+            <form id="add-blog-form">
+              <div class="form-group">
+                <label>Title</label>
+                <input type="text" id="blog-title" required placeholder="Post Title" />
+              </div>
+              <div class="form-group">
+                <label>Author</label>
+                <input type="text" id="blog-author" required placeholder="Author Name" />
+              </div>
+              <div class="form-group">
+                <label>Date</label>
+                <input type="date" id="blog-date" required />
+              </div>
+              <div class="form-group">
+                <label>Category</label>
+                <select id="blog-category" required>
+                  <option value="article">Article</option>
+                  <option value="video">Video</option>
+                  <option value="gallery">Gallery</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Video URL (Optional)</label>
+                <input type="url" id="blog-video-url" placeholder="https://..." />
+              </div>
+              <div class="form-group">
+                <label>Thumbnail Image</label>
+                <input type="file" id="blog-image" accept="image/*" required />
+              </div>
+              <div class="form-group">
+                <label>Short Description / Content</label>
+                <textarea id="blog-content" rows="4" placeholder="Enter a brief description..."></textarea>
+              </div>
+              <button type="submit" class="btn-primary">Publish Post</button>
+            </form>
+          </div>
+
+          <h3>Recent Posts</h3>
+          <div id="blog-list" class="preview-grid" style="margin-top: 1rem">
+            <!-- Populated by JS -->
+          </div>
         </section>
 
         <!-- Live Stream Section -->
@@ -619,6 +672,7 @@
         loadPlannedVisits();
         loadFlyersList();
         loadMessagesList();
+        loadBlogPosts();
       });
 
       async function checkDbStatus() {
@@ -659,6 +713,7 @@
             loadPrayerRequests();
             loadFlyersList();
             loadMessagesList();
+            loadBlogPosts();
             loadLiveStreamConfig();
           } else {
             alert("Connection failed: " + (data.error || "Unknown error"));
@@ -889,6 +944,97 @@
         } catch (e) {
           console.error(e);
           alert("An error occurred while trying to delete the message.");
+        }
+      }
+
+      // --- Blog Logic ---
+      document.getElementById("add-blog-form").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const btn = e.target.querySelector("button");
+        const originalText = btn.innerText;
+        btn.innerText = "Publishing...";
+        btn.disabled = true;
+
+        const title = document.getElementById("blog-title").value;
+        const author = document.getElementById("blog-author").value;
+        const date = document.getElementById("blog-date").value;
+        const category = document.getElementById("blog-category").value;
+        const videoUrl = document.getElementById("blog-video-url").value;
+        const content = document.getElementById("blog-content").value;
+        const fileInput = document.getElementById("blog-image");
+
+        if (fileInput.files.length === 0) {
+          alert("Please select a thumbnail image.");
+          btn.innerText = originalText;
+          btn.disabled = false;
+          return;
+        }
+
+        const reader = new FileReader();
+        reader.readAsDataURL(fileInput.files[0]);
+        reader.onload = async () => {
+          const image = reader.result;
+          try {
+            const res = await fetch(`${API_URL}/blog`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                title,
+                author,
+                date,
+                category,
+                videoUrl,
+                content,
+                image,
+              }),
+            });
+            if (res.ok) {
+              alert("Blog Post Published Successfully!");
+              e.target.reset();
+              loadBlogPosts();
+            } else {
+              const data = await res.json();
+              alert("Failed to publish post: " + (data.error || "Unknown error"));
+            }
+          } catch (err) {
+            console.error(err);
+            alert("Error publishing post. Check console for details.");
+          } finally {
+            btn.innerText = originalText;
+            btn.disabled = false;
+          }
+        };
+      });
+
+      async function loadBlogPosts() {
+        try {
+          const res = await fetch(`${API_URL}/blog`);
+          const posts = await res.json();
+          const container = document.getElementById("blog-list");
+          container.innerHTML = posts.map(post => `
+            <div class="flyer-manage-item" style="flex-direction:column; align-items: flex-start; gap: 0.5rem;">
+                <img src="${post.image}" alt="${post.title}" style="width:100%; height: 120px; object-fit:cover;">
+                <div style="font-size:0.9rem; font-weight:bold; padding: 0 10px;">${post.title}</div>
+                <div style="font-size:0.8rem; color:#aaa; padding: 0 10px 10px;">${post.date} | ${post.category}</div>
+                <button onclick="deleteBlogPost('${post._id}')" class="delete-btn" style="position:absolute; top:5px; right:5px;"><i class="fas fa-trash"></i></button>
+            </div>
+          `).join("");
+        } catch (e) {
+          console.error(e);
+        }
+      }
+
+      async function deleteBlogPost(id) {
+        if (!confirm("Delete this blog post?")) return;
+        try {
+          const res = await fetch(`${API_URL}/blog/${id}`, { method: "DELETE" });
+          if (res.ok) {
+            loadBlogPosts();
+          } else {
+            alert("Failed to delete post");
+          }
+        } catch (e) {
+          console.error(e);
         }
       }
 

@@ -3,6 +3,9 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Learn about Perfection Of Christ Ministry, our history, mission, and the leadership team dedicated to serving the community." />
+    <meta name="keywords" content="About Perfection Of Christ Ministry, Church History, Church Mission, Pastor John Jeremiah" />
+    
     <title>About Us | Perfection Of Christ Ministry</title>
     <link rel="stylesheet" href="style.css" />
     <link rel="stylesheet" href="about.css" />
@@ -37,7 +40,7 @@
               ></a>
             </li>
             <li><a href="index.html#visit">Visit</a></li>
-            <li><a href="#" class="button">Give</a></li>
+            <li><a href="#" class="button open-give-modal">Give</a></li>
           </ul>
         </nav>
       </div>
@@ -211,6 +214,18 @@
           <!-- Ministry Team -->
           <h3 class="team-title">Ministry Team</h3>
           <div class="team-grid">
+            <div class="team-member reveal-up delay-300">
+              <div class="member-image">
+                <img src="./image/Assistant-pst.png" alt="Assistant Pastor">
+
+              </div>
+              <h3 class="couple-details">Pastor Joseph Amadi</h3>
+              <p class="team-role">Assistant Pastor</p>
+              <p class="team-bio">
+                Supporting our pastoral team in preaching, teaching, and
+                pastoral care to help shepherd our growing congregation.
+              </p>
+            </div>
             <div class="team-member reveal-up">
               <div class="member-image">
                 <img src="./image/Choir-master.png" alt="Worship Leader" />
@@ -225,7 +240,7 @@
             <div class="team-member reveal-up delay-100">
               <div class="member-image">
                 <img
-                  src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=500&h=500&fit=crop"
+                  src="./image/Associate-pst.png"
                   alt="Associate Pastor"
                 />
               </div>
@@ -239,7 +254,7 @@
             <div class="team-member reveal-up delay-200">
               <div class="member-image">
                 <img
-                  src="https://images.unsplash.com/photo-1494790108420-10c11a44e5d5?q=80&w=500&h=500&fit=crop"
+                  src="./image/Youth-pst.png"
                   alt="Youth Pastor"
                 />
               </div>
@@ -250,6 +265,7 @@
                 encounter Christ and discover their purpose.
               </p>
             </div>
+            
             <div class="team-member reveal-up delay-300">
               <div class="member-image">
                 <img
@@ -263,90 +279,6 @@
                 Nurturing children in faith while creating a safe, loving
                 environment for spiritual growth.
               </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Testimonials -->
-      <section id="testimonials">
-        <div class="container">
-          <h2>Member Testimonies</h2>
-          <div class="testimonials-grid">
-            <div class="testimonial-card reveal-up">
-              <span class="accent-shape" aria-hidden="true"></span>
-              <div class="testimonial-stars">
-                <i class="fas fa-star"></i>
-                <i class="fas fa-star"></i>
-                <i class="fas fa-star"></i>
-                <i class="fas fa-star"></i>
-                <i class="fas fa-star"></i>
-              </div>
-              <p class="testimonial-text">
-                "Coming to Perfection Of Christ Ministry has transformed my
-                spiritual journey. The genuine community and passionate worship
-                have changed my life in ways I never imagined."
-              </p>
-              <div class="testimonial-author">
-                <img
-                  src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=200&h=200&fit=crop"
-                  alt="Member"
-                />
-                <div>
-                  <h4>Michael Johnson</h4>
-                  <p>Member since 2018</p>
-                </div>
-              </div>
-            </div>
-            <div class="testimonial-card reveal-up delay-100">
-              <span class="accent-shape" aria-hidden="true"></span>
-              <div class="testimonial-stars">
-                <i class="fas fa-star"></i>
-                <i class="fas fa-star"></i>
-                <i class="fas fa-star"></i>
-                <i class="fas fa-star"></i>
-                <i class="fas fa-star"></i>
-              </div>
-              <p class="testimonial-text">
-                "The leadership here truly cares about each individual. I've
-                grown in my faith and found my purpose through the discipleship
-                programs. Highly recommend!"
-              </p>
-              <div class="testimonial-author">
-                <img
-                  src="https://images.unsplash.com/photo-1494790108420-10c11a44e5d5?q=80&w=200&h=200&fit=crop"
-                  alt="Member"
-                />
-                <div>
-                  <h4>Sarah Martinez</h4>
-                  <p>Member since 2020</p>
-                </div>
-              </div>
-            </div>
-            <div class="testimonial-card reveal-up delay-200">
-              <span class="accent-shape" aria-hidden="true"></span>
-              <div class="testimonial-stars">
-                <i class="fas fa-star"></i>
-                <i class="fas fa-star"></i>
-                <i class="fas fa-star"></i>
-                <i class="fas fa-star"></i>
-                <i class="fas fa-star"></i>
-              </div>
-              <p class="testimonial-text">
-                "This church community welcomed me with open arms. The youth
-                programs and mentorship have been instrumental in my growth as a
-                young believer."
-              </p>
-              <div class="testimonial-author">
-                <img
-                  src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=200&h=200&fit=crop"
-                  alt="Member"
-                />
-                <div>
-                  <h4>David Chen</h4>
-                  <p>Member since 2022</p>
-                </div>
-              </div>
             </div>
           </div>
         </div>
@@ -371,6 +303,33 @@
         </div>
       </section>
     </main>
+
+    <!-- Give/Donation Modal -->
+    <div id="give-modal" class="modal">
+      <div class="modal-content">
+        <span class="close-btn give-close-btn">&times;</span>
+        <h2>Ways to Give</h2>
+        <p>
+          Thank you for your generosity. You can give via direct bank transfer
+          using the details below:
+        </p>
+
+        <div class="bank-card">
+          <div class="bank-info">
+            <span class="bank-label">Bank Name</span>
+            <span class="bank-value">Zenith Bank</span>
+          </div>
+          <div class="bank-info">
+            <span class="bank-label">Account Name</span>
+            <span class="bank-value">Perfection Of Christ LIB Ministry</span>
+          </div>
+          <div class="bank-info">
+            <span class="bank-label">Account Number</span>
+            <span class="bank-value highlight-number">2023686438</span>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <footer class="main-footer">
       <div class="container">
@@ -413,7 +372,7 @@
           </div>
         </div>
         <div class="footer-bottom">
-          <p>&copy; 2026 Perfection Of Christ Ministry. All Rights Reserved.</p>
+          <p>&copy; 2024 Perfection Of Christ Ministry. All Rights Reserved.</p>
         </div>
       </div>
     </footer>
@@ -441,6 +400,33 @@
       }
 
       checkLiveStatus();
+
+      // --- Give Modal Logic ---
+      const giveModal = document.getElementById("give-modal");
+      const giveBtns = document.querySelectorAll(".open-give-modal");
+      const giveCloseBtn = document.querySelector(".give-close-btn");
+
+      if (giveModal) {
+        giveBtns.forEach((btn) => {
+          btn.addEventListener("click", (e) => {
+            e.preventDefault();
+            giveModal.style.display = "block";
+          });
+        });
+
+        if (giveCloseBtn) {
+          giveCloseBtn.addEventListener("click", () => {
+            giveModal.style.display = "none";
+          });
+        }
+      }
+
+      // Generic window click to close modals
+      window.addEventListener("click", (e) => {
+        if (e.target == giveModal) {
+          giveModal.style.display = "none";
+        }
+      });
 
       const header = document.querySelector(".main-header");
       window.addEventListener("scroll", () => {

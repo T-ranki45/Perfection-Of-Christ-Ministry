@@ -3,6 +3,16 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Welcome to Perfection Of Christ Ministry. A community of believers dedicated to knowing God and making Him known. Join us for worship and the Word." />
+    <meta name="keywords" content="Perfection Of Christ Ministry, Church, Worship, Jesus, God, Christianity, Live Service, Pastor John Jeremiah" />
+    <meta name="author" content="Perfection Of Christ Ministry" />
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Perfection Of Christ Ministry | Welcome Home" />
+    <meta property="og:description" content="Faith, Hope, and Love. Join us for worship this Sunday." />
+    <meta property="og:image" content="./image/logo.png" />
+
     <title>Perfection Of Christ Ministry | Welcome Home</title>
     <link rel="stylesheet" href="style.css" />
     <link
@@ -32,6 +42,7 @@
             <li><a href="#events">Events</a></li>
             <li class="live-nav-item">
               <a href="#" class="live-nav-link"
+
                 >Live <span class="live-badge-nav"></span
               ></a>
             </li>
@@ -70,7 +81,7 @@
             ></span>
           </h1>
           <div class="hero-divider"></div>
-          <p>Join us for worship this Sunday at 10:00 AM</p>
+          <p>Join us for worship this Sunday at 7:00 AM</p>
           <div class="hero-buttons">
             <a href="#" class="button open-plan-visit-modal"
               >Join Us This Sunday</a
@@ -173,10 +184,10 @@
                 Bible Study: 6:00 PM
               </p>
               <h3>Location</h3>
-              <p>123 Church Street<br />Anytown, USA 12345</p>
+              <p>@PERFECTION OF<br />CHRIST MINISTRY<br>RUMUOKWURUSHI PIPELINE<br>OFF MTN MASK.</p>
               <h3>What to Expect</h3>
               <p>
-                Our services are about 75 minutes long and include contemporary
+                Our services are heavily loaded and include contemporary
                 worship music and a relevant message from the Bible. Come as you
                 are!
               </p>
@@ -386,15 +397,15 @@
         <div class="bank-card">
           <div class="bank-info">
             <span class="bank-label">Bank Name</span>
-            <span class="bank-value">Zenith Bank</span>
+            <span class="bank-value">First Bank</span>
           </div>
           <div class="bank-info">
             <span class="bank-label">Account Name</span>
-            <span class="bank-value">Perfection Of Christ Ministry</span>
+            <span class="bank-value">Perfection Of Christ LIB Ministry</span>
           </div>
           <div class="bank-info">
             <span class="bank-label">Account Number</span>
-            <span class="bank-value highlight-number">1010101010</span>
+            <span class="bank-value highlight-number">2023686438</span>
           </div>
         </div>
       </div>
@@ -932,6 +943,7 @@
       const prayerBtn = document.getElementById("prayer-btn");
       const prayerCloseBtn = prayerModal
         ? prayerModal.querySelector(".close-btn")
+
         : null;
 
       if (prayerBtn && prayerModal) {
@@ -969,6 +981,7 @@
         if (e.target == messageModal) {
           closeMessageModal();
         }
+        // Testimonial modal was removed.
         if (
           document.getElementById("plan-visit-modal") &&
           e.target == document.getElementById("plan-visit-modal")
@@ -996,7 +1009,10 @@
           });
         }
 
-        // Window click to close is handled by the generic window listener below
+        // The generic window listener handles closing the modal on outside click
+        if (giveModal && e.target == giveModal) {
+          giveModal.style.display = "none";
+        }
       }
 
       // --- Handle Prayer Form Submission ---

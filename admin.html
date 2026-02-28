@@ -37,20 +37,20 @@
       }
 
       /* --- Enhanced Form & Search Styles --- */
-      
+
       /* Search Bar Area */
       .search-wrapper {
         padding: 1.5rem;
         border-bottom: 1px solid #eee;
         background: #fcfcfc;
       }
-      
+
       .search-container {
         position: relative;
         width: 100%;
         max-width: 450px;
       }
-      
+
       .search-container input {
         width: 100%;
         padding: 12px 45px 12px 45px; /* Space for icon and clear button */
@@ -59,15 +59,15 @@
         font-size: 0.95rem;
         background-color: #fff;
         transition: all 0.3s ease;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.03);
       }
-      
+
       .search-container input:focus {
         border-color: #b38728;
         box-shadow: 0 4px 12px rgba(179, 135, 40, 0.15);
         outline: none;
       }
-      
+
       .search-container .search-icon {
         position: absolute;
         left: 18px;
@@ -98,17 +98,22 @@
       }
 
       /* General Input Styling for other forms */
-      .form-group input, .form-group textarea, .form-group select {
+      .form-group input,
+      .form-group textarea,
+      .form-group select {
         width: 100%;
         padding: 12px;
         border: 1px solid #ddd;
         border-radius: 8px;
         font-size: 1rem;
-        transition: border-color 0.3s, box-shadow 0.3s;
+        transition:
+          border-color 0.3s,
+          box-shadow 0.3s;
         background-color: #fff;
       }
 
-      .form-group input:focus, .form-group textarea:focus {
+      .form-group input:focus,
+      .form-group textarea:focus {
         border-color: #b38728;
         box-shadow: 0 0 0 3px rgba(179, 135, 40, 0.1);
         outline: none;
@@ -158,9 +163,15 @@
         animation: pulse-warning 2s infinite;
       }
       @keyframes pulse-warning {
-        0% { box-shadow: 0 0 0 0 rgba(241, 196, 15, 0.4); }
-        70% { box-shadow: 0 0 0 6px rgba(241, 196, 15, 0); }
-        100% { box-shadow: 0 0 0 0 rgba(241, 196, 15, 0); }
+        0% {
+          box-shadow: 0 0 0 0 rgba(241, 196, 15, 0.4);
+        }
+        70% {
+          box-shadow: 0 0 0 6px rgba(241, 196, 15, 0);
+        }
+        100% {
+          box-shadow: 0 0 0 0 rgba(241, 196, 15, 0);
+        }
       }
 
       .retry-btn {
@@ -206,35 +217,41 @@
         background: #fff;
         border-color: #ddd;
       }
-      
+
       /* Modal Styles */
       .modal {
-        display: none; 
-        position: fixed; 
-        z-index: 2000; 
+        display: none;
+        position: fixed;
+        z-index: 2000;
         left: 0;
         top: 0;
-        width: 100%; 
-        height: 100%; 
-        overflow: auto; 
-        background-color: rgba(0,0,0,0.6);
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.6);
         backdrop-filter: blur(4px);
       }
       .modal-content {
         background-color: #fff;
-        margin: 5% auto; 
+        margin: 5% auto;
         padding: 2.5rem;
         border: 1px solid #888;
         width: 90%;
         max-width: 650px;
         border-radius: 12px;
-        box-shadow: 0 25px 50px rgba(0,0,0,0.25);
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
         position: relative;
         animation: slideDown 0.3s ease-out;
       }
       @keyframes slideDown {
-        from { transform: translateY(-30px); opacity: 0; }
-        to { transform: translateY(0); opacity: 1; }
+        from {
+          transform: translateY(-30px);
+          opacity: 0;
+        }
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
       }
       .close-btn {
         color: #aaa;
@@ -248,10 +265,10 @@
       .close-btn:hover {
         color: #333;
       }
-      
+
       #modal-reply-btn:hover {
         background: #2c3e50 !important;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
       }
 
       .filter-select {
@@ -267,6 +284,108 @@
       }
       .filter-select:focus {
         border-color: #b38728;
+      }
+
+      /* --- Responsive Admin Layout --- */
+      .menu-toggle-btn {
+        display: none; /* Hidden by default on desktop */
+      }
+      .sidebar-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 1499;
+      }
+
+      @media (max-width: 992px) {
+        .sidebar {
+          position: fixed;
+          left: -280px; /* Hidden off-screen */
+          top: 0;
+          width: 280px;
+          height: 100%;
+          z-index: 1500;
+          transition: left 0.3s ease-in-out;
+          box-shadow: 4px 0 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .sidebar.open {
+          left: 0;
+        }
+
+        .main-content {
+          transition: margin-left 0.3s ease-in-out;
+        }
+
+        .menu-toggle-btn {
+          display: block; /* Show the button */
+          background: none;
+          border: none;
+          color: #333;
+          font-size: 1.5rem;
+          cursor: pointer;
+          margin-right: 15px;
+          padding: 5px;
+          line-height: 1;
+        }
+
+        .top-bar {
+          padding: 1rem;
+          align-items: center;
+        }
+
+        .top-bar h1 {
+          font-size: 1.3rem;
+        }
+
+        .stats-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .data-table-wrapper {
+          display: block;
+          width: 100%;
+          overflow-x: auto;
+          -webkit-overflow-scrolling: touch;
+        }
+
+        .modal-content {
+          margin: 10% auto;
+          width: 90%;
+          padding: 1.5rem;
+        }
+      }
+
+      @media (max-width: 576px) {
+        .top-bar {
+          flex-wrap: wrap;
+          gap: 10px;
+        }
+        .top-bar h1 {
+          width: 100%;
+          order: 2;
+          margin-bottom: 0;
+          font-size: 1.2rem;
+        }
+        .top-bar .menu-toggle-btn {
+          order: 1;
+        }
+        .top-bar > div:last-child {
+          order: 3;
+          width: 100%;
+          justify-content: flex-end;
+        }
+
+        .card {
+          padding: 1rem;
+        }
+        .form-group {
+          margin-bottom: 1rem;
+        }
       }
     </style>
   </head>
@@ -298,8 +417,11 @@
             <li onclick="showSection('prayer')">
               <i class="fas fa-praying-hands"></i> Prayer Requests
             </li>
-             <li onclick="showSection('visits')">
+            <li onclick="showSection('visits')">
               <i class="fas fa-calendar-check"></i> Planned Visits
+            </li>
+            <li onclick="showSection('testimonials-admin')">
+              <i class="fas fa-comments"></i> Manage Testimonials
             </li>
             <li onclick="logout()">
               <i class="fas fa-sign-out-alt"></i> Logout
@@ -313,10 +435,16 @@
 
       <!-- Main Content -->
       <main class="main-content">
+        <div class="sidebar-overlay"></div>
         <header class="top-bar">
+          <button class="menu-toggle-btn"><i class="fas fa-bars"></i></button>
           <h1>Welcome, Administrator</h1>
-          <div style="display: flex; align-items: center; gap: 15px;">
-            <div id="db-status" class="status-badge" style="display: none;"></div>
+          <div style="display: flex; align-items: center; gap: 15px">
+            <div
+              id="db-status"
+              class="status-badge"
+              style="display: none"
+            ></div>
             <div class="user-info">
               <span>Admin User</span>
               <div class="avatar"><i class="fas fa-user"></i></div>
@@ -348,6 +476,54 @@
           </div>
         </section>
 
+        <!-- Testimonials Section -->
+        <section id="testimonials-admin" class="content-section">
+          <h2>Manage Testimonials</h2>
+          <div class="card no-padding">
+            <div class="search-wrapper" style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
+              <div class="search-container" style="flex: 1;">
+                <i class="fas fa-search search-icon"></i>
+                <input
+                  type="text"
+                  id="testimonial-search"
+                  placeholder="Search testimonials by name..."
+                  onkeyup="filterTestimonials()"
+                  autocomplete="off"
+                />
+                <button
+                  id="testimonial-clear-search-btn"
+                  class="clear-search-btn"
+                  onclick="clearTestimonialSearch()"
+                >
+                  &times;
+                </button>
+              </div>
+              <select
+                id="testimonial-status-filter"
+                class="filter-select"
+                onchange="filterTestimonials()"
+              >
+                <option value="all">All Testimonials</option>
+                <option value="approved">Approved</option>
+                <option value="pending">Pending</option>
+              </select>
+            </div>
+            <div class="data-table-wrapper">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Testimonial</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="testimonial-table-body">
+                  <!-- Populated by JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
         <!-- Events Section -->
         <section id="events" class="content-section">
           <h2>Upcoming Services (Flyers)</h2>
@@ -453,11 +629,21 @@
             <form id="add-blog-form">
               <div class="form-group">
                 <label>Title</label>
-                <input type="text" id="blog-title" required placeholder="Post Title" />
+                <input
+                  type="text"
+                  id="blog-title"
+                  required
+                  placeholder="Post Title"
+                />
               </div>
               <div class="form-group">
                 <label>Author</label>
-                <input type="text" id="blog-author" required placeholder="Author Name" />
+                <input
+                  type="text"
+                  id="blog-author"
+                  required
+                  placeholder="Author Name"
+                />
               </div>
               <div class="form-group">
                 <label>Date</label>
@@ -473,7 +659,11 @@
               </div>
               <div class="form-group">
                 <label>Video URL (Optional)</label>
-                <input type="url" id="blog-video-url" placeholder="https://..." />
+                <input
+                  type="url"
+                  id="blog-video-url"
+                  placeholder="https://..."
+                />
               </div>
               <div class="form-group">
                 <label>Thumbnail Image</label>
@@ -481,7 +671,11 @@
               </div>
               <div class="form-group">
                 <label>Short Description / Content</label>
-                <textarea id="blog-content" rows="4" placeholder="Enter a brief description..."></textarea>
+                <textarea
+                  id="blog-content"
+                  rows="4"
+                  placeholder="Enter a brief description..."
+                ></textarea>
               </div>
               <button type="submit" class="btn-primary">Publish Post</button>
             </form>
@@ -526,34 +720,64 @@
         <section id="prayer" class="content-section">
           <h2>Incoming Prayer Requests</h2>
           <div class="card no-padding">
-            <div class="search-wrapper" style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
-                <div class="search-container" style="flex: 1;">
-                    <i class="fas fa-search search-icon"></i>
-                    <input type="text" id="prayer-search" placeholder="Search requests by name or email..." onkeyup="filterPrayerRequests()" autocomplete="off" />
-                    <button id="prayer-clear-search-btn" class="clear-search-btn" onclick="clearPrayerSearch()">&times;</button>
-                </div>
-                <select id="prayer-status-filter" class="filter-select" onchange="filterPrayerRequests()">
-                    <option value="all">All Requests</option>
-                    <option value="unread">Unread</option>
-                    <option value="read">Read</option>
-                </select>
+            <div
+              class="search-wrapper"
+              style="
+                display: flex;
+                gap: 15px;
+                align-items: center;
+                flex-wrap: wrap;
+              "
+            >
+              <div class="search-container" style="flex: 1">
+                <i class="fas fa-search search-icon"></i>
+                <input
+                  type="text"
+                  id="prayer-search"
+                  placeholder="Search requests by name or email..."
+                  onkeyup="filterPrayerRequests()"
+                  autocomplete="off"
+                />
+                <button
+                  id="prayer-clear-search-btn"
+                  class="clear-search-btn"
+                  onclick="clearPrayerSearch()"
+                >
+                  &times;
+                </button>
+              </div>
+              <select
+                id="prayer-status-filter"
+                class="filter-select"
+                onchange="filterPrayerRequests()"
+              >
+                <option value="all">All Requests</option>
+                <option value="unread">Unread</option>
+                <option value="read">Read</option>
+              </select>
             </div>
-            <table class="data-table">
-              <thead>
-                <tr>
-                  <th onclick="sortPrayerRequestsByDate()" style="cursor: pointer;" id="prayer-date-header">
-                    Date <i class="fas fa-sort"></i>
-                  </th>
-                  <th>Name</th>
-                  <th>Email</th>
-                  <th>Request</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody id="prayer-table-body">
-                <!-- Populated by JS -->
-              </tbody>
-            </table>
+            <div class="data-table-wrapper">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th
+                      onclick="sortPrayerRequestsByDate()"
+                      style="cursor: pointer"
+                      id="prayer-date-header"
+                    >
+                      Date <i class="fas fa-sort"></i>
+                    </th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Request</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="prayer-table-body">
+                  <!-- Populated by JS -->
+                </tbody>
+              </table>
+            </div>
           </div>
         </section>
 
@@ -561,33 +785,59 @@
         <section id="visits" class="content-section">
           <h2>Planned Visits</h2>
           <div class="card no-padding">
-            <div class="search-wrapper" style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
-                <div class="search-container" style="flex: 1;">
-                    <i class="fas fa-search search-icon"></i>
-                    <input type="text" id="visit-search" placeholder="Search visits by name..." onkeyup="loadPlannedVisits()" autocomplete="off" />
-                    <button id="visit-clear-search-btn" class="clear-search-btn" onclick="clearVisitSearch()">&times;</button>
-                </div>
-              <select id="visit-filter" class="filter-select" onchange="loadPlannedVisits()">
-                  <option value="all">All Visits</option>
-                  <option value="upcoming">Upcoming Visits</option>
-                  <option value="past">Past Visits</option>
+            <div
+              class="search-wrapper"
+              style="
+                display: flex;
+                gap: 15px;
+                align-items: center;
+                flex-wrap: wrap;
+              "
+            >
+              <div class="search-container" style="flex: 1">
+                <i class="fas fa-search search-icon"></i>
+                <input
+                  type="text"
+                  id="visit-search"
+                  placeholder="Search visits by name..."
+                  onkeyup="loadPlannedVisits()"
+                  autocomplete="off"
+                />
+                <button
+                  id="visit-clear-search-btn"
+                  class="clear-search-btn"
+                  onclick="clearVisitSearch()"
+                >
+                  &times;
+                </button>
+              </div>
+              <select
+                id="visit-filter"
+                class="filter-select"
+                onchange="loadPlannedVisits()"
+              >
+                <option value="all">All Visits</option>
+                <option value="upcoming">Upcoming Visits</option>
+                <option value="past">Past Visits</option>
               </select>
             </div>
-            <table class="data-table">
-              <thead>
-                <tr>
-                  <th>Visit Date</th>
-                  <th>Name</th>
-                  <th>Phone</th>
-                  <th>Guests</th>
-                  <th>Submitted On</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody id="visits-table-body">
-                <!-- Populated by JS -->
-              </tbody>
-            </table>
+            <div class="data-table-wrapper">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Visit Date</th>
+                    <th>Name</th>
+                    <th>Phone</th>
+                    <th>Guests</th>
+                    <th>Submitted On</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="visits-table-body">
+                  <!-- Populated by JS -->
+                </tbody>
+              </table>
+            </div>
           </div>
         </section>
       </main>
@@ -597,35 +847,93 @@
     <div id="view-prayer-modal" class="modal">
       <div class="modal-content">
         <span class="close-btn" onclick="closePrayerModal()">&times;</span>
-        <h2 style="margin-bottom: 1.5rem; color: #b38728; border-bottom: 1px solid #eee; padding-bottom: 1rem;">Prayer Request Details</h2>
-        
+        <h2
+          style="
+            margin-bottom: 1.5rem;
+            color: #b38728;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 1rem;
+          "
+        >
+          Prayer Request Details
+        </h2>
+
         <div class="prayer-detail-group">
           <span class="prayer-detail-label">From</span>
           <div id="view-prayer-name" class="prayer-detail-value"></div>
         </div>
-        
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-            <div class="prayer-detail-group">
-              <span class="prayer-detail-label">Email</span>
-              <div id="view-prayer-email" class="prayer-detail-value"></div>
-            </div>
-            <div class="prayer-detail-group">
-              <span class="prayer-detail-label">Date Received</span>
-              <div id="view-prayer-date" class="prayer-detail-value"></div>
-            </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem">
+          <div class="prayer-detail-group">
+            <span class="prayer-detail-label">Email</span>
+            <div id="view-prayer-email" class="prayer-detail-value"></div>
+          </div>
+          <div class="prayer-detail-group">
+            <span class="prayer-detail-label">Date Received</span>
+            <div id="view-prayer-date" class="prayer-detail-value"></div>
+          </div>
         </div>
-        
+
         <div class="prayer-detail-group">
           <span class="prayer-detail-label">Prayer Request</span>
-          <div id="view-prayer-message" class="prayer-detail-value message-body"></div>
+          <div
+            id="view-prayer-message"
+            class="prayer-detail-value message-body"
+          ></div>
         </div>
-        
-        <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 2rem; border-top: 1px solid #eee; padding-top: 1rem;">
-            <a id="modal-reply-btn" href="#" style="background: #3a506b; color: #fff; border: none; padding: 0.6rem 1.5rem; border-radius: 50px; font-size: 0.9rem; font-weight: 600; text-decoration: none; display: flex; align-items: center; gap: 8px; transition: all 0.2s;">
-                <i class="fas fa-reply"></i> Reply via Email
-            </a>
-            <button id="modal-mark-read-btn" class="btn-primary" style="width: auto; padding: 0.6rem 1.5rem; font-size: 0.9rem;">Mark as Read</button>
-            <button onclick="closePrayerModal()" style="background: #f1f1f1; color: #333; border: 1px solid #ddd; padding: 0.6rem 1.5rem; border-radius: 50px; cursor: pointer; font-weight: 600; transition: background 0.2s;">Close</button>
+
+        <div
+          style="
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 2rem;
+            border-top: 1px solid #eee;
+            padding-top: 1rem;
+          "
+        >
+          <a
+            id="modal-reply-btn"
+            href="#"
+            style="
+              background: #3a506b;
+              color: #fff;
+              border: none;
+              padding: 0.6rem 1.5rem;
+              border-radius: 50px;
+              font-size: 0.9rem;
+              font-weight: 600;
+              text-decoration: none;
+              display: flex;
+              align-items: center;
+              gap: 8px;
+              transition: all 0.2s;
+            "
+          >
+            <i class="fas fa-reply"></i> Reply via Email
+          </a>
+          <button
+            id="modal-mark-read-btn"
+            class="btn-primary"
+            style="width: auto; padding: 0.6rem 1.5rem; font-size: 0.9rem"
+          >
+            Mark as Read
+          </button>
+          <button
+            onclick="closePrayerModal()"
+            style="
+              background: #f1f1f1;
+              color: #333;
+              border: 1px solid #ddd;
+              padding: 0.6rem 1.5rem;
+              border-radius: 50px;
+              cursor: pointer;
+              font-weight: 600;
+              transition: background 0.2s;
+            "
+          >
+            Close
+          </button>
         </div>
       </div>
     </div>
@@ -638,7 +946,8 @@
 
       // --- GLOBAL STATE ---
       let allPrayerRequests = [];
-      let prayerSortOrder = 'desc'; // 'asc' or 'desc'
+      let prayerSortOrder = "desc"; // 'asc' or 'desc'
+      let allTestimonials = [];
 
       // --- SECURITY CHECK ---
       if (!localStorage.getItem("admin_token")) {
@@ -656,6 +965,16 @@
 
         document.getElementById(sectionId).classList.add("active");
         event.currentTarget.classList.add("active");
+
+        // Close sidebar on mobile after selection
+        if (window.innerWidth < 992) {
+          const sidebar = document.querySelector(".sidebar");
+          const overlay = document.querySelector(".sidebar-overlay");
+          if (sidebar && overlay) {
+            sidebar.classList.remove("open");
+            overlay.style.display = "none";
+          }
+        }
       }
 
       function logout() {
@@ -665,6 +984,28 @@
 
       // Fetch Data on Load
       document.addEventListener("DOMContentLoaded", () => {
+        // --- Mobile Menu Toggle ---
+        const menuToggleBtn = document.querySelector(".menu-toggle-btn");
+        const sidebar = document.querySelector(".sidebar");
+        const overlay = document.querySelector(".sidebar-overlay");
+
+        const closeSidebar = () => {
+          sidebar.classList.remove("open");
+          overlay.style.display = "none";
+        };
+
+        const toggleSidebar = () => {
+          sidebar.classList.toggle("open");
+          overlay.style.display = sidebar.classList.contains("open")
+            ? "block"
+            : "none";
+        };
+
+        if (menuToggleBtn && sidebar && overlay) {
+          menuToggleBtn.addEventListener("click", toggleSidebar);
+          overlay.addEventListener("click", closeSidebar);
+        }
+
         checkDbStatus();
         loadDashboardStats();
         loadPrayerRequests();
@@ -673,6 +1014,7 @@
         loadFlyersList();
         loadMessagesList();
         loadBlogPosts();
+        loadTestimonials();
       });
 
       async function checkDbStatus() {
@@ -681,15 +1023,17 @@
           const data = await res.json();
           const badge = document.getElementById("db-status");
           badge.style.display = "flex";
-          
+
           if (data.connected) {
             badge.className = "status-badge status-connected";
             badge.innerHTML = '<i class="fas fa-database"></i> Online';
             badge.title = "Connected to MongoDB Atlas";
           } else {
             badge.className = "status-badge status-local";
-            badge.innerHTML = '<i class="fas fa-hdd"></i> Local Mode <button onclick="retryDbConnection()" class="retry-btn" title="Retry Connection"><i class="fas fa-sync-alt"></i></button>';
-            badge.title = "Using temporary local storage. Data will be lost on restart.";
+            badge.innerHTML =
+              '<i class="fas fa-hdd"></i> Local Mode <button onclick="retryDbConnection()" class="retry-btn" title="Retry Connection"><i class="fas fa-sync-alt"></i></button>';
+            badge.title =
+              "Using temporary local storage. Data will be lost on restart.";
           }
         } catch (e) {
           console.error("Status check failed", e);
@@ -699,12 +1043,13 @@
       async function retryDbConnection() {
         const badge = document.getElementById("db-status");
         const originalHtml = badge.innerHTML;
-        badge.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Connecting...';
-        
+        badge.innerHTML =
+          '<i class="fas fa-spinner fa-spin"></i> Connecting...';
+
         try {
-          const res = await fetch(`${API_URL}/connect-db`, { method: 'POST' });
+          const res = await fetch(`${API_URL}/connect-db`, { method: "POST" });
           const data = await res.json();
-          
+
           if (data.connected) {
             checkDbStatus(); // Refresh status badge
             alert("Database connected successfully! Reloading data...");
@@ -948,77 +1293,85 @@
       }
 
       // --- Blog Logic ---
-      document.getElementById("add-blog-form").addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const btn = e.target.querySelector("button");
-        const originalText = btn.innerText;
-        btn.innerText = "Publishing...";
-        btn.disabled = true;
+      document
+        .getElementById("add-blog-form")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const btn = e.target.querySelector("button");
+          const originalText = btn.innerText;
+          btn.innerText = "Publishing...";
+          btn.disabled = true;
 
-        const title = document.getElementById("blog-title").value;
-        const author = document.getElementById("blog-author").value;
-        const date = document.getElementById("blog-date").value;
-        const category = document.getElementById("blog-category").value;
-        const videoUrl = document.getElementById("blog-video-url").value;
-        const content = document.getElementById("blog-content").value;
-        const fileInput = document.getElementById("blog-image");
+          const title = document.getElementById("blog-title").value;
+          const author = document.getElementById("blog-author").value;
+          const date = document.getElementById("blog-date").value;
+          const category = document.getElementById("blog-category").value;
+          const videoUrl = document.getElementById("blog-video-url").value;
+          const content = document.getElementById("blog-content").value;
+          const fileInput = document.getElementById("blog-image");
 
-        if (fileInput.files.length === 0) {
-          alert("Please select a thumbnail image.");
-          btn.innerText = originalText;
-          btn.disabled = false;
-          return;
-        }
-
-        const reader = new FileReader();
-        reader.readAsDataURL(fileInput.files[0]);
-        reader.onload = async () => {
-          const image = reader.result;
-          try {
-            const res = await fetch(`${API_URL}/blog`, {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                title,
-                author,
-                date,
-                category,
-                videoUrl,
-                content,
-                image,
-              }),
-            });
-            if (res.ok) {
-              alert("Blog Post Published Successfully!");
-              e.target.reset();
-              loadBlogPosts();
-            } else {
-              const data = await res.json();
-              alert("Failed to publish post: " + (data.error || "Unknown error"));
-            }
-          } catch (err) {
-            console.error(err);
-            alert("Error publishing post. Check console for details.");
-          } finally {
+          if (fileInput.files.length === 0) {
+            alert("Please select a thumbnail image.");
             btn.innerText = originalText;
             btn.disabled = false;
+            return;
           }
-        };
-      });
+
+          const reader = new FileReader();
+          reader.readAsDataURL(fileInput.files[0]);
+          reader.onload = async () => {
+            const image = reader.result;
+            try {
+              const res = await fetch(`${API_URL}/blog`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  title,
+                  author,
+                  date,
+                  category,
+                  videoUrl,
+                  content,
+                  image,
+                }),
+              });
+              if (res.ok) {
+                alert("Blog Post Published Successfully!");
+                e.target.reset();
+                loadBlogPosts();
+              } else {
+                const data = await res.json();
+                alert(
+                  "Failed to publish post: " + (data.error || "Unknown error"),
+                );
+              }
+            } catch (err) {
+              console.error(err);
+              alert("Error publishing post. Check console for details.");
+            } finally {
+              btn.innerText = originalText;
+              btn.disabled = false;
+            }
+          };
+        });
 
       async function loadBlogPosts() {
         try {
           const res = await fetch(`${API_URL}/blog`);
           const posts = await res.json();
           const container = document.getElementById("blog-list");
-          container.innerHTML = posts.map(post => `
+          container.innerHTML = posts
+            .map(
+              (post) => `
             <div class="flyer-manage-item" style="flex-direction:column; align-items: flex-start; gap: 0.5rem;">
                 <img src="${post.image}" alt="${post.title}" style="width:100%; height: 120px; object-fit:cover;">
                 <div style="font-size:0.9rem; font-weight:bold; padding: 0 10px;">${post.title}</div>
                 <div style="font-size:0.8rem; color:#aaa; padding: 0 10px 10px;">${post.date} | ${post.category}</div>
                 <button onclick="deleteBlogPost('${post._id}')" class="delete-btn" style="position:absolute; top:5px; right:5px;"><i class="fas fa-trash"></i></button>
             </div>
-          `).join("");
+          `,
+            )
+            .join("");
         } catch (e) {
           console.error(e);
         }
@@ -1027,7 +1380,9 @@
       async function deleteBlogPost(id) {
         if (!confirm("Delete this blog post?")) return;
         try {
-          const res = await fetch(`${API_URL}/blog/${id}`, { method: "DELETE" });
+          const res = await fetch(`${API_URL}/blog/${id}`, {
+            method: "DELETE",
+          });
           if (res.ok) {
             loadBlogPosts();
           } else {
@@ -1085,37 +1440,40 @@
           // The server sends them sorted by desc by default, which matches our initial state.
           renderPrayerTable(allPrayerRequests);
           // Set initial sort icon
-          const headerIcon = document.querySelector('#prayer-date-header i');
-          headerIcon.className = 'fas fa-sort-down';
+          const headerIcon = document.querySelector("#prayer-date-header i");
+          headerIcon.className = "fas fa-sort-down";
         } catch (e) {
           console.error(e);
         }
       }
 
       function renderPrayerTable(requests) {
-          const tbody = document.getElementById("prayer-table-body");
-          tbody.innerHTML = "";
+        const tbody = document.getElementById("prayer-table-body");
+        tbody.innerHTML = "";
 
-          if (requests.length === 0) {
-            tbody.innerHTML =
-              '<tr><td colspan="5" style="text-align:center">No prayer requests yet.</td></tr>';
-            return;
-          }
+        if (requests.length === 0) {
+          tbody.innerHTML =
+            '<tr><td colspan="5" style="text-align:center">No prayer requests yet.</td></tr>';
+          return;
+        }
 
-          requests.forEach((req) => {
-            const date = new Date(req.timestamp).toLocaleDateString();
-            const isRead = !!req.isRead;
-            const rowClass = isRead ? 'read-row' : 'unread-row';
-            const truncatedRequest = req.request.length > 60 ? req.request.substring(0, 60) + '...' : req.request;
-            const row = `
+        requests.forEach((req) => {
+          const date = new Date(req.timestamp).toLocaleDateString();
+          const isRead = !!req.isRead;
+          const rowClass = isRead ? "read-row" : "unread-row";
+          const truncatedRequest =
+            req.request.length > 60
+              ? req.request.substring(0, 60) + "..."
+              : req.request;
+          const row = `
                 <tr class="${rowClass}" onclick="viewPrayerRequest('${req._id}')" style="cursor: pointer; transition: background 0.2s;" title="Click to view full request">
                     <td>${date}</td>
                     <td>${req.name}</td>
                     <td>${req.email}</td>
                     <td>${truncatedRequest}</td>
                     <td>
-                        <button onclick="event.stopPropagation(); togglePrayerReadStatus('${req._id}', ${!isRead})" class="action-btn" title="${isRead ? 'Mark as Unread' : 'Mark as Read'}">
-                            <i class="fas ${isRead ? 'fa-envelope-open' : 'fa-envelope'}"></i>
+                        <button onclick="event.stopPropagation(); togglePrayerReadStatus('${req._id}', ${!isRead})" class="action-btn" title="${isRead ? "Mark as Unread" : "Mark as Read"}">
+                            <i class="fas ${isRead ? "fa-envelope-open" : "fa-envelope"}"></i>
                         </button>
                         <button onclick="event.stopPropagation(); deletePrayerRequest('${req._id}')" class="delete-btn" title="Delete">
                             <i class="fas fa-trash"></i>
@@ -1123,22 +1481,22 @@
                     </td>
                 </tr>
             `;
-            tbody.innerHTML += row;
-          });
+          tbody.innerHTML += row;
+        });
       }
 
       // --- Planned Visits Logic ---
       async function loadPlannedVisits() {
         try {
           const visitFilter = document.getElementById("visit-filter").value;
-          const searchInput = document.getElementById('visit-search');
+          const searchInput = document.getElementById("visit-search");
           const searchTerm = searchInput.value.toLowerCase();
-          const clearBtn = document.getElementById('visit-clear-search-btn');
+          const clearBtn = document.getElementById("visit-clear-search-btn");
 
           if (searchTerm.length > 0) {
-              clearBtn.style.display = 'block';
+            clearBtn.style.display = "block";
           } else {
-              clearBtn.style.display = 'none';
+            clearBtn.style.display = "none";
           }
 
           const res = await fetch(`${API_URL}/plan-visit`);
@@ -1147,9 +1505,10 @@
           tbody.innerHTML = "";
 
           // Filter visits based on search and filter dropdown
-          const filteredVisits = visits.filter(visit => {
+          const filteredVisits = visits.filter((visit) => {
             // Search filter
-            const matchesSearch = (visit.name && visit.name.toLowerCase().includes(searchTerm));
+            const matchesSearch =
+              visit.name && visit.name.toLowerCase().includes(searchTerm);
 
             // Date filter
             const visitDateObj = new Date(visit.date);
@@ -1158,32 +1517,37 @@
             visitDateObj.setHours(0, 0, 0, 0);
 
             let matchesDate = true;
-            if (visitFilter === "upcoming" && visitDateObj < today) matchesDate = false;
-            if (visitFilter === "past" && visitDateObj >= today) matchesDate = false;
+            if (visitFilter === "upcoming" && visitDateObj < today)
+              matchesDate = false;
+            if (visitFilter === "past" && visitDateObj >= today)
+              matchesDate = false;
 
             return matchesSearch && matchesDate;
           });
 
           if (filteredVisits.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="6" style="text-align:center">No planned visits match your criteria.</td></tr>';
+            tbody.innerHTML =
+              '<tr><td colspan="6" style="text-align:center">No planned visits match your criteria.</td></tr>';
             return;
           }
 
           filteredVisits.forEach((visit) => {
             const visitDateString = new Date(visit.date).toLocaleDateString();
-            const submittedDate = new Date(visit.timestamp).toLocaleDateString();
+            const submittedDate = new Date(
+              visit.timestamp,
+            ).toLocaleDateString();
             const isVisited = !!visit.visited;
-            const rowClass = isVisited ? 'read-row' : '';
+            const rowClass = isVisited ? "read-row" : "";
             const row = `
                 <tr class="${rowClass}">
                     <td>${visitDateString}</td>
                     <td>${visit.name}</td>
-                    <td>${visit.phone || 'N/A'}</td>
+                    <td>${visit.phone || "N/A"}</td>
                     <td>${visit.guests}</td>
                     <td>${submittedDate}</td>
                     <td>
-                        <button onclick="toggleVisitStatus('${visit._id}', ${!isVisited})" class="action-btn" title="${isVisited ? 'Mark as Not Visited' : 'Mark as Visited'}">
-                            <i class="fas ${isVisited ? 'fa-check-circle' : 'fa-circle'}"></i>
+                        <button onclick="toggleVisitStatus('${visit._id}', ${!isVisited})" class="action-btn" title="${isVisited ? "Mark as Not Visited" : "Mark as Visited"}">
+                            <i class="fas ${isVisited ? "fa-check-circle" : "fa-circle"}"></i>
                         </button>
                         <button onclick="deletePlannedVisit('${visit._id}')" class="delete-btn" title="Delete">
                             <i class="fas fa-trash"></i>
@@ -1231,106 +1595,118 @@
 
       // --- Prayer Modal Logic ---
       function viewPrayerRequest(id) {
-        const req = allPrayerRequests.find(r => r._id === id);
+        const req = allPrayerRequests.find((r) => r._id === id);
         if (!req) return;
 
-        document.getElementById('view-prayer-name').textContent = req.name;
-        document.getElementById('view-prayer-email').textContent = req.email;
-        document.getElementById('view-prayer-date').textContent = new Date(req.timestamp).toLocaleString();
-        document.getElementById('view-prayer-message').textContent = req.request;
+        document.getElementById("view-prayer-name").textContent = req.name;
+        document.getElementById("view-prayer-email").textContent = req.email;
+        document.getElementById("view-prayer-date").textContent = new Date(
+          req.timestamp,
+        ).toLocaleString();
+        document.getElementById("view-prayer-message").textContent =
+          req.request;
 
         // Setup Reply Button
-        const replyBtn = document.getElementById('modal-reply-btn');
-        const subject = encodeURIComponent(`Re: Prayer Request - Perfection Of Christ Ministry`);
-        const truncatedReqBody = req.request.length > 500 ? req.request.substring(0, 500) + '...' : req.request;
-        const body = encodeURIComponent(`Dear ${req.name},\n\nWe have received your prayer request:\n\n"${truncatedReqBody}"\n\nWe are standing in faith with you.\n\nBlessings,\nPerfection Of Christ Ministry Team`);
+        const replyBtn = document.getElementById("modal-reply-btn");
+        const subject = encodeURIComponent(
+          `Re: Prayer Request - Perfection Of Christ Ministry`,
+        );
+        const truncatedReqBody =
+          req.request.length > 500
+            ? req.request.substring(0, 500) + "..."
+            : req.request;
+        const body = encodeURIComponent(
+          `Dear ${req.name},\n\nWe have received your prayer request:\n\n"${truncatedReqBody}"\n\nWe are standing in faith with you.\n\nBlessings,\nPerfection Of Christ Ministry Team`,
+        );
         replyBtn.href = `mailto:${req.email}?subject=${subject}&body=${body}`;
 
-        const markReadBtn = document.getElementById('modal-mark-read-btn');
+        const markReadBtn = document.getElementById("modal-mark-read-btn");
         if (req.isRead) {
-            markReadBtn.textContent = "Mark as Unread";
-            markReadBtn.onclick = () => {
-                togglePrayerReadStatus(id, false);
-                markReadBtn.textContent = "Mark as Read";
-                closePrayerModal();
-            };
-        } else {
+          markReadBtn.textContent = "Mark as Unread";
+          markReadBtn.onclick = () => {
+            togglePrayerReadStatus(id, false);
             markReadBtn.textContent = "Mark as Read";
-            markReadBtn.onclick = () => {
-                togglePrayerReadStatus(id, true);
-                closePrayerModal();
-            };
+            closePrayerModal();
+          };
+        } else {
+          markReadBtn.textContent = "Mark as Read";
+          markReadBtn.onclick = () => {
+            togglePrayerReadStatus(id, true);
+            closePrayerModal();
+          };
         }
 
-        document.getElementById('view-prayer-modal').style.display = 'block';
+        document.getElementById("view-prayer-modal").style.display = "block";
       }
 
       function closePrayerModal() {
-        document.getElementById('view-prayer-modal').style.display = 'none';
+        document.getElementById("view-prayer-modal").style.display = "none";
       }
 
       // Close modal when clicking outside
-      window.addEventListener('click', function(event) {
-        const modal = document.getElementById('view-prayer-modal');
+      window.addEventListener("click", function (event) {
+        const modal = document.getElementById("view-prayer-modal");
         if (event.target == modal) {
-            modal.style.display = "none";
+          modal.style.display = "none";
         }
       });
 
       function filterPrayerRequests() {
-        const searchInput = document.getElementById('prayer-search');
-        const statusFilter = document.getElementById('prayer-status-filter');
-        const clearBtn = document.getElementById('prayer-clear-search-btn');
+        const searchInput = document.getElementById("prayer-search");
+        const statusFilter = document.getElementById("prayer-status-filter");
+        const clearBtn = document.getElementById("prayer-clear-search-btn");
         const searchTerm = searchInput.value.toLowerCase();
         const statusValue = statusFilter.value;
 
         if (searchTerm.length > 0) {
-            clearBtn.style.display = 'block';
+          clearBtn.style.display = "block";
         } else {
-            clearBtn.style.display = 'none';
+          clearBtn.style.display = "none";
         }
 
-        const filteredRequests = allPrayerRequests.filter(req => {
-            const matchesSearch = (req.name && req.name.toLowerCase().includes(searchTerm)) || 
-                                  (req.email && req.email.toLowerCase().includes(searchTerm));
-            
-            let matchesStatus = true;
-            if (statusValue === 'read') matchesStatus = req.isRead === true;
-            if (statusValue === 'unread') matchesStatus = !req.isRead;
+        const filteredRequests = allPrayerRequests.filter((req) => {
+          const matchesSearch =
+            (req.name && req.name.toLowerCase().includes(searchTerm)) ||
+            (req.email && req.email.toLowerCase().includes(searchTerm));
 
-            return matchesSearch && matchesStatus;
+          let matchesStatus = true;
+          if (statusValue === "read") matchesStatus = req.isRead === true;
+          if (statusValue === "unread") matchesStatus = !req.isRead;
+
+          return matchesSearch && matchesStatus;
         });
         renderPrayerTable(filteredRequests);
       }
 
       function clearPrayerSearch() {
-        const searchInput = document.getElementById('prayer-search');
-        searchInput.value = '';
+        const searchInput = document.getElementById("prayer-search");
+        searchInput.value = "";
         filterPrayerRequests(); // This will re-render and hide the button
         searchInput.focus();
       }
 
       function clearVisitSearch() {
-        const searchInput = document.getElementById('visit-search');
-        searchInput.value = '';
+        const searchInput = document.getElementById("visit-search");
+        searchInput.value = "";
         loadPlannedVisits(); // This will re-render and hide the button
         searchInput.focus();
       }
 
       function sortPrayerRequestsByDate() {
-        prayerSortOrder = prayerSortOrder === 'desc' ? 'asc' : 'desc';
+        prayerSortOrder = prayerSortOrder === "desc" ? "asc" : "desc";
 
         allPrayerRequests.sort((a, b) => {
-            const dateA = new Date(a.timestamp);
-            const dateB = new Date(b.timestamp);
-            return prayerSortOrder === 'asc' ? dateA - dateB : dateB - dateA;
+          const dateA = new Date(a.timestamp);
+          const dateB = new Date(b.timestamp);
+          return prayerSortOrder === "asc" ? dateA - dateB : dateB - dateA;
         });
 
         filterPrayerRequests();
 
         // Update header icon
-        const headerIcon = document.querySelector('#prayer-date-header i');
-        headerIcon.className = prayerSortOrder === 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down';
+        const headerIcon = document.querySelector("#prayer-date-header i");
+        headerIcon.className =
+          prayerSortOrder === "asc" ? "fas fa-sort-up" : "fas fa-sort-down";
       }
 
       async function togglePrayerReadStatus(id, newStatus) {
@@ -1351,8 +1727,105 @@
         }
       }
 
+      // --- Testimonials Logic ---
+      async function loadTestimonials() {
+        try {
+          const res = await fetch(`${API_URL}/testimonials`);
+          allTestimonials = await res.json();
+          renderTestimonialTable(allTestimonials);
+        } catch (e) {
+          console.error(e);
+        }
+      }
+
+      function renderTestimonialTable(testimonials) {
+        const tbody = document.getElementById("testimonial-table-body");
+        tbody.innerHTML = "";
+
+        testimonials.forEach((testimonial) => {
+          const row = `
+            <tr>
+              <td>${testimonial.name}</td>
+              <td>${testimonial.text}</td>
+              <td>${testimonial.status}</td>
+              <td>
+                <button onclick="toggleTestimonialApproval('${testimonial._id}', '${testimonial.status}')" class="action-btn" title="Toggle Approval">
+                  <i class="fas fa-check-square"></i>
+                </button>
+                <button onclick="deleteTestimonial('${testimonial._id}')" class="delete-btn" title="Delete">
+                  <i class="fas fa-trash"></i>
+                </button>
+              </td>
+            </tr>
+          `;
+          tbody.innerHTML += row;
+        });
+      }
+
+      async function toggleTestimonialApproval(id, currentStatus) {
+          const newStatus = currentStatus === 'approved' ? 'pending' : 'approved';
+          try {
+              const res = await fetch(`${API_URL}/testimonials/${id}/status`, {
+                  method: "PATCH",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ status: newStatus }),
+              });
+
+              if (res.ok) {
+                  loadTestimonials(); // Refresh the testimonial list
+              } else {
+                  const data = await res.json();
+                  alert("Failed to update testimonial status: " + (data.error || "Unknown error"));
+              }
+          } catch (e) {
+              console.error(e);
+              alert("An error occurred while trying to update the testimonial status.");
+          }
+      }
+
+      async function deleteTestimonial(id) {
+        if (!confirm("Are you sure you want to delete this testimonial?")) return;
+        try {
+          const res = await fetch(`${API_URL}/testimonials/${id}`, {
+            method: "DELETE",
+          });
+          if (res.ok) {
+            loadTestimonials();
+          } else {
+            const data = await res.json();
+            alert(
+              "Failed to delete testimonial: " + (data.error || "Unknown error"),
+            );
+          }
+        } catch (e) {
+          console.error(e);
+          alert("An error occurred while trying to delete the testimonial.");
+        }
+      }
+
+      function filterTestimonials() {
+        const searchInput = document.getElementById("testimonial-search");
+        const statusFilter = document.getElementById("testimonial-status-filter");
+        const searchTerm = searchInput.value.toLowerCase();
+        const statusValue = statusFilter.value;
+
+        const filteredTestimonials = allTestimonials.filter((testimonial) => {
+          const matchesSearch =
+            testimonial.name && testimonial.name.toLowerCase().includes(searchTerm);
+
+          let matchesStatus = true;
+          if (statusValue === "approved") matchesStatus = testimonial.status === "approved";
+          if (statusValue === "pending") matchesStatus = testimonial.status === "pending";
+
+          return matchesSearch && matchesStatus;
+        });
+
+        renderTestimonialTable(filteredTestimonials);
+      }
+
       async function deletePrayerRequest(id) {
-        if (!confirm("Are you sure you want to delete this prayer request?")) return;
+        if (!confirm("Are you sure you want to delete this prayer request?"))
+          return;
         try {
           const res = await fetch(`${API_URL}/prayer-requests/${id}`, {
             method: "DELETE",
@@ -1361,13 +1834,14 @@
             loadPrayerRequests();
           } else {
             const data = await res.json();
-            alert("Failed to delete request: " + (data.error || "Unknown error"));
+            alert(
+              "Failed to delete request: " + (data.error || "Unknown error"),
+            );
           }
         } catch (e) {
           console.error(e);
         }
       }
-
     </script>
   </body>
 </html>

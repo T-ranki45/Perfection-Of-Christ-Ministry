@@ -806,7 +806,7 @@
             const closeLiveModalBtn = document.querySelector(".live-close-btn");
 
             const liveButton = document.querySelector(".btn-live");
-            const liveNavItem = document.querySelector(".live-nav-item");
+            const liveNavItems = document.querySelectorAll(".live-nav-item"); // Select all instances
 
             const openLiveModal = () => {
               const embedUrl = getEmbedUrl(config.videoId);
@@ -832,12 +832,14 @@
                 ).style.gridTemplateColumns = "1fr";
               }
               liveModal.style.display = "block";
+              document.body.classList.add("no-scroll");
             };
 
             const closeLiveModal = () => {
               liveModal.style.display = "none";
               liveIframe.src = ""; // Stop video playback
               liveChatIframe.src = "";
+              document.body.classList.remove("no-scroll");
             };
 
             if (liveButton) {
@@ -848,17 +850,18 @@
                 openLiveModal();
               });
             }
-            if (liveNavItem) {
-              liveNavItem.style.display = "block";
-              const navLink = liveNavItem.querySelector("a");
-              if (navLink) {
-                navLink.href = "#"; // Prevent navigation
-                navLink.addEventListener("click", (e) => {
-                  e.preventDefault();
-                  openLiveModal();
-                });
-              }
-            }
+            
+            liveNavItems.forEach(item => {
+                item.style.display = "block"; // or 'list-item'
+                const navLink = item.querySelector("a");
+                if (navLink) {
+                    navLink.href = "#"; // Prevent navigation
+                    navLink.addEventListener("click", (e) => {
+                        e.preventDefault();
+                        openLiveModal();
+                    });
+                }
+            });
 
             closeLiveModalBtn.addEventListener("click", closeLiveModal);
             window.addEventListener("click", (e) => {

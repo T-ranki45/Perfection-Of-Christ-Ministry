@@ -39,7 +39,7 @@
             <li><a href="index.html#messages">Messages</a></li>
             <li><a href="index.html#events">Events</a></li>
             <li class="live-nav-item">
-              <a href="index.html#live" class="live-nav-link"
+              <a href="#" class="live-nav-link"
                 >Live <span class="live-badge-nav"></span
               ></a>
             </li>
@@ -300,6 +300,40 @@
       </section>
     </main>
 
+    <!-- Live Stream Modal -->
+    <div id="live-modal" class="modal">
+      <div class="modal-content live-modal-content">
+        <span class="close-btn live-close-btn">&times;</span>
+        <h2>Live Service</h2>
+        <div class="live-stream-grid">
+          <div class="video-column">
+            <div class="video-container">
+              <iframe
+                id="live-video-iframe"
+                width="100%"
+                height="100%"
+                style="border: none; overflow: hidden"
+                scrolling="no"
+                frameborder="0"
+                allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+              ></iframe>
+            </div>
+          </div>
+          <div class="chat-column">
+            <iframe
+              id="live-chat-iframe"
+              width="100%"
+              height="100%"
+              style="border: none; overflow: hidden"
+              scrolling="yes"
+              frameborder="0"
+              allowTransparency="true"
+            ></iframe>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Prayer Request Modal -->
     <div id="prayer-modal" class="modal">
       <div class="modal-content">
@@ -436,7 +470,7 @@
           <li><a href="index.html#messages">Messages</a></li>
           <li><a href="index.html#events">Events</a></li>
           <li class="live-nav-item">
-            <a href="index.html#live" class="live-nav-link"
+            <a href="#" class="live-nav-link"
               >Live <span class="live-badge-nav"></span
             ></a>
           </li>
@@ -451,25 +485,89 @@
       // API Base URL
       const API_URL = "/api";
 
-      // --- Check Live Status ---
-      async function checkLiveStatus() {
+      // --- Live Stream Logic ---
+      function getEmbedUrl(url) {
+        let embedUrl = "";
+        try {
+          const urlObj = new URL(url);
+          if (urlObj.hostname.includes("facebook.com")) {
+            embedUrl = `https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(url)}&show_text=false&width=734&autoplay=true`;
+          } else if (
+            urlObj.hostname.includes("youtube.com") ||
+            urlObj.hostname.includes("youtu.be")
+          ) {
+            let videoId;
+            if (urlObj.hostname.includes("youtu.be")) {
+              videoId = urlObj.pathname.slice(1);
+            } else {
+              videoId = urlObj.searchParams.get("v");
+            }
+            if (videoId) {
+              embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+            }
+          }
+        } catch (e) {
+          console.error("Invalid video URL:", e);
+          return null;
+        }
+        return embedUrl;
+      }
+
+      async function loadLiveStream() {
         try {
           const res = await fetch(`${API_URL}/livestream`);
           const config = await res.json();
 
-          if (config.isLive) {
-            const liveNavItem = document.querySelector(".live-nav-item");
-            if (liveNavItem) {
-              // Use 'list-item' for semantic correctness, though 'block' also works in flex
-              liveNavItem.style.display = "list-item";
-            }
-          }
-        } catch (e) {
-          console.error("Error loading live stream config", e);
-        }
-      }
+          if (config.isLive && config.videoId) {
+            const liveModal = document.getElementById("live-modal");
+            if (!liveModal) return;
 
-      checkLiveStatus();
+            const liveIframe = document.getElementById("live-video-iframe");
+            const liveChatIframe = document.getElementById("live-chat-iframe");
+            const closeLiveModalBtn = document.querySelector(".live-close-btn");
+            const liveNavItems = document.querySelectorAll(".live-nav-item");
+
+            const openLiveModal = () => {
+              const embedUrl = getEmbedUrl(config.videoId);
+              if (!embedUrl) return;
+              liveIframe.src = embedUrl;
+
+              const chatColumn = document.querySelector(".chat-column");
+              if (config.videoId.includes("facebook.com")) {
+                const encodedUrl = encodeURIComponent(config.videoId);
+                liveChatIframe.src = `https://www.facebook.com/plugins/comments.php?href=${encodedUrl}&numposts=10&width=100%25`;
+                if (chatColumn) chatColumn.style.display = "block";
+                document.querySelector(".live-stream-grid").style.gridTemplateColumns = "2fr 1fr";
+              } else {
+                liveChatIframe.src = "";
+                if (chatColumn) chatColumn.style.display = "none";
+                document.querySelector(".live-stream-grid").style.gridTemplateColumns = "1fr";
+              }
+              liveModal.style.display = "block";
+              document.body.classList.add("no-scroll");
+            };
+
+            const closeLiveModal = () => {
+              liveModal.style.display = "none";
+              liveIframe.src = "";
+              liveChatIframe.src = "";
+              document.body.classList.remove("no-scroll");
+            };
+
+            liveNavItems.forEach(item => {
+              item.style.display = "list-item";
+              const navLink = item.querySelector("a");
+              if (navLink) {
+                navLink.addEventListener("click", (e) => { e.preventDefault(); openLiveModal(); });
+              }
+            });
+
+            if (closeLiveModalBtn) closeLiveModalBtn.addEventListener("click", closeLiveModal);
+            window.addEventListener("click", (e) => { if (e.target == liveModal) closeLiveModal(); });
+          }
+        } catch (e) { console.error("Error loading live stream config", e); }
+      }
+      loadLiveStream();
 
       // --- Give Modal Logic ---
       const giveModal = document.getElementById("give-modal");

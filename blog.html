@@ -3,9 +3,15 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Read the latest messages, articles, and view event galleries from Perfection Of Christ Ministry." />
-    <meta name="keywords" content="Christian Blog, Sermons, Church Events, Photo Gallery, Perfection Of Christ Ministry News" />
-    
+    <meta
+      name="description"
+      content="Read the latest messages, articles, and view event galleries from Perfection Of Christ Ministry."
+    />
+    <meta
+      name="keywords"
+      content="Christian Blog, Sermons, Church Events, Photo Gallery, Perfection Of Christ Ministry News"
+    />
+
     <title>Blog & Media | Perfection Of Christ Ministry</title>
     <link rel="stylesheet" href="style.css" />
     <link rel="stylesheet" href="blog.css" />
@@ -25,10 +31,8 @@
           <img src="./image/logo.png" alt="Logo" />
           <span>Perfection Of Christ Ministry</span>
         </a>
-        <div class="menu-btn">
-          <i class="fas fa-bars"></i>
-        </div>
-        <nav class="main-nav">
+
+        <nav class="main-navigation-menu">
           <ul>
             <li><a href="about.html">About</a></li>
             <li><a href="blog.html" class="active">Blog</a></li>
@@ -53,7 +57,8 @@
         <div class="container">
           <h1>Our Blog & Media</h1>
           <p>
-            Stay connected with our latest messages, event galleries, and articles.
+            Stay connected with our latest messages, event galleries, and
+            articles.
           </p>
         </div>
       </section>
@@ -71,11 +76,84 @@
 
           <!-- Blog Grid -->
           <div class="blog-grid" id="blog-grid">
-            <p style="text-align: center; width: 100%; padding: 2rem;">Loading posts...</p>
+            <p style="text-align: center; width: 100%; padding: 2rem">
+              Loading posts...
+            </p>
           </div>
         </div>
       </section>
     </main>
+
+    <!-- Give/Donation Modal -->
+    <div id="give-modal" class="modal">
+      <div class="modal-content">
+        <span class="close-btn give-close-btn">&times;</span>
+        <h2>Ways to Give</h2>
+        <p>
+          Thank you for your generosity. You can give via direct bank transfer
+          using the details below:
+        </p>
+
+        <div class="bank-card">
+          <div class="bank-info">
+            <span class="bank-label">Bank Name</span>
+            <span class="bank-value">Zenith Bank</span>
+          </div>
+          <div class="bank-info">
+            <span class="bank-label">Account Name</span>
+            <span class="bank-value">Perfection Of Christ LIB Ministry</span>
+          </div>
+          <div class="bank-info">
+            <span class="bank-label">Account Number</span>
+            <span class="bank-value highlight-number">2023686438</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Prayer Request Modal -->
+    <div id="prayer-modal" class="modal">
+      <div class="modal-content">
+        <span class="close-btn">&times;</span>
+        <h2>Prayer Request</h2>
+        <p>How can we pray for you today?</p>
+        <form id="prayer-form">
+          <div class="form-group">
+            <label for="prayer-name">Name</label>
+            <input
+              type="text"
+              id="prayer-name"
+              name="name"
+              placeholder="Your Name"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="prayer-email">Email</label>
+            <input
+              type="email"
+              id="prayer-email"
+              name="email"
+              placeholder="Your Email"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="prayer-request">Your Request</label>
+            <textarea
+              id="prayer-request"
+              name="request"
+              rows="4"
+              placeholder="Share your prayer request..."
+              required
+            ></textarea>
+          </div>
+          <button type="submit" class="button" style="width: 100%">
+            Submit Request
+          </button>
+        </form>
+      </div>
+    </div>
 
     <footer class="main-footer">
       <div class="container">
@@ -109,11 +187,15 @@
           <div class="footer-col">
             <h3>Contact Us</h3>
             <p>
-              <i class="fas fa-map-marker-alt"></i> 123 Church St, Anytown, USA
+              <i class="fas fa-map-marker-alt"></i> Rumuokwurushi Pipeline, Off
+              MTN Mast, Port Harcourt
             </p>
-            <p><i class="fas fa-phone"> </i>
+            <p>
+              <i class="fas fa-phone"> </i>
               <a href="https://wa.link/p2brgq" target="_blank"
-                >(+234)803 5526 633</a></p>
+                >(+234)803 5526 633</a
+              >
+            </p>
             <p><i class="fas fa-envelope"></i> info@church.com</p>
           </div>
         </div>
@@ -122,6 +204,29 @@
         </div>
       </div>
     </footer>
+
+    <!-- Alternative Mobile Navigation -->
+    <a href="#" class="mobile-menu-fab"><i class="fas fa-bars"></i></a>
+
+    <div class="fullscreen-nav-overlay">
+      <a href="#" class="fullscreen-nav-close">&times;</a>
+      <nav>
+        <ul>
+          <li><a href="about.html">About</a></li>
+          <li><a href="blog.html" class="active">Blog</a></li>
+          <li><a href="index.html#messages">Messages</a></li>
+          <li><a href="index.html#events">Events</a></li>
+          <li class="live-nav-item">
+            <a href="index.html#live" class="live-nav-link"
+              >Live <span class="live-badge-nav"></span
+            ></a>
+          </li>
+          <li><a href="index.html#visit">Visit</a></li>
+          <li><a href="#" id="prayer-btn-mobile">Prayer</a></li>
+          <li><a href="#" class="button open-give-modal">Give</a></li>
+        </ul>
+      </nav>
+    </div>
 
     <script>
       // API Base URL
@@ -134,63 +239,168 @@
         else header.classList.remove("scrolled");
       });
 
-      const menuBtn = document.querySelector(".menu-btn");
-      const mainNav = document.querySelector(".main-nav ul");
+      // --- Give Modal Logic ---
+      const giveModal = document.getElementById("give-modal");
+      const giveBtns = document.querySelectorAll(".open-give-modal");
+      const giveCloseBtn = document.querySelector(".give-close-btn");
 
-      if (menuBtn && mainNav) {
-        menuBtn.addEventListener("click", () => {
-          document.body.classList.toggle("no-scroll");
-          mainNav.classList.toggle("show");
-          const icon = menuBtn.querySelector("i");
-          if (mainNav.classList.contains("show")) {
-            icon.classList.remove("fa-bars");
-            icon.classList.add("fa-times");
-          } else {
-            icon.classList.remove("fa-times");
-            icon.classList.add("fa-bars");
+      if (giveModal) {
+        giveBtns.forEach((btn) => {
+          btn.addEventListener("click", (e) => {
+            e.preventDefault();
+            giveModal.style.display = "block";
+          });
+        });
+
+        if (giveCloseBtn) {
+          giveCloseBtn.addEventListener("click", () => {
+            giveModal.style.display = "none";
+          });
+        }
+      }
+
+      // Generic window click to close modals
+      window.addEventListener("click", (e) => {
+        const prayerModal = document.getElementById("prayer-modal");
+        if (giveModal && e.target == giveModal) {
+          giveModal.style.display = "none";
+        }
+        if (prayerModal && e.target == prayerModal) {
+          prayerModal.style.display = "none";
+        }
+      });
+
+      // --- Handle Prayer Form Submission ---
+      const prayerForm = document.getElementById("prayer-form");
+      if (prayerForm) {
+        prayerForm.addEventListener("submit", async (e) => {
+          e.preventDefault();
+
+          const submitBtn = prayerForm.querySelector("button[type='submit']");
+          const originalBtnText = submitBtn.innerText;
+          submitBtn.innerText = "Sending...";
+          submitBtn.disabled = true;
+
+          const name = document.getElementById("prayer-name").value;
+          const email = document.getElementById("prayer-email").value;
+          const request = document.getElementById("prayer-request").value;
+
+          try {
+            const response = await fetch(`${API_URL}/prayer-requests`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ name, email, request }),
+            });
+
+            if (response.ok) {
+              alert(
+                "Prayer request sent successfully! We will be praying for you.",
+              );
+              prayerForm.reset();
+              document.getElementById("prayer-modal").style.display = "none";
+            } else {
+              throw new Error("Server responded with an error");
+            }
+          } catch (error) {
+            console.error("Error adding document: ", error);
+            alert("Error sending request. Check your internet connection.");
+          } finally {
+            submitBtn.innerText = originalBtnText;
+            submitBtn.disabled = false;
           }
         });
       }
 
+      // --- New Mobile Menu Toggle ---
+      document.addEventListener("DOMContentLoaded", () => {
+        // --- Alternative Mobile Navigation (FAB) ---
+        const fab = document.querySelector(".mobile-menu-fab");
+        const overlay = document.querySelector(".fullscreen-nav-overlay");
+        const closeBtn = document.querySelector(".fullscreen-nav-close");
+        const overlayLinks = document.querySelectorAll(
+          ".fullscreen-nav-overlay a",
+        );
+
+        if (fab && overlay && closeBtn) {
+          const openMenu = (e) => {
+            e.preventDefault();
+            overlay.classList.add("active");
+            document.body.classList.add("no-scroll");
+          };
+
+          const closeMenu = (e) => {
+            overlay.classList.remove("active");
+            document.body.classList.remove("no-scroll");
+          };
+
+          fab.addEventListener("click", openMenu);
+          closeBtn.addEventListener("click", closeMenu);
+          overlayLinks.forEach((link) => {
+            if (!link.classList.contains("fullscreen-nav-close")) {
+              link.addEventListener("click", closeMenu);
+            }
+          });
+
+          // Hook up mobile prayer button
+          const prayerBtnMobile = document.getElementById("prayer-btn-mobile");
+          const prayerModal = document.getElementById("prayer-modal");
+          if (prayerBtnMobile && prayerModal) {
+            prayerBtnMobile.addEventListener("click", (e) => {
+              e.preventDefault();
+              prayerModal.style.display = "block";
+            });
+          }
+        }
+      });
+
       // --- Blog Filtering Logic ---
-      const blogGrid = document.getElementById('blog-grid');
-      const filterButtons = document.querySelectorAll('.filter-btn');
+      const blogGrid = document.getElementById("blog-grid");
+      const filterButtons = document.querySelectorAll(".filter-btn");
       let allPosts = [];
 
       async function loadBlogPosts() {
         try {
           const res = await fetch(`${API_URL}/blog`);
           allPosts = await res.json();
-          renderPosts('all');
+          renderPosts("all");
         } catch (e) {
           console.error("Error loading blog posts:", e);
-          blogGrid.innerHTML = '<p style="text-align:center; width:100%;">Unable to load posts.</p>';
+          blogGrid.innerHTML =
+            '<p style="text-align:center; width:100%;">Unable to load posts.</p>';
         }
       }
 
       function renderPosts(filter) {
-        blogGrid.innerHTML = '';
-        
-        const filteredPosts = filter === 'all' 
-          ? allPosts 
-          : allPosts.filter(post => post.category === filter);
+        blogGrid.innerHTML = "";
+
+        const filteredPosts =
+          filter === "all"
+            ? allPosts
+            : allPosts.filter((post) => post.category === filter);
 
         if (filteredPosts.length === 0) {
-           blogGrid.innerHTML = '<p style="text-align:center; width:100%;">No posts found.</p>';
-           return;
+          blogGrid.innerHTML =
+            '<p style="text-align:center; width:100%;">No posts found.</p>';
+          return;
         }
 
-        filteredPosts.forEach(post => {
+        filteredPosts.forEach((post) => {
           // Determine icon based on category
-          let icon = 'fa-file-alt';
-          let badgeClass = 'article-badge';
-          if (post.category === 'video') { icon = 'fa-play'; badgeClass = 'video-badge'; }
-          if (post.category === 'gallery') { icon = 'fa-camera'; badgeClass = 'gallery-badge'; }
+          let icon = "fa-file-alt";
+          let badgeClass = "article-badge";
+          if (post.category === "video") {
+            icon = "fa-play";
+            badgeClass = "video-badge";
+          }
+          if (post.category === "gallery") {
+            icon = "fa-camera";
+            badgeClass = "gallery-badge";
+          }
 
-          const card = document.createElement('div');
-          card.className = 'blog-card';
+          const card = document.createElement("div");
+          card.className = "blog-card";
           card.dataset.category = post.category;
-          
+
           card.innerHTML = `
               <div class="blog-card-thumbnail">
                 <img src="${post.image}" alt="${post.title}">
@@ -210,11 +420,11 @@
         });
       }
 
-      filterButtons.forEach(button => {
-        button.addEventListener('click', () => {
+      filterButtons.forEach((button) => {
+        button.addEventListener("click", () => {
           // Update active button
-          filterButtons.forEach(btn => btn.classList.remove('active'));
-          button.classList.add('active');
+          filterButtons.forEach((btn) => btn.classList.remove("active"));
+          button.classList.add("active");
           renderPosts(button.dataset.filter);
         });
       });

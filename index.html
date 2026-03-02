@@ -3,14 +3,26 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Welcome to Perfection Of Christ Ministry. A community of believers dedicated to knowing God and making Him known. Join us for worship and the Word." />
-    <meta name="keywords" content="Perfection Of Christ Ministry, Church, Worship, Jesus, God, Christianity, Live Service, Pastor John Jeremiah" />
+    <meta
+      name="description"
+      content="Welcome to Perfection Of Christ Ministry. A community of believers dedicated to knowing God and making Him known. Join us for worship and the Word."
+    />
+    <meta
+      name="keywords"
+      content="Perfection Of Christ Ministry, Church, Worship, Jesus, God, Christianity, Live Service, Pastor John Jeremiah"
+    />
     <meta name="author" content="Perfection Of Christ Ministry" />
-    
+
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="Perfection Of Christ Ministry | Welcome Home" />
-    <meta property="og:description" content="Faith, Hope, and Love. Join us for worship this Sunday." />
+    <meta
+      property="og:title"
+      content="Perfection Of Christ Ministry | Welcome Home"
+    />
+    <meta
+      property="og:description"
+      content="Faith, Hope, and Love. Join us for worship this Sunday."
+    />
     <meta property="og:image" content="./image/logo.png" />
 
     <title>Perfection Of Christ Ministry | Welcome Home</title>
@@ -31,10 +43,8 @@
           <img src="./image/logo.png" alt="Logo" />
           <span>Perfection Of Christ Ministry</span>
         </a>
-        <div class="menu-btn">
-          <i class="fas fa-bars"></i>
-        </div>
-        <nav class="main-nav">
+
+        <nav class="main-navigation-menu">
           <ul>
             <li><a href="about.html">About</a></li>
             <li><a href="blog.html">Blog</a></li>
@@ -42,7 +52,6 @@
             <li><a href="#events">Events</a></li>
             <li class="live-nav-item">
               <a href="#" class="live-nav-link"
-
                 >Live <span class="live-badge-nav"></span
               ></a>
             </li>
@@ -184,17 +193,22 @@
                 Bible Study: 6:00 PM
               </p>
               <h3>Location</h3>
-              <p>@PERFECTION OF<br />CHRIST MINISTRY<br>RUMUOKWURUSHI PIPELINE<br>OFF MTN MASK.</p>
+              <p>Rumuokwurushi Pipeline, Off MTN Mast, Port Harcourt.</p>
               <h3>What to Expect</h3>
               <p>
-                Our services are heavily loaded and include contemporary
-                worship music and a relevant message from the Bible. Come as you
-                are!
+                Our services are heavily loaded and include contemporary worship
+                music and a relevant message from the Bible. Come as you are!
               </p>
             </div>
-            <div class="map-placeholder">
+            <div class="map-placeholder" id="map-container">
+              <div class="map-overlay">
+                <div class="map-overlay-content">
+                  <i class="fas fa-hand-pointer"></i>
+                  <p>Click to interact with map</p>
+                </div>
+              </div>
               <iframe
-                src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d252.02222395074406!2d7.062773212262664!3d4.8697601204154894!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e1!3m2!1sen!2sng!4v1772015739031!5m2!1sen!2sng"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3975.399433952329!2d7.060352974980903!3d4.869759995160418!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1069d26512b333e5%3A0x45a23c6df476910b!2sPerfection%20of%20Christ%20Liberation%20Ministry!5e0!3m2!1sen!2sng!4v1716473399981!5m2!1sen!2sng"
                 style="border: 0"
                 allowfullscreen=""
                 loading="lazy"
@@ -446,7 +460,10 @@
           </div>
           <div class="footer-col">
             <h3>Contact Us</h3>
-            <p><i class="fas fa-map-marker-alt"></i> Still loading..........</p>
+            <p>
+              <i class="fas fa-map-marker-alt"></i> Rumuokwurushi Pipeline, Off
+              MTN Mast, Port Harcourt
+            </p>
             <p>
               <i class="fas fa-phone"> </i>
               <a href="https://wa.link/p2brgq" target="_blank"
@@ -472,6 +489,29 @@
         </div>
       </div>
     </footer>
+
+    <!-- Alternative Mobile Navigation -->
+    <a href="#" class="mobile-menu-fab"><i class="fas fa-bars"></i></a>
+
+    <div class="fullscreen-nav-overlay">
+      <a href="#" class="fullscreen-nav-close">&times;</a>
+      <nav>
+        <ul>
+          <li><a href="about.html">About</a></li>
+          <li><a href="blog.html">Blog</a></li>
+          <li><a href="#messages">Messages</a></li>
+          <li><a href="#events">Events</a></li>
+          <li class="live-nav-item">
+            <a href="#" class="live-nav-link"
+              >Live <span class="live-badge-nav"></span
+            ></a>
+          </li>
+          <li><a href="#visit">Visit</a></li>
+          <li><a href="#" id="prayer-btn-mobile">Prayer</a></li>
+          <li><a href="#" class="button open-give-modal">Give</a></li>
+        </ul>
+      </nav>
+    </div>
 
     <script>
       // API Base URL
@@ -564,16 +604,6 @@
       }
 
       // Init TypeWriter
-      document.addEventListener("DOMContentLoaded", () => {
-        const txtElement = document.querySelector(".txt-type");
-        if (txtElement) {
-          const words = JSON.parse(txtElement.getAttribute("data-words"));
-          const wait = txtElement.getAttribute("data-wait");
-          new TypeWriter(txtElement, words, wait);
-        }
-      });
-
-      // --- Events Section Intro Animation ---
       const eventsSection = document.getElementById("events");
 
       if (eventsSection) {
@@ -943,7 +973,6 @@
       const prayerBtn = document.getElementById("prayer-btn");
       const prayerCloseBtn = prayerModal
         ? prayerModal.querySelector(".close-btn")
-
         : null;
 
       if (prayerBtn && prayerModal) {
@@ -981,6 +1010,9 @@
         if (e.target == messageModal) {
           closeMessageModal();
         }
+        if (giveModal && e.target == giveModal) {
+          giveModal.style.display = "none";
+        }
         // Testimonial modal was removed.
         if (
           document.getElementById("plan-visit-modal") &&
@@ -1010,9 +1042,6 @@
         }
 
         // The generic window listener handles closing the modal on outside click
-        if (giveModal && e.target == giveModal) {
-          giveModal.style.display = "none";
-        }
       }
 
       // --- Handle Prayer Form Submission ---
@@ -1122,26 +1151,6 @@
         });
       }
 
-      // Mobile Menu Toggle
-      const menuBtn = document.querySelector(".menu-btn");
-      const mainNav = document.querySelector(".main-nav ul");
-
-      if (menuBtn && mainNav) {
-        menuBtn.addEventListener("click", () => {
-          document.body.classList.toggle("no-scroll");
-          mainNav.classList.toggle("show");
-          // Toggle icon between bars and times
-          const icon = menuBtn.querySelector("i");
-          if (mainNav.classList.contains("show")) {
-            icon.classList.remove("fa-bars");
-            icon.classList.add("fa-times");
-          } else {
-            icon.classList.remove("fa-times");
-            icon.classList.add("fa-bars");
-          }
-        });
-      }
-
       // --- Welcome Section Auto-Type Animation ---
       const welcomeParagraph = document.getElementById("welcome-text");
       const welcomeSectionEl = document.getElementById("welcome");
@@ -1185,6 +1194,69 @@
 
         typeWriterObserver.observe(welcomeSectionEl);
       }
+
+      // --- Consolidated DOMContentLoaded for all page interactions ---
+      document.addEventListener("DOMContentLoaded", () => {
+        // Hero TypeWriter
+        const txtElement = document.querySelector(".txt-type");
+        if (txtElement) {
+          const words = JSON.parse(txtElement.getAttribute("data-words"));
+          const wait = txtElement.getAttribute("data-wait");
+          new TypeWriter(txtElement, words, wait);
+        }
+
+        // Map Overlay to prevent scroll-jacking
+        const mapContainer = document.getElementById("map-container");
+        if (mapContainer) {
+          mapContainer.addEventListener(
+            "click",
+            function () {
+              this.classList.add("active");
+            },
+            { once: true },
+          );
+        }
+
+        // --- Alternative Mobile Navigation (FAB) ---
+        const fab = document.querySelector(".mobile-menu-fab");
+        const overlay = document.querySelector(".fullscreen-nav-overlay");
+        const closeBtn = document.querySelector(".fullscreen-nav-close");
+        const overlayLinks = document.querySelectorAll(
+          ".fullscreen-nav-overlay a",
+        );
+
+        if (fab && overlay && closeBtn) {
+          const openMenu = (e) => {
+            e.preventDefault();
+            overlay.classList.add("active");
+            document.body.classList.add("no-scroll");
+          };
+
+          const closeMenu = (e) => {
+            // No preventDefault needed here as we want links to work
+            overlay.classList.remove("active");
+            document.body.classList.remove("no-scroll");
+          };
+
+          fab.addEventListener("click", openMenu);
+          closeBtn.addEventListener("click", closeMenu);
+          overlayLinks.forEach((link) => {
+            if (!link.classList.contains("fullscreen-nav-close")) {
+              link.addEventListener("click", closeMenu);
+            }
+          });
+
+          // Hook up mobile prayer button
+          const prayerBtnMobile = document.getElementById("prayer-btn-mobile");
+          const prayerModal = document.getElementById("prayer-modal");
+          if (prayerBtnMobile && prayerModal) {
+            prayerBtnMobile.addEventListener("click", (e) => {
+              e.preventDefault();
+              prayerModal.style.display = "block";
+            });
+          }
+        }
+      });
     </script>
 
     <script>

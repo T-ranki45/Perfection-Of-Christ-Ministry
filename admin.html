@@ -399,28 +399,28 @@
         </div>
         <nav class="sidebar-nav">
           <ul>
-            <li class="active" onclick="showSection('dashboard')">
+            <li class="active" onclick="showSection('dashboard', this)">
               <i class="fas fa-tachometer-alt"></i> Dashboard
             </li>
-            <li onclick="showSection('events')">
+            <li onclick="showSection('events', this)">
               <i class="fas fa-images"></i> Manage Services
             </li>
-            <li onclick="showSection('messages')">
+            <li onclick="showSection('messages', this)">
               <i class="fas fa-video"></i> Manage Messages
             </li>
-            <li onclick="showSection('blog')">
+            <li onclick="showSection('blog', this)">
               <i class="fas fa-newspaper"></i> Manage Blog
             </li>
-            <li onclick="showSection('livestream')">
+            <li onclick="showSection('livestream', this)">
               <i class="fas fa-video"></i> Live Stream
             </li>
-            <li onclick="showSection('prayer')">
+            <li onclick="showSection('prayer', this)">
               <i class="fas fa-praying-hands"></i> Prayer Requests
             </li>
-            <li onclick="showSection('visits')">
+            <li onclick="showSection('visits', this)">
               <i class="fas fa-calendar-check"></i> Planned Visits
             </li>
-            <li onclick="showSection('testimonials-admin')">
+            <li onclick="showSection('testimonials-admin', this)">
               <i class="fas fa-comments"></i> Manage Testimonials
             </li>
             <li onclick="logout()">
@@ -524,6 +524,7 @@
               </table>
             </div>
           </div>
+        </section>
         <!-- Events Section -->
         <section id="events" class="content-section">
           <h2>Upcoming Services (Flyers)</h2>
@@ -955,7 +956,7 @@
       }
 
       // Navigation Logic
-      function showSection(sectionId) {
+      function showSection(sectionId, btnElement) {
         document
           .querySelectorAll(".content-section")
           .forEach((el) => el.classList.remove("active"));
@@ -964,7 +965,7 @@
           .forEach((el) => el.classList.remove("active"));
 
         document.getElementById(sectionId).classList.add("active");
-        event.currentTarget.classList.add("active");
+        if (btnElement) btnElement.classList.add("active");
 
         // Close sidebar on mobile after selection
         if (window.innerWidth < 992) {

@@ -692,6 +692,9 @@
         <section id="livestream" class="content-section">
           <h2>Live Stream Configuration</h2>
           <div class="card">
+            <div id="live-status-indicator" class="live-status-admin">
+              <!-- Populated by JS -->
+            </div>
             <p class="helper-text">
               Enter the Facebook Live URL to update the Live Stream button on
               the homepage.
@@ -712,7 +715,17 @@
                   >Mark as Currently Live (Shows "Live" badge on site)</label
                 >
               </div>
-              <button type="submit" class="btn-primary">Update Stream</button>
+              <div class="form-actions" style="display: flex; gap: 10px;">
+                <button type="submit" class="btn-primary">Update Stream</button>
+                <button
+                  type="button"
+                  id="deactivate-stream-btn"
+                  class="btn-danger"
+                  style="display: none"
+                >
+                  Deactivate Stream
+                </button>
+              </div>
             </form>
           </div>
         </section>
@@ -843,6 +856,9 @@
         </section>
       </main>
     </div>
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container"></div>
 
     <!-- View Prayer Request Modal -->
     <div id="view-prayer-modal" class="modal">
@@ -978,6 +994,24 @@
         }
       }
 
+      // --- Toast Notification Function ---
+      function showToast(message, type = "success") {
+        const container = document.getElementById("toast-container");
+        if (!container) return;
+        const toast = document.createElement("div");
+        toast.className = `toast ${type}`;
+        toast.textContent = message;
+        container.appendChild(toast);
+
+        // Trigger reflow to enable animation
+        toast.getBoundingClientRect();
+        toast.classList.add("show");
+
+        setTimeout(() => {
+          toast.remove();
+        }, 5000);
+      }
+
       function logout() {
         localStorage.removeItem("admin_token");
         window.location.href = "login.html";
@@ -1053,7 +1087,7 @@
 
           if (data.connected) {
             checkDbStatus(); // Refresh status badge
-            alert("Database connected successfully! Reloading data...");
+            showToast("Database connected successfully! Reloading data...");
             // Reload all data sections to sync with the now-connected DB
             loadDashboardStats();
             loadPrayerRequests();
@@ -1062,12 +1096,12 @@
             loadBlogPosts();
             loadLiveStreamConfig();
           } else {
-            alert("Connection failed: " + (data.error || "Unknown error"));
+            showToast("Connection failed: " + (data.error || "Unknown error"), "error");
             badge.innerHTML = originalHtml; // Revert to retry button
           }
         } catch (e) {
           console.error(e);
-          alert("Connection attempt failed.");
+          showToast("Connection attempt failed.", "error");
           badge.innerHTML = originalHtml;
         }
       }
@@ -1111,8 +1145,9 @@
         .getElementById("add-flyer-form")
         .addEventListener("submit", async (e) => {
           e.preventDefault();
-          if (selectedFiles.length === 0)
-            return alert("Please select at least one flyer.");
+          if (selectedFiles.length === 0) {
+            return showToast("Please select at least one flyer.", "error");
+          }
 
           // Convert all files to Base64
           const promises = selectedFiles.map((file) => {
@@ -1132,7 +1167,7 @@
               body: JSON.stringify(flyersData),
             });
             if (res.ok) {
-              alert("Flyers Posted Successfully!");
+              showToast("Flyers Posted Successfully!");
               e.target.reset();
               selectedFiles = [];
               previewContainer.innerHTML = "";
@@ -1145,11 +1180,11 @@
               } catch (e) {
                 errorMsg = `Server Error (${res.status}): ${res.statusText}`;
               }
-              alert("Failed to post flyers: " + errorMsg);
+              showToast("Failed to post flyers: " + errorMsg, "error");
             }
           } catch (err) {
             console.error(err);
-            alert("Error posting flyers. Check console for details.");
+            showToast("Error posting flyers. Check console for details.", "error");
           }
         });
 
@@ -1185,7 +1220,7 @@
             loadFlyersList();
           } else {
             const data = await res.json();
-            alert("Failed to delete flyer: " + (data.error || "Unknown error"));
+            showToast("Failed to delete flyer: " + (data.error || "Unknown error"), "error");
           }
         } catch (e) {
           console.error(e);
@@ -1209,7 +1244,7 @@
           const fileInput = document.getElementById("msg-image");
 
           if (fileInput.files.length === 0) {
-            alert("Please select a thumbnail image.");
+            showToast("Please select a thumbnail image.", "error");
             btn.innerText = originalText;
             btn.disabled = false;
             return;
@@ -1232,18 +1267,19 @@
                 }),
               });
               if (res.ok) {
-                alert("Message Posted Successfully!");
+                showToast("Message Posted Successfully!");
                 e.target.reset();
                 loadMessagesList();
               } else {
                 const data = await res.json();
-                alert(
+                showToast(
                   "Failed to post message: " + (data.error || "Unknown error"),
+                  "error"
                 );
               }
             } catch (err) {
               console.error(err);
-              alert("Error posting message. Check console for details.");
+              showToast("Error posting message. Check console for details.", "error");
             } finally {
               btn.innerText = originalText;
               btn.disabled = false;
@@ -1283,13 +1319,14 @@
             loadMessagesList();
           } else {
             const data = await res.json();
-            alert(
+            showToast(
               "Failed to delete message: " + (data.error || "Unknown error"),
+              "error"
             );
           }
         } catch (e) {
           console.error(e);
-          alert("An error occurred while trying to delete the message.");
+          showToast("An error occurred while trying to delete the message.", "error");
         }
       }
 
@@ -1312,7 +1349,7 @@
           const fileInput = document.getElementById("blog-image");
 
           if (fileInput.files.length === 0) {
-            alert("Please select a thumbnail image.");
+            showToast("Please select a thumbnail image.", "error");
             btn.innerText = originalText;
             btn.disabled = false;
             return;
@@ -1337,18 +1374,19 @@
                 }),
               });
               if (res.ok) {
-                alert("Blog Post Published Successfully!");
+                showToast("Blog Post Published Successfully!");
                 e.target.reset();
                 loadBlogPosts();
               } else {
                 const data = await res.json();
-                alert(
+                showToast(
                   "Failed to publish post: " + (data.error || "Unknown error"),
+                  "error"
                 );
               }
             } catch (err) {
               console.error(err);
-              alert("Error publishing post. Check console for details.");
+              showToast("Error publishing post. Check console for details.", "error");
             } finally {
               btn.innerText = originalText;
               btn.disabled = false;
@@ -1387,7 +1425,7 @@
           if (res.ok) {
             loadBlogPosts();
           } else {
-            alert("Failed to delete post");
+            showToast("Failed to delete post", "error");
           }
         } catch (e) {
           console.error(e);
@@ -1401,6 +1439,22 @@
           const config = await res.json();
           document.getElementById("video-id").value = config.videoId;
           document.getElementById("is-live").checked = config.isLive;
+
+          // Update status indicator
+          const statusIndicator = document.getElementById('live-status-indicator');
+          const deactivateBtn = document.getElementById('deactivate-stream-btn');
+          if (config.isLive && config.videoId) {
+              statusIndicator.innerHTML = `<span><i class="fas fa-broadcast-tower"></i> LIVE NOW</span> <a href="${config.videoId}" target="_blank">View Stream</a>`;
+              statusIndicator.className = 'live-status-admin active';
+              deactivateBtn.style.display = 'inline-block';
+          } else {
+              statusIndicator.innerHTML = '<span><i class="fas fa-power-off"></i> OFFLINE</span>';
+              statusIndicator.className = 'live-status-admin inactive';
+              deactivateBtn.style.display = 'none';
+          }
+
+
+          // Update dashboard stat card
           document.getElementById("live-status-text").innerText = config.isLive
             ? "LIVE NOW"
             : "Offline";
@@ -1410,6 +1464,26 @@
           console.error(e);
         }
       }
+
+      document.getElementById('deactivate-stream-btn').addEventListener('click', async () => {
+          if (!confirm('Are you sure you want to deactivate and clear the current live stream?')) return;
+
+          try {
+              const res = await fetch(`${API_URL}/livestream`, {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ videoId: '', isLive: false }),
+              });
+              if (res.ok) {
+                  showToast("Live Stream Deactivated!");
+                  loadLiveStreamConfig();
+              } else {
+                  showToast("Failed to deactivate stream", "error");
+              }
+          } catch (err) {
+              showToast("An error occurred. Check console.", "error");
+          }
+      });
 
       document
         .getElementById("livestream-form")
@@ -1425,11 +1499,11 @@
               body: JSON.stringify({ videoId, isLive }),
             });
             if (res.ok) {
-              alert("Live Stream Updated!");
+              showToast("Live Stream Updated!");
               loadLiveStreamConfig();
             }
           } catch (err) {
-            alert("Failed to update stream");
+            showToast("Failed to update stream", "error");
           }
         });
 
@@ -1587,7 +1661,7 @@
           if (res.ok) {
             loadPlannedVisits();
           } else {
-            alert("Failed to delete visit");
+            showToast("Failed to delete visit", "error");
           }
         } catch (e) {
           console.error(e);
@@ -1776,11 +1850,11 @@
                   loadTestimonials(); // Refresh the testimonial list
               } else {
                   const data = await res.json();
-                  alert("Failed to update testimonial status: " + (data.error || "Unknown error"));
+                  showToast("Failed to update status: " + (data.error || "Unknown error"), "error");
               }
           } catch (e) {
               console.error(e);
-              alert("An error occurred while trying to update the testimonial status.");
+              showToast("An error occurred while trying to update status.", "error");
           }
       }
 
@@ -1794,13 +1868,14 @@
             loadTestimonials();
           } else {
             const data = await res.json();
-            alert(
+            showToast(
               "Failed to delete testimonial: " + (data.error || "Unknown error"),
+              "error"
             );
           }
         } catch (e) {
           console.error(e);
-          alert("An error occurred while trying to delete the testimonial.");
+          showToast("An error occurred while trying to delete testimonial.", "error");
         }
       }
 
@@ -1835,8 +1910,9 @@
             loadPrayerRequests();
           } else {
             const data = await res.json();
-            alert(
+            showToast(
               "Failed to delete request: " + (data.error || "Unknown error"),
+              "error"
             );
           }
         } catch (e) {

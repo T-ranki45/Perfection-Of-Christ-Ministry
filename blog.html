@@ -205,6 +205,9 @@
       </div>
     </footer>
 
+    <!-- Toast Notification Container -->
+    <div id="toast-container"></div>
+
     <!-- Alternative Mobile Navigation -->
     <a href="#" class="mobile-menu-fab"><i class="fas fa-bars"></i></a>
 
@@ -293,7 +296,7 @@
             });
 
             if (response.ok) {
-              alert(
+              showToast(
                 "Prayer request sent successfully! We will be praying for you.",
               );
               prayerForm.reset();
@@ -303,12 +306,30 @@
             }
           } catch (error) {
             console.error("Error adding document: ", error);
-            alert("Error sending request. Check your internet connection.");
+            showToast("Error sending request. Please try again.", "error");
           } finally {
             submitBtn.innerText = originalBtnText;
             submitBtn.disabled = false;
           }
         });
+      }
+
+      // --- Toast Notification Function ---
+      function showToast(message, type = "success") {
+        const container = document.getElementById("toast-container");
+        if (!container) return;
+        const toast = document.createElement("div");
+        toast.className = `toast ${type}`;
+        toast.textContent = message;
+        container.appendChild(toast);
+
+        // Trigger reflow to enable animation
+        toast.getBoundingClientRect();
+        toast.classList.add("show");
+
+        setTimeout(() => {
+          toast.remove();
+        }, 5000);
       }
 
       // --- New Mobile Menu Toggle ---

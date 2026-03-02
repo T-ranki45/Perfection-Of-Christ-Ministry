@@ -490,6 +490,9 @@
       </div>
     </footer>
 
+    <!-- Toast Notification Container -->
+    <div id="toast-container"></div>
+
     <!-- Alternative Mobile Navigation -->
     <a href="#" class="mobile-menu-fab"><i class="fas fa-bars"></i></a>
 
@@ -802,15 +805,32 @@
             const liveChatIframe = document.getElementById("live-chat-iframe");
             const closeLiveModalBtn = document.querySelector(".live-close-btn");
 
-            // Show live buttons/links
             const liveButton = document.querySelector(".btn-live");
             const liveNavItem = document.querySelector(".live-nav-item");
 
             const openLiveModal = () => {
-              const encodedUrl = encodeURIComponent(config.videoId);
-              // Use a responsive width for the plugin
-              liveIframe.src = `https://www.facebook.com/plugins/video.php?href=${encodedUrl}&show_text=false&width=734&autoplay=true`;
-              liveChatIframe.src = `https://www.facebook.com/plugins/comments.php?href=${encodedUrl}&numposts=10&width=100%25`;
+              const embedUrl = getEmbedUrl(config.videoId);
+              if (!embedUrl) {
+                console.error("Cannot open modal for invalid video URL");
+                return;
+              }
+              liveIframe.src = embedUrl;
+
+              const chatColumn = document.querySelector(".chat-column");
+              if (config.videoId.includes("facebook.com")) {
+                const encodedUrl = encodeURIComponent(config.videoId);
+                liveChatIframe.src = `https://www.facebook.com/plugins/comments.php?href=${encodedUrl}&numposts=10&width=100%25`;
+                if (chatColumn) chatColumn.style.display = "block";
+                document.querySelector(
+                  ".live-stream-grid",
+                ).style.gridTemplateColumns = "2fr 1fr";
+              } else {
+                liveChatIframe.src = "";
+                if (chatColumn) chatColumn.style.display = "none";
+                document.querySelector(
+                  ".live-stream-grid",
+                ).style.gridTemplateColumns = "1fr";
+              }
               liveModal.style.display = "block";
             };
 
@@ -935,7 +955,10 @@
       function openMessageModal(videoUrl, title) {
         const embedUrl = getEmbedUrl(videoUrl);
         if (!embedUrl) {
-          alert("Sorry, this video link is not valid or supported.");
+          showToast(
+            "Sorry, this video link is not valid or supported.",
+            "error",
+          );
           return;
         }
         messageModalTitle.innerText = title;
@@ -1070,7 +1093,7 @@
             });
 
             if (response.ok) {
-              alert(
+              showToast(
                 "Prayer request sent successfully! We will be praying for you.",
               );
               prayerForm.reset();
@@ -1080,9 +1103,7 @@
             }
           } catch (error) {
             console.error("Error adding document: ", error);
-            alert(
-              "Error sending request. Check your internet connection or API keys.",
-            );
+            showToast("Error sending request. Please try again.", "error");
           } finally {
             submitBtn.innerText = originalBtnText;
             submitBtn.disabled = false;
@@ -1133,7 +1154,7 @@
             });
 
             if (response.ok) {
-              alert(
+              showToast(
                 "We look forward to seeing you! Your visit has been planned.",
               );
               planVisitForm.reset();
@@ -1143,7 +1164,7 @@
             }
           } catch (error) {
             console.error(error);
-            alert("Error sending request. Please try again.");
+            showToast("Error sending request. Please try again.", "error");
           } finally {
             btn.innerText = originalText;
             btn.disabled = false;
@@ -1193,6 +1214,24 @@
         );
 
         typeWriterObserver.observe(welcomeSectionEl);
+      }
+
+      // --- Toast Notification Function ---
+      function showToast(message, type = "success") {
+        const container = document.getElementById("toast-container");
+        if (!container) return;
+        const toast = document.createElement("div");
+        toast.className = `toast ${type}`;
+        toast.textContent = message;
+        container.appendChild(toast);
+
+        // Trigger reflow to enable animation
+        toast.getBoundingClientRect();
+        toast.classList.add("show");
+
+        setTimeout(() => {
+          toast.remove();
+        }, 5000);
       }
 
       // --- Consolidated DOMContentLoaded for all page interactions ---

@@ -2002,6 +2002,7 @@ section h2::after {
   margin-top: 2rem;
 }
 .map-placeholder {
+  position: relative; /* Needed for overlay positioning */
   height: 300px;
   border-radius: 5px;
   display: flex;
@@ -2011,6 +2012,39 @@ section h2::after {
   background: #1a1a1a;
   overflow: hidden; /* Ensure iframe stays contained */
 }
+.map-placeholder.active .map-overlay {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.map-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 10;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  color: #fff;
+  cursor: pointer;
+  transition: opacity 0.3s ease;
+}
+
+.map-overlay-content {
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 8px;
+}
+
+.map-overlay i {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
 .map-placeholder iframe {
   width: 100%;
   height: 100%;
@@ -3719,4 +3753,37 @@ section h2::after {
   .mobile-menu-fab {
     display: flex;
   }
+}
+
+/* --- Toast Notifications --- */
+#toast-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.toast {
+  padding: 15px 20px;
+  border-radius: 8px;
+  color: #fff;
+  font-weight: 600;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  opacity: 0;
+  transform: translateX(120%);
+  transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+  min-width: 250px;
+  max-width: 350px;
+}
+.toast.show {
+  opacity: 1;
+  transform: translateX(0);
+}
+.toast.success {
+  background-color: #2ecc71;
+}
+.toast.error {
+  background-color: #e74c3c;
 }

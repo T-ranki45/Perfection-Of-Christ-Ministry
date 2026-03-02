@@ -286,25 +286,25 @@
       function getEmbedUrl(url) {
         let embedUrl = "";
         try {
-          // Normalize Facebook URLs to www to avoid mobile link issues in embed
-          let cleanUrl = url;
-          if (url.includes("facebook.com")) {
-            cleanUrl = url
-              .replace("m.facebook.com", "www.facebook.com")
-              .replace("web.facebook.com", "www.facebook.com");
-            // Handle Facebook Reels by converting to watch URL
-            if (cleanUrl.includes("/reel/")) {
-              const parts = cleanUrl.split("/reel/");
-              if (parts.length > 1) {
-                const id = parts[1].split("/")[0].split("?")[0];
-                if (id) cleanUrl = `https://www.facebook.com/watch/?v=${id}`;
-              }
+          let cleanUrl = url.trim();
+
+          // --- Facebook Handling ---
+          if (cleanUrl.includes("facebook.com") || cleanUrl.includes("fb.watch")) {
+            // Extract video ID from various Facebook formats (videos, reels, watch, etc.)
+            const idMatch = cleanUrl.match(/(?:\/videos\/|\/reel\/|v=|(?:\/watch\/\?v=))(\d+)/);
+            if (idMatch && idMatch[1]) {
+              cleanUrl = `https://www.facebook.com/watch/?v=${idMatch[1]}`;
+            } else {
+              // Fallback: Ensure desktop domain if ID extraction fails
+              cleanUrl = cleanUrl.replace("m.facebook.com", "www.facebook.com").replace("web.facebook.com", "www.facebook.com");
             }
-          }
-          const urlObj = new URL(cleanUrl);
-          if (urlObj.hostname.includes("facebook.com")) {
             embedUrl = `https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(cleanUrl)}&show_text=false&width=734&autoplay=true`;
-          } else if (
+            return embedUrl;
+          }
+
+          // --- YouTube Handling ---
+          const urlObj = new URL(cleanUrl);
+          if (
             urlObj.hostname.includes("youtube.com") ||
             urlObj.hostname.includes("youtu.be")
           ) {

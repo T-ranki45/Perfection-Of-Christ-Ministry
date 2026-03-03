@@ -184,21 +184,6 @@
             />
           </div>
           <button type="submit" class="btn-primary">Login</button>
-          <p
-            id="error-msg"
-            style="
-              color: #ff4d4d;
-              margin-top: 15px;
-              display: none;
-              text-align: center;
-              font-size: 0.9rem;
-              background: rgba(0, 0, 0, 0.3);
-              padding: 5px;
-              border-radius: 4px;
-            "
-          >
-            Invalid Password
-          </p>
         </form>
         <div style="text-align: center; margin-top: 1rem">
           <a href="index.html" class="back-link"
@@ -207,6 +192,9 @@
         </div>
       </div>
     </div>
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container"></div>
 
     <script>
       const API_URL = "/api";
@@ -221,7 +209,6 @@
         .addEventListener("submit", async (e) => {
           e.preventDefault();
           const password = document.getElementById("password").value;
-          const errorMsg = document.getElementById("error-msg");
           const btn = e.target.querySelector("button");
 
           btn.innerText = "Verifying...";
@@ -238,16 +225,33 @@
               localStorage.setItem("admin_token", data.token);
               window.location.href = "/admin";
             } else {
-              errorMsg.style.display = "block";
+              showToast(data.message || "Invalid Password", "error");
               btn.innerText = "Login";
             }
           } catch (err) {
             console.error(err);
-            errorMsg.innerText = "Server Error";
-            errorMsg.style.display = "block";
+            showToast("Server Error. Please try again.", "error");
             btn.innerText = "Login";
           }
         });
+
+      // --- Toast Notification Function ---
+      function showToast(message, type = "success") {
+        const container = document.getElementById("toast-container");
+        if (!container) return;
+        const toast = document.createElement("div");
+        toast.className = `toast ${type}`;
+        toast.textContent = message;
+        container.appendChild(toast);
+
+        // Trigger reflow to enable animation
+        toast.getBoundingClientRect();
+        toast.classList.add("show");
+
+        setTimeout(() => {
+          toast.remove();
+        }, 5000);
+      }
     </script>
   </body>
 </html>

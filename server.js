@@ -51,6 +51,7 @@ const UPLOADS_DIR = path.join(STORAGE_DIR, "uploads");
   path.join(UPLOADS_DIR, "flyers"),
   path.join(UPLOADS_DIR, "sermons"),
   path.join(UPLOADS_DIR, "blog"),
+  path.join(UPLOADS_DIR, "images"),
   path.join(UPLOADS_DIR, "videos"), // Add videos directory
 ].forEach((dir) => {
   if (!fs.existsSync(dir)) {
@@ -293,10 +294,17 @@ app.post(
         saveLocalData("sermons", localSermons);
       }
 
-      res.status(201).json({ message: "Message added successfully", sermon: newSermon });
+      res
+        .status(201)
+        .json({ message: "Message added successfully", sermon: newSermon });
     } catch (error) {
       console.error("Error adding sermon:", error);
-      res.status(500).json({ error: "Internal Server Error: " + error.message });
+      res
+        .status(500)
+        .json({
+          error:
+            "An internal server error occurred. Please check the server logs.",
+        });
     }
   },
 );
@@ -352,7 +360,9 @@ app.post(
     try {
       const { title, author, date, category, content } = req.body;
       if (!title || !date || !content || !req.files["image"]) {
-        return res.status(400).json({ error: "Title, Date, Content, and Image are required" });
+        return res
+          .status(400)
+          .json({ error: "Title, Date, Content, and Image are required" });
       }
 
       const newPost = {
@@ -360,7 +370,9 @@ app.post(
         author: author || "Admin",
         date,
         category,
-        videoUrl: req.files["video"] ? `/uploads/videos/${req.files["video"][0].filename}` : "",
+        videoUrl: req.files["video"]
+          ? `/uploads/videos/${req.files["video"][0].filename}`
+          : "",
         content,
         image: `/uploads/images/${req.files["image"][0].filename}`,
         _id: new ObjectId(),
@@ -375,10 +387,17 @@ app.post(
         saveLocalData("blog", localBlog);
       }
 
-      res.status(201).json({ message: "Blog post published successfully", post: newPost });
+      res
+        .status(201)
+        .json({ message: "Blog post published successfully", post: newPost });
     } catch (error) {
       console.error("Error adding blog post:", error);
-      res.status(500).json({ error: "Internal Server Error: " + error.message });
+      res
+        .status(500)
+        .json({
+          error:
+            "An internal server error occurred. Please check the server logs.",
+        });
     }
   },
 );
@@ -477,9 +496,7 @@ app.get("/api/plan-visit", async (req, res) => {
   } else {
     const localVisits = getLocalData("plannedVisits");
     res.json(
-      localVisits.sort(
-        (a, b) => new Date(b.timestamp) - new Date(a.timestamp),
-      ),
+      localVisits.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)),
     );
   }
 });
@@ -521,9 +538,7 @@ app.patch("/api/plan-visit/:id/visited", async (req, res) => {
     }
   } else {
     const localVisits = getLocalData("plannedVisits");
-    const visitIndex = localVisits.findIndex(
-      (v) => v._id.toString() === id,
-    );
+    const visitIndex = localVisits.findIndex((v) => v._id.toString() === id);
     if (visitIndex !== -1) {
       localVisits[visitIndex].visited = visited;
       saveLocalData("plannedVisits", localVisits);

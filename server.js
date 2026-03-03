@@ -2,6 +2,7 @@ const express = require("express");
 const fs = require("fs");
 const cors = require("cors");
 const { MongoClient, ObjectId } = require("mongodb");
+const multer = require("multer");
 const https = require("https");
 const path = require("path");
 const app = express();
@@ -50,6 +51,7 @@ const UPLOADS_DIR = path.join(STORAGE_DIR, "uploads");
   path.join(UPLOADS_DIR, "flyers"),
   path.join(UPLOADS_DIR, "sermons"),
   path.join(UPLOADS_DIR, "blog"),
+  path.join(UPLOADS_DIR, "videos"), // Add videos directory
 ].forEach((dir) => {
   if (!fs.existsSync(dir)) {
     fs.mkdirSync(dir, { recursive: true });
@@ -58,6 +60,24 @@ const UPLOADS_DIR = path.join(STORAGE_DIR, "uploads");
 
 // Serve uploaded files publicly
 app.use("/uploads", express.static(UPLOADS_DIR));
+
+// --- MULTER SETUP FOR FILE UPLOADS ---
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    let dest = file.mimetype.startsWith("video")
+      ? path.join(UPLOADS_DIR, "videos")
+      : path.join(UPLOADS_DIR, "images"); // Generic images folder
+    cb(null, dest);
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + "-" + file.originalname.replace(/\s+/g, "_"));
+  },
+});
+
+const upload = multer({
+  storage: storage,
+  limits: { fileSize: 1024 * 1024 * 500 }, // 500MB limit for videos
+});
 
 // Helper: Read data from JSON file
 function getLocalData(filename, defaultVal = []) {
@@ -241,38 +261,45 @@ app.get("/api/sermons", async (req, res) => {
 });
 
 // Add new sermon/message
-app.post("/api/sermons", async (req, res) => {
-  try {
-    const { title, preacher, date, videoUrl, image } = req.body;
-    if (!title || !date || !videoUrl) {
-      return res.status(400).json({ error: "All fields are required" });
-    }
-    const newSermon = {
-      title,
-      preacher: preacher || "Pastor John Jeremiah",
-      date,
-      videoUrl,
-      image: image, // Will be processed below
-      _id: new ObjectId(),
-    };
+app.post(
+  "/api/sermons",
+  upload.fields([
+    { name: "image", maxCount: 1 },
+    { name: "video", maxCount: 1 },
+  ]),
+  async (req, res) => {
+    try {
+      const { title, preacher, date } = req.body;
+      if (!title || !date || !req.files["video"] || !req.files["image"]) {
+        return res
+          .status(400)
+          .json({ error: "All fields and files are required" });
+      }
 
-    if (db) {
-      await db.collection("sermons").insertOne(newSermon);
-    } else {
-      const localSermons = getLocalData("sermons");
-      newSermon.image = saveImageToDisk(image, "sermons"); // Save image to folder
-      localSermons.push(newSermon);
-      saveLocalData("sermons", localSermons);
-    }
+      const newSermon = {
+        title,
+        preacher: preacher || "Pastor John Jeremiah",
+        date,
+        videoUrl: `/uploads/videos/${req.files["video"][0].filename}`,
+        image: `/uploads/images/${req.files["image"][0].filename}`,
+        _id: new ObjectId(),
+      };
 
-    res
-      .status(201)
-      .json({ message: "Message added successfully", sermon: newSermon });
-  } catch (error) {
-    console.error("Error adding sermon:", error);
-    res.status(500).json({ error: "Internal Server Error: " + error.message });
-  }
-});
+      if (db) {
+        await db.collection("sermons").insertOne(newSermon);
+      } else {
+        const localSermons = getLocalData("sermons");
+        localSermons.push(newSermon);
+        saveLocalData("sermons", localSermons);
+      }
+
+      res.status(201).json({ message: "Message added successfully", sermon: newSermon });
+    } catch (error) {
+      console.error("Error adding sermon:", error);
+      res.status(500).json({ error: "Internal Server Error: " + error.message });
+    }
+  },
+);
 
 // Delete sermon
 app.delete("/api/sermons/:id", async (req, res) => {
@@ -315,40 +342,46 @@ app.get("/api/blog", async (req, res) => {
 });
 
 // Add new blog post
-app.post("/api/blog", async (req, res) => {
-  try {
-    const { title, author, date, category, videoUrl, content, image } = req.body;
-    if (!title || !date || !content || !image) {
-      return res.status(400).json({ error: "Title, Date, Content, and Image are required" });
+app.post(
+  "/api/blog",
+  upload.fields([
+    { name: "image", maxCount: 1 },
+    { name: "video", maxCount: 1 },
+  ]),
+  async (req, res) => {
+    try {
+      const { title, author, date, category, content } = req.body;
+      if (!title || !date || !content || !req.files["image"]) {
+        return res.status(400).json({ error: "Title, Date, Content, and Image are required" });
+      }
+
+      const newPost = {
+        title,
+        author: author || "Admin",
+        date,
+        category,
+        videoUrl: req.files["video"] ? `/uploads/videos/${req.files["video"][0].filename}` : "",
+        content,
+        image: `/uploads/images/${req.files["image"][0].filename}`,
+        _id: new ObjectId(),
+        createdAt: new Date(),
+      };
+
+      if (db) {
+        await db.collection("blog").insertOne(newPost);
+      } else {
+        const localBlog = getLocalData("blog");
+        localBlog.push(newPost);
+        saveLocalData("blog", localBlog);
+      }
+
+      res.status(201).json({ message: "Blog post published successfully", post: newPost });
+    } catch (error) {
+      console.error("Error adding blog post:", error);
+      res.status(500).json({ error: "Internal Server Error: " + error.message });
     }
-
-    const newPost = {
-      title,
-      author: author || "Admin",
-      date,
-      category,
-      videoUrl,
-      content,
-      image, // Will be processed if local
-      _id: new ObjectId(),
-      createdAt: new Date()
-    };
-
-    if (db) {
-      await db.collection("blog").insertOne(newPost);
-    } else {
-      const localBlog = getLocalData("blog");
-      newPost.image = saveImageToDisk(image, "blog"); // Save image to folder
-      localBlog.push(newPost);
-      saveLocalData("blog", localBlog);
-    }
-
-    res.status(201).json({ message: "Blog post published successfully", post: newPost });
-  } catch (error) {
-    console.error("Error adding blog post:", error);
-    res.status(500).json({ error: "Internal Server Error: " + error.message });
-  }
-});
+  },
+);
 
 // Delete blog post
 app.delete("/api/blog/:id", async (req, res) => {

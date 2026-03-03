@@ -979,16 +979,24 @@
       }
 
       function openMessageModal(videoUrl, title) {
-        const embedUrl = getEmbedUrl(videoUrl);
-        if (!embedUrl) {
-          showToast(
-            "Sorry, this video link is not valid or supported.",
-            "error",
-          );
-          return;
+        let embedHtml = "";
+        // Check if it's a self-hosted video
+        if (videoUrl.startsWith("/uploads/")) {
+          embedHtml = `<video src="${videoUrl}" controls autoplay style="width:100%; height:auto; max-height: 80vh;"></video>`;
+        } else {
+          // Otherwise, treat it as an external URL (Facebook/YouTube)
+          const embedUrl = getEmbedUrl(videoUrl);
+          if (!embedUrl) {
+            showToast(
+              "Sorry, this video link is not valid or supported.",
+              "error",
+            );
+            return;
+          }
+          embedHtml = `<iframe src="${embedUrl}" width="100%" height="100%" style="border:none;overflow:hidden" scrolling="no" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share" allowfullscreen="true"></iframe>`;
         }
         messageModalTitle.innerText = title;
-        messageVideoContainer.innerHTML = `<iframe src="${embedUrl}" width="100%" height="100%" style="border:none;overflow:hidden" scrolling="no" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share" allowfullscreen="true"></iframe>`;
+        messageVideoContainer.innerHTML = embedHtml;
         messageModal.style.display = "block";
       }
 

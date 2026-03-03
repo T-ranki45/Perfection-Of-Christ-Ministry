@@ -596,12 +596,12 @@
                 <input type="date" id="msg-date" required />
               </div>
               <div class="form-group">
-                <label>Video Link (Facebook/YouTube)</label>
+                <label>Video File</label>
                 <input
-                  type="url"
-                  id="msg-url"
+                  type="file"
+                  id="msg-video"
+                  accept="video/*"
                   required
-                  placeholder="https://facebook.com/..."
                 />
               </div>
               <div class="form-group">
@@ -659,11 +659,11 @@
                 </select>
               </div>
               <div class="form-group">
-                <label>Video URL (Optional)</label>
+                <label>Video File (Optional, for 'Video' category)</label>
                 <input
-                  type="url"
-                  id="blog-video-url"
-                  placeholder="https://..."
+                  type="file"
+                  id="blog-video"
+                  accept="video/*"
                 />
               </div>
               <div class="form-group">
@@ -696,18 +696,18 @@
               <!-- Populated by JS -->
             </div>
             <p class="helper-text">
-              Enter any <strong>Public</strong> Facebook Live URL to update the stream. 
-              Use the full browser link (e.g., https://www.facebook.com/watch/?v=...) rather than mobile links.
+              Enter a <strong>Public</strong> YouTube or Facebook Live URL to update the stream.
+              Use the full browser link for the best results.
             </p>
             <form id="livestream-form">
               <div class="form-group">
-                <label>Facebook Live Video URL</label>
+                <label>Live Video URL (YouTube or Facebook)</label>
                 <input
                   type="text"
                   id="video-id"
-                  placeholder="e.g., https://www.facebook.com/watch/live/?v=..."
+                  placeholder="e.g., https://www.youtube.com/watch?v=..."
                 />
-                <small>Paste the full URL of the Facebook Live video.</small>
+                <small>Paste the full URL of the live video.</small>
               </div>
               <div class="form-group checkbox-group">
                 <input type="checkbox" id="is-live" />
@@ -1240,51 +1240,49 @@
           const title = document.getElementById("msg-title").value;
           const preacher = document.getElementById("msg-preacher").value;
           const date = document.getElementById("msg-date").value;
-          const videoUrl = document.getElementById("msg-url").value;
-          const fileInput = document.getElementById("msg-image");
+          const imageInput = document.getElementById("msg-image");
+          const videoInput = document.getElementById("msg-video");
 
-          if (fileInput.files.length === 0) {
+          if (imageInput.files.length === 0) {
             showToast("Please select a thumbnail image.", "error");
             btn.innerText = originalText;
             btn.disabled = false;
             return;
           }
+          if (videoInput.files.length === 0) {
+            showToast("Please select a video file.", "error");
+            btn.innerText = originalText;
+            btn.disabled = false;
+            return;
+          }
 
-          const reader = new FileReader();
-          reader.readAsDataURL(fileInput.files[0]);
-          reader.onload = async () => {
-            const image = reader.result;
-            try {
-              const res = await fetch(`${API_URL}/sermons`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                  title,
-                  preacher,
-                  date,
-                  videoUrl,
-                  image,
-                }),
-              });
-              if (res.ok) {
-                showToast("Message Posted Successfully!");
-                e.target.reset();
-                loadMessagesList();
-              } else {
-                const data = await res.json();
-                showToast(
-                  "Failed to post message: " + (data.error || "Unknown error"),
-                  "error"
-                );
-              }
-            } catch (err) {
-              console.error(err);
-              showToast("Error posting message. Check console for details.", "error");
-            } finally {
-              btn.innerText = originalText;
-              btn.disabled = false;
+          const formData = new FormData();
+          formData.append("title", title);
+          formData.append("preacher", preacher);
+          formData.append("date", date);
+          formData.append("image", imageInput.files[0]);
+          formData.append("video", videoInput.files[0]);
+
+          try {
+            const res = await fetch(`${API_URL}/sermons`, {
+              method: "POST",
+              body: formData, // No Content-Type header needed
+            });
+            if (res.ok) {
+              showToast("Message Posted Successfully!");
+              e.target.reset();
+              loadMessagesList();
+            } else {
+              const data = await res.json();
+              showToast("Failed to post message: " + (data.error || "Unknown error"), "error");
             }
-          };
+          } catch (err) {
+            console.error(err);
+            showToast("Error posting message. Check console for details.", "error");
+          } finally {
+            btn.innerText = originalText;
+            btn.disabled = false;
+          }
         });
 
       async function loadMessagesList() {
@@ -1344,54 +1342,54 @@
           const author = document.getElementById("blog-author").value;
           const date = document.getElementById("blog-date").value;
           const category = document.getElementById("blog-category").value;
-          const videoUrl = document.getElementById("blog-video-url").value;
           const content = document.getElementById("blog-content").value;
-          const fileInput = document.getElementById("blog-image");
+          const imageInput = document.getElementById("blog-image");
+          const videoInput = document.getElementById("blog-video");
 
-          if (fileInput.files.length === 0) {
+          if (imageInput.files.length === 0) {
             showToast("Please select a thumbnail image.", "error");
             btn.innerText = originalText;
             btn.disabled = false;
             return;
           }
+          if (category === 'video' && videoInput.files.length === 0) {
+            showToast("Please select a video file for the 'Video' category.", "error");
+            btn.innerText = originalText;
+            btn.disabled = false;
+            return;
+          }
 
-          const reader = new FileReader();
-          reader.readAsDataURL(fileInput.files[0]);
-          reader.onload = async () => {
-            const image = reader.result;
-            try {
-              const res = await fetch(`${API_URL}/blog`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                  title,
-                  author,
-                  date,
-                  category,
-                  videoUrl,
-                  content,
-                  image,
-                }),
-              });
-              if (res.ok) {
-                showToast("Blog Post Published Successfully!");
-                e.target.reset();
-                loadBlogPosts();
-              } else {
-                const data = await res.json();
-                showToast(
-                  "Failed to publish post: " + (data.error || "Unknown error"),
-                  "error"
-                );
-              }
-            } catch (err) {
-              console.error(err);
-              showToast("Error publishing post. Check console for details.", "error");
-            } finally {
-              btn.innerText = originalText;
-              btn.disabled = false;
+          const formData = new FormData();
+          formData.append("title", title);
+          formData.append("author", author);
+          formData.append("date", date);
+          formData.append("category", category);
+          formData.append("content", content);
+          formData.append("image", imageInput.files[0]);
+          if (videoInput.files.length > 0) {
+            formData.append("video", videoInput.files[0]);
+          }
+
+          try {
+            const res = await fetch(`${API_URL}/blog`, {
+              method: "POST",
+              body: formData,
+            });
+            if (res.ok) {
+              showToast("Blog Post Published Successfully!");
+              e.target.reset();
+              loadBlogPosts();
+            } else {
+              const data = await res.json();
+              showToast("Failed to publish post: " + (data.error || "Unknown error"), "error");
             }
-          };
+          } catch (err) {
+            console.error(err);
+            showToast("Error publishing post. Check console for details.", "error");
+          } finally {
+            btn.innerText = originalText;
+            btn.disabled = false;
+          }
         });
 
       async function loadBlogPosts() {

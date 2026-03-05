@@ -1,6 +1,15 @@
 <!doctype html>
 <html lang="en">
   <head>
+    <meta
+      name="google-site-verification"
+      content="MKuQExqo0YB3FTyiN_CKTr2ssf1Pefmr7jtCjOBQDyg"
+    />
+    <title>Perfection Of Christ Ministry | Official Website</title>
+    <meta
+      name="description"
+      content="Welcome to Perfection Of Christ Ministry. A community of believers dedicated to knowing God and making Him known. Join us for worship and the Word."
+    />
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta
@@ -25,7 +34,6 @@
     />
     <meta property="og:image" content="./image/logo.png" />
 
-    <title>Perfection Of Christ Ministry | Welcome Home</title>
     <link rel="stylesheet" href="style.css" />
     <link
       href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Montserrat:wght@400;700;900&display=swap"
@@ -850,17 +858,17 @@
                 openLiveModal();
               });
             }
-            
-            liveNavItems.forEach(item => {
-                item.style.display = "block"; // or 'list-item'
-                const navLink = item.querySelector("a");
-                if (navLink) {
-                    navLink.href = "#"; // Prevent navigation
-                    navLink.addEventListener("click", (e) => {
-                        e.preventDefault();
-                        openLiveModal();
-                    });
-                }
+
+            liveNavItems.forEach((item) => {
+              item.style.display = "block"; // or 'list-item'
+              const navLink = item.querySelector("a");
+              if (navLink) {
+                navLink.href = "#"; // Prevent navigation
+                navLink.addEventListener("click", (e) => {
+                  e.preventDefault();
+                  openLiveModal();
+                });
+              }
             });
 
             closeLiveModalBtn.addEventListener("click", closeLiveModal);
@@ -932,14 +940,21 @@
           let cleanUrl = url.trim();
 
           // --- Facebook Handling ---
-          if (cleanUrl.includes("facebook.com") || cleanUrl.includes("fb.watch")) {
+          if (
+            cleanUrl.includes("facebook.com") ||
+            cleanUrl.includes("fb.watch")
+          ) {
             // Extract video ID from various Facebook formats (videos, reels, watch, etc.)
-            const idMatch = cleanUrl.match(/(?:\/videos\/|\/reel\/|v=|(?:\/watch\/\?v=))(\d+)/);
+            const idMatch = cleanUrl.match(
+              /(?:\/videos\/|\/reel\/|v=|(?:\/watch\/\?v=))(\d+)/,
+            );
             if (idMatch && idMatch[1]) {
               cleanUrl = `https://www.facebook.com/watch/?v=${idMatch[1]}`;
             } else {
               // Fallback: Ensure desktop domain if ID extraction fails
-              cleanUrl = cleanUrl.replace("m.facebook.com", "www.facebook.com").replace("web.facebook.com", "www.facebook.com");
+              cleanUrl = cleanUrl
+                .replace("m.facebook.com", "www.facebook.com")
+                .replace("web.facebook.com", "www.facebook.com");
             }
             embedUrl = `https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(cleanUrl)}&show_text=false&width=734&autoplay=true`;
             return embedUrl;
@@ -967,7 +982,7 @@
               if (videoId.includes("?")) videoId = videoId.split("?")[0];
               if (videoId.includes("&")) videoId = videoId.split("&")[0];
               if (videoId.includes("/")) videoId = videoId.split("/")[0];
-              
+
               embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
             }
           }

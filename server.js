@@ -4,6 +4,8 @@ const fs = require("fs");
 const cors = require("cors");
 const { MongoClient, ObjectId } = require("mongodb");
 const multer = require("multer");
+const cloudinary = require("cloudinary").v2;
+const streamifier = require("streamifier");
 const https = require("https");
 const path = require("path");
 const app = express();
@@ -13,6 +15,14 @@ const port = process.env.PORT || 3000;
 const DATABASE_URL =
   "mongodb+srv://perfection:Password123@churchwebsite.sv9kfnh.mongodb.net/?appName=ChurchWebsite";
 const DB_NAME = process.env.DB_NAME || "pocm-db";
+
+// --- CLOUDINARY CONFIG ---
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+  secure: true,
+});
 
 // Middleware
 app.use(cors()); // Allow frontend to communicate with backend
@@ -42,45 +52,18 @@ app.get("/admin", (req, res) => {
 let db;
 
 // --- LOCAL DATABASE FOLDER SETUP ---
-// This creates a folder named "database_management" inside "public"
-// Anything saved here can be pushed to GitHub and will persist.
-const PUBLIC_DIR = path.join(__dirname, "public");
-const DB_MGMT_DIR = path.join(PUBLIC_DIR, "database_management");
 const DATA_DIR = path.join(__dirname, "storage", "data"); // Keep JSON data separate
 
 // Ensure storage directories exist
-[
-  path.join(__dirname, "storage"),
-  DATA_DIR,
-  PUBLIC_DIR,
-  DB_MGMT_DIR,
-  path.join(DB_MGMT_DIR, "images"),
-  path.join(DB_MGMT_DIR, "videos"),
-].forEach((dir) => {
+[path.join(__dirname, "storage"), DATA_DIR].forEach((dir) => {
   if (!fs.existsSync(dir)) {
     fs.mkdirSync(dir, { recursive: true });
   }
 });
 
-// --- MULTER SETUP (Local Folder Storage) ---
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    let dest = path.join(DB_MGMT_DIR, "images");
-    if (file.mimetype.startsWith("video")) {
-      dest = path.join(DB_MGMT_DIR, "videos");
-    }
-    cb(null, dest);
-  },
-  filename: function (req, file, cb) {
-    // Create a clean filename
-    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    const ext = path.extname(file.originalname);
-    cb(null, file.fieldname + "-" + uniqueSuffix + ext);
-  },
-});
-
+// --- MULTER SETUP (Memory Storage for Cloudinary) ---
 const upload = multer({
-  storage: storage,
+  storage: multer.memoryStorage(),
   limits: { fileSize: 1024 * 1024 * 500 }, // 500MB limit for local videos
 });
 
@@ -103,28 +86,18 @@ function saveLocalData(filename, data) {
   );
 }
 
-// Helper: Save Base64 Image to Disk
-function saveImageToDisk(base64Data, folder) {
-  try {
-    // If it's not base64 (e.g. already a URL), return it as is
-    if (!base64Data || !base64Data.startsWith("data:image")) return base64Data;
-
-    const matches = base64Data.match(
-      /^data:image\/([a-zA-Z0-9\+\-\.]+);base64,(.+)$/,
+// Helper: Upload a file buffer to Cloudinary
+async function uploadToCloudinary(fileBuffer, folder, resourceType = "auto") {
+  return new Promise((resolve, reject) => {
+    const uploadStream = cloudinary.uploader.upload_stream(
+      { folder: folder, resource_type: resourceType },
+      (error, result) => {
+        if (error) return reject(error);
+        resolve(result);
+      },
     );
-    if (!matches || matches.length !== 3) return base64Data;
-
-    const ext = matches[1];
-    const buffer = Buffer.from(matches[2], "base64");
-    const filename = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}.${ext}`;
-    const filePath = path.join(DB_MGMT_DIR, "images", filename);
-
-    fs.writeFileSync(filePath, buffer);
-    return `/public/database_management/images/${filename}`; // Return the public URL
-  } catch (e) {
-    console.error("Error saving image to disk:", e);
-    return base64Data; // Fallback
-  }
+    streamifier.createReadStream(fileBuffer).pipe(uploadStream);
+  });
 }
 
 async function connectToDb() {
@@ -192,35 +165,39 @@ app.get("/api/flyers", async (req, res) => {
 });
 
 // Add new flyers (Bulk)
-app.post("/api/flyers", async (req, res) => {
+app.post("/api/flyers", upload.array("flyers", 20), async (req, res) => {
   try {
-    const newFlyers = req.body; // Expecting array of { image }
-    if (!Array.isArray(newFlyers)) {
-      return res.status(400).json({ error: "Expected an array of flyers" });
+    const files = req.files;
+    if (!files || files.length === 0) {
+      return res.status(400).json({ error: "No flyer images uploaded." });
     }
 
+    // Upload all files to Cloudinary in parallel
+    const uploadPromises = files.map((file) =>
+      uploadToCloudinary(file.buffer, "flyers", "image"),
+    );
+    const uploadResults = await Promise.all(uploadPromises);
+
+    const flyersToInsert = uploadResults.map((result) => ({
+      image_url: result.secure_url,
+      public_id: result.public_id,
+      _id: new ObjectId(),
+      createdAt: new Date(),
+    }));
+
     if (db) {
-      const flyersWithTimestamp = newFlyers.map((f) => ({
-        ...f,
-        _id: new ObjectId(),
-        createdAt: new Date(),
-      }));
-      await db.collection("flyers").insertMany(flyersWithTimestamp);
+      await db.collection("flyers").insertMany(flyersToInsert);
     } else {
       // Local Storage Logic
       const localFlyers = getLocalData("flyers");
-      const flyersWithTimestamp = newFlyers.map((f) => ({
-        image: f.image, // In local mode with base64, we might still have issues if not using Cloudinary for base64. Ideally, use DB.
-        _id: new ObjectId(),
-        createdAt: new Date(),
-      }));
-      localFlyers.push(...flyersWithTimestamp);
+      localFlyers.push(...flyersToInsert);
       saveLocalData("flyers", localFlyers);
     }
 
-    res
-      .status(201)
-      .json({ message: "Flyers added successfully", count: newFlyers.length });
+    res.status(201).json({
+      message: "Flyers added successfully",
+      count: flyersToInsert.length,
+    });
   } catch (error) {
     console.error("Error adding flyers:", error);
     res.status(500).json({ error: "Internal Server Error: " + error.message });
@@ -229,25 +206,44 @@ app.post("/api/flyers", async (req, res) => {
 
 // Delete a flyer
 app.delete("/api/flyers/:id", async (req, res) => {
-  const { id } = req.params;
+  try {
+    const { id } = req.params;
+    let flyerToDelete;
 
-  if (db) {
-    const result = await db
-      .collection("flyers")
-      .deleteOne({ _id: new ObjectId(id) });
-    if (result.deletedCount === 1) {
-      return res.json({ message: "Flyer deleted successfully" });
+    if (db) {
+      flyerToDelete = await db
+        .collection("flyers")
+        .findOne({ _id: new ObjectId(id) });
+    } else {
+      const localFlyers = getLocalData("flyers");
+      flyerToDelete = localFlyers.find((f) => f._id.toString() === id);
     }
-  } else {
-    let localFlyers = getLocalData("flyers");
-    const initialLength = localFlyers.length;
-    localFlyers = localFlyers.filter((f) => f._id.toString() !== id);
-    saveLocalData("flyers", localFlyers);
-    if (localFlyers.length < initialLength) {
-      return res.json({ message: "Flyer deleted successfully" });
+
+    if (!flyerToDelete) {
+      return res.status(404).json({ error: "Flyer not found" });
     }
+
+    // Delete from Cloudinary
+    if (flyerToDelete.public_id) {
+      await cloudinary.uploader.destroy(flyerToDelete.public_id);
+    }
+
+    // Delete from DB or local storage
+    if (db) {
+      await db.collection("flyers").deleteOne({ _id: new ObjectId(id) });
+    } else {
+      const localFlyers = getLocalData("flyers");
+      saveLocalData(
+        "flyers",
+        localFlyers.filter((f) => f._id.toString() !== id),
+      );
+    }
+
+    res.json({ message: "Flyer deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting flyer:", error);
+    res.status(500).json({ error: "Internal Server Error" });
   }
-  return res.status(404).json({ error: "Flyer not found" });
 });
 
 // Get all sermons
@@ -266,63 +262,127 @@ app.get("/api/sermons", async (req, res) => {
 });
 
 // Add new sermon/message
-app.post("/api/sermons", async (req, res) => {
-  try {
-    const { title, preacher, date, image, video } = req.body;
-    if (!title || !date || !video || !image) {
-      return res.status(400).json({ error: "All fields are required" });
+app.post(
+  "/api/sermons",
+  upload.fields([
+    { name: "image", maxCount: 1 },
+    { name: "video", maxCount: 1 },
+  ]),
+  async (req, res) => {
+    try {
+      const { title, preacher, date } = req.body;
+      const imageFile = req.files["image"] ? req.files["image"][0] : null;
+      const videoFile = req.files["video"] ? req.files["video"][0] : null;
+
+      if (!title || !date || !videoFile || !imageFile) {
+        return res
+          .status(400)
+          .json({ error: "All fields and files are required" });
+      }
+
+      // Upload to Cloudinary
+      const imageUploadPromise = uploadToCloudinary(
+        imageFile.buffer,
+        "sermons",
+        "image",
+      );
+      const videoUploadPromise = uploadToCloudinary(
+        videoFile.buffer,
+        "sermons",
+        "video",
+      );
+
+      const [imageResult, videoResult] = await Promise.all([
+        imageUploadPromise,
+        videoUploadPromise,
+      ]);
+
+      const newSermon = {
+        title,
+        preacher: preacher || "Pastor John Jeremiah",
+        date,
+        video: {
+          url: videoResult.secure_url,
+          public_id: videoResult.public_id,
+        },
+        image: {
+          url: imageResult.secure_url,
+          public_id: imageResult.public_id,
+        },
+        _id: new ObjectId(),
+      };
+
+      if (db) {
+        await db.collection("sermons").insertOne(newSermon);
+      } else {
+        const localSermons = getLocalData("sermons");
+        localSermons.push(newSermon);
+        saveLocalData("sermons", localSermons);
+      }
+
+      res
+        .status(201)
+        .json({ message: "Message added successfully", sermon: newSermon });
+    } catch (error) {
+      console.error("Error adding sermon:", error);
+      res.status(500).json({
+        error:
+          "An internal server error occurred. Please check the server logs.",
+      });
     }
-
-    const newSermon = {
-      title,
-      preacher: preacher || "Pastor John Jeremiah",
-      date,
-      videoUrl: video, // Save Base64 string directly
-      image: image, // Save Base64 string directly
-      _id: new ObjectId(),
-    };
-
-    if (db) {
-      await db.collection("sermons").insertOne(newSermon);
-    } else {
-      const localSermons = getLocalData("sermons");
-      localSermons.push(newSermon);
-      saveLocalData("sermons", localSermons);
-    }
-
-    res
-      .status(201)
-      .json({ message: "Message added successfully", sermon: newSermon });
-  } catch (error) {
-    console.error("Error adding sermon:", error);
-    res.status(500).json({
-      error: "An internal server error occurred. Please check the server logs.",
-    });
-  }
-});
+  },
+);
 
 // Delete sermon
 app.delete("/api/sermons/:id", async (req, res) => {
-  const { id } = req.params;
+  try {
+    const { id } = req.params;
+    let sermonToDelete;
 
-  if (db) {
-    const result = await db
-      .collection("sermons")
-      .deleteOne({ _id: new ObjectId(id) });
-    if (result.deletedCount === 1) {
-      return res.json({ message: "Message deleted successfully" });
+    if (db) {
+      sermonToDelete = await db
+        .collection("sermons")
+        .findOne({ _id: new ObjectId(id) });
+    } else {
+      const localSermons = getLocalData("sermons");
+      sermonToDelete = localSermons.find((s) => s._id.toString() === id);
     }
-  } else {
-    let localSermons = getLocalData("sermons");
-    const initialLength = localSermons.length;
-    localSermons = localSermons.filter((s) => s._id.toString() !== id);
-    saveLocalData("sermons", localSermons);
-    if (localSermons.length < initialLength) {
-      return res.json({ message: "Message deleted successfully" });
+
+    if (!sermonToDelete) {
+      return res.status(404).json({ error: "Message not found" });
     }
+
+    // Delete files from Cloudinary
+    const deletePromises = [];
+    if (sermonToDelete.image && sermonToDelete.image.public_id) {
+      deletePromises.push(
+        cloudinary.uploader.destroy(sermonToDelete.image.public_id),
+      );
+    }
+    if (sermonToDelete.video && sermonToDelete.video.public_id) {
+      deletePromises.push(
+        cloudinary.uploader.destroy(sermonToDelete.video.public_id, {
+          resource_type: "video",
+        }),
+      );
+    }
+    await Promise.all(deletePromises);
+
+    // Delete from DB
+    if (db) {
+      await db.collection("sermons").deleteOne({ _id: new ObjectId(id) });
+    } else {
+      const localSermons = getLocalData("sermons");
+      saveLocalData(
+        "sermons",
+        localSermons.filter((s) => s._id.toString() !== id),
+      );
+    }
+    res.json({ message: "Message deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting sermon:", error);
+    res.status(500).json({ error: "Internal Server Error" });
   }
-
-  return res.status(404).json({ error: "Message not found" });
 });
 
 // --- BLOG ROUTES ---
@@ -342,78 +402,153 @@ app.get("/api/blog", async (req, res) => {
 });
 
 // Add new blog post
-app.post("/api/blog", async (req, res) => {
-  try {
-    const {
-      title,
-      author,
-      date,
-      category,
-      content,
-      image,
-      video,
-      galleryImages,
-    } = req.body;
-    if (!title || !date || !content || !image) {
-      return res
-        .status(400)
-        .json({ error: "Title, Date, Content, and Image are required" });
+app.post(
+  "/api/blog",
+  upload.fields([
+    { name: "image", maxCount: 1 },
+    { name: "video", maxCount: 1 },
+    { name: "galleryImages", maxCount: 20 }, // Increased limit
+  ]),
+  async (req, res) => {
+    try {
+      const { title, author, date, category, content } = req.body;
+
+      const imageFile = req.files["image"] ? req.files["image"][0] : null;
+      const videoFile = req.files["video"] ? req.files["video"][0] : null;
+      const galleryFiles = req.files["galleryImages"] || [];
+
+      if (!title || !date || !content || !imageFile) {
+        return res.status(400).json({
+          error: "Title, Date, Content, and Thumbnail Image are required",
+        });
+      }
+
+      // Upload files to Cloudinary
+      const uploadPromises = [];
+      uploadPromises.push(
+        uploadToCloudinary(imageFile.buffer, "blog", "image"),
+      );
+
+      if (videoFile) {
+        uploadPromises.push(
+          uploadToCloudinary(videoFile.buffer, "blog", "video"),
+        );
+      }
+
+      galleryFiles.forEach((file) => {
+        uploadPromises.push(uploadToCloudinary(file.buffer, "blog", "image"));
+      });
+
+      const [imageResult, ...otherResults] = await Promise.all(uploadPromises);
+
+      let videoResult = null;
+      let galleryResults = [];
+
+      if (videoFile) {
+        videoResult = otherResults.shift();
+        galleryResults = otherResults;
+      } else {
+        galleryResults = otherResults;
+      }
+
+      const newPost = {
+        title,
+        author: author || "Admin",
+        date,
+        category,
+        video: videoResult
+          ? { url: videoResult.secure_url, public_id: videoResult.public_id }
+          : null,
+        content,
+        image: {
+          url: imageResult.secure_url,
+          public_id: imageResult.public_id,
+        },
+        galleryImages: galleryResults.map((r) => ({
+          url: r.secure_url,
+          public_id: r.public_id,
+        })),
+        _id: new ObjectId(),
+        createdAt: new Date(),
+      };
+
+      if (db) {
+        await db.collection("blog").insertOne(newPost);
+      } else {
+        const localBlog = getLocalData("blog");
+        localBlog.push(newPost);
+        saveLocalData("blog", localBlog);
+      }
+
+      res
+        .status(201)
+        .json({ message: "Blog post published successfully", post: newPost });
+    } catch (error) {
+      console.error("Error adding blog post:", error);
+      res.status(500).json({
+        error:
+          "An internal server error occurred. Please check the server logs.",
+      });
     }
-
-    const newPost = {
-      title,
-      author: author || "Admin",
-      date,
-      category,
-      videoUrl: video || "",
-      content,
-      image: image,
-      galleryImages: galleryImages || [],
-      _id: new ObjectId(),
-      createdAt: new Date(),
-    };
-
-    if (db) {
-      await db.collection("blog").insertOne(newPost);
-    } else {
-      const localBlog = getLocalData("blog");
-      localBlog.push(newPost);
-      saveLocalData("blog", localBlog);
-    }
-
-    res
-      .status(201)
-      .json({ message: "Blog post published successfully", post: newPost });
-  } catch (error) {
-    console.error("Error adding blog post:", error);
-    res.status(500).json({
-      error: "An internal server error occurred. Please check the server logs.",
-    });
-  }
-});
+  },
+);
 
 // Delete blog post
 app.delete("/api/blog/:id", async (req, res) => {
-  const { id } = req.params;
+  try {
+    const { id } = req.params;
+    let postToDelete;
 
-  if (db) {
-    const result = await db
-      .collection("blog")
-      .deleteOne({ _id: new ObjectId(id) });
-    if (result.deletedCount === 1) {
-      return res.json({ message: "Blog post deleted successfully" });
+    if (db) {
+      postToDelete = await db
+        .collection("blog")
+        .findOne({ _id: new ObjectId(id) });
+    } else {
+      const localBlog = getLocalData("blog");
+      postToDelete = localBlog.find((p) => p._id.toString() === id);
     }
-  } else {
-    let localBlog = getLocalData("blog");
-    const initialLength = localBlog.length;
-    localBlog = localBlog.filter((p) => p._id.toString() !== id);
-    saveLocalData("blog", localBlog);
-    if (localBlog.length < initialLength) {
-      return res.json({ message: "Blog post deleted successfully" });
+
+    if (!postToDelete) {
+      return res.status(404).json({ error: "Blog post not found" });
     }
+
+    // Delete all associated files from Cloudinary
+    const deletePromises = [];
+    if (postToDelete.image && postToDelete.image.public_id) {
+      deletePromises.push(
+        cloudinary.uploader.destroy(postToDelete.image.public_id),
+      );
+    }
+    if (postToDelete.video && postToDelete.video.public_id) {
+      deletePromises.push(
+        cloudinary.uploader.destroy(postToDelete.video.public_id, {
+          resource_type: "video",
+        }),
+      );
+    }
+    if (postToDelete.galleryImages && postToDelete.galleryImages.length > 0) {
+      postToDelete.galleryImages.forEach((img) => {
+        if (img.public_id)
+          deletePromises.push(cloudinary.uploader.destroy(img.public_id));
+      });
+    }
+    await Promise.all(deletePromises);
+
+    // Delete from DB
+    if (db) {
+      await db.collection("blog").deleteOne({ _id: new ObjectId(id) });
+    } else {
+      const localBlog = getLocalData("blog");
+      saveLocalData(
+        "blog",
+        localBlog.filter((p) => p._id.toString() !== id),
+      );
+    }
+    res.json({ message: "Blog post deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting blog post:", error);
+    res.status(500).json({ error: "Internal Server Error" });
   }
-
-  return res.status(404).json({ error: "Blog post not found" });
 });
 
 // Submit prayer request
@@ -448,30 +583,37 @@ app.post("/api/prayer-requests", async (req, res) => {
 
 // Submit plan visit
 app.post("/api/plan-visit", async (req, res) => {
-  const { name, date, phone, guests } = req.body;
+  try {
+    const { name, date, phone, guests } = req.body;
 
-  if (!name || !date) {
-    return res.status(400).json({ error: "Name and Date are required" });
+    if (!name || !date) {
+      return res.status(400).json({ error: "Name and Date are required" });
+    }
+
+    const newVisit = {
+      name,
+      date,
+      phone,
+      guests,
+      timestamp: new Date(),
+      _id: new ObjectId(),
+    };
+
+    if (db) {
+      await db.collection("plannedVisits").insertOne(newVisit);
+    } else {
+      const localVisits = getLocalData("plannedVisits");
+      localVisits.push(newVisit);
+      saveLocalData("plannedVisits", localVisits);
+    }
+
+    res.status(201).json({ message: "Visit planned successfully" });
+  } catch (error) {
+    console.error("Error planning visit:", error);
+    res.status(500).json({
+      error: "An internal server error occurred. Please check the server logs.",
+    });
   }
-
-  const newVisit = {
-    name,
-    date,
-    phone,
-    guests,
-    timestamp: new Date(),
-    _id: new ObjectId(),
-  };
-
-  if (db) {
-    await db.collection("plannedVisits").insertOne(newVisit);
-  } else {
-    const localVisits = getLocalData("plannedVisits");
-    localVisits.push(newVisit);
-    saveLocalData("plannedVisits", localVisits);
-  }
-
-  res.status(201).json({ message: "Visit planned successfully" });
 });
 
 // Get all planned visits

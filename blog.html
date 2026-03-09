@@ -518,8 +518,8 @@
         // Use galleryImages if they exist, otherwise fall back to the main post image.
         const imagesToShow =
           post.galleryImages && post.galleryImages.length > 0
-            ? post.galleryImages
-            : [post.image];
+            ? post.galleryImages.map((img) => img.url)
+            : [post.image.url];
 
         // Store for lightbox
         currentGalleryImages = imagesToShow;
@@ -606,14 +606,11 @@
       const blogVideoCloseBtn = document.querySelector(".blog-video-close-btn");
 
       function openBlogVideoModal(post) {
-        if (!post.videoUrl) return;
+        if (!post.video || !post.video.url) return;
 
         let embedHtml = "";
-        if (
-          post.videoUrl.startsWith("/uploads/") ||
-          post.videoUrl.startsWith("data:video")
-        ) {
-          embedHtml = `<video src="${post.videoUrl}" controls autoplay style="width:100%; height:auto; max-height: 80vh;"></video>`;
+        if (post.video.url.includes("cloudinary.com")) {
+          embedHtml = `<video src="${post.video.url}" controls autoplay style="width:100%; height:auto; max-height: 80vh;"></video>`;
         } else {
           const embedUrl = getEmbedUrl(post.videoUrl);
           if (!embedUrl) {
@@ -787,7 +784,7 @@
 
           card.innerHTML = `
               <div class="blog-card-thumbnail">
-                <img src="${post.image}" alt="${post.title}">
+                <img src="${post.image.url}" alt="${post.title}">
                 <div class="thumbnail-overlay">
                   <i class="fas fa-plus"></i>
                 </div>

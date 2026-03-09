@@ -21,11 +21,13 @@
   "homepage": "https://github.com/T-ranki45/Perfection-Of-Christ-Ministry#readme",
   "dependencies": {
     "choco": "^0.2.1",
+    "cloudinary": "^2.9.0",
     "cors": "^2.8.5",
     "debug": "^4.3.4",
+    "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "mongodb": "^6.21.0",
     "multer": "^1.4.5-lts.1",
-    "dotenv": "^16.4.5"
+    "streamifier": "^0.1.1"
   }
 }

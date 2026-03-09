@@ -1400,15 +1400,6 @@
         });
       }
 
-      // Helper: Convert file to Base64 string
-      const toBase64 = (file) =>
-        new Promise((resolve, reject) => {
-          const reader = new FileReader();
-          reader.readAsDataURL(file);
-          reader.onload = () => resolve(reader.result);
-          reader.onerror = (error) => reject(error);
-        });
-
       document
         .getElementById("add-flyer-form")
         .addEventListener("submit", async (e) => {
@@ -1417,27 +1408,20 @@
             return showToast("Please select at least one flyer.", "error");
           }
 
-          // Convert all files to Base64
-          const promises = selectedFiles.map((file) => {
-            return new Promise((resolve) => {
-              const reader = new FileReader();
-              reader.onload = (e) => resolve({ image: e.target.result });
-              reader.readAsDataURL(file);
-            });
-          });
-
-          const flyersData = await Promise.all(promises);
+          const formData = new FormData();
+          for (const file of selectedFiles) {
+            formData.append("flyers", file);
+          }
 
           try {
             showProgress();
             await uploadFile(
               `${API_URL}/flyers`,
               "POST",
-              JSON.stringify(flyersData),
+              formData,
               updateProgress,
             );
             showToast("Flyers Posted Successfully!");
-            e.target.reset();
             selectedFiles = [];
             previewContainer.innerHTML = "";
             loadFlyersList();
@@ -1461,8 +1445,7 @@
             const div = document.createElement("div");
             div.className = "flyer-manage-item";
             div.innerHTML = `
-                <img src="${flyer.image}" alt="Flyer">
-                <button onclick="deleteFlyer('${flyer._id}')" class="delete-btn" title="Delete"><i class="fas fa-trash"></i></button>
+                <img src="${flyer.imageFlyer('${flyer._id}')" class="delete-btn" title="Delete"><i class="fas fa-trash"></i></button>
             `;
             container.appendChild(div);
           });
@@ -1526,45 +1509,32 @@
             return;
           }
 
-          // MongoDB Limit Check (16MB max document size)
-          if (videoInput.files[0].size > 10 * 1024 * 1024) {
-            // 10MB limit
-            showToast(
-              "Video is too large for database storage (Max 10MB). Please use a YouTube link for long videos.",
-              "error",
-            );
-            btn.innerText = originalText;
-            btn.disabled = false;
-            return;
-          }
-
-          // Convert files to Base64
-          const imageBase64 = await toBase64(imageInput.files[0]);
-          const videoBase64 = await toBase64(videoInput.files[0]);
+          // Create FormData
+          const formData = new FormData();
+          formData.append("title", title);
+          formData.append("preacher", preacher);
+          formData.append("date", date);
+          formData.append("image", imageInput.files[0]);
+          formData.append("video", videoInput.files[0]);
 
           try {
             showProgress();
             await uploadFile(
               `${API_URL}/sermons`,
               "POST",
-              JSON.stringify({
-                title,
-                preacher,
-                date,
-                image: imageBase64,
-                video: videoBase64,
-              }),
+              formData,
               updateProgress,
             );
             showToast("Message Posted Successfully!");
             e.target.reset();
+            // Clear previews manually
+            document.getElementById("msg-image-preview").innerHTML = "";
+            document.getElementById("msg-video-preview").innerHTML = "";
             loadMessagesList();
           } catch (err) {
             console.error(err);
             showToast("Failed to post message: " + err, "error");
           } finally {
-            btn.innerText = originalText;
-            btn.disabled = false;
             hideProgress();
           }
         });
@@ -1578,8 +1548,7 @@
             .map(
               (msg) => `
                 <div class="flyer-manage-item" style="flex-direction:column; align-items: flex-start; gap: 0.5rem;">
-                    <img src="${msg.image}" alt="${msg.title}" style="width:100%; height: 120px; object-fit:cover;">
-                    <div style="font-size:0.9rem; font-weight:bold;">${msg.title}</div>
+                    <img src="${msg.image.url}" alt="${msg.title}" style="width:100%; height: 120px; object-fit:c
                     <div style="font-size:0.8rem; color:#aaa;">${msg.date}</div>
                     <button onclick="deleteMessage('${msg._id}')" class="delete-btn" style="position:absolute; top:5px; right:5px;"><i class="fas fa-trash"></i></button>
                 </div>
@@ -1647,45 +1616,31 @@
             return;
           }
 
-          // MongoDB Limit Check for Video
           if (category === "video" && videoInput.files.length === 0) {
             showToast(
               "Please select a video file for the 'Video' category.",
               "error",
             );
-            btn.innerText = originalText;
-            btn.disabled = false;
-            return;
-          }
-          if (
-            category === "video" &&
-            videoInput.files[0].size > 10 * 1024 * 1024
-          ) {
-            showToast(
-              "Video is too large for database storage (Max 10MB).",
-              "error",
-            );
-            btn.innerText = originalText;
-            btn.disabled = false;
             return;
           }
 
-          // Convert main image
-          const imageBase64 = await toBase64(imageInput.files[0]);
+          // Create FormData
+          const formData = new FormData();
+          formData.append("title", title);
+          formData.append("author", author);
+          formData.append("date", date);
+          formData.append("category", category);
+          formData.append("content", content);
+          formData.append("image", imageInput.files[0]);
 
-          // Convert video if present
-          let videoBase64 = "";
           if (videoInput.files.length > 0) {
-            videoBase64 = await toBase64(videoInput.files[0]);
+            formData.append("video", videoInput.files[0]);
           }
 
-          // Convert gallery images
-          let galleryImages = [];
           if (galleryInput.files.length > 0) {
-            const promises = Array.from(galleryInput.files).map((file) =>
-              toBase64(file),
-            );
-            galleryImages = await Promise.all(promises);
+            for (const file of galleryInput.files) {
+              formData.append("galleryImages", file);
+            }
           }
 
           try {
@@ -1693,27 +1648,20 @@
             await uploadFile(
               `${API_URL}/blog`,
               "POST",
-              JSON.stringify({
-                title,
-                author,
-                date,
-                category,
-                content,
-                image: imageBase64,
-                video: videoBase64,
-                galleryImages,
-              }),
+              formData,
               updateProgress,
             );
             showToast("Blog Post Published Successfully!");
             e.target.reset();
+            // Clear previews
+            document.getElementById("blog-image-preview").innerHTML = "";
+            document.getElementById("blog-video-preview").innerHTML = "";
+            document.getElementById("blog-gallery-preview").innerHTML = "";
             loadBlogPosts();
           } catch (err) {
             console.error(err);
             showToast("Failed to publish post: " + err, "error");
           } finally {
-            btn.innerText = originalText;
-            btn.disabled = false;
             hideProgress();
           }
         });
@@ -1727,9 +1675,8 @@
             .map(
               (post) => `
             <div class="flyer-manage-item" style="flex-direction:column; align-items: flex-start; gap: 0.5rem;">
-                <img src="${post.image}" alt="${post.title}" style="width:100%; height: 120px; object-fit:cover;">
-                <div style="font-size:0.9rem; font-weight:bold; padding: 0 10px;">${post.title}</div>
-                <div style="font-size:0.8rem; color:#aaa; padding: 0 10px 10px;">${post.date} | ${post.category}</div>
+                <img src="${post.image.url}" alt="${post.title}" style="width:100%; height: 120px; object-fit:cover;">
+                <div style="font-size:0.9rem; font-weight:bold; padding: 0 10px;">${post.title}</div>}</div>
                 <button onclick="deleteBlogPost('${post._id}')" class="delete-btn" style="position:absolute; top:5px; right:5px;"><i class="fas fa-trash"></i></button>
             </div>
           `,

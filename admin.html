@@ -515,6 +515,11 @@
               class="status-badge"
               style="display: none"
             ></div>
+            <div
+              id="cloudinary-status"
+              class="status-badge"
+              style="display: none"
+            ></div>
             <div class="user-info">
               <span>Admin User</span>
               <div class="avatar"><i class="fas fa-user"></i></div>
@@ -1326,6 +1331,22 @@
             badge.title =
               "Using temporary local storage. Data will be lost on restart.";
           }
+
+          const cloudBadge = document.getElementById("cloudinary-status");
+          if (cloudBadge) {
+            cloudBadge.style.display = "flex";
+            if (data.cloudinary) {
+              cloudBadge.className = "status-badge status-connected";
+              cloudBadge.innerHTML =
+                '<i class="fas fa-cloud"></i> Cloud Online';
+              cloudBadge.title = "Connected to Cloudinary Storage";
+            } else {
+              cloudBadge.className = "status-badge status-local";
+              cloudBadge.innerHTML =
+                '<i class="fas fa-exclamation-triangle"></i> Cloud Offline';
+              cloudBadge.title = "Cloudinary not configured. Uploads may fail.";
+            }
+          }
         } catch (e) {
           console.error("Status check failed", e);
         }
@@ -1445,7 +1466,7 @@
             const div = document.createElement("div");
             div.className = "flyer-manage-item";
             div.innerHTML = `
-                <img src="${flyer.imageFlyer('${flyer._id}')" class="delete-btn" title="Delete"><i class="fas fa-trash"></i></button>
+                <img src="${flyer.image_url}" alt="Flyer"><button onclick="deleteFlyer('${flyer._id}')" class="delete-btn" title="Delete"><i class="fas fa-trash"></i></button>
             `;
             container.appendChild(div);
           });
@@ -1548,7 +1569,8 @@
             .map(
               (msg) => `
                 <div class="flyer-manage-item" style="flex-direction:column; align-items: flex-start; gap: 0.5rem;">
-                    <img src="${msg.image.url}" alt="${msg.title}" style="width:100%; height: 120px; object-fit:c
+                    <img src="${msg.image.url}" alt="${msg.title}" style="width:100%; height: 120px; object-fit:cover;">
+                    <div style="font-size:0.9rem; font-weight:bold;">${msg.title}</div>
                     <div style="font-size:0.8rem; color:#aaa;">${msg.date}</div>
                     <button onclick="deleteMessage('${msg._id}')" class="delete-btn" style="position:absolute; top:5px; right:5px;"><i class="fas fa-trash"></i></button>
                 </div>
@@ -1676,7 +1698,8 @@
               (post) => `
             <div class="flyer-manage-item" style="flex-direction:column; align-items: flex-start; gap: 0.5rem;">
                 <img src="${post.image.url}" alt="${post.title}" style="width:100%; height: 120px; object-fit:cover;">
-                <div style="font-size:0.9rem; font-weight:bold; padding: 0 10px;">${post.title}</div>}</div>
+                <div style="font-size:0.9rem; font-weight:bold; padding: 0 10px;">${post.title}</div>
+                <div style="font-size:0.8rem; color:#aaa; padding: 0 10px 10px;">${post.date} | ${post.category}</div>
                 <button onclick="deleteBlogPost('${post._id}')" class="delete-btn" style="position:absolute; top:5px; right:5px;"><i class="fas fa-trash"></i></button>
             </div>
           `,

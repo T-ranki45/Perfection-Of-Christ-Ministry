@@ -131,7 +131,13 @@ app.use("/api", (req, res, next) => {
 
 // Check DB Status
 app.get("/api/status", (req, res) => {
-  res.json({ connected: !!db });
+  const cConfig = cloudinary.config();
+  const cloudinaryConnected = !!(
+    cConfig.cloud_name &&
+    cConfig.api_key &&
+    cConfig.api_secret
+  );
+  res.json({ connected: !!db, cloudinary: cloudinaryConnected });
 });
 
 // Retry DB Connection

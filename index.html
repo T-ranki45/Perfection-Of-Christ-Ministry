@@ -34,6 +34,10 @@
     />
     <meta property="og:image" content="./image/logo.png" />
 
+    <!-- Favicon -->
+    <link rel="icon" href="./image/logo.png" type="image/png" />
+    <link rel="apple-touch-icon" href="./image/logo.png" />
+
     <link rel="stylesheet" href="style.css" />
     <link
       href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Montserrat:wght@400;700;900&display=swap"
@@ -310,7 +314,12 @@
       </section>
     </main>
 
-    <a href="https://perfection-of-christ-ministry.onrender.com" id="back-to-top" title="Back to Top">↑</a>
+    <a
+      href="https://perfection-of-christ-ministry.onrender.com"
+      id="back-to-top"
+      title="Back to Top"
+      >↑</a
+    >
 
     <!-- Prayer Request Modal -->
     <div id="prayer-modal" class="modal">
@@ -996,7 +1005,10 @@
       function openMessageModal(videoUrl, title) {
         let embedHtml = "";
         // Check if it's a self-hosted video
-        if (videoUrl.startsWith("/uploads/")) {
+        if (
+          videoUrl.startsWith("/uploads/") ||
+          videoUrl.startsWith("data:video")
+        ) {
           embedHtml = `<video src="${videoUrl}" controls autoplay style="width:100%; height:auto; max-height: 80vh;"></video>`;
         } else {
           // Otherwise, treat it as an external URL (Facebook/YouTube)

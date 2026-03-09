@@ -13,6 +13,10 @@
     />
 
     <title>About Us | Perfection Of Christ Ministry</title>
+    <!-- Favicon -->
+    <link rel="icon" href="./image/logo.png" type="image/png" />
+    <link rel="apple-touch-icon" href="./image/logo.png" />
+
     <link rel="stylesheet" href="style.css" />
     <link rel="stylesheet" href="about.css" />
     <link
@@ -315,7 +319,13 @@
                 style="border: none; overflow: hidden"
                 scrolling="no"
                 frameborder="0"
-                allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+                allow="
+                  autoplay;
+                  clipboard-write;
+                  encrypted-media;
+                  picture-in-picture;
+                  web-share;
+                "
               ></iframe>
             </div>
           </div>
@@ -492,14 +502,21 @@
           let cleanUrl = url.trim();
 
           // --- Facebook Handling ---
-          if (cleanUrl.includes("facebook.com") || cleanUrl.includes("fb.watch")) {
+          if (
+            cleanUrl.includes("facebook.com") ||
+            cleanUrl.includes("fb.watch")
+          ) {
             // Extract video ID from various Facebook formats (videos, reels, watch, etc.)
-            const idMatch = cleanUrl.match(/(?:\/videos\/|\/reel\/|v=|(?:\/watch\/\?v=))(\d+)/);
+            const idMatch = cleanUrl.match(
+              /(?:\/videos\/|\/reel\/|v=|(?:\/watch\/\?v=))(\d+)/,
+            );
             if (idMatch && idMatch[1]) {
               cleanUrl = `https://www.facebook.com/watch/?v=${idMatch[1]}`;
             } else {
               // Fallback: Ensure desktop domain if ID extraction fails
-              cleanUrl = cleanUrl.replace("m.facebook.com", "www.facebook.com").replace("web.facebook.com", "www.facebook.com");
+              cleanUrl = cleanUrl
+                .replace("m.facebook.com", "www.facebook.com")
+                .replace("web.facebook.com", "www.facebook.com");
             }
             embedUrl = `https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(cleanUrl)}&show_text=false&width=734&autoplay=true`;
             return embedUrl;
@@ -561,11 +578,15 @@
                 const encodedUrl = encodeURIComponent(config.videoId);
                 liveChatIframe.src = `https://www.facebook.com/plugins/comments.php?href=${encodedUrl}&numposts=10&width=100%25`;
                 if (chatColumn) chatColumn.style.display = "block";
-                document.querySelector(".live-stream-grid").style.gridTemplateColumns = "2fr 1fr";
+                document.querySelector(
+                  ".live-stream-grid",
+                ).style.gridTemplateColumns = "2fr 1fr";
               } else {
                 liveChatIframe.src = "";
                 if (chatColumn) chatColumn.style.display = "none";
-                document.querySelector(".live-stream-grid").style.gridTemplateColumns = "1fr";
+                document.querySelector(
+                  ".live-stream-grid",
+                ).style.gridTemplateColumns = "1fr";
               }
               liveModal.style.display = "block";
               document.body.classList.add("no-scroll");
@@ -578,18 +599,26 @@
               document.body.classList.remove("no-scroll");
             };
 
-            liveNavItems.forEach(item => {
+            liveNavItems.forEach((item) => {
               item.style.display = "list-item";
               const navLink = item.querySelector("a");
               if (navLink) {
-                navLink.addEventListener("click", (e) => { e.preventDefault(); openLiveModal(); });
+                navLink.addEventListener("click", (e) => {
+                  e.preventDefault();
+                  openLiveModal();
+                });
               }
             });
 
-            if (closeLiveModalBtn) closeLiveModalBtn.addEventListener("click", closeLiveModal);
-            window.addEventListener("click", (e) => { if (e.target == liveModal) closeLiveModal(); });
+            if (closeLiveModalBtn)
+              closeLiveModalBtn.addEventListener("click", closeLiveModal);
+            window.addEventListener("click", (e) => {
+              if (e.target == liveModal) closeLiveModal();
+            });
           }
-        } catch (e) { console.error("Error loading live stream config", e); }
+        } catch (e) {
+          console.error("Error loading live stream config", e);
+        }
       }
       loadLiveStream();
 

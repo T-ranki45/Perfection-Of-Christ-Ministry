@@ -673,7 +673,8 @@
 
           let html = "";
           flyers.forEach((flyer) => {
-            html += `<div class="flyer-card flyer-enter"><img src="${flyer.image_url}" alt="Service Flyer"></div>`;
+            const imgUrl = flyer.image_url || flyer.image;
+            html += `<div class="flyer-card flyer-enter"><img src="${imgUrl}" alt="Service Flyer"></div>`;
           });
           stackContainer.innerHTML = html;
 
@@ -906,21 +907,30 @@
           const response = await fetch(`${API_URL}/sermons`);
           const messages = await response.json();
 
-          const createCard = (msg) => `
+          const createCard = (msg) => {
+            const imgUrl =
+              msg.image && msg.image.url ? msg.image.url : msg.image;
+            const vidUrl =
+              msg.video && msg.video.url
+                ? msg.video.url
+                : msg.videoUrl || msg.video;
+
+            return `
               <div class="message-card">
                 <div class="message-thumbnail">
-                    <img src="${msg.image.url}" alt="${msg.title}" />
-                    <a href="#" class="play-overlay open-message-modal" data-videourl="${msg.video.url}" data-title="${msg.title}"><i class="fas fa-play"></i></a>
+                    <img src="${imgUrl}" alt="${msg.title}" />
+                    <a href="#" class="play-overlay open-message-modal" data-videourl="${vidUrl}" data-title="${msg.title}"><i class="fas fa-play"></i></a>
                 </div>
                 <div class="message-content">
                   <h3>${msg.title}</h3>
                   <p class="message-meta">
                     ${msg.preacher} <br> ${msg.date}
                   </p>
-                  <a href="#" class="button btn-sm open-message-modal" data-videourl="${msg.video.url}" data-title="${msg.title}">Watch Video</a>
+                  <a href="#" class="button btn-sm open-message-modal" data-videourl="${vidUrl}" data-title="${msg.title}">Watch Video</a>
                 </div>
               </div>
             `;
+          };
 
           // Duplicate content for seamless scrolling loop
           // We map twice to create the infinite effect

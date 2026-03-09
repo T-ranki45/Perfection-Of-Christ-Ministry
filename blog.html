@@ -516,10 +516,13 @@
 
       function openGalleryModal(post) {
         // Use galleryImages if they exist, otherwise fall back to the main post image.
+        const mainImgUrl =
+          post.image && post.image.url ? post.image.url : post.image;
+
         const imagesToShow =
           post.galleryImages && post.galleryImages.length > 0
-            ? post.galleryImages.map((img) => img.url)
-            : [post.image.url];
+            ? post.galleryImages.map((img) => (img && img.url ? img.url : img))
+            : [mainImgUrl];
 
         // Store for lightbox
         currentGalleryImages = imagesToShow;
@@ -606,13 +609,21 @@
       const blogVideoCloseBtn = document.querySelector(".blog-video-close-btn");
 
       function openBlogVideoModal(post) {
-        if (!post.video || !post.video.url) return;
+        const videoUrl =
+          post.video && post.video.url
+            ? post.video.url
+            : post.videoUrl || post.video;
+        if (!videoUrl) return;
 
         let embedHtml = "";
-        if (post.video.url.includes("cloudinary.com")) {
-          embedHtml = `<video src="${post.video.url}" controls autoplay style="width:100%; height:auto; max-height: 80vh;"></video>`;
+        if (
+          videoUrl.includes("cloudinary.com") ||
+          videoUrl.startsWith("data:video") ||
+          videoUrl.includes("/uploads/")
+        ) {
+          embedHtml = `<video src="${videoUrl}" controls autoplay style="width:100%; height:auto; max-height: 80vh;"></video>`;
         } else {
-          const embedUrl = getEmbedUrl(post.videoUrl);
+          const embedUrl = getEmbedUrl(videoUrl);
           if (!embedUrl) {
             showToast("Video link is not valid.", "error");
             return;
@@ -782,9 +793,11 @@
           card.className = "blog-card";
           card.dataset.category = post.category;
 
+          const imgUrl =
+            post.image && post.image.url ? post.image.url : post.image;
           card.innerHTML = `
               <div class="blog-card-thumbnail">
-                <img src="${post.image.url}" alt="${post.title}">
+                <img src="${imgUrl}" alt="${post.title}">
                 <div class="thumbnail-overlay">
                   <i class="fas fa-plus"></i>
                 </div>

@@ -9,7 +9,9 @@ const path = require("path");
 const app = express();
 const port = process.env.PORT || 3000;
 
-const DATABASE_URL = process.env.DATABASE_URL;
+// Replace 'YOUR_PASSWORD_HERE' with your actual MongoDB password
+const DATABASE_URL =
+  "mongodb+srv://perfection:Password123@churchwebsite.sv9kfnh.mongodb.net/?appName=ChurchWebsite";
 const DB_NAME = process.env.DB_NAME || "pocm-db";
 
 // Middleware

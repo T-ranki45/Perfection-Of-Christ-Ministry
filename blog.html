@@ -84,9 +84,36 @@
       </section>
     </main>
 
+    <!-- Gallery Modal -->
+    <div id="gallery-modal" class="modal">
+      <div class="modal-content gallery-modal-content">
+        <span class="close-btn gallery-close-btn">&times;</span>
+        <h2 id="gallery-modal-title">Event Photos</h2>
+        <div class="gallery-modal-grid" id="gallery-modal-grid">
+          <!-- Images will be injected here -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Lightbox Modal for full-screen images -->
+    <div id="lightbox-modal" class="modal">
+      <span class="close-btn lightbox-close-btn">&times;</span>
+      <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
+      <a class="next" onclick="plusSlides(1)">&#10095;</a>
+      <a
+        id="lightbox-download"
+        class="download-btn"
+        download
+        target="_blank"
+        title="Download Image"
+        ><i class="fas fa-download"></i
+      ></a>
+      <img class="lightbox-content" id="lightbox-img" />
+    </div>
+
     <!-- Blog Video Player Modal -->
     <div id="blog-video-modal" class="modal">
-      <div class="modal-content live-modal-content">
+      <div class="modal-content blog-video-modal-content">
         <span class="close-btn blog-video-close-btn">&times;</span>
         <h2 id="blog-video-modal-title">Video</h2>
         <div class="video-container" id="blog-video-container">
@@ -293,6 +320,44 @@
         else header.classList.remove("scrolled");
       });
 
+      // --- Generic Modal Close Logic ---
+      window.addEventListener("click", (e) => {
+        const liveModal = document.getElementById("live-modal");
+        if (liveModal && e.target == liveModal) {
+          liveModal.style.display = "none";
+          document.getElementById("live-video-iframe").src = "";
+        }
+
+        const giveModal = document.getElementById("give-modal");
+        if (giveModal && e.target == giveModal) {
+          giveModal.style.display = "none";
+        }
+
+        const prayerModal = document.getElementById("prayer-modal");
+        if (prayerModal && e.target == prayerModal) {
+          prayerModal.style.display = "none";
+        }
+
+        const galleryModal = document.getElementById("gallery-modal");
+        if (galleryModal && e.target == galleryModal) {
+          galleryModal.style.display = "none";
+          document.getElementById("gallery-modal-grid").innerHTML = "";
+          document.body.classList.remove("no-scroll");
+        }
+
+        const blogVideoModal = document.getElementById("blog-video-modal");
+        if (blogVideoModal && e.target == blogVideoModal) {
+          blogVideoModal.style.display = "none";
+          document.getElementById("blog-video-container").innerHTML = "";
+          document.body.classList.remove("no-scroll");
+        }
+
+        const lightboxModal = document.getElementById("lightbox-modal");
+        if (lightboxModal && e.target == lightboxModal) {
+          closeLightbox();
+        }
+      });
+
       // --- Live Stream Logic ---
       function getEmbedUrl(url) {
         let embedUrl = "";
@@ -300,14 +365,21 @@
           let cleanUrl = url.trim();
 
           // --- Facebook Handling ---
-          if (cleanUrl.includes("facebook.com") || cleanUrl.includes("fb.watch")) {
+          if (
+            cleanUrl.includes("facebook.com") ||
+            cleanUrl.includes("fb.watch")
+          ) {
             // Extract video ID from various Facebook formats (videos, reels, watch, etc.)
-            const idMatch = cleanUrl.match(/(?:\/videos\/|\/reel\/|v=|(?:\/watch\/\?v=))(\d+)/);
+            const idMatch = cleanUrl.match(
+              /(?:\/videos\/|\/reel\/|v=|(?:\/watch\/\?v=))(\d+)/,
+            );
             if (idMatch && idMatch[1]) {
               cleanUrl = `https://www.facebook.com/watch/?v=${idMatch[1]}`;
             } else {
               // Fallback: Ensure desktop domain if ID extraction fails
-              cleanUrl = cleanUrl.replace("m.facebook.com", "www.facebook.com").replace("web.facebook.com", "www.facebook.com");
+              cleanUrl = cleanUrl
+                .replace("m.facebook.com", "www.facebook.com")
+                .replace("web.facebook.com", "www.facebook.com");
             }
             embedUrl = `https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(cleanUrl)}&show_text=false&width=734&autoplay=true`;
             return embedUrl;
@@ -432,22 +504,132 @@
         }
       }
 
-      // Generic window click to close modals
-      window.addEventListener("click", (e) => {
-        const prayerModal = document.getElementById("prayer-modal");
-        if (giveModal && e.target == giveModal) {
-          giveModal.style.display = "none";
-        }
-        if (prayerModal && e.target == prayerModal) {
-          prayerModal.style.display = "none";
-        }
+      // --- Gallery Modal Logic ---
+      const galleryModal = document.getElementById("gallery-modal");
+      const galleryGrid = document.getElementById("gallery-modal-grid");
+      const galleryTitle = document.getElementById("gallery-modal-title");
+      const galleryCloseBtn = document.querySelector(".gallery-close-btn");
 
-        const blogVideoModal = document.getElementById("blog-video-modal");
-        if (blogVideoModal && e.target == blogVideoModal) {
-          blogVideoModal.style.display = "none";
-          document.getElementById("blog-video-container").innerHTML = "";
+      function openGalleryModal(post) {
+        // Use galleryImages if they exist, otherwise fall back to the main post image.
+        const imagesToShow =
+          post.galleryImages && post.galleryImages.length > 0
+            ? post.galleryImages
+            : [post.image];
+
+        // Store for lightbox
+        currentGalleryImages = imagesToShow;
+
+        galleryTitle.innerText = post.title;
+        galleryGrid.innerHTML = imagesToShow
+          .map(
+            (imgUrl, index) =>
+              `<img src="${imgUrl}" alt="Gallery image for ${post.title}" onclick="openLightbox(${index})">`,
+          )
+          .join("");
+        galleryModal.style.display = "block";
+        document.body.classList.add("no-scroll");
+      }
+
+      if (galleryCloseBtn) {
+        galleryCloseBtn.addEventListener("click", () => {
+          galleryModal.style.display = "none";
+          galleryGrid.innerHTML = "";
+          document.body.classList.remove("no-scroll");
+        });
+      }
+
+      // --- Lightbox Modal Logic ---
+      const lightboxModal = document.getElementById("lightbox-modal");
+      const lightboxImg = document.getElementById("lightbox-img");
+      const lightboxDownloadBtn = document.getElementById("lightbox-download");
+      const lightboxCloseBtn = lightboxModal.querySelector(
+        ".lightbox-close-btn",
+      );
+      let currentGalleryImages = [];
+      let currentSlideIndex = 0;
+
+      function openLightbox(index) {
+        currentSlideIndex = index;
+        lightboxModal.style.display = "flex";
+        showSlide(currentSlideIndex);
+      }
+
+      function closeLightbox() {
+        lightboxModal.style.display = "none";
+      }
+
+      function plusSlides(n) {
+        showSlide((currentSlideIndex += n));
+      }
+
+      function showSlide(n) {
+        if (n >= currentGalleryImages.length) {
+          currentSlideIndex = 0;
+        }
+        if (n < 0) {
+          currentSlideIndex = currentGalleryImages.length - 1;
+        }
+        lightboxImg.src = currentGalleryImages[currentSlideIndex];
+        if (lightboxDownloadBtn)
+          lightboxDownloadBtn.href = currentGalleryImages[currentSlideIndex];
+      }
+
+      if (lightboxCloseBtn) {
+        lightboxCloseBtn.addEventListener("click", closeLightbox);
+      }
+
+      // Add Keyboard Navigation for Lightbox
+      document.addEventListener("keydown", (e) => {
+        // Check if the lightbox is visible before acting
+        if (lightboxModal.style.display === "flex") {
+          if (e.key === "ArrowRight") {
+            plusSlides(1);
+          } else if (e.key === "ArrowLeft") {
+            plusSlides(-1);
+          } else if (e.key === "Escape") {
+            closeLightbox();
+          }
         }
       });
+
+      // --- Blog Video Modal Logic ---
+      const blogVideoModal = document.getElementById("blog-video-modal");
+      const blogVideoContainer = document.getElementById(
+        "blog-video-container",
+      );
+      const blogVideoTitle = document.getElementById("blog-video-modal-title");
+      const blogVideoCloseBtn = document.querySelector(".blog-video-close-btn");
+
+      function openBlogVideoModal(post) {
+        if (!post.videoUrl) return;
+
+        let embedHtml = "";
+        if (
+          post.videoUrl.startsWith("/uploads/") ||
+          post.videoUrl.startsWith("data:video")
+        ) {
+          embedHtml = `<video src="${post.videoUrl}" controls autoplay style="width:100%; height:auto; max-height: 80vh;"></video>`;
+        } else {
+          const embedUrl = getEmbedUrl(post.videoUrl);
+          if (!embedUrl) {
+            showToast("Video link is not valid.", "error");
+            return;
+          }
+          embedHtml = `<iframe src="${embedUrl}" width="100%" height="100%" style="border:none;overflow:hidden" scrolling="no" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share" allowfullscreen="true"></iframe>`;
+        }
+
+        blogVideoTitle.innerText = post.title;
+        blogVideoContainer.innerHTML = embedHtml;
+        blogVideoModal.style.display = "block";
+      }
+
+      if (blogVideoCloseBtn) {
+        blogVideoCloseBtn.addEventListener("click", () => {
+          blogVideoModal.style.display = "none";
+          blogVideoContainer.innerHTML = "";
+        });
+      }
 
       // --- Handle Prayer Form Submission ---
       const prayerForm = document.getElementById("prayer-form");
@@ -550,39 +732,6 @@
         }
       });
 
-      // --- Blog Video Modal Logic ---
-      const blogVideoModal = document.getElementById("blog-video-modal");
-      const blogVideoContainer = document.getElementById("blog-video-container");
-      const blogVideoTitle = document.getElementById("blog-video-modal-title");
-      const blogVideoCloseBtn = document.querySelector(".blog-video-close-btn");
-
-      function openBlogVideoModal(post) {
-        if (!post.videoUrl) return;
-
-        let embedHtml = "";
-        if (post.videoUrl.startsWith("/uploads/")) {
-          embedHtml = `<video src="${post.videoUrl}" controls autoplay style="width:100%; height:auto; max-height: 80vh;"></video>`;
-        } else {
-          const embedUrl = getEmbedUrl(post.videoUrl);
-          if (!embedUrl) {
-            showToast("Video link is not valid.", "error");
-            return;
-          }
-          embedHtml = `<iframe src="${embedUrl}" width="100%" height="100%" style="border:none;overflow:hidden" scrolling="no" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share" allowfullscreen="true"></iframe>`;
-        }
-
-        blogVideoTitle.innerText = post.title;
-        blogVideoContainer.innerHTML = embedHtml;
-        blogVideoModal.style.display = "block";
-      }
-
-      if (blogVideoCloseBtn) {
-        blogVideoCloseBtn.addEventListener("click", () => {
-          blogVideoModal.style.display = "none";
-          blogVideoContainer.innerHTML = "";
-        });
-      }
-
       // --- Blog Filtering Logic ---
       const blogGrid = document.getElementById("blog-grid");
       const filterButtons = document.querySelectorAll(".filter-btn");
@@ -592,6 +741,7 @@
         try {
           const res = await fetch(`${API_URL}/blog`);
           allPosts = await res.json();
+          // We are now an event gallery, so we only show posts with the 'gallery' category.
           renderPosts("all");
         } catch (e) {
           console.error("Error loading blog posts:", e);
@@ -635,25 +785,30 @@
               <div class="blog-card-thumbnail">
                 <img src="${post.image}" alt="${post.title}">
                 <div class="thumbnail-overlay">
-                  <i class="fas ${icon}"></i>
+                  <i class="fas fa-plus"></i>
                 </div>
               </div>
               <div class="blog-card-content">
                 <span class="card-category-badge ${badgeClass}">${post.category}</span>
                 <h3>${post.title}</h3>
                 <p class="meta">By ${post.author} | ${new Date(post.date).toLocaleDateString()}</p>
-                <p style="font-size: 0.9rem; color: #555; margin-bottom: 1rem; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">${post.content}</p>
-                <a href="#" class="read-more">Read More <i class="fas fa-arrow-right"></i></a>
+                <p style="font-size: 0.9rem; color: #ccc; margin-bottom: 1rem; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">${post.content}</p>
+                <a href="#" class="read-more">View <i class="fas fa-arrow-right"></i></a>
               </div>
           `;
           blogGrid.appendChild(card);
-
-          // Add click listener for video posts
+          // Add click listener based on category
           if (post.category === "video") {
             card.style.cursor = "pointer";
             card.addEventListener("click", (e) => {
               e.preventDefault();
               openBlogVideoModal(post);
+            });
+          } else if (post.category === "gallery") {
+            card.style.cursor = "pointer";
+            card.addEventListener("click", (e) => {
+              e.preventDefault();
+              openGalleryModal(post);
             });
           }
         });

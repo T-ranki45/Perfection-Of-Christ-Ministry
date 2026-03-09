@@ -2,7 +2,8 @@
 
 /* Hero Section for Blog */
 .blog-hero {
-  background: url("https://images.unsplash.com/photo-1488998427799-e3362cec87c3?q=80&w=2070") no-repeat center center/cover;
+  background: url("https://images.unsplash.com/photo-1488998427799-e3362cec87c3?q=80&w=2070")
+    no-repeat center center/cover;
   background-attachment: fixed;
 }
 
@@ -121,9 +122,15 @@
   color: #fff;
 }
 
-.video-badge { background-color: #e53935; }
-.gallery-badge { background-color: #43a047; }
-.article-badge { background-color: #1e88e5; }
+.video-badge {
+  background-color: #e53935;
+}
+.gallery-badge {
+  background-color: #43a047;
+}
+.article-badge {
+  background-color: #1e88e5;
+}
 
 .blog-card-content h3 {
   font-size: 1.3rem;
@@ -157,6 +164,146 @@
 
 .read-more:hover i {
   transform: translateX(5px);
+}
+
+/* --- Blog Video Player Modal --- */
+.blog-video-modal-content {
+  max-width: 900px;
+  padding: 1.5rem;
+}
+
+.blog-video-modal-content .video-container {
+  position: relative;
+  padding-bottom: 56.25%; /* 16:9 */
+  height: 0;
+  background: #000;
+}
+
+/* --- Gallery Modal --- */
+.gallery-modal-content {
+  max-width: 90vw;
+  width: 1200px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.gallery-modal-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.gallery-modal-grid img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 8px;
+  cursor: zoom-in;
+  transition:
+    transform 0.2s ease-in-out,
+    box-shadow 0.2s ease-in-out;
+}
+
+.gallery-modal-grid img:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+/* --- Lightbox Modal --- */
+#lightbox-modal {
+  display: none; /* Hidden by default, JS toggles to flex */
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.95);
+  z-index: 2001; /* Higher than other modals */
+}
+
+.lightbox-content {
+  max-width: 90vw;
+  max-height: 85vh;
+  object-fit: contain;
+  animation: zoomIn 0.4s ease-out;
+  border-radius: 5px;
+  box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
+}
+
+@keyframes zoomIn {
+  from {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+#lightbox-modal .close-btn {
+  position: absolute;
+  top: 20px;
+  right: 35px;
+  color: #f1f1f1;
+  font-size: 40px;
+  font-weight: bold;
+  transition: 0.3s;
+  z-index: 2002;
+}
+
+#lightbox-modal .close-btn:hover,
+#lightbox-modal .close-btn:focus {
+  color: #bbb;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+#lightbox-modal .download-btn {
+  position: absolute;
+  top: 25px;
+  right: 90px;
+  color: #f1f1f1;
+  font-size: 28px;
+  transition: 0.3s;
+  z-index: 2002;
+}
+
+#lightbox-modal .download-btn:hover {
+  color: #bbb;
+}
+
+/* Next & previous buttons */
+.prev,
+.next {
+  cursor: pointer;
+  position: absolute;
+  top: 50%;
+  width: auto;
+  padding: 16px;
+  margin-top: -50px;
+  color: white;
+  font-weight: bold;
+  font-size: 20px;
+  transition: 0.6s ease;
+  border-radius: 0 3px 3px 0;
+  user-select: none;
+  -webkit-user-select: none;
+  background-color: rgba(0, 0, 0, 0.3);
+}
+
+/* Position the "next button" to the right */
+.next {
+  right: 0;
+  border-radius: 3px 0 0 3px;
+}
+
+.prev {
+  left: 0;
+}
+
+/* On hover, add a black background color with a little bit see-through */
+.prev:hover,
+.next:hover {
+  background-color: rgba(0, 0, 0, 0.8);
 }
 
 /* Responsive */

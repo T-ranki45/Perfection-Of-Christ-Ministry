@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const fs = require("fs");
 const cors = require("cors");
@@ -38,46 +39,47 @@ app.get("/admin", (req, res) => {
 // --- DATABASE CONNECTION ---
 let db;
 
-// --- LOCAL FILE STORAGE SETUP (The "Storage Room") ---
-const STORAGE_DIR = path.join(__dirname, "storage");
-const DATA_DIR = path.join(STORAGE_DIR, "data");
-const UPLOADS_DIR = path.join(STORAGE_DIR, "uploads");
+// --- LOCAL DATABASE FOLDER SETUP ---
+// This creates a folder named "database_management" inside "public"
+// Anything saved here can be pushed to GitHub and will persist.
+const PUBLIC_DIR = path.join(__dirname, "public");
+const DB_MGMT_DIR = path.join(PUBLIC_DIR, "database_management");
+const DATA_DIR = path.join(__dirname, "storage", "data"); // Keep JSON data separate
 
 // Ensure storage directories exist
 [
-  STORAGE_DIR,
+  path.join(__dirname, "storage"),
   DATA_DIR,
-  UPLOADS_DIR,
-  path.join(UPLOADS_DIR, "flyers"),
-  path.join(UPLOADS_DIR, "sermons"),
-  path.join(UPLOADS_DIR, "blog"),
-  path.join(UPLOADS_DIR, "images"),
-  path.join(UPLOADS_DIR, "videos"), // Add videos directory
+  PUBLIC_DIR,
+  DB_MGMT_DIR,
+  path.join(DB_MGMT_DIR, "images"),
+  path.join(DB_MGMT_DIR, "videos"),
 ].forEach((dir) => {
   if (!fs.existsSync(dir)) {
     fs.mkdirSync(dir, { recursive: true });
   }
 });
 
-// Serve uploaded files publicly
-app.use("/uploads", express.static(UPLOADS_DIR));
-
-// --- MULTER SETUP FOR FILE UPLOADS ---
+// --- MULTER SETUP (Local Folder Storage) ---
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    let dest = file.mimetype.startsWith("video")
-      ? path.join(UPLOADS_DIR, "videos")
-      : path.join(UPLOADS_DIR, "images"); // Generic images folder
+    let dest = path.join(DB_MGMT_DIR, "images");
+    if (file.mimetype.startsWith("video")) {
+      dest = path.join(DB_MGMT_DIR, "videos");
+    }
     cb(null, dest);
   },
   filename: function (req, file, cb) {
-    cb(null, Date.now() + "-" + file.originalname.replace(/\s+/g, "_"));
+    // Create a clean filename
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    const ext = path.extname(file.originalname);
+    cb(null, file.fieldname + "-" + uniqueSuffix + ext);
   },
 });
 
 const upload = multer({
   storage: storage,
-  limits: { fileSize: 1024 * 1024 * 500 }, // 500MB limit for videos
+  limits: { fileSize: 1024 * 1024 * 500 }, // 500MB limit for local videos
 });
 
 // Helper: Read data from JSON file
@@ -113,10 +115,10 @@ function saveImageToDisk(base64Data, folder) {
     const ext = matches[1];
     const buffer = Buffer.from(matches[2], "base64");
     const filename = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}.${ext}`;
-    const filePath = path.join(UPLOADS_DIR, folder, filename);
+    const filePath = path.join(DB_MGMT_DIR, "images", filename);
 
     fs.writeFileSync(filePath, buffer);
-    return `/uploads/${folder}/${filename}`; // Return the public URL
+    return `/public/database_management/images/${filename}`; // Return the public URL
   } catch (e) {
     console.error("Error saving image to disk:", e);
     return base64Data; // Fallback
@@ -206,7 +208,7 @@ app.post("/api/flyers", async (req, res) => {
       // Local Storage Logic
       const localFlyers = getLocalData("flyers");
       const flyersWithTimestamp = newFlyers.map((f) => ({
-        image: saveImageToDisk(f.image, "flyers"), // Save image to folder
+        image: f.image, // In local mode with base64, we might still have issues if not using Cloudinary for base64. Ideally, use DB.
         _id: new ObjectId(),
         createdAt: new Date(),
       }));
@@ -262,52 +264,40 @@ app.get("/api/sermons", async (req, res) => {
 });
 
 // Add new sermon/message
-app.post(
-  "/api/sermons",
-  upload.fields([
-    { name: "image", maxCount: 1 },
-    { name: "video", maxCount: 1 },
-  ]),
-  async (req, res) => {
-    try {
-      const { title, preacher, date } = req.body;
-      if (!title || !date || !req.files["video"] || !req.files["image"]) {
-        return res
-          .status(400)
-          .json({ error: "All fields and files are required" });
-      }
-
-      const newSermon = {
-        title,
-        preacher: preacher || "Pastor John Jeremiah",
-        date,
-        videoUrl: `/uploads/videos/${req.files["video"][0].filename}`,
-        image: `/uploads/images/${req.files["image"][0].filename}`,
-        _id: new ObjectId(),
-      };
-
-      if (db) {
-        await db.collection("sermons").insertOne(newSermon);
-      } else {
-        const localSermons = getLocalData("sermons");
-        localSermons.push(newSermon);
-        saveLocalData("sermons", localSermons);
-      }
-
-      res
-        .status(201)
-        .json({ message: "Message added successfully", sermon: newSermon });
-    } catch (error) {
-      console.error("Error adding sermon:", error);
-      res
-        .status(500)
-        .json({
-          error:
-            "An internal server error occurred. Please check the server logs.",
-        });
+app.post("/api/sermons", async (req, res) => {
+  try {
+    const { title, preacher, date, image, video } = req.body;
+    if (!title || !date || !video || !image) {
+      return res.status(400).json({ error: "All fields are required" });
     }
-  },
-);
+
+    const newSermon = {
+      title,
+      preacher: preacher || "Pastor John Jeremiah",
+      date,
+      videoUrl: video, // Save Base64 string directly
+      image: image, // Save Base64 string directly
+      _id: new ObjectId(),
+    };
+
+    if (db) {
+      await db.collection("sermons").insertOne(newSermon);
+    } else {
+      const localSermons = getLocalData("sermons");
+      localSermons.push(newSermon);
+      saveLocalData("sermons", localSermons);
+    }
+
+    res
+      .status(201)
+      .json({ message: "Message added successfully", sermon: newSermon });
+  } catch (error) {
+    console.error("Error adding sermon:", error);
+    res.status(500).json({
+      error: "An internal server error occurred. Please check the server logs.",
+    });
+  }
+});
 
 // Delete sermon
 app.delete("/api/sermons/:id", async (req, res) => {
@@ -350,57 +340,55 @@ app.get("/api/blog", async (req, res) => {
 });
 
 // Add new blog post
-app.post(
-  "/api/blog",
-  upload.fields([
-    { name: "image", maxCount: 1 },
-    { name: "video", maxCount: 1 },
-  ]),
-  async (req, res) => {
-    try {
-      const { title, author, date, category, content } = req.body;
-      if (!title || !date || !content || !req.files["image"]) {
-        return res
-          .status(400)
-          .json({ error: "Title, Date, Content, and Image are required" });
-      }
-
-      const newPost = {
-        title,
-        author: author || "Admin",
-        date,
-        category,
-        videoUrl: req.files["video"]
-          ? `/uploads/videos/${req.files["video"][0].filename}`
-          : "",
-        content,
-        image: `/uploads/images/${req.files["image"][0].filename}`,
-        _id: new ObjectId(),
-        createdAt: new Date(),
-      };
-
-      if (db) {
-        await db.collection("blog").insertOne(newPost);
-      } else {
-        const localBlog = getLocalData("blog");
-        localBlog.push(newPost);
-        saveLocalData("blog", localBlog);
-      }
-
-      res
-        .status(201)
-        .json({ message: "Blog post published successfully", post: newPost });
-    } catch (error) {
-      console.error("Error adding blog post:", error);
-      res
-        .status(500)
-        .json({
-          error:
-            "An internal server error occurred. Please check the server logs.",
-        });
+app.post("/api/blog", async (req, res) => {
+  try {
+    const {
+      title,
+      author,
+      date,
+      category,
+      content,
+      image,
+      video,
+      galleryImages,
+    } = req.body;
+    if (!title || !date || !content || !image) {
+      return res
+        .status(400)
+        .json({ error: "Title, Date, Content, and Image are required" });
     }
-  },
-);
+
+    const newPost = {
+      title,
+      author: author || "Admin",
+      date,
+      category,
+      videoUrl: video || "",
+      content,
+      image: image,
+      galleryImages: galleryImages || [],
+      _id: new ObjectId(),
+      createdAt: new Date(),
+    };
+
+    if (db) {
+      await db.collection("blog").insertOne(newPost);
+    } else {
+      const localBlog = getLocalData("blog");
+      localBlog.push(newPost);
+      saveLocalData("blog", localBlog);
+    }
+
+    res
+      .status(201)
+      .json({ message: "Blog post published successfully", post: newPost });
+  } catch (error) {
+    console.error("Error adding blog post:", error);
+    res.status(500).json({
+      error: "An internal server error occurred. Please check the server logs.",
+    });
+  }
+});
 
 // Delete blog post
 app.delete("/api/blog/:id", async (req, res) => {

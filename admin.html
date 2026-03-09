@@ -387,6 +387,55 @@
           margin-bottom: 1rem;
         }
       }
+
+      /* --- Upload Progress Overlay --- */
+      .progress-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.85);
+        z-index: 3000;
+        display: none;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        color: #fff;
+        backdrop-filter: blur(5px);
+      }
+      .progress-container {
+        width: 80%;
+        max-width: 400px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        padding: 4px;
+        margin-top: 20px;
+        border: 1px solid #b38728;
+      }
+      .progress-bar {
+        height: 15px;
+        background: #b38728;
+        width: 0%;
+        border-radius: 15px;
+        transition: width 0.1s linear;
+        box-shadow: 0 0 10px rgba(179, 135, 40, 0.5);
+      }
+      .progress-bar.complete {
+        background: #2ecc71; /* Success Green */
+        box-shadow: 0 0 15px rgba(46, 204, 113, 0.6);
+        transition:
+          background 0.3s ease-in-out,
+          box-shadow 0.3s ease-in-out,
+          width 0.1s linear;
+      }
+      .progress-text {
+        font-family: "Montserrat", sans-serif;
+        margin-top: 15px;
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #b38728;
+      }
     </style>
   </head>
   <body>
@@ -480,8 +529,16 @@
         <section id="testimonials-admin" class="content-section">
           <h2>Manage Testimonials</h2>
           <div class="card no-padding">
-            <div class="search-wrapper" style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
-              <div class="search-container" style="flex: 1;">
+            <div
+              class="search-wrapper"
+              style="
+                display: flex;
+                gap: 15px;
+                align-items: center;
+                flex-wrap: wrap;
+              "
+            >
+              <div class="search-container" style="flex: 1">
                 <i class="fas fa-search search-icon"></i>
                 <input
                   type="text"
@@ -597,12 +654,7 @@
               </div>
               <div class="form-group">
                 <label>Video File</label>
-                <input
-                  type="file"
-                  id="msg-video"
-                  accept="video/*"
-                  required
-                />
+                <input type="file" id="msg-video" accept="video/*" required />
               </div>
               <div class="form-group">
                 <label>Thumbnail Image</label>
@@ -658,13 +710,29 @@
                   <option value="gallery">Gallery</option>
                 </select>
               </div>
-              <div class="form-group">
-                <label>Video File (Optional, for 'Video' category)</label>
+              <div
+                class="form-group"
+                id="blog-gallery-group"
+                style="display: none"
+              >
+                <label
+                  >Gallery Images (for 'Gallery' category, multiple
+                  allowed)</label
+                >
                 <input
                   type="file"
-                  id="blog-video"
-                  accept="video/*"
+                  id="blog-gallery-images"
+                  accept="image/*"
+                  multiple
                 />
+              </div>
+              <div
+                class="form-group"
+                id="blog-video-group"
+                style="display: none"
+              >
+                <label>Video File (Optional, for 'Video' category)</label>
+                <input type="file" id="blog-video" accept="video/*" />
               </div>
               <div class="form-group">
                 <label>Thumbnail Image</label>
@@ -696,8 +764,8 @@
               <!-- Populated by JS -->
             </div>
             <p class="helper-text">
-              Enter a <strong>Public</strong> YouTube or Facebook Live URL to update the stream.
-              Use the full browser link for the best results.
+              Enter a <strong>Public</strong> YouTube or Facebook Live URL to
+              update the stream. Use the full browser link for the best results.
             </p>
             <form id="livestream-form">
               <div class="form-group">
@@ -715,7 +783,7 @@
                   >Mark as Currently Live (Shows "Live" badge on site)</label
                 >
               </div>
-              <div class="form-actions" style="display: flex; gap: 10px;">
+              <div class="form-actions" style="display: flex; gap: 10px">
                 <button type="submit" class="btn-primary">Update Stream</button>
                 <button
                   type="button"
@@ -859,14 +927,36 @@
 
     <!-- Confirmation Modal -->
     <div id="confirm-modal" class="modal">
-      <div class="modal-content" style="max-width: 450px; text-align: center;">
-        <h2 id="confirm-modal-title" style="font-size: 1.5rem; color: #333; margin-bottom: 1rem;">Are you sure?</h2>
-        <p id="confirm-modal-text" style="color: #666; margin-bottom: 2rem;">This action cannot be undone.</p>
+      <div class="modal-content" style="max-width: 450px; text-align: center">
+        <h2
+          id="confirm-modal-title"
+          style="font-size: 1.5rem; color: #333; margin-bottom: 1rem"
+        >
+          Are you sure?
+        </h2>
+        <p id="confirm-modal-text" style="color: #666; margin-bottom: 2rem">
+          This action cannot be undone.
+        </p>
         <div class="confirm-actions">
-          <button id="confirm-modal-cancel" class="btn-secondary">Cancel</button>
+          <button id="confirm-modal-cancel" class="btn-secondary">
+            Cancel
+          </button>
           <button id="confirm-modal-ok" class="btn-danger">Confirm</button>
         </div>
       </div>
+    </div>
+
+    <!-- Upload Progress Overlay -->
+    <div id="upload-progress-overlay" class="progress-overlay">
+      <div style="font-size: 4rem; color: #b38728; margin-bottom: 1rem">
+        <i class="fas fa-cloud-upload-alt fa-bounce"></i>
+      </div>
+      <h2 style="color: #fff; margin-bottom: 0">Uploading Content...</h2>
+      <p style="color: #ccc">Please do not close this window.</p>
+      <div class="progress-container">
+        <div id="upload-progress-bar" class="progress-bar"></div>
+      </div>
+      <div id="upload-progress-text" class="progress-text">0%</div>
     </div>
 
     <!-- Toast Notification Container -->
@@ -1029,6 +1119,82 @@
         window.location.href = "login.html";
       }
 
+      // --- Upload Helper with Progress ---
+      // Replaces standard fetch for file uploads to support progress events
+      function uploadFile(url, method, body, onProgress) {
+        return new Promise((resolve, reject) => {
+          const xhr = new XMLHttpRequest();
+          xhr.open(method, url);
+
+          if (xhr.upload && onProgress) {
+            xhr.upload.onprogress = (e) => {
+              if (e.lengthComputable) {
+                const percent = Math.round((e.loaded / e.total) * 100);
+                onProgress(percent);
+              }
+            };
+          }
+
+          xhr.onload = () => {
+            if (xhr.status >= 200 && xhr.status < 300) {
+              try {
+                const data = JSON.parse(xhr.responseText);
+                resolve(data);
+              } catch (e) {
+                resolve(xhr.responseText);
+              }
+            } else {
+              try {
+                const data = JSON.parse(xhr.responseText);
+                reject(data.error || "Upload failed");
+              } catch (e) {
+                reject(xhr.statusText || "Upload failed");
+              }
+            }
+          };
+
+          xhr.onerror = () => reject("Network error");
+
+          // Set header for JSON if body is string (Flyers use JSON)
+          // FormData automatically sets its own Content-Type header with boundary
+          if (typeof body === "string") {
+            xhr.setRequestHeader("Content-Type", "application/json");
+          }
+
+          xhr.send(body);
+        });
+      }
+
+      // --- Progress UI Functions ---
+      const progressOverlay = document.getElementById(
+        "upload-progress-overlay",
+      );
+      const progressBar = document.getElementById("upload-progress-bar");
+      const progressText = document.getElementById("upload-progress-text");
+
+      function showProgress() {
+        progressOverlay.style.display = "flex";
+        progressBar.classList.remove("complete");
+        progressBar.style.width = "0%";
+        progressText.innerText = "0%";
+      }
+
+      function updateProgress(percent) {
+        progressBar.style.width = percent + "%";
+        progressText.innerText = percent + "%";
+        if (percent === 100) {
+          progressBar.classList.add("complete");
+        }
+      }
+
+      function hideProgress() {
+        setTimeout(() => {
+          // Just hide the overlay. The bar will be reset on the next `showProgress` call.
+          // This allows the user to see the completed green bar for a moment.
+          progressOverlay.style.display = "none";
+        }, 500);
+      }
+
       // Fetch Data on Load
       document.addEventListener("DOMContentLoaded", () => {
         // --- Mobile Menu Toggle ---
@@ -1108,7 +1274,10 @@
             loadBlogPosts();
             loadLiveStreamConfig();
           } else {
-            showToast("Connection failed: " + (data.error || "Unknown error"), "error");
+            showToast(
+              "Connection failed: " + (data.error || "Unknown error"),
+              "error",
+            );
             badge.innerHTML = originalHtml; // Revert to retry button
           }
         } catch (e) {
@@ -1153,6 +1322,15 @@
         });
       }
 
+      // Helper: Convert file to Base64 string
+      const toBase64 = (file) =>
+        new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.readAsDataURL(file);
+          reader.onload = () => resolve(reader.result);
+          reader.onerror = (error) => reject(error);
+        });
+
       document
         .getElementById("add-flyer-form")
         .addEventListener("submit", async (e) => {
@@ -1173,30 +1351,23 @@
           const flyersData = await Promise.all(promises);
 
           try {
-            const res = await fetch(`${API_URL}/flyers`, {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify(flyersData),
-            });
-            if (res.ok) {
-              showToast("Flyers Posted Successfully!");
-              e.target.reset();
-              selectedFiles = [];
-              previewContainer.innerHTML = "";
-              loadFlyersList(); // Refresh the list
-            } else {
-              let errorMsg = "Unknown error";
-              try {
-                const data = await res.json();
-                errorMsg = data.error || JSON.stringify(data);
-              } catch (e) {
-                errorMsg = `Server Error (${res.status}): ${res.statusText}`;
-              }
-              showToast("Failed to post flyers: " + errorMsg, "error");
-            }
+            showProgress();
+            await uploadFile(
+              `${API_URL}/flyers`,
+              "POST",
+              JSON.stringify(flyersData),
+              updateProgress,
+            );
+            showToast("Flyers Posted Successfully!");
+            e.target.reset();
+            selectedFiles = [];
+            previewContainer.innerHTML = "";
+            loadFlyersList();
           } catch (err) {
             console.error(err);
-            showToast("Error posting flyers. Check console for details.", "error");
+            showToast("Failed to post flyers: " + err, "error");
+          } finally {
+            hideProgress();
           }
         });
 
@@ -1223,7 +1394,13 @@
       }
 
       async function deleteFlyer(id) {
-        if (!await showConfirm("Delete Flyer?", "Are you sure you want to permanently delete this flyer?")) return;
+        if (
+          !(await showConfirm(
+            "Delete Flyer?",
+            "Are you sure you want to permanently delete this flyer?",
+          ))
+        )
+          return;
         try {
           const res = await fetch(`${API_URL}/flyers/${id}`, {
             method: "DELETE",
@@ -1232,7 +1409,10 @@
             loadFlyersList();
           } else {
             const data = await res.json();
-            showToast("Failed to delete flyer: " + (data.error || "Unknown error"), "error");
+            showToast(
+              "Failed to delete flyer: " + (data.error || "Unknown error"),
+              "error",
+            );
           }
         } catch (e) {
           console.error(e);
@@ -1268,32 +1448,46 @@
             return;
           }
 
-          const formData = new FormData();
-          formData.append("title", title);
-          formData.append("preacher", preacher);
-          formData.append("date", date);
-          formData.append("image", imageInput.files[0]);
-          formData.append("video", videoInput.files[0]);
+          // MongoDB Limit Check (16MB max document size)
+          if (videoInput.files[0].size > 10 * 1024 * 1024) {
+            // 10MB limit
+            showToast(
+              "Video is too large for database storage (Max 10MB). Please use a YouTube link for long videos.",
+              "error",
+            );
+            btn.innerText = originalText;
+            btn.disabled = false;
+            return;
+          }
+
+          // Convert files to Base64
+          const imageBase64 = await toBase64(imageInput.files[0]);
+          const videoBase64 = await toBase64(videoInput.files[0]);
 
           try {
-            const res = await fetch(`${API_URL}/sermons`, {
-              method: "POST",
-              body: formData, // No Content-Type header needed
-            });
-            if (res.ok) {
-              showToast("Message Posted Successfully!");
-              e.target.reset();
-              loadMessagesList();
-            } else {
-              const data = await res.json();
-              showToast("Failed to post message: " + (data.error || "Unknown error"), "error");
-            }
+            showProgress();
+            await uploadFile(
+              `${API_URL}/sermons`,
+              "POST",
+              JSON.stringify({
+                title,
+                preacher,
+                date,
+                image: imageBase64,
+                video: videoBase64,
+              }),
+              updateProgress,
+            );
+            showToast("Message Posted Successfully!");
+            e.target.reset();
+            loadMessagesList();
           } catch (err) {
             console.error(err);
-            showToast("Error posting message. Check console for details.", "error");
+            showToast("Failed to post message: " + err, "error");
           } finally {
             btn.innerText = originalText;
             btn.disabled = false;
+            hideProgress();
           }
         });
 
@@ -1320,7 +1514,13 @@
       }
 
       async function deleteMessage(id) {
-        if (!await showConfirm("Delete Message?", "Are you sure you want to permanently delete this message?")) return;
+        if (
+          !(await showConfirm(
+            "Delete Message?",
+            "Are you sure you want to permanently delete this message?",
+          ))
+        )
+          return;
         try {
           const res = await fetch(`${API_URL}/sermons/${id}`, {
             method: "DELETE",
@@ -1331,12 +1531,15 @@
             const data = await res.json();
             showToast(
               "Failed to delete message: " + (data.error || "Unknown error"),
-              "error"
+              "error",
             );
           }
         } catch (e) {
           console.error(e);
-          showToast("An error occurred while trying to delete the message.", "error");
+          showToast(
+            "An error occurred while trying to delete the message.",
+            "error",
+          );
         }
       }
 
@@ -1357,6 +1560,7 @@
           const content = document.getElementById("blog-content").value;
           const imageInput = document.getElementById("blog-image");
           const videoInput = document.getElementById("blog-video");
+          const galleryInput = document.getElementById("blog-gallery-images");
 
           if (imageInput.files.length === 0) {
             showToast("Please select a thumbnail image.", "error");
@@ -1364,43 +1568,75 @@
             btn.disabled = false;
             return;
           }
-          if (category === 'video' && videoInput.files.length === 0) {
-            showToast("Please select a video file for the 'Video' category.", "error");
+
+          // MongoDB Limit Check for Video
+          if (category === "video" && videoInput.files.length === 0) {
+            showToast(
+              "Please select a video file for the 'Video' category.",
+              "error",
+            );
+            btn.innerText = originalText;
+            btn.disabled = false;
+            return;
+          }
+          if (
+            category === "video" &&
+            videoInput.files[0].size > 10 * 1024 * 1024
+          ) {
+            showToast(
+              "Video is too large for database storage (Max 10MB).",
+              "error",
+            );
             btn.innerText = originalText;
             btn.disabled = false;
             return;
           }
 
-          const formData = new FormData();
-          formData.append("title", title);
-          formData.append("author", author);
-          formData.append("date", date);
-          formData.append("category", category);
-          formData.append("content", content);
-          formData.append("image", imageInput.files[0]);
+          // Convert main image
+          const imageBase64 = await toBase64(imageInput.files[0]);
+
+          // Convert video if present
+          let videoBase64 = "";
           if (videoInput.files.length > 0) {
-            formData.append("video", videoInput.files[0]);
+            videoBase64 = await toBase64(videoInput.files[0]);
+          }
+
+          // Convert gallery images
+          let galleryImages = [];
+          if (galleryInput.files.length > 0) {
+            const promises = Array.from(galleryInput.files).map((file) =>
+              toBase64(file),
+            );
+            galleryImages = await Promise.all(promises);
           }
 
           try {
-            const res = await fetch(`${API_URL}/blog`, {
-              method: "POST",
-              body: formData,
-            });
-            if (res.ok) {
-              showToast("Blog Post Published Successfully!");
-              e.target.reset();
-              loadBlogPosts();
-            } else {
-              const data = await res.json();
-              showToast("Failed to publish post: " + (data.error || "Unknown error"), "error");
-            }
+            showProgress();
+            await uploadFile(
+              `${API_URL}/blog`,
+              "POST",
+              JSON.stringify({
+                title,
+                author,
+                date,
+                category,
+                content,
+                image: imageBase64,
+                video: videoBase64,
+                galleryImages,
+              }),
+              updateProgress,
+            );
+            showToast("Blog Post Published Successfully!");
+            e.target.reset();
+            loadBlogPosts();
           } catch (err) {
             console.error(err);
-            showToast("Error publishing post. Check console for details.", "error");
+            showToast("Failed to publish post: " + err, "error");
           } finally {
             btn.innerText = originalText;
             btn.disabled = false;
+            hideProgress();
           }
         });
 
@@ -1427,7 +1663,13 @@
       }
 
       async function deleteBlogPost(id) {
-        if (!await showConfirm("Delete Blog Post?", "Are you sure you want to permanently delete this post?")) return;
+        if (
+          !(await showConfirm(
+            "Delete Blog Post?",
+            "Are you sure you want to permanently delete this post?",
+          ))
+        )
+          return;
         try {
           const res = await fetch(`${API_URL}/blog/${id}`, {
             method: "DELETE",
@@ -1442,6 +1684,24 @@
         }
       }
 
+      // --- Blog Form Category Logic ---
+      const blogCategorySelect = document.getElementById("blog-category");
+      const blogVideoGroup = document.getElementById("blog-video-group");
+      const blogGalleryGroup = document.getElementById("blog-gallery-group");
+
+      if (blogCategorySelect && blogVideoGroup && blogGalleryGroup) {
+        blogCategorySelect.addEventListener("change", () => {
+          const category = blogCategorySelect.value;
+          blogVideoGroup.style.display =
+            category === "video" ? "block" : "none";
+          blogGalleryGroup.style.display =
+            category === "gallery" ? "block" : "none";
+        });
+        // Initial hide
+        blogVideoGroup.style.display = "none";
+        blogGalleryGroup.style.display = "none";
+      }
+
       // --- Live Stream Logic ---
       async function loadLiveStreamConfig() {
         try {
@@ -1451,18 +1711,22 @@
           document.getElementById("is-live").checked = config.isLive;
 
           // Update status indicator
-          const statusIndicator = document.getElementById('live-status-indicator');
-          const deactivateBtn = document.getElementById('deactivate-stream-btn');
+          const statusIndicator = document.getElementById(
+            "live-status-indicator",
+          );
+          const deactivateBtn = document.getElementById(
+            "deactivate-stream-btn",
+          );
           if (config.isLive && config.videoId) {
-              statusIndicator.innerHTML = `<span><i class="fas fa-broadcast-tower"></i> LIVE NOW</span> <a href="${config.videoId}" target="_blank">View Stream</a>`;
-              statusIndicator.className = 'live-status-admin active';
-              deactivateBtn.style.display = 'inline-block';
+            statusIndicator.innerHTML = `<span><i class="fas fa-broadcast-tower"></i> LIVE NOW</span> <a href="${config.videoId}" target="_blank">View Stream</a>`;
+            statusIndicator.className = "live-status-admin active";
+            deactivateBtn.style.display = "inline-block";
           } else {
-              statusIndicator.innerHTML = '<span><i class="fas fa-power-off"></i> OFFLINE</span>';
-              statusIndicator.className = 'live-status-admin inactive';
-              deactivateBtn.style.display = 'none';
+            statusIndicator.innerHTML =
+              '<span><i class="fas fa-power-off"></i> OFFLINE</span>';
+            statusIndicator.className = "live-status-admin inactive";
+            deactivateBtn.style.display = "none";
           }
-
 
           // Update dashboard stat card
           document.getElementById("live-status-text").innerText = config.isLive
@@ -1475,25 +1739,33 @@
         }
       }
 
-      document.getElementById('deactivate-stream-btn').addEventListener('click', async () => {
-          if (!await showConfirm("Deactivate Stream?", "This will clear the current live stream link and set the status to offline. Are you sure?")) return;
+      document
+        .getElementById("deactivate-stream-btn")
+        .addEventListener("click", async () => {
+          if (
+            !(await showConfirm(
+              "Deactivate Stream?",
+              "This will clear the current live stream link and set the status to offline. Are you sure?",
+            ))
+          )
+            return;
 
           try {
-              const res = await fetch(`${API_URL}/livestream`, {
-                  method: "POST",
-                  headers: { "Content-Type": "application/json" },
-                  body: JSON.stringify({ videoId: '', isLive: false }),
-              });
-              if (res.ok) {
-                  showToast("Live Stream Deactivated!");
-                  loadLiveStreamConfig();
-              } else {
-                  showToast("Failed to deactivate stream", "error");
-              }
+            const res = await fetch(`${API_URL}/livestream`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ videoId: "", isLive: false }),
+            });
+            if (res.ok) {
+              showToast("Live Stream Deactivated!");
+              loadLiveStreamConfig();
+            } else {
+              showToast("Failed to deactivate stream", "error");
+            }
           } catch (err) {
-              showToast("An error occurred. Check console.", "error");
+            showToast("An error occurred. Check console.", "error");
           }
-      });
+        });
 
       document
         .getElementById("livestream-form")
@@ -1663,7 +1935,13 @@
       }
 
       async function deletePlannedVisit(id) {
-        if (!await showConfirm("Delete Visit?", "Are you sure you want to permanently delete this planned visit record?")) return;
+        if (
+          !(await showConfirm(
+            "Delete Visit?",
+            "Are you sure you want to permanently delete this planned visit record?",
+          ))
+        )
+          return;
         try {
           const res = await fetch(`${API_URL}/plan-visit/${id}`, {
             method: "DELETE",
@@ -1848,28 +2126,40 @@
       }
 
       async function toggleTestimonialApproval(id, currentStatus) {
-          const newStatus = currentStatus === 'approved' ? 'pending' : 'approved';
-          try {
-              const res = await fetch(`${API_URL}/testimonials/${id}/status`, {
-                  method: "PATCH",
-                  headers: { "Content-Type": "application/json" },
-                  body: JSON.stringify({ status: newStatus }),
-              });
+        const newStatus = currentStatus === "approved" ? "pending" : "approved";
+        try {
+          const res = await fetch(`${API_URL}/testimonials/${id}/status`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ status: newStatus }),
+          });
 
-              if (res.ok) {
-                  loadTestimonials(); // Refresh the testimonial list
-              } else {
-                  const data = await res.json();
-                  showToast("Failed to update status: " + (data.error || "Unknown error"), "error");
-              }
-          } catch (e) {
-              console.error(e);
-              showToast("An error occurred while trying to update status.", "error");
+          if (res.ok) {
+            loadTestimonials(); // Refresh the testimonial list
+          } else {
+            const data = await res.json();
+            showToast(
+              "Failed to update status: " + (data.error || "Unknown error"),
+              "error",
+            );
           }
+        } catch (e) {
+          console.error(e);
+          showToast(
+            "An error occurred while trying to update status.",
+            "error",
+          );
+        }
       }
 
       async function deleteTestimonial(id) {
-        if (!await showConfirm("Delete Testimonial?", "Are you sure you want to permanently delete this testimonial?")) return;
+        if (
+          !(await showConfirm(
+            "Delete Testimonial?",
+            "Are you sure you want to permanently delete this testimonial?",
+          ))
+        )
+          return;
         try {
           const res = await fetch(`${API_URL}/testimonials/${id}`, {
             method: "DELETE",
@@ -1879,29 +2169,38 @@
           } else {
             const data = await res.json();
             showToast(
-              "Failed to delete testimonial: " + (data.error || "Unknown error"),
-              "error"
+              "Failed to delete testimonial: " +
+                (data.error || "Unknown error"),
+              "error",
             );
           }
         } catch (e) {
           console.error(e);
-          showToast("An error occurred while trying to delete testimonial.", "error");
+          showToast(
+            "An error occurred while trying to delete testimonial.",
+            "error",
+          );
         }
       }
 
       function filterTestimonials() {
         const searchInput = document.getElementById("testimonial-search");
-        const statusFilter = document.getElementById("testimonial-status-filter");
+        const statusFilter = document.getElementById(
+          "testimonial-status-filter",
+        );
         const searchTerm = searchInput.value.toLowerCase();
         const statusValue = statusFilter.value;
 
         const filteredTestimonials = allTestimonials.filter((testimonial) => {
           const matchesSearch =
-            testimonial.name && testimonial.name.toLowerCase().includes(searchTerm);
+            testimonial.name &&
+            testimonial.name.toLowerCase().includes(searchTerm);
 
           let matchesStatus = true;
-          if (statusValue === "approved") matchesStatus = testimonial.status === "approved";
-          if (statusValue === "pending") matchesStatus = testimonial.status === "pending";
+          if (statusValue === "approved")
+            matchesStatus = testimonial.status === "approved";
+          if (statusValue === "pending")
+            matchesStatus = testimonial.status === "pending";
 
           return matchesSearch && matchesStatus;
         });
@@ -1910,7 +2209,13 @@
       }
 
       async function deletePrayerRequest(id) {
-        if (!await showConfirm("Delete Prayer Request?", "Are you sure you want to permanently delete this prayer request?")) return;
+        if (
+          !(await showConfirm(
+            "Delete Prayer Request?",
+            "Are you sure you want to permanently delete this prayer request?",
+          ))
+        )
+          return;
         try {
           const res = await fetch(`${API_URL}/prayer-requests/${id}`, {
             method: "DELETE",
@@ -1921,7 +2226,7 @@
             const data = await res.json();
             showToast(
               "Failed to delete request: " + (data.error || "Unknown error"),
-              "error"
+              "error",
             );
           }
         } catch (e) {

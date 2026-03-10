@@ -938,11 +938,58 @@
           html += messages.map(createCard).join("");
 
           messagesTrack.innerHTML = html;
+          setupMessageSwipe(); // Initialize swipe functionality
         } catch (error) {
           console.error("Error loading messages:", error);
           messagesTrack.innerHTML =
             "<p style='color:white;'>Unable to load messages.</p>";
         }
+      }
+
+      // --- Message Section Swipe/Drag to Scroll ---
+      function setupMessageSwipe() {
+        const slider = document.querySelector(".messages-scroll-wrapper");
+        if (!slider) return;
+
+        // Avoid re-attaching listeners if called multiple times
+        if (slider.dataset.swipeEnabled) return;
+        slider.dataset.swipeEnabled = "true";
+
+        slider.style.cursor = "grab";
+
+        let isDown = false;
+        let startX;
+        let scrollLeft;
+
+        const start = (e) => {
+          isDown = true;
+          slider.style.cursor = "grabbing";
+          slider.style.userSelect = "none";
+          startX = (e.pageX || e.touches[0].pageX) - slider.offsetLeft;
+          scrollLeft = slider.scrollLeft;
+        };
+
+        const end = () => {
+          isDown = false;
+          slider.style.cursor = "grab";
+          slider.style.userSelect = "auto";
+        };
+
+        const move = (e) => {
+          if (!isDown) return;
+          e.preventDefault();
+          const x = (e.pageX || e.touches[0].pageX) - slider.offsetLeft;
+          const walk = (x - startX) * 2; // scroll-fast, adjust multiplier as needed
+          slider.scrollLeft = scrollLeft - walk;
+        };
+
+        slider.addEventListener("mousedown", start);
+        slider.addEventListener("mouseup", end);
+        slider.addEventListener("mouseleave", end);
+        slider.addEventListener("mousemove", move);
+        slider.addEventListener("touchstart", start, { passive: true });
+        slider.addEventListener("touchend", end);
+        slider.addEventListener("touchmove", move, { passive: false });
       }
 
       // --- Message Modal Logic ---

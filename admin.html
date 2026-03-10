@@ -1149,6 +1149,34 @@
         }, 5000);
       }
 
+      // --- Confirmation Modal ---
+      function showConfirm(title, text) {
+        return new Promise((resolve) => {
+          const modal = document.getElementById("confirm-modal");
+          const titleEl = document.getElementById("confirm-modal-title");
+          const textEl = document.getElementById("confirm-modal-text");
+          const okBtn = document.getElementById("confirm-modal-ok");
+          const cancelBtn = document.getElementById("confirm-modal-cancel");
+
+          titleEl.textContent = title;
+          textEl.textContent = text;
+
+          modal.style.display = "block";
+
+          const resolveAndClose = (value) => {
+            modal.style.display = "none";
+            resolve(value);
+          };
+
+          okBtn.addEventListener("click", () => resolveAndClose(true), {
+            once: true,
+          });
+          cancelBtn.addEventListener("click", () => resolveAndClose(false), {
+            once: true,
+          });
+        });
+      }
+
       function logout() {
         localStorage.removeItem("admin_token");
         window.location.href = "login.html";

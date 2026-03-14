@@ -27,6 +27,142 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
     />
+    <style>
+      /* 
+        It is recommended to move these styles to blog.css and adjust them to
+        match your site's theme.
+      */
+      #blog-main .container {
+        max-width: 1200px; /* Wider container for a grid layout */
+      }
+
+      .blog-container {
+        /* This is the main wrapper for the monthly sections */
+        display: block;
+      }
+
+      .month-header {
+        font-family: "Montserrat", sans-serif;
+        font-size: 1.5rem;
+        font-weight: 700;
+        text-align: left;
+        margin: 4rem 0 1.5rem 0;
+        color: #555;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid #eee;
+      }
+
+      .month-header::after {
+        display: none;
+      }
+
+      .blog-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 1rem;
+        margin-bottom: 4rem;
+      }
+
+      .yearbook-card {
+        position: relative;
+        display: block;
+        overflow: hidden;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        transition: box-shadow 0.3s ease;
+        cursor: pointer;
+      }
+
+      .yearbook-card:hover {
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      }
+
+      .card-media {
+        position: relative;
+        width: 100%;
+        height: 0;
+        padding-bottom: 75%; /* 4:3 aspect ratio */
+        background-color: #eee;
+      }
+
+      .card-media img {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.4s ease;
+      }
+
+      .yearbook-card:hover .card-media img {
+        transform: scale(1.05);
+      }
+
+      .card-content {
+        display: none;
+      }
+
+      .card-date {
+        font-size: 0.75rem;
+        color: #ccc;
+      }
+
+      .card-title {
+        font-family: "Montserrat", sans-serif;
+        font-size: 0.9rem;
+        font-weight: 700;
+        margin: 0 0 0.75rem 0;
+        line-height: 1.3;
+        color: #fff;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .card-excerpt {
+        display: none;
+      }
+
+      .card-link {
+        display: none;
+      }
+
+      .card-info-overlay {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        padding: 1.5rem 1rem 1rem;
+        background: linear-gradient(
+          to top,
+          rgba(0, 0, 0, 0.7) 0%,
+          transparent 100%
+        );
+        color: white;
+        transform: translateY(100%);
+        transition: transform 0.3s ease-in-out;
+      }
+
+      .yearbook-card:hover .card-info-overlay {
+        transform: translateY(0);
+      }
+
+      .card-category-icon {
+        position: absolute;
+        top: 0.75rem;
+        right: 0.75rem;
+        color: white;
+        font-size: 1rem;
+        text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+        z-index: 2;
+      }
+
+      .article-modal-content {
+        max-width: 800px;
+        text-align: left;
+      }
+    </style>
   </head>
   <body>
     <header class="main-header">
@@ -71,15 +207,10 @@
       <section id="blog-main">
         <div class="container">
           <!-- Filters -->
-          <div class="blog-filters">
-            <button class="filter-btn active" data-filter="all">All</button>
-            <button class="filter-btn" data-filter="video">Videos</button>
-            <button class="filter-btn" data-filter="gallery">Galleries</button>
-            <button class="filter-btn" data-filter="article">Articles</button>
-          </div>
+          <!-- Filters have been removed for a unified social feed experience -->
 
-          <!-- Blog Grid -->
-          <div class="blog-grid" id="blog-grid">
+          <!-- Blog Container -->
+          <div class="blog-container" id="blog-container">
             <p style="text-align: center; width: 100%; padding: 2rem">
               Loading posts...
             </p>
@@ -88,6 +219,16 @@
       </section>
     </main>
 
+    <!-- Article Modal -->
+    <div id="article-modal" class="modal">
+      <div class="modal-content article-modal-content">
+        <span class="close-btn article-close-btn">&times;</span>
+        <h2 id="article-modal-title">Article</h2>
+        <div class="article-modal-body" id="article-modal-body">
+          <!-- Full article content will be injected here -->
+        </div>
+      </div>
+    </div>
     <!-- Gallery Modal -->
     <div id="gallery-modal" class="modal">
       <div class="modal-content gallery-modal-content">
@@ -340,6 +481,12 @@
         const prayerModal = document.getElementById("prayer-modal");
         if (prayerModal && e.target == prayerModal) {
           prayerModal.style.display = "none";
+        }
+
+        const articleModal = document.getElementById("article-modal");
+        if (articleModal && e.target == articleModal) {
+          closeArticleModal();
+          document.body.classList.remove("no-scroll");
         }
 
         const galleryModal = document.getElementById("gallery-modal");
@@ -643,6 +790,29 @@
         });
       }
 
+      // --- Article Modal Logic ---
+      const articleModal = document.getElementById("article-modal");
+      const articleCloseBtn = document.querySelector(".article-close-btn");
+
+      function openArticleModal(post) {
+        if (!articleModal) return;
+        document.getElementById("article-modal-title").innerText = post.title;
+        document.getElementById("article-modal-body").innerHTML =
+          post.content.replace(/\n/g, "<br>");
+        articleModal.style.display = "block";
+        document.body.classList.add("no-scroll");
+      }
+
+      function closeArticleModal() {
+        if (!articleModal) return;
+        articleModal.style.display = "none";
+        document.body.classList.remove("no-scroll");
+      }
+
+      if (articleCloseBtn) {
+        articleCloseBtn.addEventListener("click", closeArticleModal);
+      }
+
       // --- Handle Prayer Form Submission ---
       const prayerForm = document.getElementById("prayer-form");
       if (prayerForm) {
@@ -744,98 +914,125 @@
         }
       });
 
-      // --- Blog Filtering Logic ---
-      const blogGrid = document.getElementById("blog-grid");
-      const filterButtons = document.querySelectorAll(".filter-btn");
+      // --- Blog "Yearbook" Logic ---
+      const blogContainer = document.getElementById("blog-container");
       let allPosts = [];
 
       async function loadBlogPosts() {
         try {
           const res = await fetch(`${API_URL}/blog`);
           allPosts = await res.json();
-          // We are now an event gallery, so we only show posts with the 'gallery' category.
-          renderPosts("all");
+          // Sort posts by date, newest first
+          allPosts.sort((a, b) => new Date(b.date) - new Date(a.date));
+          const groupedPosts = groupPostsByMonth(allPosts);
+          renderPosts(groupedPosts);
         } catch (e) {
           console.error("Error loading blog posts:", e);
-          blogGrid.innerHTML =
-            '<p style="text-align:center; width:100%;">Unable to load posts.</p>';
+          if (blogContainer) {
+            blogContainer.innerHTML =
+              '<p style="text-align:center; width:100%;">Unable to load posts.</p>';
+          }
         }
       }
 
-      function renderPosts(filter) {
-        blogGrid.innerHTML = "";
+      function groupPostsByMonth(posts) {
+        const groups = {};
+        posts.forEach((post) => {
+          const date = new Date(post.date);
+          const monthYear = date.toLocaleString("en-US", {
+            month: "long",
+            year: "numeric",
+          });
+          if (!groups[monthYear]) {
+            groups[monthYear] = [];
+          }
+          groups[monthYear].push(post);
+        });
+        return groups;
+      }
 
-        const filteredPosts =
-          filter === "all"
-            ? allPosts
-            : allPosts.filter((post) => post.category === filter);
+      function renderPosts(groupedPosts) {
+        if (!blogContainer) return;
+        blogContainer.innerHTML = "";
 
-        if (filteredPosts.length === 0) {
-          blogGrid.innerHTML =
+        if (Object.keys(groupedPosts).length === 0) {
+          blogContainer.innerHTML =
             '<p style="text-align:center; width:100%;">No posts found.</p>';
           return;
         }
 
-        filteredPosts.forEach((post) => {
-          // Determine icon based on category
-          let icon = "fa-file-alt";
-          let badgeClass = "article-badge";
-          if (post.category === "video") {
-            icon = "fa-play";
-            badgeClass = "video-badge";
-          }
-          if (post.category === "gallery") {
-            icon = "fa-camera";
-            badgeClass = "gallery-badge";
-          }
+        for (const monthYear in groupedPosts) {
+          const monthHeader = document.createElement("h2");
+          monthHeader.className = "month-header";
+          monthHeader.textContent = monthYear;
+          blogContainer.appendChild(monthHeader);
 
-          const card = document.createElement("div");
-          card.className = "blog-card";
-          card.dataset.category = post.category;
+          const monthGrid = document.createElement("div");
+          monthGrid.className = "blog-grid";
 
-          const imgUrl =
-            post.image && post.image.url ? post.image.url : post.image;
-          card.innerHTML = `
-              <div class="blog-card-thumbnail">
-                <img src="${imgUrl}" alt="${post.title}">
-                <div class="thumbnail-overlay">
-                  <i class="fas fa-plus"></i>
-                </div>
-              </div>
-              <div class="blog-card-content">
-                <span class="card-category-badge ${badgeClass}">${post.category}</span>
-                <h3>${post.title}</h3>
-                <p class="meta">By ${post.author} | ${new Date(post.date).toLocaleDateString()}</p>
-                <p style="font-size: 0.9rem; color: #ccc; margin-bottom: 1rem; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">${post.content}</p>
-                <a href="#" class="read-more">View <i class="fas fa-arrow-right"></i></a>
-              </div>
-          `;
-          blogGrid.appendChild(card);
-          // Add click listener based on category
-          if (post.category === "video") {
-            card.style.cursor = "pointer";
-            card.addEventListener("click", (e) => {
-              e.preventDefault();
-              openBlogVideoModal(post);
-            });
-          } else if (post.category === "gallery") {
-            card.style.cursor = "pointer";
-            card.addEventListener("click", (e) => {
-              e.preventDefault();
-              openGalleryModal(post);
-            });
-          }
-        });
+          groupedPosts[monthYear].forEach((post) => {
+            const card = createPostCard(post);
+            monthGrid.appendChild(card);
+          });
+
+          blogContainer.appendChild(monthGrid);
+        }
       }
 
-      filterButtons.forEach((button) => {
-        button.addEventListener("click", () => {
-          // Update active button
-          filterButtons.forEach((btn) => btn.classList.remove("active"));
-          button.classList.add("active");
-          renderPosts(button.dataset.filter);
-        });
-      });
+      function createPostCard(post) {
+        const card = document.createElement("article");
+        card.className = "yearbook-card";
+        card.dataset.category = post.category;
+
+        const imgUrl =
+          post.image && post.image.url ? post.image.url : post.image;
+
+        let categoryIcon = "";
+        if (post.category === "video") {
+          categoryIcon = `<i class="fas fa-play card-category-icon"></i>`;
+        } else if (post.category === "gallery") {
+          categoryIcon = `<i class="fas fa-images card-category-icon"></i>`;
+        } else if (post.category === "article") {
+          categoryIcon = `<i class="fas fa-file-alt card-category-icon"></i>`;
+        }
+
+        card.innerHTML = `
+            <div class="card-media">
+                <img src="${imgUrl}" alt="${post.title}">
+            </div>
+            ${categoryIcon}
+            <div class="card-info-overlay">
+                <h3 class="card-title">${post.title}</h3>
+                <p class="card-date">${new Date(post.date).toLocaleDateString(
+                  "en-US",
+                  {
+                    month: "short",
+                    day: "numeric",
+                    year: "numeric",
+                  },
+                )}</p>
+            </div>
+        `;
+
+        // Add click listeners
+        const clickHandler = (e) => {
+          e.preventDefault();
+          if (post.category === "video") {
+            openBlogVideoModal(post);
+          } else if (post.category === "gallery") {
+            openGalleryModal(post);
+          } else if (post.category === "article") {
+            openArticleModal(post);
+          } else {
+            // Default action for unknown categories, maybe open as article?
+            openArticleModal(post);
+          }
+        };
+
+        card.addEventListener("click", clickHandler);
+
+        return card;
+      }
 
       // Load posts on start
       loadBlogPosts();

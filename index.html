@@ -390,13 +390,25 @@
             <input type="date" id="visit-date" name="date" required />
           </div>
           <div class="form-group">
-            <label for="visit-phone">Phone Number (Optional)</label>
+            <label for="visit-phone">WhatsApp Phone Number</label>
             <input
               type="tel"
               id="visit-phone"
               name="phone"
-              placeholder="Your Phone Number"
+              placeholder="e.g. +2348012345678"
+              required
             />
+            <small
+              style="
+                font-size: 0.8rem;
+                color: #888;
+                margin-top: 5px;
+                display: block;
+              "
+            >
+              You will receive a confirmation on WhatsApp. Please include your
+              country code.
+            </small>
           </div>
           <div class="form-group">
             <label for="visit-guests">Number of Guests</label>

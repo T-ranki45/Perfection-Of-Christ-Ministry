@@ -328,7 +328,18 @@
           </div>
           <div class="bank-info">
             <span class="bank-label">Account Number</span>
-            <span class="bank-value highlight-number">2023686438</span>
+            <span
+              class="bank-value highlight-number"
+              data-copy="2023686438"
+              title="Click to copy"
+              style="
+                cursor: pointer;
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+              "
+              >2023686438 <i class="far fa-copy"></i
+            ></span>
           </div>
         </div>
       </div>
@@ -651,6 +662,19 @@
         if (giveCloseBtn) {
           giveCloseBtn.addEventListener("click", () => {
             giveModal.style.display = "none";
+          });
+        }
+      }
+
+      // --- Copy Account Number Logic ---
+      const copyAcctNum = document.querySelector(".highlight-number");
+      if (copyAcctNum) {
+        copyAcctNum.addEventListener("click", () => {
+          const num = copyAcctNum.getAttribute("data-copy");
+          navigator.clipboard.writeText(num).then(() => {
+            showToast("Account number copied to clipboard!");
+          }).catch(err => {
+            showToast("Failed to copy number.", "error");
           });
         }
       }

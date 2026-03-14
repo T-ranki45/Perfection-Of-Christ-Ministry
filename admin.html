@@ -1108,6 +1108,28 @@
         window.location.href = "login.html";
       }
 
+      // Right after setting the admin token, add this:
+      localStorage.setItem("showWelcome", "true");
+
+      // --- Check for Welcome Overlay Preference ---
+      function showWelcomeOverlay() {
+        const overlay = document.getElementById("welcomeOverlay");
+        if (localStorage.getItem("showWelcome") === "true" && overlay) {
+          overlay.classList.add("active");
+        }
+      }
+
+      function hideWelcomeOverlay() {
+        localStorage.removeItem("showWelcome");
+        const overlay = document.getElementById("welcomeOverlay");
+        if (overlay) {
+          overlay.classList.remove("active");
+        }
+      }
+
+      // Call it right before the DOMContentLoaded event listener
+      showWelcomeOverlay();
+
       // Navigation Logic
       function showSection(sectionId, btnElement) {
         document

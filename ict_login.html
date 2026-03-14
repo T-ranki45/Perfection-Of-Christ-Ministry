@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ICT Login | Perfection Of Christ Ministry</title>
+    <!-- Favicon -->
+    <link rel="icon" href="./image/logo.png" type="image/png" />
+    <link rel="apple-touch-icon" href="./image/logo.png" />
+
+    <link rel="stylesheet" href="style.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Montserrat:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+    <style>
+      /* Specific Login Styles from login.html */
+      body.login-body {
+        background: url("https://images.unsplash.com/photo-1438232992991-995b7058bbb3?q=80&w=2073")
+          no-repeat center center/cover;
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        margin: 0;
+        overflow: hidden;
+      }
+
+      body.login-body::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.75);
+        backdrop-filter: blur(8px);
+        z-index: 0;
+      }
+
+      .login-container {
+        position: relative;
+        z-index: 1;
+        width: 100%;
+        max-width: 420px;
+        padding: 1rem;
+      }
+
+      .login-card {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        padding: 3rem 2.5rem;
+        border-radius: 20px;
+        border: 1px solid rgba(255, 215, 0, 0.2);
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+        text-align: center;
+        animation: fadeInUp 1.5s ease-out;
+      }
+
+      .login-header i {
+        font-size: 3.5rem;
+        margin-bottom: 1rem;
+        background: var(--gold-gradient);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+      }
+
+      .login-header h2 {
+        font-family: "Cinzel", serif;
+        color: #fff;
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+        text-transform: uppercase;
+      }
+
+      .login-header p {
+        color: #ccc;
+        font-size: 0.95rem;
+        margin-bottom: 2.5rem;
+      }
+
+      .form-group {
+        margin-bottom: 1.5rem;
+        text-align: left;
+      }
+
+      .form-group label {
+        color: #b38728;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        display: block;
+      }
+
+      .form-group input {
+        background: rgba(0, 0, 0, 0.4);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        color: #fff;
+        padding: 1rem;
+        border-radius: 8px;
+        width: 100%;
+        transition: all 0.3s ease;
+        font-family: "Montserrat", sans-serif;
+      }
+
+      .form-group input:focus {
+        border-color: #b38728;
+        box-shadow: 0 0 15px rgba(179, 135, 40, 0.2);
+        outline: none;
+        background: rgba(0, 0, 0, 0.6);
+      }
+
+      .btn-primary {
+        background: var(--gold-gradient);
+        border: none;
+        color: #1a1a1a;
+        font-weight: 800;
+        padding: 1rem;
+        border-radius: 50px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-family: "Montserrat", sans-serif;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        width: 100%;
+        margin-top: 1rem;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      }
+
+      .btn-primary:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px rgba(179, 135, 40, 0.4);
+        color: #000;
+      }
+
+      .back-link {
+        color: rgba(255, 255, 255, 0.5);
+        text-decoration: none;
+        font-size: 0.9rem;
+        transition: color 0.3s;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+      }
+
+      .back-link:hover {
+        color: #b38728;
+      }
+
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+    </style>
+  </head>
+  <body class="login-body">
+    <div class="login-container">
+      <div class="login-card">
+        <div class="login-header">
+          <i class="fas fa-server"></i>
+          <h2>ICT Portal</h2>
+          <p>Please sign in to continue</p>
+        </div>
+        <form id="ict-login-form">
+          <div class="form-group">
+            <label for="password">Password</label>
+            <input
+              type="password"
+              id="password"
+              placeholder="Enter ICT Password"
+              required
+            />
+          </div>
+          <button type="submit" class="btn-primary">Login</button>
+        </form>
+        <div style="text-align: center; margin-top: 1rem">
+          <a href="index.html" class="back-link"
+            ><i class="fas fa-arrow-left"></i> Back to Website</a
+          >
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container"></div>
+
+    <script>
+      // Check if already logged in
+      if (localStorage.getItem("ict_token")) {
+        window.location.href = "ict.html";
+      }
+
+      document
+        .getElementById("ict-login-form")
+        .addEventListener("submit", (e) => {
+          e.preventDefault();
+          const password = document.getElementById("password").value;
+          const btn = e.target.querySelector("button");
+
+          btn.innerText = "Verifying...";
+
+          setTimeout(() => {
+            if (password === "ICT 123") {
+              // Redirect to under construction page
+              window.location.href = "under_construction.html";
+            } else if (password === "Aces123") {
+              //Set a simple token. In a real app, this would come from a server.
+              localStorage.setItem("ict_token", "true");
+              window.location.href = "ict.html";
+            } else if (password === "ICT 123") {
+              // Set a simple token. In a real app, this would come from a server.
+              localStorage.setItem("ict_token", "true");
+              window.location.href = "ict.html";
+            } else {
+              showToast("Invalid Password", "error");
+              btn.innerText = "Login";
+            }
+          }, 500); // Simulate network delay
+        });
+
+      // --- Toast Notification Function ---
+      function showToast(message, type = "success") {
+        const container = document.getElementById("toast-container");
+        if (!container) return;
+        const toast = document.createElement("div");
+        toast.className = `toast ${type}`;
+        toast.textContent = message;
+        container.appendChild(toast);
+
+        // Trigger reflow to enable animation
+        toast.getBoundingClientRect();
+        toast.classList.add("show");
+
+        setTimeout(() => {
+          toast.remove();
+        }, 5000);
+      }
+    </script>
+  </body>
+</html>

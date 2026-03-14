@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ICT Dashboard | Perfection Of Christ Ministry</title>
+    <!-- Favicon -->
+    <link rel="icon" href="./image/logo.png" type="image/png" />
+    <link rel="apple-touch-icon" href="./image/logo.png" />
+
+    <link rel="stylesheet" href="admin.css" />
+    <!-- Reusing admin styles for consistency -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Montserrat:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+  </head>
+  <body>
+    <div class="admin-container">
+      <!-- Sidebar -->
+      <aside class="sidebar">
+        <div class="sidebar-header">
+          <i class="fas fa-server"></i>
+          <h2>ICT Portal</h2>
+        </div>
+        <nav class="sidebar-nav">
+          <ul>
+            <li class="active">
+              <i class="fas fa-tachometer-alt"></i> Dashboard
+            </li>
+            <li onclick="logout()">
+              <i class="fas fa-sign-out-alt"></i> Logout
+            </li>
+            <li onclick="window.location.href = 'index.html'">
+              <i class="fas fa-external-link-alt"></i> View Website
+            </li>
+          </ul>
+        </nav>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="main-content">
+        <header class="top-bar">
+          <h1>ICT Team Dashboard</h1>
+          <div class="user-info">
+            <span>ICT Member</span>
+            <div class="avatar"><i class="fas fa-user-cog"></i></div>
+          </div>
+        </header>
+
+        <!-- Dashboard Section -->
+        <section id="dashboard" class="content-section active">
+          <h2>Welcome, ICT Team!</h2>
+          <div class="card">
+            <p>This is the dedicated portal for the church's ICT department.</p>
+            <p>You can add tools, documentation, and other resources here.</p>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script>
+      // --- SECURITY CHECK ---
+      // If no ICT token is found, redirect to the ICT login page.
+      if (!localStorage.getItem("ict_token")) {
+        window.location.href = "ict_login.html";
+      }
+
+      function logout() {
+        localStorage.removeItem("ict_token");
+        window.location.href = "ict_login.html";
+      }
+    </script>
+  </body>
+</html>

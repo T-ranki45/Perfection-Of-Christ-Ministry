@@ -99,7 +99,40 @@
             </div>
             <div class="form-grid bible-grid">
               <label>
-                <span>Reference</span>
+                <span>Book</span>
+                <select id="bibleBookInput">
+                  <option value="">Select book</option>
+                </select>
+              </label>
+              <label>
+                <span>Chapter</span>
+                <input
+                  type="number"
+                  id="bibleChapterInput"
+                  min="1"
+                  placeholder="e.g., 3"
+                />
+              </label>
+              <label>
+                <span>Verse</span>
+                <input
+                  type="number"
+                  id="bibleVerseInput"
+                  min="1"
+                  placeholder="e.g., 16"
+                />
+              </label>
+              <label>
+                <span>To (optional)</span>
+                <input
+                  type="number"
+                  id="bibleVerseEndInput"
+                  min="1"
+                  placeholder="e.g., 18"
+                />
+              </label>
+              <label class="bible-reference">
+                <span>Reference (manual)</span>
                 <input
                   type="text"
                   id="bibleReferenceInput"
@@ -512,6 +545,10 @@
       );
 
       const bibleReferenceInput = document.getElementById("bibleReferenceInput");
+      const bibleBookInput = document.getElementById("bibleBookInput");
+      const bibleChapterInput = document.getElementById("bibleChapterInput");
+      const bibleVerseInput = document.getElementById("bibleVerseInput");
+      const bibleVerseEndInput = document.getElementById("bibleVerseEndInput");
       const bibleTranslationInput = document.getElementById(
         "bibleTranslationInput",
       );
@@ -591,6 +628,112 @@
         if (!el) return;
         el.textContent = message || "";
         el.className = `helper-text${type ? ` ${type}` : ""}`;
+      }
+
+      const bibleBooks = [
+        "Genesis",
+        "Exodus",
+        "Leviticus",
+        "Numbers",
+        "Deuteronomy",
+        "Joshua",
+        "Judges",
+        "Ruth",
+        "1 Samuel",
+        "2 Samuel",
+        "1 Kings",
+        "2 Kings",
+        "1 Chronicles",
+        "2 Chronicles",
+        "Ezra",
+        "Nehemiah",
+        "Esther",
+        "Job",
+        "Psalms",
+        "Proverbs",
+        "Ecclesiastes",
+        "Song of Solomon",
+        "Isaiah",
+        "Jeremiah",
+        "Lamentations",
+        "Ezekiel",
+        "Daniel",
+        "Hosea",
+        "Joel",
+        "Amos",
+        "Obadiah",
+        "Jonah",
+        "Micah",
+        "Nahum",
+        "Habakkuk",
+        "Zephaniah",
+        "Haggai",
+        "Zechariah",
+        "Malachi",
+        "Matthew",
+        "Mark",
+        "Luke",
+        "John",
+        "Acts",
+        "Romans",
+        "1 Corinthians",
+        "2 Corinthians",
+        "Galatians",
+        "Ephesians",
+        "Philippians",
+        "Colossians",
+        "1 Thessalonians",
+        "2 Thessalonians",
+        "1 Timothy",
+        "2 Timothy",
+        "Titus",
+        "Philemon",
+        "Hebrews",
+        "James",
+        "1 Peter",
+        "2 Peter",
+        "1 John",
+        "2 John",
+        "3 John",
+        "Jude",
+        "Revelation",
+      ];
+
+      function initBibleBooks() {
+        if (!bibleBookInput) return;
+        const options = bibleBooks.map((book) => {
+          const option = document.createElement("option");
+          option.value = book;
+          option.textContent = book;
+          return option;
+        });
+        options.forEach((opt) => bibleBookInput.appendChild(opt));
+      }
+
+      function buildReferenceFromDropdown() {
+        const book = bibleBookInput ? bibleBookInput.value.trim() : "";
+        const chapter = bibleChapterInput
+          ? String(bibleChapterInput.value || "").trim()
+          : "";
+        const verse = bibleVerseInput
+          ? String(bibleVerseInput.value || "").trim()
+          : "";
+        const verseEnd = bibleVerseEndInput
+          ? String(bibleVerseEndInput.value || "").trim()
+          : "";
+
+        if (!book || !chapter) return "";
+        if (!verse) return `${book} ${chapter}`;
+        if (verseEnd) return `${book} ${chapter}:${verse}-${verseEnd}`;
+        return `${book} ${chapter}:${verse}`;
+      }
+
+      function syncManualReference() {
+        if (!bibleReferenceInput) return;
+        const ref = buildReferenceFromDropdown();
+        if (ref) {
+          bibleReferenceInput.value = ref;
+        }
       }
 
       function updateLastSaved(timestamp) {
@@ -675,10 +818,17 @@
       }
 
       async function fetchBibleVerse() {
-        if (!bibleReferenceInput) return;
-        const reference = bibleReferenceInput.value.trim();
+        const manualReference = bibleReferenceInput
+          ? bibleReferenceInput.value.trim()
+          : "";
+        const dropdownReference = buildReferenceFromDropdown();
+        const reference = dropdownReference || manualReference;
         if (!reference) {
-          setHelperStatus(bibleStatus, "Enter a reference to search.", "warn");
+          setHelperStatus(
+            bibleStatus,
+            "Choose a book and chapter, or enter a reference.",
+            "warn",
+          );
           return;
         }
         const translation = bibleTranslationInput
@@ -1031,6 +1181,22 @@
         applyBibleBtn.addEventListener("click", applyBibleResult);
       }
 
+      if (bibleBookInput) {
+        bibleBookInput.addEventListener("change", syncManualReference);
+      }
+
+      if (bibleChapterInput) {
+        bibleChapterInput.addEventListener("input", syncManualReference);
+      }
+
+      if (bibleVerseInput) {
+        bibleVerseInput.addEventListener("input", syncManualReference);
+      }
+
+      if (bibleVerseEndInput) {
+        bibleVerseEndInput.addEventListener("input", syncManualReference);
+      }
+
       if (bibleReferenceInput) {
         bibleReferenceInput.addEventListener("keydown", (event) => {
           if (event.key === "Enter") {
@@ -1167,6 +1333,7 @@
       }
 
       setInterval(updateCountdownUI, 1000);
+      initBibleBooks();
       loadScreenState();
       loadHymnResults("");
     </script>

@@ -216,17 +216,13 @@
           btn.innerText = "Verifying...";
 
           setTimeout(() => {
-            if (password === "ICT 123") {
-              // Redirect to under construction page
-              window.location.href = "under_construction.html";
-            } else if (password === "Aces123") {
-              //Set a simple token. In a real app, this would come from a server.
+            if (password === "Aces123") {
+              // Developer access to the dashboard
               localStorage.setItem("ict_token", "true");
               window.location.href = "ict.html";
             } else if (password === "ICT 123") {
-              // Set a simple token. In a real app, this would come from a server.
-              localStorage.setItem("ict_token", "true");
-              window.location.href = "ict.html";
+              // Redirect to under construction page
+              window.location.href = "under_construction.html";
             } else {
               showToast("Invalid Password", "error");
               btn.innerText = "Login";

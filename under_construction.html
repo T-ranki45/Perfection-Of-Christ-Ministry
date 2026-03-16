@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Under Construction | Perfection Of Christ Ministry</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Montserrat:wght@300;400&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --primary-color: #0d0d0d;
+        --accent-color: #00a8f3;
+        --glow-color: rgba(0, 168, 243, 0.5);
+      }
+      body {
+        background-color: var(--primary-color);
+        color: #e0e0e0;
+        font-family: "Montserrat", sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        margin: 0;
+        overflow: hidden;
+        text-align: center;
+      }
+      .container {
+        position: relative;
+        z-index: 2;
+        padding: 2rem;
+      }
+      .logo {
+        width: 120px;
+        margin-bottom: 2rem;
+        animation: float 4s ease-in-out infinite;
+      }
+      h1 {
+        font-family: "Orbitron", sans-serif;
+        font-size: 3rem;
+        text-transform: uppercase;
+        letter-spacing: 4px;
+        color: #fff;
+        text-shadow:
+          0 0 10px var(--glow-color),
+          0 0 20px var(--glow-color),
+          0 0 40px var(--accent-color);
+        animation: flicker 3s infinite alternate;
+      }
+      p {
+        font-size: 1.2rem;
+        max-width: 600px;
+        margin: 1rem auto 0;
+        line-height: 1.7;
+      }
+      .progress-bar {
+        width: 80%;
+        max-width: 500px;
+        height: 20px;
+        background-color: rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        margin: 2.5rem auto 0;
+        overflow: hidden;
+        border: 1px solid rgba(0, 168, 243, 0.3);
+      }
+      .progress {
+        width: 65%; /* Static progress for effect */
+        height: 100%;
+        background: linear-gradient(90deg, var(--accent-color), #00dffc);
+        border-radius: 10px;
+        animation: pulse 2s infinite;
+      }
+
+      /* Animations */
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-15px);
+        }
+      }
+      @keyframes flicker {
+        0%,
+        18%,
+        22%,
+        25%,
+        53%,
+        57%,
+        100% {
+          text-shadow:
+            0 0 10px var(--glow-color),
+            0 0 20px var(--glow-color),
+            0 0 40px var(--accent-color),
+            0 0 80px var(--accent-color);
+          opacity: 1;
+        }
+        20%,
+        24%,
+        55% {
+          text-shadow: none;
+          opacity: 0.8;
+        }
+      }
+      @keyframes pulse {
+        0% {
+          box-shadow: 0 0 5px var(--glow-color);
+        }
+        50% {
+          box-shadow: 0 0 20px var(--glow-color);
+        }
+        100% {
+          box-shadow: 0 0 5px var(--glow-color);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <img src="./image/logo.png" alt="Logo" class="logo" />
+      <h1>Under Construction</h1>
+      <p>
+        Our digital architects are currently upgrading the system. This area is
+        being re-engineered for an enhanced experience. Please stand by.
+      </p>
+      <div class="progress-bar">
+        <div class="progress"></div>
+      </div>
+    </div>
+  </body>
+</html>

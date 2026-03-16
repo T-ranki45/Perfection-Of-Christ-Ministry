@@ -453,9 +453,126 @@
         max-width: 150px;
         max-height: 150px;
         border-radius: 8px;
-        border: 1px solid #ddd;
+        border: 1px solid #444;
         object-fit: cover;
         background: #f0f0f0;
+      }
+
+      /* --- Blog Management Styles --- */
+      #blog-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 1.5rem;
+      }
+
+      .admin-blog-card {
+        position: relative;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+        aspect-ratio: 4/3;
+        background-color: #222;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .admin-blog-card .card-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.4s ease;
+      }
+
+      .admin-blog-card:hover .card-img {
+        transform: scale(1.05);
+      }
+
+      .admin-blog-card .card-overlay {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        padding: 3rem 1rem 1rem;
+        background: linear-gradient(
+          to top,
+          rgba(0, 0, 0, 0.85) 0%,
+          transparent 100%
+        );
+        color: #fff;
+        pointer-events: none;
+      }
+
+      .admin-blog-card .card-title {
+        font-weight: 700;
+        font-size: 1.1rem;
+        margin-bottom: 0.25rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .admin-blog-card .card-category {
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        color: var(--accent-color);
+        font-weight: 600;
+      }
+
+      .admin-blog-card .card-actions {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        display: flex;
+        gap: 8px;
+        opacity: 0;
+        transform: translateY(-10px);
+        transition: all 0.3s ease;
+      }
+
+      .admin-blog-card:hover .card-actions {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .admin-blog-card .card-actions .action-btn {
+        background: rgba(0, 0, 0, 0.7);
+        color: #fff;
+        border: none;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        cursor: pointer;
+        font-size: 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .admin-blog-card .card-actions .action-btn:hover {
+        background: var(--accent-color);
+        color: #111;
+      }
+
+      /* Blog Form Modal */
+      #blog-form-modal .modal-content {
+        max-width: 800px;
+      }
+
+      .current-media-preview {
+        margin-top: 10px;
+        padding: 10px;
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 8px;
+      }
+      .current-media-preview p {
+        font-size: 0.8rem;
+        color: #aaa;
+        margin-bottom: 5px;
+      }
+      .current-media-preview img,
+      .current-media-preview video {
+        max-width: 150px;
+        max-height: 150px;
+        border-radius: 8px;
+        border: 1px solid #444;
       }
     </style>
   </head>
@@ -703,7 +820,8 @@
         <!-- Blog Section -->
         <section id="blog" class="content-section">
           <h2>Manage Blog Posts</h2>
-          <div class="card">
+          <!-- This form is now in a modal -->
+          <div class="card" style="display: none">
             <p class="helper-text">
               Create a new blog post, video entry, or gallery highlight.
             </p>
@@ -781,7 +899,19 @@
             </form>
           </div>
 
-          <h3>Recent Posts</h3>
+          <div
+            style="
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              margin-bottom: 1.5rem;
+            "
+          >
+            <h3>Recent Posts</h3>
+            <button class="btn-primary" onclick="openBlogFormModal()">
+              <i class="fas fa-plus"></i> Add New Post
+            </button>
+          </div>
           <div id="blog-list" class="preview-grid" style="margin-top: 1rem">
             <!-- Populated by JS -->
           </div>
@@ -974,6 +1104,91 @@
           </button>
           <button id="confirm-modal-ok" class="btn-danger">Confirm</button>
         </div>
+      </div>
+    </div>
+
+    <!-- Blog Form Modal -->
+    <div id="blog-form-modal" class="modal">
+      <div class="modal-content">
+        <span class="close-btn" onclick="closeBlogFormModal()">&times;</span>
+        <h2 id="blog-form-title">Add New Post</h2>
+        <form id="add-blog-form">
+          <input type="hidden" id="blog-post-id" />
+          <div class="form-group">
+            <label>Title</label>
+            <input
+              type="text"
+              id="blog-title"
+              required
+              placeholder="Post Title"
+            />
+          </div>
+          <div class="form-group">
+            <label>Author</label>
+            <input
+              type="text"
+              id="blog-author"
+              required
+              placeholder="Author Name"
+            />
+          </div>
+          <div class="form-group">
+            <label>Date</label>
+            <input type="date" id="blog-date" required />
+          </div>
+          <div class="form-group">
+            <label>Category</label>
+            <select id="blog-category" required>
+              <option value="article">Article</option>
+              <option value="video">Video</option>
+              <option value="gallery">Gallery</option>
+            </select>
+          </div>
+          <div class="form-group" id="blog-gallery-group" style="display: none">
+            <label>Gallery Images (Upload new to replace)</label>
+            <div
+              id="current-gallery-preview"
+              class="current-media-preview"
+              style="display: none"
+            ></div>
+            <input
+              type="file"
+              id="blog-gallery-images"
+              accept="image/*"
+              multiple
+            />
+            <div id="blog-gallery-preview" class="media-preview"></div>
+          </div>
+          <div class="form-group" id="blog-video-group" style="display: none">
+            <label>Video File (Upload new to replace)</label>
+            <div
+              id="current-video-preview"
+              class="current-media-preview"
+              style="display: none"
+            ></div>
+            <input type="file" id="blog-video" accept="video/*" />
+            <div id="blog-video-preview" class="media-preview"></div>
+          </div>
+          <div class="form-group">
+            <label>Thumbnail Image (Upload new to replace)</label>
+            <div
+              id="current-thumbnail-preview"
+              class="current-media-preview"
+              style="display: none"
+            ></div>
+            <input type="file" id="blog-image" accept="image/*" />
+            <div id="blog-image-preview" class="media-preview"></div>
+          </div>
+          <div class="form-group">
+            <label>Short Description / Content</label>
+            <textarea
+              id="blog-content"
+              rows="4"
+              placeholder="Enter a brief description..."
+            ></textarea>
+          </div>
+          <button type="submit" class="btn-primary">Save Post</button>
+        </form>
       </div>
     </div>
 
@@ -1664,13 +1879,20 @@
 
       // --- Blog Logic ---
       document
-        .getElementById("add-blog-form")
+        .getElementById("add-blog-form") // This is now inside the modal
         .addEventListener("submit", async (e) => {
           e.preventDefault();
-          const btn = e.target.querySelector("button");
-          const originalText = btn.innerText;
-          btn.innerText = "Publishing...";
-          btn.disabled = true;
+
+          const postId = document.getElementById("blog-post-id").value;
+          const isEditing = !!postId;
+          const method = isEditing ? "PUT" : "POST";
+          const url = isEditing
+            ? `${API_URL}/blog/${postId}`
+            : `${API_URL}/blog`;
+
+          const submitBtn = e.target.querySelector("button[type='submit']");
+          submitBtn.innerText = isEditing ? "Saving..." : "Publishing...";
+          submitBtn.disabled = true;
 
           const title = document.getElementById("blog-title").value;
           const author = document.getElementById("blog-author").value;
@@ -1681,18 +1903,10 @@
           const videoInput = document.getElementById("blog-video");
           const galleryInput = document.getElementById("blog-gallery-images");
 
-          if (imageInput.files.length === 0) {
-            showToast("Please select a thumbnail image.", "error");
-            btn.innerText = originalText;
-            btn.disabled = false;
-            return;
-          }
-
-          if (category === "video" && videoInput.files.length === 0) {
-            showToast(
-              "Please select a video file for the 'Video' category.",
-              "error",
-            );
+          if (!isEditing && imageInput.files.length === 0) {
+            showToast("A thumbnail image is required for new posts.", "error");
+            submitBtn.innerText = "Save Post";
+            submitBtn.disabled = false;
             return;
           }
 
@@ -1703,7 +1917,10 @@
           formData.append("date", date);
           formData.append("category", category);
           formData.append("content", content);
-          formData.append("image", imageInput.files[0]);
+
+          if (imageInput.files.length > 0) {
+            formData.append("image", imageInput.files[0]);
+          }
 
           if (videoInput.files.length > 0) {
             formData.append("video", videoInput.files[0]);
@@ -1717,47 +1934,121 @@
 
           try {
             showProgress();
-            await uploadFile(
-              `${API_URL}/blog`,
-              "POST",
-              formData,
-              updateProgress,
+            await uploadFile(url, method, formData, updateProgress);
+            showToast(
+              `Post ${isEditing ? "Updated" : "Published"} Successfully!`,
             );
-            showToast("Blog Post Published Successfully!");
-            e.target.reset();
-            // Clear previews
-            document.getElementById("blog-image-preview").innerHTML = "";
-            document.getElementById("blog-video-preview").innerHTML = "";
-            document.getElementById("blog-gallery-preview").innerHTML = "";
+            closeBlogFormModal();
             loadBlogPosts();
           } catch (err) {
             console.error(err);
-            showToast("Failed to publish post: " + err, "error");
+            showToast(
+              `Failed to ${isEditing ? "update" : "publish"} post: ` + err,
+              "error",
+            );
           } finally {
             hideProgress();
+            submitBtn.innerText = "Save Post";
+            submitBtn.disabled = false;
           }
         });
 
       async function loadBlogPosts() {
         try {
           const res = await fetch(`${API_URL}/blog`);
-          const posts = await res.json();
+          const posts = (await res.json()).sort(
+            (a, b) => new Date(b.date) - new Date(a.date),
+          );
           const container = document.getElementById("blog-list");
-          container.innerHTML = posts
-            .map(
-              (post) => `
-            <div class="flyer-manage-item" style="flex-direction:column; align-items: flex-start; gap: 0.5rem;">
-                <img src="${post.image && post.image.url ? post.image.url : post.image}" alt="${post.title}" style="width:100%; height: 120px; object-fit:cover;">
-                <div style="font-size:0.9rem; font-weight:bold; padding: 0 10px;">${post.title}</div>
-                <div style="font-size:0.8rem; color:#aaa; padding: 0 10px 10px;">${post.date} | ${post.category}</div>
-                <button onclick="deleteBlogPost('${post._id}')" class="delete-btn" style="position:absolute; top:5px; right:5px;"><i class="fas fa-trash"></i></button>
-            </div>
-          `,
-            )
-            .join("");
+          container.innerHTML = ""; // Clear previous list
+          posts.forEach((post) => {
+            const imgUrl =
+              post.image && post.image.url
+                ? post.image.url
+                : "./image/logo.png";
+            const card = document.createElement("div");
+            card.className = "admin-blog-card";
+            card.innerHTML = `
+                  <img src="${imgUrl}" class="card-img" alt="${post.title}">
+                  <div class="card-overlay">
+                      <div class="card-title">${post.title}</div>
+                      <div class="card-category">${post.category}</div>
+                  </div>
+                  <div class="card-actions">
+                      <button onclick="openBlogFormModal('${post._id}')" class="action-btn" title="Edit Post"><i class="fas fa-edit"></i></button>
+                      <button onclick="deleteBlogPost('${post._id}')" class="action-btn" title="Delete Post"><i class="fas fa-trash"></i></button>
+                  </div>
+              `;
+            container.appendChild(card);
+          });
         } catch (e) {
           console.error(e);
+          document.getElementById("blog-list").innerHTML =
+            "<p>Failed to load posts.</p>";
         }
+      }
+
+      // --- Blog Form Modal Logic ---
+      const blogFormModal = document.getElementById("blog-form-modal");
+      const blogForm = document.getElementById("add-blog-form");
+      const blogFormTitle = document.getElementById("blog-form-title");
+      const blogPostIdInput = document.getElementById("blog-post-id");
+
+      function closeBlogFormModal() {
+        if (blogFormModal) blogFormModal.style.display = "none";
+      }
+
+      async function openBlogFormModal(postId = null) {
+        if (!blogFormModal) return;
+
+        blogForm.reset();
+        blogPostIdInput.value = "";
+        // Clear all previews
+        document.getElementById("blog-image-preview").innerHTML = "";
+        document.getElementById("blog-video-preview").innerHTML = "";
+        document.getElementById("blog-gallery-preview").innerHTML = "";
+        document.getElementById("current-thumbnail-preview").style.display =
+          "none";
+        document.getElementById("current-video-preview").style.display = "none";
+        document.getElementById("current-gallery-preview").style.display =
+          "none";
+        document.getElementById("blog-image").required = true; // Required for new posts
+
+        if (postId) {
+          blogFormTitle.innerText = "Edit Blog Post";
+          blogPostIdInput.value = postId;
+          document.getElementById("blog-image").required = false; // Not required when editing
+
+          try {
+            const res = await fetch(`${API_URL}/blog/${postId}`);
+            if (!res.ok) throw new Error("Failed to fetch post data");
+            const post = await res.json();
+
+            document.getElementById("blog-title").value = post.title;
+            document.getElementById("blog-author").value = post.author;
+            document.getElementById("blog-date").value = new Date(post.date)
+              .toISOString()
+              .split("T")[0];
+            document.getElementById("blog-category").value = post.category;
+            document.getElementById("blog-content").value = post.content;
+            blogCategorySelect.dispatchEvent(new Event("change"));
+
+            if (post.image && post.image.url) {
+              const preview = document.getElementById(
+                "current-thumbnail-preview",
+              );
+              preview.style.display = "block";
+              preview.innerHTML = `<p>Current Thumbnail:</p><img src="${post.image.url}" alt="Current Thumbnail">`;
+            }
+          } catch (err) {
+            showToast("Error loading post data: " + err.message, "error");
+            return;
+          }
+        } else {
+          blogFormTitle.innerText = "Add New Post";
+          blogCategorySelect.dispatchEvent(new Event("change"));
+        }
+        blogFormModal.style.display = "block";
       }
 
       async function deleteBlogPost(id) {

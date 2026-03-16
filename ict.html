@@ -3,540 +3,371 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ICT Dashboard | Perfection Of Christ Ministry</title>
-    <!-- Favicon -->
+    <title>ICT Live Service Control | Perfection Of Christ Ministry</title>
     <link rel="icon" href="./image/logo.png" type="image/png" />
     <link rel="apple-touch-icon" href="./image/logo.png" />
-
-    <link rel="stylesheet" href="admin.css" />
-    <!-- Reusing admin styles for consistency -->
+    <link rel="stylesheet" href="ict.css" />
     <link
-      href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Montserrat:wght@400;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Sora:wght@300;400;600;700&display=swap"
       rel="stylesheet"
     />
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
     />
-    <style>
-      .top-bar-title {
-        display: flex;
-        flex-direction: column;
-        gap: 0.25rem;
-      }
-
-      .ict-subtitle {
-        color: #bbb;
-        font-size: 0.9rem;
-      }
-
-      .ict-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-        gap: 1.5rem;
-        margin-top: 1.5rem;
-      }
-
-      .ict-inline {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 1rem;
-        flex-wrap: wrap;
-      }
-
-      .ict-checklist {
-        display: grid;
-        gap: 0.75rem;
-        margin-top: 1rem;
-      }
-
-      .ict-checklist label {
-        display: flex;
-        align-items: flex-start;
-        gap: 0.6rem;
-        line-height: 1.4;
-        color: #ddd;
-      }
-
-      .ict-checklist input[type="checkbox"] {
-        margin-top: 0.15rem;
-        width: 18px;
-        height: 18px;
-        accent-color: var(--accent-color);
-      }
-
-      .ict-badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.4rem;
-        padding: 0.25rem 0.7rem;
-        border-radius: 999px;
-        font-size: 0.72rem;
-        text-transform: uppercase;
-        letter-spacing: 0.8px;
-        border: 1px solid transparent;
-      }
-
-      .ict-badge.good {
-        background: rgba(76, 175, 80, 0.15);
-        color: #97e69a;
-        border-color: rgba(76, 175, 80, 0.35);
-      }
-
-      .ict-badge.warn {
-        background: rgba(255, 152, 0, 0.15);
-        color: #ffd27f;
-        border-color: rgba(255, 152, 0, 0.35);
-      }
-
-      .ict-badge.info {
-        background: rgba(33, 150, 243, 0.15);
-        color: #9ccfff;
-        border-color: rgba(33, 150, 243, 0.35);
-      }
-
-      .ict-actions {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.75rem;
-        margin-top: 1rem;
-      }
-
-      .btn-secondary {
-        background: transparent;
-        color: #fff;
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        padding: 0.7rem 1.6rem;
-        border-radius: 50px;
-        cursor: pointer;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        transition: all 0.3s;
-        display: inline-block;
-      }
-
-      .btn-secondary:hover {
-        border-color: var(--accent-color);
-        box-shadow: 0 0 15px rgba(179, 135, 40, 0.35);
-      }
-
-      .ict-list {
-        list-style: none;
-        display: grid;
-        gap: 0.65rem;
-        margin-top: 1rem;
-      }
-
-      .ict-list li {
-        display: flex;
-        align-items: center;
-        gap: 0.6rem;
-        color: #ddd;
-      }
-
-      .ict-list a {
-        color: #fff;
-        text-decoration: none;
-      }
-
-      .ict-list a:hover {
-        color: var(--accent-color);
-      }
-
-      .ict-list i {
-        color: var(--accent-color);
-      }
-
-      .ict-notes {
-        width: 100%;
-        min-height: 150px;
-        margin-top: 1rem;
-        background: rgba(0, 0, 0, 0.35);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 10px;
-        padding: 1rem;
-        color: #fff;
-        font-family: inherit;
-        resize: vertical;
-      }
-
-      .ict-notes:focus {
-        outline: none;
-        border-color: var(--accent-color);
-        box-shadow: 0 0 10px rgba(179, 135, 40, 0.2);
-      }
-
-      .icon-ready {
-        background: rgba(76, 175, 80, 0.2);
-        color: #9fe6a6;
-        box-shadow: 0 0 15px rgba(76, 175, 80, 0.12);
-      }
-
-      .icon-stream {
-        background: rgba(255, 152, 0, 0.2);
-        color: #ffcc80;
-        box-shadow: 0 0 15px rgba(255, 152, 0, 0.12);
-      }
-
-      .icon-audio {
-        background: rgba(33, 150, 243, 0.2);
-        color: #90caf9;
-        box-shadow: 0 0 15px rgba(33, 150, 243, 0.12);
-      }
-
-      .icon-network {
-        background: rgba(0, 150, 136, 0.2);
-        color: #80cbc4;
-        box-shadow: 0 0 15px rgba(0, 150, 136, 0.12);
-      }
-
-      @media (max-width: 900px) {
-        .top-bar {
-          flex-direction: column;
-          align-items: flex-start;
-          gap: 1rem;
-        }
-      }
-    </style>
   </head>
   <body>
-    <div class="admin-container">
-      <!-- Sidebar -->
-      <aside class="sidebar">
-        <div class="sidebar-header">
-          <i class="fas fa-server"></i>
-          <h2>ICT Portal</h2>
+    <div class="ict-app">
+      <header class="ict-topbar">
+        <div class="ict-brand">
+          <img src="./image/logo.png" alt="Perfection Of Christ Ministry" />
+          <div>
+            <span>Perfection Of Christ Ministry</span>
+            <p>ICT Live Service Control</p>
+          </div>
         </div>
-        <nav class="sidebar-nav">
-          <ul>
-            <li class="active">
-              <i class="fas fa-tachometer-alt"></i> Dashboard
-            </li>
-            <li onclick="logout()">
-              <i class="fas fa-sign-out-alt"></i> Logout
-            </li>
-            <li onclick="window.location.href = 'index.html'">
-              <i class="fas fa-external-link-alt"></i> View Website
-            </li>
-          </ul>
-        </nav>
-      </aside>
+        <div class="ict-top-actions">
+          <a class="btn-ghost" href="screen.html" target="_blank"
+            ><i class="fas fa-tv"></i> Open Screen</a
+          >
+          <button class="btn-ghost" id="refreshPreviewBtn">
+            <i class="fas fa-rotate"></i> Refresh Preview
+          </button>
+          <button class="btn-danger" onclick="logout()">
+            <i class="fas fa-sign-out-alt"></i> Logout
+          </button>
+        </div>
+      </header>
 
-      <!-- Main Content -->
-      <main class="main-content">
-        <header class="top-bar">
-          <div class="top-bar-title">
-            <h1>ICT Operations Hub</h1>
-            <p class="ict-subtitle">
-              Service readiness, live stream, and support overview
-            </p>
-          </div>
-          <div class="user-info">
-            <span>ICT Member</span>
-            <div class="avatar"><i class="fas fa-user-cog"></i></div>
-          </div>
-        </header>
+      <section class="ict-hero">
+        <div>
+          <h1>Run the sanctuary screens in real time</h1>
+          <p>
+            Control Bible verses, worship lyrics, announcements, service order,
+            countdowns, and lower-thirds during live services.
+          </p>
+        </div>
+        <div class="hero-status">
+          <div class="status-pill info" id="screenSyncStatus">Loading</div>
+          <div class="status-meta" id="lastSavedAt">Last saved: -</div>
+        </div>
+      </section>
 
-        <!-- Dashboard Section -->
-        <section id="dashboard" class="content-section active">
-          <h2>Today at a Glance</h2>
+      <section class="ict-overview">
+        <div class="overview-card">
+          <span>Current Mode</span>
+          <strong id="currentModeLabel">Verse</strong>
+        </div>
+        <div class="overview-card">
+          <span>Countdown</span>
+          <strong id="countdownStatusLabel">Standby</strong>
+        </div>
+        <div class="overview-card">
+          <span>Preview</span>
+          <strong>Live Feed</strong>
+        </div>
+      </section>
 
-          <div class="stats-grid">
-            <div class="stat-card">
-              <div class="stat-icon icon-ready">
-                <i class="fas fa-check-circle"></i>
-              </div>
-              <div class="stat-info">
-                <h3>Service Readiness</h3>
-                <p id="ictReadinessScore">0%</p>
-              </div>
+      <div class="ict-layout">
+        <div class="control-stack">
+          <section class="control-card">
+            <div class="card-header">
+              <h3>Live Screen Modes</h3>
+              <span class="card-note">Choose what is live on the screen</span>
             </div>
-            <div class="stat-card">
-              <div class="stat-icon icon-stream">
-                <i class="fas fa-video"></i>
-              </div>
-              <div class="stat-info">
-                <h3>Live Stream</h3>
-                <p>Standby</p>
-              </div>
+            <div class="mode-grid">
+              <button class="mode-btn" data-mode="verse">Verse</button>
+              <button class="mode-btn" data-mode="lyrics">Lyrics</button>
+              <button class="mode-btn" data-mode="announcement">
+                Announcement
+              </button>
+              <button class="mode-btn" data-mode="order">Order</button>
+              <button class="mode-btn" data-mode="countdown">Countdown</button>
+              <button class="mode-btn" data-mode="lowerthird">
+                Lower Third
+              </button>
+              <button class="mode-btn danger" data-mode="blank">Blank</button>
             </div>
-            <div class="stat-card">
-              <div class="stat-icon icon-audio">
-                <i class="fas fa-sliders-h"></i>
-              </div>
-              <div class="stat-info">
-                <h3>Audio Console</h3>
-                <p>Ready</p>
-              </div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-icon icon-network">
-                <i class="fas fa-network-wired"></i>
-              </div>
-              <div class="stat-info">
-                <h3>Network</h3>
-                <p>Stable</p>
-              </div>
-            </div>
-          </div>
+          </section>
 
-          <div class="ict-grid">
-            <div class="card">
-              <div class="ict-inline">
-                <h3>Pre-Service Checklist</h3>
-                <span class="ict-badge info" id="ictChecklistStatus"
-                  >0/0 items complete</span
-                >
-              </div>
-              <div class="ict-checklist">
-                <label
-                  ><input type="checkbox" data-ict-check="power" />Power on
-                  mixer, amps, and monitors</label
-                >
-                <label
-                  ><input type="checkbox" data-ict-check="mics" />Confirm mic
-                  batteries and channels labeled</label
-                >
-                <label
-                  ><input type="checkbox" data-ict-check="projection" />Align
-                  projectors and test slides</label
-                >
-                <label
-                  ><input type="checkbox" data-ict-check="stream" />Run stream
-                  test (video + audio sync)</label
-                >
-                <label
-                  ><input type="checkbox" data-ict-check="recording" />Verify
-                  recording storage and backups</label
-                >
-                <label
-                  ><input type="checkbox" data-ict-check="network" />Check Wi-Fi
-                  and Ethernet uplinks</label
-                >
-              </div>
-              <div class="ict-actions">
-                <button class="btn-primary" type="button" id="ictResetChecklist">
-                  Reset Checklist
-                </button>
-              </div>
+          <section class="control-card">
+            <div class="card-header">
+              <h3>Verse & Giving Scripture</h3>
+              <span class="card-note">Displayed in verse mode and give section</span>
             </div>
+            <div class="form-grid">
+              <label>
+                <span>Verse Text</span>
+                <textarea
+                  id="verseTextInput"
+                  rows="3"
+                  placeholder="Enter the Bible verse text..."
+                ></textarea>
+              </label>
+              <label>
+                <span>Verse Reference</span>
+                <input
+                  type="text"
+                  id="verseRefInput"
+                  placeholder="e.g., Psalm 23:1"
+                />
+              </label>
+              <label>
+                <span>Giving Scripture</span>
+                <textarea
+                  id="giveScriptureInput"
+                  rows="3"
+                  placeholder="Enter the giving scripture..."
+                ></textarea>
+              </label>
+            </div>
+            <div class="card-actions">
+              <button class="btn-primary" data-save="verse">
+                Save & Sync
+              </button>
+              <button class="btn-ghost" data-show="verse">
+                Show Verse
+              </button>
+            </div>
+          </section>
 
-            <div class="card">
-              <div class="ict-inline">
-                <h3>Service Schedule</h3>
-                <span class="ict-badge warn">Confirm weekly</span>
-              </div>
-              <table class="data-table">
-                <thead>
-                  <tr>
-                    <th>Service</th>
-                    <th>Time</th>
-                    <th>Lead</th>
-                    <th>Coverage</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>Sunday Celebration</td>
-                    <td>Set time</td>
-                    <td>Set lead</td>
-                    <td>Audio | Stream | Projection</td>
-                  </tr>
-                  <tr>
-                    <td>Midweek Service</td>
-                    <td>Set time</td>
-                    <td>Set lead</td>
-                    <td>Audio | Slides</td>
-                  </tr>
-                  <tr>
-                    <td>Special Programs</td>
-                    <td>Confirm</td>
-                    <td>Assign</td>
-                    <td>Full coverage</td>
-                  </tr>
-                </tbody>
-              </table>
+          <section class="control-card">
+            <div class="card-header">
+              <h3>Announcement</h3>
+              <span class="card-note">Short updates for the congregation</span>
             </div>
-          </div>
+            <div class="form-grid">
+              <label>
+                <span>Title</span>
+                <input
+                  type="text"
+                  id="announcementTitleInput"
+                  placeholder="e.g., Midweek Service Tonight"
+                />
+              </label>
+              <label>
+                <span>Details</span>
+                <textarea
+                  id="announcementBodyInput"
+                  rows="3"
+                  placeholder="Add short details for the screen..."
+                ></textarea>
+              </label>
+            </div>
+            <div class="card-actions">
+              <button class="btn-primary" data-save="announcement">
+                Save & Sync
+              </button>
+              <button class="btn-ghost" data-show="announcement">
+                Show Announcement
+              </button>
+            </div>
+          </section>
 
-          <div class="ict-grid">
-            <div class="card">
-              <div class="ict-inline">
-                <h3>Live Stream & Media</h3>
-                <span class="ict-badge good">Ready</span>
-              </div>
-              <ul class="ict-list">
-                <li><i class="fas fa-check"></i>Scenes loaded for the service</li>
-                <li><i class="fas fa-check"></i>Lower-thirds updated</li>
-                <li><i class="fas fa-check"></i>Recording destination selected</li>
-                <li>
-                  <i class="fas fa-check"></i>Stream key and platform verified
-                </li>
-              </ul>
-              <div class="ict-actions">
-                <a class="btn-primary" href="HYBRID_VIDEO_TEMPLATE.html"
-                  >Open Stream Template</a
-                >
-              </div>
+          <section class="control-card">
+            <div class="card-header">
+              <h3>Worship Lyrics</h3>
+              <span class="card-note">Paste each line on a new line</span>
             </div>
+            <div class="form-grid">
+              <label>
+                <span>Song Title</span>
+                <input
+                  type="text"
+                  id="lyricsTitleInput"
+                  placeholder="e.g., Way Maker"
+                />
+              </label>
+              <label>
+                <span>Lyrics</span>
+                <textarea
+                  id="lyricsLinesInput"
+                  rows="4"
+                  placeholder="Enter lyrics line by line..."
+                ></textarea>
+              </label>
+            </div>
+            <div class="card-actions">
+              <button class="btn-primary" data-save="lyrics">Save & Sync</button>
+              <button class="btn-ghost" data-show="lyrics">
+                Show Lyrics
+              </button>
+            </div>
+          </section>
 
-            <div class="card">
-              <div class="ict-inline">
-                <h3>Audio & Projection</h3>
-                <span class="ict-badge info">Monitor</span>
-              </div>
-              <ul class="ict-list">
-                <li>
-                  <i class="fas fa-sliders-h"></i>Set gain structure and EQ
-                </li>
-                <li><i class="fas fa-volume-up"></i>Check foldback monitors</li>
-                <li>
-                  <i class="fas fa-desktop"></i>Confirm output to sanctuary screens
-                </li>
-                <li>
-                  <i class="fas fa-file-powerpoint"></i>Slides ordered for service
-                </li>
-              </ul>
+          <section class="control-card">
+            <div class="card-header">
+              <h3>Order of Service</h3>
+              <span class="card-note">List each item on a new line</span>
             </div>
+            <div class="form-grid">
+              <label>
+                <span>Title</span>
+                <input
+                  type="text"
+                  id="orderTitleInput"
+                  placeholder="e.g., Sunday Celebration"
+                />
+              </label>
+              <label>
+                <span>Items</span>
+                <textarea
+                  id="orderItemsInput"
+                  rows="4"
+                  placeholder="Praise & Worship&#10;Prayer&#10;Message&#10;Offering"
+                ></textarea>
+              </label>
+            </div>
+            <div class="card-actions">
+              <button class="btn-primary" data-save="order">Save & Sync</button>
+              <button class="btn-ghost" data-show="order">
+                Show Order
+              </button>
+            </div>
+          </section>
 
-            <div class="card">
-              <div class="ict-inline">
-                <h3>Network & Backup</h3>
-                <span class="ict-badge info">On watch</span>
-              </div>
-              <ul class="ict-list">
-                <li>
-                  <i class="fas fa-network-wired"></i>Speed test and uplink check
-                </li>
-                <li>
-                  <i class="fas fa-hdd"></i>Backup recording path confirmed
-                </li>
-                <li>
-                  <i class="fas fa-plug"></i>UPS and power strips inspected
-                </li>
-                <li>
-                  <i class="fas fa-shield-alt"></i>Spare cables and adapters ready
-                </li>
-              </ul>
+          <section class="control-card">
+            <div class="card-header">
+              <h3>Countdown Timer</h3>
+              <span class="card-note">Use for service start or break times</span>
             </div>
-          </div>
+            <div class="countdown-grid">
+              <label>
+                <span>Minutes</span>
+                <input type="number" id="countdownMinutes" min="0" value="10" />
+              </label>
+              <label>
+                <span>Seconds</span>
+                <input type="number" id="countdownSeconds" min="0" max="59" value="0" />
+              </label>
+              <div class="countdown-readout">
+                <span>Remaining</span>
+                <strong id="countdownRemaining">10:00</strong>
+              </div>
+            </div>
+            <div class="card-actions">
+              <button class="btn-primary" id="countdownStart">
+                Start
+              </button>
+              <button class="btn-ghost" id="countdownPause">Pause</button>
+              <button class="btn-ghost" id="countdownReset">Reset</button>
+              <button class="btn-ghost" data-show="countdown">
+                Show Countdown
+              </button>
+            </div>
+          </section>
 
-          <div class="ict-grid">
-            <div class="card">
-              <div class="ict-inline">
-                <h3>Screen Content Control</h3>
-                <span class="ict-badge info" id="screenStatus">Not synced</span>
-              </div>
-              <p class="helper-text">
-                Update the verse ticker, giving scripture, and announcements for
-                the sanctuary screens.
-              </p>
-              <form id="screenContentForm">
-                <div class="form-group">
-                  <label>Verse Scroll</label>
-                  <textarea
-                    id="screenVerse"
-                    rows="3"
-                    placeholder="Enter the scrolling verse text..."
-                  ></textarea>
-                </div>
-                <div class="form-group">
-                  <label>Giving Scripture</label>
-                  <textarea
-                    id="screenGive"
-                    rows="3"
-                    placeholder="Enter the giving scripture text..."
-                  ></textarea>
-                </div>
-                <div class="form-group">
-                  <label>Announcement Title</label>
-                  <input
-                    type="text"
-                    id="screenAnnouncementTitle"
-                    placeholder="e.g., Youth Night Starts at 6:00 PM"
-                  />
-                </div>
-                <div class="form-group">
-                  <label>Announcement Details</label>
-                  <textarea
-                    id="screenAnnouncementBody"
-                    rows="3"
-                    placeholder="Share short details for the screen..."
-                  ></textarea>
-                </div>
-                <div class="ict-actions">
-                  <button class="btn-primary" type="submit">
-                    Update Screen
-                  </button>
-                  <button
-                    class="btn-secondary"
-                    type="button"
-                    id="screenClearAnnouncement"
-                  >
-                    Clear Announcement
-                  </button>
-                </div>
-              </form>
-              <p class="helper-text" id="screenUpdatedAt">Last updated: -</p>
+          <section class="control-card">
+            <div class="card-header">
+              <h3>Lower Third</h3>
+              <span class="card-note">Speaker title for the big screen</span>
             </div>
+            <div class="form-grid">
+              <label>
+                <span>Name</span>
+                <input
+                  type="text"
+                  id="lowerThirdNameInput"
+                  placeholder="e.g., Pastor John Jeremiah"
+                />
+              </label>
+              <label>
+                <span>Role / Title</span>
+                <input
+                  type="text"
+                  id="lowerThirdRoleInput"
+                  placeholder="Lead Pastor"
+                />
+              </label>
+              <label>
+                <span>Footer</span>
+                <input
+                  type="text"
+                  id="lowerThirdFooterInput"
+                  placeholder="Perfection Of Christ Ministry"
+                />
+              </label>
+            </div>
+            <div class="card-actions">
+              <button class="btn-primary" data-save="lowerthird">
+                Save & Sync
+              </button>
+              <button class="btn-ghost" data-show="lowerthird">
+                Show Lower Third
+              </button>
+            </div>
+          </section>
+        </div>
 
-            <div class="card">
-              <div class="ict-inline">
-                <h3>ICT Notes & Handover</h3>
-                <span class="ict-badge good" id="ictNotesStatus"
-                  >Autosave on</span
-                >
-              </div>
-              <textarea
-                id="ictNotes"
-                class="ict-notes"
-                placeholder="Log issues, handover notes, and service observations here."
-              ></textarea>
-              <div class="ict-actions">
-                <button class="btn-secondary" type="button" id="ictClearNotes">
-                  Clear Notes
-                </button>
-              </div>
+        <aside class="preview-stack">
+          <section class="preview-card">
+            <div class="card-header">
+              <h3>Live Screen Preview</h3>
+              <span class="card-note">What the congregation sees</span>
             </div>
+            <div class="preview-frame">
+              <iframe
+                id="screenPreview"
+                src="screen.html"
+                title="Live Screen Preview"
+              ></iframe>
+            </div>
+            <div class="card-actions">
+              <a class="btn-primary" href="screen.html" target="_blank"
+                >Open Full Screen</a
+              >
+            </div>
+          </section>
 
-            <div class="card">
-              <div class="ict-inline">
-                <h3>Quick Links & Resources</h3>
-                <span class="ict-badge info">Docs</span>
-              </div>
-              <ul class="ict-list">
-                <li>
-                  <i class="fas fa-book"></i>
-                  <a href="VIDEO_QUICK_REFERENCE.md">Video Quick Reference</a>
-                </li>
-                <li>
-                  <i class="fas fa-bolt"></i>
-                  <a href="VIDEO_OPTIMIZATION_GUIDE.md"
-                    >Video Optimization Guide</a
-                  >
-                </li>
-                <li>
-                  <i class="fas fa-clipboard-check"></i>
-                  <a href="VIDEO_IMPLEMENTATION_STATUS.md"
-                    >Implementation Status</a
-                  >
-                </li>
-                <li>
-                  <i class="fas fa-cog"></i>
-                  <a href="setup_database.html">Setup Database</a>
-                </li>
-              </ul>
+          <section class="preview-card">
+            <div class="card-header">
+              <h3>Service Checklist</h3>
+              <span class="card-note">Quick readiness checks</span>
             </div>
-          </div>
-        </section>
-      </main>
+            <div class="checklist" id="serviceChecklist">
+              <label
+                ><input type="checkbox" data-check="audio" />Audio console
+                ready</label
+              >
+              <label
+                ><input type="checkbox" data-check="projection" />Projector
+                output verified</label
+              >
+              <label
+                ><input type="checkbox" data-check="lyrics" />Lyrics loaded</label
+              >
+              <label
+                ><input type="checkbox" data-check="stream" />Stream preview
+                tested</label
+              >
+              <label
+                ><input type="checkbox" data-check="backup" />Recording backup
+                active</label
+              >
+            </div>
+          </section>
+
+          <section class="preview-card">
+            <div class="card-header">
+              <h3>Service Notes</h3>
+              <span class="card-note">Autosaves locally</span>
+            </div>
+            <textarea
+              class="notes-area"
+              id="serviceNotes"
+              placeholder="Write handover notes, issues, or reminders..."
+            ></textarea>
+            <div class="card-actions">
+              <button class="btn-ghost" id="clearNotesBtn">
+                Clear Notes
+              </button>
+            </div>
+          </section>
+        </aside>
+      </div>
     </div>
 
     <script>
-      // --- SECURITY CHECK ---
-      // If no ICT token is found, redirect to the ICT login page.
       if (!localStorage.getItem("ict_token")) {
         window.location.href = "ict_login.html";
       }
@@ -547,209 +378,386 @@
       }
 
       const API_URL = "/api";
-
-      const checklistBoxes = Array.from(
-        document.querySelectorAll("[data-ict-check]")
+      const screenSyncStatus = document.getElementById("screenSyncStatus");
+      const lastSavedAt = document.getElementById("lastSavedAt");
+      const currentModeLabel = document.getElementById("currentModeLabel");
+      const countdownStatusLabel = document.getElementById(
+        "countdownStatusLabel",
       );
-      const checklistStatus = document.getElementById("ictChecklistStatus");
-      const readinessScore = document.getElementById("ictReadinessScore");
-      const checklistStoreKey = "ict_checklist";
-      const notesStoreKey = "ict_notes";
-      const notesField = document.getElementById("ictNotes");
-      const notesStatus = document.getElementById("ictNotesStatus");
-      const resetChecklistButton = document.getElementById("ictResetChecklist");
-      const clearNotesButton = document.getElementById("ictClearNotes");
 
-      function updateChecklistUI() {
-        const totalItems = checklistBoxes.length;
-        const completedItems = checklistBoxes.filter((box) => box.checked).length;
-        if (checklistStatus) {
-          checklistStatus.textContent = `${completedItems}/${totalItems} items complete`;
-        }
-        if (readinessScore) {
-          const percent = totalItems
-            ? Math.round((completedItems / totalItems) * 100)
-            : 0;
-          readinessScore.textContent = `${percent}%`;
-        }
+      const verseTextInput = document.getElementById("verseTextInput");
+      const verseRefInput = document.getElementById("verseRefInput");
+      const giveScriptureInput = document.getElementById("giveScriptureInput");
+      const announcementTitleInput = document.getElementById(
+        "announcementTitleInput",
+      );
+      const announcementBodyInput = document.getElementById(
+        "announcementBodyInput",
+      );
+      const lyricsTitleInput = document.getElementById("lyricsTitleInput");
+      const lyricsLinesInput = document.getElementById("lyricsLinesInput");
+      const orderTitleInput = document.getElementById("orderTitleInput");
+      const orderItemsInput = document.getElementById("orderItemsInput");
+      const lowerThirdNameInput = document.getElementById("lowerThirdNameInput");
+      const lowerThirdRoleInput = document.getElementById("lowerThirdRoleInput");
+      const lowerThirdFooterInput = document.getElementById(
+        "lowerThirdFooterInput",
+      );
+
+      const countdownMinutes = document.getElementById("countdownMinutes");
+      const countdownSeconds = document.getElementById("countdownSeconds");
+      const countdownRemaining = document.getElementById("countdownRemaining");
+      const countdownStart = document.getElementById("countdownStart");
+      const countdownPause = document.getElementById("countdownPause");
+      const countdownReset = document.getElementById("countdownReset");
+
+      const refreshPreviewBtn = document.getElementById("refreshPreviewBtn");
+      const screenPreview = document.getElementById("screenPreview");
+
+      const modeButtons = Array.from(document.querySelectorAll(".mode-btn"));
+      const saveButtons = Array.from(document.querySelectorAll("[data-save]"));
+      const showButtons = Array.from(document.querySelectorAll("[data-show]"));
+
+      const checklistKey = "ict_service_checklist";
+      const notesKey = "ict_service_notes";
+      const checklistInputs = Array.from(
+        document.querySelectorAll("[data-check]"),
+      );
+      const notesArea = document.getElementById("serviceNotes");
+      const clearNotesBtn = document.getElementById("clearNotesBtn");
+
+      const screenDefaults = {
+        mode: "verse",
+        verseText: "",
+        verseRef: "",
+        giveScripture: "",
+        announcementTitle: "",
+        announcementBody: "",
+        lyricsTitle: "",
+        lyricsLines: "",
+        orderTitle: "Order of Service",
+        orderItems: "",
+        countdownStatus: "stopped",
+        countdownDurationSeconds: 600,
+        countdownStartedAt: null,
+        countdownRemainingSeconds: null,
+        lowerThirdName: "",
+        lowerThirdRole: "",
+        lowerThirdFooter: "",
+        updatedAt: null,
+      };
+
+      let screenState = { ...screenDefaults };
+
+      function setStatus(label, type) {
+        if (!screenSyncStatus) return;
+        screenSyncStatus.textContent = label;
+        screenSyncStatus.className = `status-pill ${type}`;
       }
 
-      function saveChecklist() {
-        const state = {};
-        checklistBoxes.forEach((box) => {
-          state[box.dataset.ictCheck] = box.checked;
-        });
-        localStorage.setItem(checklistStoreKey, JSON.stringify(state));
-        updateChecklistUI();
-      }
-
-      function loadChecklist() {
-        const stored = localStorage.getItem(checklistStoreKey);
-        if (!stored) {
-          updateChecklistUI();
+      function updateLastSaved(timestamp) {
+        if (!lastSavedAt) return;
+        if (!timestamp) {
+          lastSavedAt.textContent = "Last saved: -";
           return;
         }
-        const state = JSON.parse(stored);
-        checklistBoxes.forEach((box) => {
-          box.checked = Boolean(state[box.dataset.ictCheck]);
-        });
-        updateChecklistUI();
+        const date = new Date(timestamp);
+        lastSavedAt.textContent = `Last saved: ${date.toLocaleString()}`;
       }
 
-      checklistBoxes.forEach((box) => {
-        box.addEventListener("change", saveChecklist);
-      });
+      const modeLabels = {
+        verse: "Verse",
+        lyrics: "Lyrics",
+        announcement: "Announcement",
+        order: "Order",
+        countdown: "Countdown",
+        lowerthird: "Lower Third",
+        blank: "Blank",
+      };
 
-      if (resetChecklistButton) {
-        resetChecklistButton.addEventListener("click", () => {
-          checklistBoxes.forEach((box) => {
-            box.checked = false;
-          });
-          saveChecklist();
-        });
-      }
-
-      if (notesField) {
-        notesField.value = localStorage.getItem(notesStoreKey) || "";
-        notesField.addEventListener("input", () => {
-          localStorage.setItem(notesStoreKey, notesField.value);
-          if (notesStatus) {
-            notesStatus.textContent = "Saved locally";
-          }
-        });
-      }
-
-      if (clearNotesButton) {
-        clearNotesButton.addEventListener("click", () => {
-          if (notesField) {
-            notesField.value = "";
-          }
-          localStorage.removeItem(notesStoreKey);
-          if (notesStatus) {
-            notesStatus.textContent = "Cleared";
-          }
-        });
-      }
-
-      loadChecklist();
-
-      const screenForm = document.getElementById("screenContentForm");
-      const screenStatus = document.getElementById("screenStatus");
-      const screenUpdatedAt = document.getElementById("screenUpdatedAt");
-      const screenVerseInput = document.getElementById("screenVerse");
-      const screenGiveInput = document.getElementById("screenGive");
-      const screenAnnouncementTitleInput = document.getElementById(
-        "screenAnnouncementTitle",
-      );
-      const screenAnnouncementBodyInput = document.getElementById(
-        "screenAnnouncementBody",
-      );
-      const screenClearAnnouncementBtn = document.getElementById(
-        "screenClearAnnouncement",
-      );
-
-      function setScreenStatus(label, type) {
-        if (!screenStatus) return;
-        screenStatus.textContent = label;
-        screenStatus.className = `ict-badge ${type}`;
-      }
-
-      function updateScreenTimestamp(value) {
-        if (!screenUpdatedAt) return;
-        if (!value) {
-          screenUpdatedAt.textContent = "Last updated: -";
-          return;
+      function setCurrentMode(mode) {
+        if (currentModeLabel) {
+          currentModeLabel.textContent = modeLabels[mode] || "Verse";
         }
-        const timestamp = new Date(value);
-        screenUpdatedAt.textContent = `Last updated: ${timestamp.toLocaleString()}`;
+        modeButtons.forEach((btn) => {
+          btn.classList.toggle("active", btn.dataset.mode === mode);
+        });
       }
 
-      async function loadScreenContent() {
+      function formatCountdown(seconds) {
+        const safe = Math.max(0, Math.floor(seconds));
+        const mins = Math.floor(safe / 60);
+        const secs = safe % 60;
+        return `${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
+      }
+
+      function getCountdownRemaining(state) {
+        if (state.countdownStatus === "running") {
+          const startedAt = state.countdownStartedAt
+            ? new Date(state.countdownStartedAt).getTime()
+            : null;
+          const duration = Number(state.countdownDurationSeconds) || 0;
+          if (!startedAt) return duration;
+          const elapsed = (Date.now() - startedAt) / 1000;
+          return Math.max(0, duration - elapsed);
+        }
+        if (state.countdownStatus === "paused") {
+          return Number(state.countdownRemainingSeconds) || 0;
+        }
+        return Number(state.countdownDurationSeconds) || 0;
+      }
+
+      function updateCountdownUI() {
+        const remaining = getCountdownRemaining(screenState);
+        if (countdownRemaining) {
+          countdownRemaining.textContent = formatCountdown(remaining);
+        }
+
+        if (countdownStatusLabel) {
+          if (screenState.countdownStatus === "running") {
+            countdownStatusLabel.textContent = "Running";
+          } else if (screenState.countdownStatus === "paused") {
+            countdownStatusLabel.textContent = "Paused";
+          } else {
+            countdownStatusLabel.textContent = "Standby";
+          }
+        }
+      }
+
+      function applyScreenState(data) {
+        screenState = { ...screenDefaults, ...(data || {}) };
+
+        if (verseTextInput) verseTextInput.value = screenState.verseText || "";
+        if (verseRefInput) verseRefInput.value = screenState.verseRef || "";
+        if (giveScriptureInput)
+          giveScriptureInput.value = screenState.giveScripture || "";
+        if (announcementTitleInput)
+          announcementTitleInput.value = screenState.announcementTitle || "";
+        if (announcementBodyInput)
+          announcementBodyInput.value = screenState.announcementBody || "";
+        if (lyricsTitleInput)
+          lyricsTitleInput.value = screenState.lyricsTitle || "";
+        if (lyricsLinesInput)
+          lyricsLinesInput.value = screenState.lyricsLines || "";
+        if (orderTitleInput) orderTitleInput.value = screenState.orderTitle || "";
+        if (orderItemsInput) orderItemsInput.value = screenState.orderItems || "";
+        if (lowerThirdNameInput)
+          lowerThirdNameInput.value = screenState.lowerThirdName || "";
+        if (lowerThirdRoleInput)
+          lowerThirdRoleInput.value = screenState.lowerThirdRole || "";
+        if (lowerThirdFooterInput)
+          lowerThirdFooterInput.value = screenState.lowerThirdFooter || "";
+
+        if (countdownMinutes && countdownSeconds) {
+          const total = Number(screenState.countdownDurationSeconds) || 0;
+          countdownMinutes.value = Math.floor(total / 60);
+          countdownSeconds.value = total % 60;
+        }
+
+        setCurrentMode(screenState.mode || "verse");
+        updateLastSaved(screenState.updatedAt);
+        updateCountdownUI();
+      }
+
+      async function loadScreenState() {
         try {
-          const res = await fetch(`${API_URL}/screen-content`);
-          if (!res.ok) {
-            throw new Error(`HTTP error! status: ${res.status}`);
-          }
+          setStatus("Syncing...", "info");
+          const res = await fetch(`${API_URL}/screen-state`);
+          if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
           const data = await res.json();
-
-          if (screenVerseInput) {
-            screenVerseInput.value = data.verseText || "";
-          }
-          if (screenGiveInput) {
-            screenGiveInput.value = data.giveScripture || "";
-          }
-          if (screenAnnouncementTitleInput) {
-            screenAnnouncementTitleInput.value = data.announcementTitle || "";
-          }
-          if (screenAnnouncementBodyInput) {
-            screenAnnouncementBodyInput.value = data.announcementBody || "";
-          }
-
-          setScreenStatus("Synced", "good");
-          updateScreenTimestamp(data.updatedAt);
+          applyScreenState(data);
+          setStatus("Synced", "good");
         } catch (error) {
-          console.error("Error loading screen content:", error);
-          setScreenStatus("Offline", "warn");
+          console.error("Error loading screen state:", error);
+          setStatus("Offline", "warn");
         }
       }
 
-      async function saveScreenContent() {
-        const payload = {
-          verseText: screenVerseInput ? screenVerseInput.value.trim() : "",
-          giveScripture: screenGiveInput ? screenGiveInput.value.trim() : "",
-          announcementTitle: screenAnnouncementTitleInput
-            ? screenAnnouncementTitleInput.value.trim()
-            : "",
-          announcementBody: screenAnnouncementBodyInput
-            ? screenAnnouncementBodyInput.value.trim()
-            : "",
-        };
-
+      async function saveScreenState(partial) {
+        screenState = { ...screenState, ...(partial || {}) };
         try {
-          setScreenStatus("Saving...", "info");
-          const res = await fetch(`${API_URL}/screen-content`, {
+          setStatus("Saving...", "info");
+          const res = await fetch(`${API_URL}/screen-state`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload),
+            body: JSON.stringify(screenState),
           });
-
-          if (!res.ok) {
-            throw new Error(`HTTP error! status: ${res.status}`);
-          }
-
-          const result = await res.json();
-          setScreenStatus("Saved", "good");
-          updateScreenTimestamp(
-            result && result.data && result.data.updatedAt
-              ? result.data.updatedAt
-              : new Date().toISOString(),
-          );
+          if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+          const data = await res.json();
+          applyScreenState(data.data || screenState);
+          setStatus("Saved", "good");
         } catch (error) {
-          console.error("Error saving screen content:", error);
-          setScreenStatus("Failed", "warn");
+          console.error("Error saving screen state:", error);
+          setStatus("Failed", "warn");
         }
       }
 
-      if (screenForm) {
-        screenForm.addEventListener("submit", async (event) => {
-          event.preventDefault();
-          await saveScreenContent();
+      function collectVerseData() {
+        return {
+          verseText: verseTextInput ? verseTextInput.value.trim() : "",
+          verseRef: verseRefInput ? verseRefInput.value.trim() : "",
+          giveScripture: giveScriptureInput ? giveScriptureInput.value.trim() : "",
+        };
+      }
+
+      function collectAnnouncementData() {
+        return {
+          announcementTitle: announcementTitleInput
+            ? announcementTitleInput.value.trim()
+            : "",
+          announcementBody: announcementBodyInput
+            ? announcementBodyInput.value.trim()
+            : "",
+        };
+      }
+
+      function collectLyricsData() {
+        return {
+          lyricsTitle: lyricsTitleInput ? lyricsTitleInput.value.trim() : "",
+          lyricsLines: lyricsLinesInput ? lyricsLinesInput.value.trim() : "",
+        };
+      }
+
+      function collectOrderData() {
+        return {
+          orderTitle: orderTitleInput ? orderTitleInput.value.trim() : "",
+          orderItems: orderItemsInput ? orderItemsInput.value.trim() : "",
+        };
+      }
+
+      function collectLowerThirdData() {
+        return {
+          lowerThirdName: lowerThirdNameInput
+            ? lowerThirdNameInput.value.trim()
+            : "",
+          lowerThirdRole: lowerThirdRoleInput
+            ? lowerThirdRoleInput.value.trim()
+            : "",
+          lowerThirdFooter: lowerThirdFooterInput
+            ? lowerThirdFooterInput.value.trim()
+            : "",
+        };
+      }
+
+      function getDurationFromInputs() {
+        const mins = Number(countdownMinutes ? countdownMinutes.value : 0) || 0;
+        const secs =
+          Number(countdownSeconds ? countdownSeconds.value : 0) || 0;
+        return Math.max(0, mins * 60 + secs);
+      }
+
+      modeButtons.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const mode = btn.dataset.mode;
+          if (!mode) return;
+          saveScreenState({ mode });
+        });
+      });
+
+      saveButtons.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const key = btn.dataset.save;
+          if (key === "verse") return saveScreenState(collectVerseData());
+          if (key === "announcement")
+            return saveScreenState(collectAnnouncementData());
+          if (key === "lyrics") return saveScreenState(collectLyricsData());
+          if (key === "order") return saveScreenState(collectOrderData());
+          if (key === "lowerthird") return saveScreenState(collectLowerThirdData());
+          return saveScreenState({});
+        });
+      });
+
+      showButtons.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const mode = btn.dataset.show;
+          if (!mode) return;
+          saveScreenState({ mode });
+        });
+      });
+
+      if (countdownStart) {
+        countdownStart.addEventListener("click", () => {
+          const duration =
+            screenState.countdownStatus === "paused"
+              ? Number(screenState.countdownRemainingSeconds) || 0
+              : getDurationFromInputs();
+          saveScreenState({
+            countdownStatus: "running",
+            countdownDurationSeconds: duration,
+            countdownStartedAt: new Date().toISOString(),
+            countdownRemainingSeconds: null,
+            mode: "countdown",
+          });
         });
       }
 
-      if (screenClearAnnouncementBtn) {
-        screenClearAnnouncementBtn.addEventListener("click", () => {
-          if (screenAnnouncementTitleInput) {
-            screenAnnouncementTitleInput.value = "";
-          }
-          if (screenAnnouncementBodyInput) {
-            screenAnnouncementBodyInput.value = "";
-          }
-          saveScreenContent();
+      if (countdownPause) {
+        countdownPause.addEventListener("click", () => {
+          const remaining = getCountdownRemaining(screenState);
+          saveScreenState({
+            countdownStatus: "paused",
+            countdownRemainingSeconds: Math.max(0, Math.floor(remaining)),
+            countdownStartedAt: null,
+          });
         });
       }
 
-      loadScreenContent();
+      if (countdownReset) {
+        countdownReset.addEventListener("click", () => {
+          const duration = getDurationFromInputs();
+          saveScreenState({
+            countdownStatus: "stopped",
+            countdownRemainingSeconds: null,
+            countdownStartedAt: null,
+            countdownDurationSeconds: duration,
+          });
+        });
+      }
+
+      if (refreshPreviewBtn && screenPreview) {
+        refreshPreviewBtn.addEventListener("click", () => {
+          screenPreview.src = "screen.html";
+        });
+      }
+
+      checklistInputs.forEach((input) => {
+        input.addEventListener("change", () => {
+          const state = {};
+          checklistInputs.forEach((item) => {
+            state[item.dataset.check] = item.checked;
+          });
+          localStorage.setItem(checklistKey, JSON.stringify(state));
+        });
+      });
+
+      const savedChecklist = localStorage.getItem(checklistKey);
+      if (savedChecklist) {
+        try {
+          const data = JSON.parse(savedChecklist);
+          checklistInputs.forEach((item) => {
+            item.checked = Boolean(data[item.dataset.check]);
+          });
+        } catch (error) {
+          console.error("Checklist parse error:", error);
+        }
+      }
+
+      if (notesArea) {
+        notesArea.value = localStorage.getItem(notesKey) || "";
+        notesArea.addEventListener("input", () => {
+          localStorage.setItem(notesKey, notesArea.value);
+        });
+      }
+
+      if (clearNotesBtn) {
+        clearNotesBtn.addEventListener("click", () => {
+          if (notesArea) notesArea.value = "";
+          localStorage.removeItem(notesKey);
+        });
+      }
+
+      setInterval(updateCountdownUI, 1000);
+      loadScreenState();
     </script>
   </body>
 </html>

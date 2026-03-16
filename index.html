@@ -714,14 +714,18 @@
 
       async function loadScreenContent() {
         try {
-          const res = await fetch(`${API_URL}/screen-content`);
+          const res = await fetch(`${API_URL}/screen-state`);
           if (!res.ok) {
             throw new Error(`HTTP error! status: ${res.status}`);
           }
           const data = await res.json();
 
           if (screenVerse && data.verseText !== undefined) {
-            screenVerse.textContent = `${data.verseText}     `;
+            const verseText = data.verseText || "";
+            const verseRef = data.verseRef || "";
+            screenVerse.textContent = verseRef
+              ? `${verseText} - ${verseRef}     `
+              : `${verseText}     `;
           }
 
           if (giveScripture && data.giveScripture !== undefined) {

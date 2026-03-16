@@ -757,56 +757,110 @@ app.patch("/api/prayer-requests/:id/read", async (req, res) => {
   return res.status(404).json({ error: "Request not found" });
 });
 
-// --- Screen Content Routes ---
-const defaultScreenContent = {
+// --- Screen State Routes ---
+const defaultScreenState = {
+  mode: "verse",
   verseText:
     '"For I know the plans I have for you," declares the Lord, "plans to prosper you and not to harm you, plans to give you hope and a future." - Jeremiah 29:11',
+  verseRef: "",
   giveScripture:
     '"Each of you should give what you have decided in your heart to give, not reluctantly or under compulsion, for God loves a cheerful giver." - 2 Corinthians 9:7',
   announcementTitle: "",
   announcementBody: "",
+  lyricsTitle: "",
+  lyricsLines: "",
+  orderTitle: "Order of Service",
+  orderItems: "",
+  countdownStatus: "stopped",
+  countdownDurationSeconds: 600,
+  countdownStartedAt: null,
+  countdownRemainingSeconds: null,
+  lowerThirdName: "",
+  lowerThirdRole: "",
+  lowerThirdFooter: "",
   updatedAt: null,
 };
 
-app.get("/api/screen-content", async (req, res) => {
+async function getConfigData(name) {
   if (db) {
-    const config = await db
-      .collection("config")
-      .findOne({ name: "screenContent" });
-    return res.json(config ? config.data : defaultScreenContent);
+    const config = await db.collection("config").findOne({ name });
+    return config ? config.data : null;
   }
+  return getLocalData(name, null);
+}
 
-  const localScreenContent = getLocalData(
-    "screenContent",
-    defaultScreenContent,
-  );
-  return res.json(localScreenContent);
-});
-
-app.post("/api/screen-content", async (req, res) => {
-  const { verseText, giveScripture, announcementTitle, announcementBody } =
-    req.body;
-  const newContent = {
-    verseText: verseText || "",
-    giveScripture: giveScripture || "",
-    announcementTitle: announcementTitle || "",
-    announcementBody: announcementBody || "",
-    updatedAt: new Date().toISOString(),
-  };
-
+async function saveConfigData(name, data) {
   if (db) {
     await db
       .collection("config")
-      .updateOne(
-        { name: "screenContent" },
-        { $set: { data: newContent } },
-        { upsert: true },
-      );
+      .updateOne({ name }, { $set: { data } }, { upsert: true });
   } else {
-    saveLocalData("screenContent", newContent);
+    saveLocalData(name, data);
   }
+}
 
-  res.json({ message: "Screen content updated", data: newContent });
+async function loadScreenState() {
+  let state = await getConfigData("screenState");
+  if (!state) {
+    const legacy = await getConfigData("screenContent");
+    if (legacy) {
+      state = {
+        ...defaultScreenState,
+        verseText: legacy.verseText || defaultScreenState.verseText,
+        giveScripture: legacy.giveScripture || defaultScreenState.giveScripture,
+        announcementTitle: legacy.announcementTitle || "",
+        announcementBody: legacy.announcementBody || "",
+        updatedAt: legacy.updatedAt || null,
+      };
+    }
+  }
+  return { ...defaultScreenState, ...(state || {}) };
+}
+
+async function saveScreenState(state) {
+  const normalized = {
+    ...defaultScreenState,
+    ...state,
+    updatedAt: new Date().toISOString(),
+  };
+  await saveConfigData("screenState", normalized);
+  return normalized;
+}
+
+app.get("/api/screen-state", async (req, res) => {
+  const state = await loadScreenState();
+  return res.json(state);
+});
+
+app.post("/api/screen-state", async (req, res) => {
+  const saved = await saveScreenState(req.body || {});
+  return res.json({ message: "Screen state updated", data: saved });
+});
+
+// Legacy alias for screen content (kept for compatibility)
+app.get("/api/screen-content", async (req, res) => {
+  const state = await loadScreenState();
+  return res.json({
+    verseText: state.verseText,
+    giveScripture: state.giveScripture,
+    announcementTitle: state.announcementTitle,
+    announcementBody: state.announcementBody,
+    updatedAt: state.updatedAt,
+  });
+});
+
+app.post("/api/screen-content", async (req, res) => {
+  const state = await loadScreenState();
+  const { verseText, giveScripture, announcementTitle, announcementBody } =
+    req.body || {};
+  const saved = await saveScreenState({
+    ...state,
+    verseText: verseText ?? state.verseText,
+    giveScripture: giveScripture ?? state.giveScripture,
+    announcementTitle: announcementTitle ?? state.announcementTitle,
+    announcementBody: announcementBody ?? state.announcementBody,
+  });
+  return res.json({ message: "Screen content updated", data: saved });
 });
 
 // Live Stream Routes

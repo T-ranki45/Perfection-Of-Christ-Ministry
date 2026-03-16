@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sanctuary Screen | Perfection Of Christ Ministry</title>
+    <link rel="icon" href="./image/logo.png" type="image/png" />
+    <link rel="apple-touch-icon" href="./image/logo.png" />
+    <link rel="stylesheet" href="screen.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Sora:wght@300;400;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="screen-shell">
+      <div class="screen-brand">
+        <img src="./image/logo.png" alt="Perfection Of Christ Ministry" />
+        <div>
+          <span>Perfection Of Christ Ministry</span>
+          <small id="screen-mode-label">Live Screen</small>
+        </div>
+      </div>
+
+      <div class="screen-mode" id="mode-verse">
+        <p class="mode-title">Scripture Reading</p>
+        <div class="verse-text" id="verseText"></div>
+        <div class="verse-ref" id="verseRef"></div>
+      </div>
+
+      <div class="screen-mode" id="mode-lyrics">
+        <p class="mode-title">Worship Lyrics</p>
+        <h2 id="lyricsTitle"></h2>
+        <div class="lyrics-body" id="lyricsLines"></div>
+      </div>
+
+      <div class="screen-mode" id="mode-announcement">
+        <p class="mode-title">Announcement</p>
+        <h2 id="announcementTitle"></h2>
+        <div class="announcement-body" id="announcementBody"></div>
+      </div>
+
+      <div class="screen-mode" id="mode-order">
+        <p class="mode-title">Order of Service</p>
+        <h2 id="orderTitle"></h2>
+        <div class="order-list" id="orderItems"></div>
+      </div>
+
+      <div class="screen-mode" id="mode-countdown">
+        <p class="mode-title">Service Begins In</p>
+        <div class="countdown-display" id="countdownDisplay">00:00</div>
+        <div class="countdown-sub" id="countdownStatus">Standby</div>
+      </div>
+
+      <div class="screen-mode lowerthird-mode" id="mode-lowerthird">
+        <div class="lowerthird-card">
+          <div class="lowerthird-name" id="lowerThirdName"></div>
+          <div class="lowerthird-role" id="lowerThirdRole"></div>
+          <div class="lowerthird-footer" id="lowerThirdFooter"></div>
+        </div>
+      </div>
+
+      <div class="screen-mode" id="mode-blank"></div>
+    </div>
+
+    <script>
+      const API_URL = "/api";
+      const modeLabel = document.getElementById("screen-mode-label");
+      const modeElements = {
+        verse: document.getElementById("mode-verse"),
+        lyrics: document.getElementById("mode-lyrics"),
+        announcement: document.getElementById("mode-announcement"),
+        order: document.getElementById("mode-order"),
+        countdown: document.getElementById("mode-countdown"),
+        lowerthird: document.getElementById("mode-lowerthird"),
+        blank: document.getElementById("mode-blank"),
+      };
+
+      const modeLabels = {
+        verse: "Bible Verse",
+        lyrics: "Worship Lyrics",
+        announcement: "Announcement",
+        order: "Order of Service",
+        countdown: "Countdown",
+        lowerthird: "Lower Third",
+        blank: "Blank Screen",
+      };
+
+      const stateDefaults = {
+        mode: "verse",
+        verseText: "",
+        verseRef: "",
+        giveScripture: "",
+        announcementTitle: "",
+        announcementBody: "",
+        lyricsTitle: "",
+        lyricsLines: "",
+        orderTitle: "",
+        orderItems: "",
+        countdownStatus: "stopped",
+        countdownDurationSeconds: 0,
+        countdownStartedAt: null,
+        countdownRemainingSeconds: null,
+        lowerThirdName: "",
+        lowerThirdRole: "",
+        lowerThirdFooter: "",
+      };
+
+      let screenState = { ...stateDefaults };
+
+      const verseText = document.getElementById("verseText");
+      const verseRef = document.getElementById("verseRef");
+      const lyricsTitle = document.getElementById("lyricsTitle");
+      const lyricsLines = document.getElementById("lyricsLines");
+      const announcementTitle = document.getElementById("announcementTitle");
+      const announcementBody = document.getElementById("announcementBody");
+      const orderTitle = document.getElementById("orderTitle");
+      const orderItems = document.getElementById("orderItems");
+      const countdownDisplay = document.getElementById("countdownDisplay");
+      const countdownStatus = document.getElementById("countdownStatus");
+      const lowerThirdName = document.getElementById("lowerThirdName");
+      const lowerThirdRole = document.getElementById("lowerThirdRole");
+      const lowerThirdFooter = document.getElementById("lowerThirdFooter");
+
+      function formatCountdown(seconds) {
+        const safeSeconds = Math.max(0, Math.floor(seconds));
+        const minutes = Math.floor(safeSeconds / 60);
+        const remaining = safeSeconds % 60;
+        return `${String(minutes).padStart(2, "0")}:${String(remaining).padStart(
+          2,
+          "0",
+        )}`;
+      }
+
+      function getCountdownRemaining(state) {
+        if (state.countdownStatus === "running") {
+          const startedAt = state.countdownStartedAt
+            ? new Date(state.countdownStartedAt).getTime()
+            : null;
+          const duration = Number(state.countdownDurationSeconds) || 0;
+          if (!startedAt) return duration;
+          const elapsed = (Date.now() - startedAt) / 1000;
+          return Math.max(0, duration - elapsed);
+        }
+
+        if (state.countdownStatus === "paused") {
+          return Number(state.countdownRemainingSeconds) || 0;
+        }
+
+        return Number(state.countdownDurationSeconds) || 0;
+      }
+
+      function setMode(mode) {
+        Object.keys(modeElements).forEach((key) => {
+          const el = modeElements[key];
+          if (el) el.classList.toggle("active", key === mode);
+        });
+        if (modeLabel) {
+          modeLabel.textContent = modeLabels[mode] || "Live Screen";
+        }
+        document.body.classList.toggle("is-blank", mode === "blank");
+      }
+
+      function applyState(state) {
+        screenState = { ...stateDefaults, ...(state || {}) };
+        setMode(screenState.mode || "verse");
+
+        if (verseText) verseText.textContent = screenState.verseText || "";
+        if (verseRef) {
+          verseRef.textContent = screenState.verseRef || "";
+          verseRef.style.display = screenState.verseRef ? "block" : "none";
+        }
+        if (lyricsTitle)
+          lyricsTitle.textContent = screenState.lyricsTitle || "Worship Song";
+        if (lyricsLines) lyricsLines.textContent = screenState.lyricsLines || "";
+        if (announcementTitle)
+          announcementTitle.textContent =
+            screenState.announcementTitle || "Announcement";
+        if (announcementBody)
+          announcementBody.textContent = screenState.announcementBody || "";
+        if (orderTitle)
+          orderTitle.textContent = screenState.orderTitle || "Order of Service";
+        if (orderItems) orderItems.textContent = screenState.orderItems || "";
+        if (lowerThirdName)
+          lowerThirdName.textContent = screenState.lowerThirdName || "";
+        if (lowerThirdRole)
+          lowerThirdRole.textContent = screenState.lowerThirdRole || "";
+        if (lowerThirdFooter)
+          lowerThirdFooter.textContent = screenState.lowerThirdFooter || "";
+
+        updateCountdownUI();
+      }
+
+      function updateCountdownUI() {
+        if (!countdownDisplay || !countdownStatus) return;
+        const remaining = getCountdownRemaining(screenState);
+        countdownDisplay.textContent = formatCountdown(remaining);
+
+        if (screenState.countdownStatus === "running") {
+          countdownStatus.textContent = "Live countdown";
+        } else if (screenState.countdownStatus === "paused") {
+          countdownStatus.textContent = "Paused";
+        } else {
+          countdownStatus.textContent = "Standby";
+        }
+      }
+
+      async function loadScreenState() {
+        try {
+          const res = await fetch(`${API_URL}/screen-state`);
+          if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+          const data = await res.json();
+          applyState(data);
+        } catch (error) {
+          console.error("Unable to load screen state:", error);
+        }
+      }
+
+      setInterval(updateCountdownUI, 1000);
+      setInterval(loadScreenState, 3000);
+      loadScreenState();
+    </script>
+  </body>
+</html>

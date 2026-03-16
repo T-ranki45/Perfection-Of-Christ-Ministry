@@ -1,0 +1,210 @@
+:root {
+  --bg: #080b12;
+  --panel: rgba(10, 15, 26, 0.9);
+  --accent: #d4a43f;
+  --accent-soft: rgba(212, 164, 63, 0.25);
+  --text: #f7f4ec;
+  --muted: #c9c1ae;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Sora", sans-serif;
+  background: radial-gradient(circle at top, #1b2436 0%, #080b12 60%);
+  color: var(--text);
+  height: 100vh;
+  overflow: hidden;
+}
+
+body.is-blank {
+  background: #000;
+}
+
+body.is-blank .screen-brand,
+body.is-blank .screen-shell::before,
+body.is-blank .screen-shell::after {
+  opacity: 0;
+}
+
+.screen-shell {
+  position: relative;
+  height: 100%;
+  padding: 6vh 7vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.screen-shell::before,
+.screen-shell::after {
+  content: "";
+  position: absolute;
+  width: 40vw;
+  height: 40vw;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(212, 164, 63, 0.15), transparent 70%);
+  filter: blur(20px);
+  z-index: 0;
+}
+
+.screen-shell::before {
+  top: -15vw;
+  left: -10vw;
+}
+
+.screen-shell::after {
+  bottom: -15vw;
+  right: -10vw;
+}
+
+.screen-brand {
+  position: absolute;
+  top: 4vh;
+  left: 5vw;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  z-index: 2;
+}
+
+.screen-brand img {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: 2px solid var(--accent);
+  box-shadow: 0 0 25px rgba(212, 164, 63, 0.4);
+}
+
+.screen-brand span {
+  font-family: "Playfair Display", serif;
+  font-size: 1.2rem;
+  display: block;
+}
+
+.screen-brand small {
+  color: var(--muted);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  font-size: 0.65rem;
+}
+
+.screen-mode {
+  display: none;
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  max-width: 1100px;
+  width: 100%;
+}
+
+.screen-mode.active {
+  display: block;
+}
+
+.mode-title {
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 4px;
+  color: var(--accent);
+  margin-bottom: 1.2rem;
+}
+
+.verse-text {
+  font-family: "Playfair Display", serif;
+  font-size: clamp(2.2rem, 4vw, 4.2rem);
+  line-height: 1.35;
+  margin-bottom: 1.2rem;
+}
+
+.verse-ref {
+  font-size: 1.5rem;
+  color: var(--muted);
+}
+
+#lyricsTitle,
+#announcementTitle,
+#orderTitle {
+  font-family: "Playfair Display", serif;
+  font-size: clamp(2rem, 3.5vw, 3.5rem);
+  margin-bottom: 1.5rem;
+}
+
+.lyrics-body,
+.announcement-body,
+.order-list {
+  font-size: clamp(1.4rem, 2.3vw, 2.4rem);
+  line-height: 1.55;
+  white-space: pre-line;
+}
+
+.countdown-display {
+  font-family: "Playfair Display", serif;
+  font-size: clamp(4rem, 10vw, 9rem);
+  letter-spacing: 4px;
+  margin-bottom: 1rem;
+  color: var(--accent);
+  text-shadow: 0 0 30px rgba(212, 164, 63, 0.35);
+}
+
+.countdown-sub {
+  font-size: 1.2rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 3px;
+}
+
+.lowerthird-mode {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: flex-end;
+}
+
+.lowerthird-card {
+  width: 100%;
+  padding: 2rem 3rem;
+  background: linear-gradient(
+    90deg,
+    rgba(9, 12, 20, 0.92),
+    rgba(17, 22, 34, 0.95)
+  );
+  border-top: 2px solid var(--accent);
+  text-align: left;
+}
+
+.lowerthird-name {
+  font-family: "Playfair Display", serif;
+  font-size: clamp(2.5rem, 4vw, 4rem);
+}
+
+.lowerthird-role {
+  font-size: 1.5rem;
+  color: var(--accent);
+  margin-top: 0.4rem;
+}
+
+.lowerthird-footer {
+  margin-top: 0.6rem;
+  color: var(--muted);
+  font-size: 1.1rem;
+}
+
+@media (max-width: 900px) {
+  .screen-shell {
+    padding: 4vh 6vw;
+  }
+
+  .screen-brand {
+    position: static;
+    margin-bottom: 2rem;
+  }
+
+  .lowerthird-card {
+    padding: 1.5rem 2rem;
+  }
+}

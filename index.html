@@ -256,8 +256,15 @@
       </div>
 
       <section id="new-here">
+        <div class="screen-update" id="screen-update" style="display: none">
+          <div class="screen-update-card">
+            <span class="screen-update-label">On the Screen</span>
+            <h3 id="screen-update-title">Announcement</h3>
+            <p id="screen-update-body"></p>
+          </div>
+        </div>
         <div class="verse-container">
-          <p class="verse-scroll">
+          <p class="verse-scroll" id="screen-verse">
             "For I know the plans I have for you,” declares the Lord, “plans to
             prosper you and not to harm you, plans to give you hope and a
             future." - Jeremiah 29:11 &nbsp; &nbsp; &nbsp; &nbsp;
@@ -270,7 +277,7 @@
         <div class="container">
           <div class="give-content reveal-scale">
             <h2>Generosity</h2>
-            <p class="give-scripture">
+            <p class="give-scripture" id="give-scripture">
               "Each of you should give what you have decided in your heart to
               give, not reluctantly or under compulsion, for God loves a
               cheerful giver." <br />— 2 Corinthians 9:7
@@ -697,6 +704,47 @@
         .forEach((el) => {
           scrollObserver.observe(el);
         });
+
+      // --- Screen Content (Verse + Announcement) ---
+      const screenVerse = document.getElementById("screen-verse");
+      const giveScripture = document.getElementById("give-scripture");
+      const screenUpdate = document.getElementById("screen-update");
+      const screenUpdateTitle = document.getElementById("screen-update-title");
+      const screenUpdateBody = document.getElementById("screen-update-body");
+
+      async function loadScreenContent() {
+        try {
+          const res = await fetch(`${API_URL}/screen-content`);
+          if (!res.ok) {
+            throw new Error(`HTTP error! status: ${res.status}`);
+          }
+          const data = await res.json();
+
+          if (screenVerse && data.verseText !== undefined) {
+            screenVerse.textContent = `${data.verseText}     `;
+          }
+
+          if (giveScripture && data.giveScripture !== undefined) {
+            giveScripture.textContent = data.giveScripture;
+          }
+
+          const title = data.announcementTitle || "";
+          const body = data.announcementBody || "";
+          if (screenUpdate && (title.trim() || body.trim())) {
+            if (screenUpdateTitle) {
+              screenUpdateTitle.textContent = title || "Announcement";
+            }
+            if (screenUpdateBody) {
+              screenUpdateBody.textContent = body || "";
+            }
+            screenUpdate.style.display = "block";
+          } else if (screenUpdate) {
+            screenUpdate.style.display = "none";
+          }
+        } catch (error) {
+          console.error("Error loading screen content:", error);
+        }
+      }
 
       // --- Dynamic Flyers System (Shuffle Animation) ---
       async function loadFlyers() {
@@ -1138,6 +1186,7 @@
         messageCloseBtn.addEventListener("click", closeMessageModal);
 
       // Initialize Data Loading
+      loadScreenContent();
       loadFlyers();
       loadMessages();
       loadLiveStream();

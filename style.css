@@ -1270,6 +1270,48 @@ section h2::after {
   z-index: 0;
 }
 
+.screen-update {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+  padding: 0 1.5rem;
+  margin-bottom: 2.5rem;
+}
+
+.screen-update-card {
+  background: rgba(0, 0, 0, 0.65);
+  border: 1px solid rgba(191, 149, 63, 0.6);
+  border-radius: 18px;
+  padding: 1.8rem 2.4rem;
+  max-width: 920px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35);
+}
+
+.screen-update-label {
+  display: inline-block;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: #f7e6b5;
+  margin-bottom: 0.6rem;
+}
+
+.screen-update-card h3 {
+  font-family: "Cinzel", serif;
+  font-size: 1.7rem;
+  color: #fff;
+  margin-bottom: 0.5rem;
+}
+
+.screen-update-card p {
+  color: #e6e6e6;
+  line-height: 1.6;
+  white-space: pre-line;
+}
+
 .verse-container {
   position: relative;
   width: 100%;
@@ -2588,6 +2630,7 @@ section h2::after {
   color: #fcf6ba;
   margin-bottom: 3rem;
   line-height: 1.6;
+  white-space: pre-line;
 }
 
 .giving-reasons-grid {

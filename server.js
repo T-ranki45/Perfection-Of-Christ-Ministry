@@ -757,6 +757,58 @@ app.patch("/api/prayer-requests/:id/read", async (req, res) => {
   return res.status(404).json({ error: "Request not found" });
 });
 
+// --- Screen Content Routes ---
+const defaultScreenContent = {
+  verseText:
+    '"For I know the plans I have for you," declares the Lord, "plans to prosper you and not to harm you, plans to give you hope and a future." - Jeremiah 29:11',
+  giveScripture:
+    '"Each of you should give what you have decided in your heart to give, not reluctantly or under compulsion, for God loves a cheerful giver." - 2 Corinthians 9:7',
+  announcementTitle: "",
+  announcementBody: "",
+  updatedAt: null,
+};
+
+app.get("/api/screen-content", async (req, res) => {
+  if (db) {
+    const config = await db
+      .collection("config")
+      .findOne({ name: "screenContent" });
+    return res.json(config ? config.data : defaultScreenContent);
+  }
+
+  const localScreenContent = getLocalData(
+    "screenContent",
+    defaultScreenContent,
+  );
+  return res.json(localScreenContent);
+});
+
+app.post("/api/screen-content", async (req, res) => {
+  const { verseText, giveScripture, announcementTitle, announcementBody } =
+    req.body;
+  const newContent = {
+    verseText: verseText || "",
+    giveScripture: giveScripture || "",
+    announcementTitle: announcementTitle || "",
+    announcementBody: announcementBody || "",
+    updatedAt: new Date().toISOString(),
+  };
+
+  if (db) {
+    await db
+      .collection("config")
+      .updateOne(
+        { name: "screenContent" },
+        { $set: { data: newContent } },
+        { upsert: true },
+      );
+  } else {
+    saveLocalData("screenContent", newContent);
+  }
+
+  res.json({ message: "Screen content updated", data: newContent });
+});
+
 // Live Stream Routes
 app.get("/api/livestream", async (req, res) => {
   if (db) {

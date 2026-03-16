@@ -426,6 +426,64 @@
           <div class="ict-grid">
             <div class="card">
               <div class="ict-inline">
+                <h3>Screen Content Control</h3>
+                <span class="ict-badge info" id="screenStatus">Not synced</span>
+              </div>
+              <p class="helper-text">
+                Update the verse ticker, giving scripture, and announcements for
+                the sanctuary screens.
+              </p>
+              <form id="screenContentForm">
+                <div class="form-group">
+                  <label>Verse Scroll</label>
+                  <textarea
+                    id="screenVerse"
+                    rows="3"
+                    placeholder="Enter the scrolling verse text..."
+                  ></textarea>
+                </div>
+                <div class="form-group">
+                  <label>Giving Scripture</label>
+                  <textarea
+                    id="screenGive"
+                    rows="3"
+                    placeholder="Enter the giving scripture text..."
+                  ></textarea>
+                </div>
+                <div class="form-group">
+                  <label>Announcement Title</label>
+                  <input
+                    type="text"
+                    id="screenAnnouncementTitle"
+                    placeholder="e.g., Youth Night Starts at 6:00 PM"
+                  />
+                </div>
+                <div class="form-group">
+                  <label>Announcement Details</label>
+                  <textarea
+                    id="screenAnnouncementBody"
+                    rows="3"
+                    placeholder="Share short details for the screen..."
+                  ></textarea>
+                </div>
+                <div class="ict-actions">
+                  <button class="btn-primary" type="submit">
+                    Update Screen
+                  </button>
+                  <button
+                    class="btn-secondary"
+                    type="button"
+                    id="screenClearAnnouncement"
+                  >
+                    Clear Announcement
+                  </button>
+                </div>
+              </form>
+              <p class="helper-text" id="screenUpdatedAt">Last updated: -</p>
+            </div>
+
+            <div class="card">
+              <div class="ict-inline">
                 <h3>ICT Notes & Handover</h3>
                 <span class="ict-badge good" id="ictNotesStatus"
                   >Autosave on</span
@@ -487,6 +545,8 @@
         localStorage.removeItem("ict_token");
         window.location.href = "ict_login.html";
       }
+
+      const API_URL = "/api";
 
       const checklistBoxes = Array.from(
         document.querySelectorAll("[data-ict-check]")
@@ -572,6 +632,124 @@
       }
 
       loadChecklist();
+
+      const screenForm = document.getElementById("screenContentForm");
+      const screenStatus = document.getElementById("screenStatus");
+      const screenUpdatedAt = document.getElementById("screenUpdatedAt");
+      const screenVerseInput = document.getElementById("screenVerse");
+      const screenGiveInput = document.getElementById("screenGive");
+      const screenAnnouncementTitleInput = document.getElementById(
+        "screenAnnouncementTitle",
+      );
+      const screenAnnouncementBodyInput = document.getElementById(
+        "screenAnnouncementBody",
+      );
+      const screenClearAnnouncementBtn = document.getElementById(
+        "screenClearAnnouncement",
+      );
+
+      function setScreenStatus(label, type) {
+        if (!screenStatus) return;
+        screenStatus.textContent = label;
+        screenStatus.className = `ict-badge ${type}`;
+      }
+
+      function updateScreenTimestamp(value) {
+        if (!screenUpdatedAt) return;
+        if (!value) {
+          screenUpdatedAt.textContent = "Last updated: -";
+          return;
+        }
+        const timestamp = new Date(value);
+        screenUpdatedAt.textContent = `Last updated: ${timestamp.toLocaleString()}`;
+      }
+
+      async function loadScreenContent() {
+        try {
+          const res = await fetch(`${API_URL}/screen-content`);
+          if (!res.ok) {
+            throw new Error(`HTTP error! status: ${res.status}`);
+          }
+          const data = await res.json();
+
+          if (screenVerseInput) {
+            screenVerseInput.value = data.verseText || "";
+          }
+          if (screenGiveInput) {
+            screenGiveInput.value = data.giveScripture || "";
+          }
+          if (screenAnnouncementTitleInput) {
+            screenAnnouncementTitleInput.value = data.announcementTitle || "";
+          }
+          if (screenAnnouncementBodyInput) {
+            screenAnnouncementBodyInput.value = data.announcementBody || "";
+          }
+
+          setScreenStatus("Synced", "good");
+          updateScreenTimestamp(data.updatedAt);
+        } catch (error) {
+          console.error("Error loading screen content:", error);
+          setScreenStatus("Offline", "warn");
+        }
+      }
+
+      async function saveScreenContent() {
+        const payload = {
+          verseText: screenVerseInput ? screenVerseInput.value.trim() : "",
+          giveScripture: screenGiveInput ? screenGiveInput.value.trim() : "",
+          announcementTitle: screenAnnouncementTitleInput
+            ? screenAnnouncementTitleInput.value.trim()
+            : "",
+          announcementBody: screenAnnouncementBodyInput
+            ? screenAnnouncementBodyInput.value.trim()
+            : "",
+        };
+
+        try {
+          setScreenStatus("Saving...", "info");
+          const res = await fetch(`${API_URL}/screen-content`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          });
+
+          if (!res.ok) {
+            throw new Error(`HTTP error! status: ${res.status}`);
+          }
+
+          const result = await res.json();
+          setScreenStatus("Saved", "good");
+          updateScreenTimestamp(
+            result && result.data && result.data.updatedAt
+              ? result.data.updatedAt
+              : new Date().toISOString(),
+          );
+        } catch (error) {
+          console.error("Error saving screen content:", error);
+          setScreenStatus("Failed", "warn");
+        }
+      }
+
+      if (screenForm) {
+        screenForm.addEventListener("submit", async (event) => {
+          event.preventDefault();
+          await saveScreenContent();
+        });
+      }
+
+      if (screenClearAnnouncementBtn) {
+        screenClearAnnouncementBtn.addEventListener("click", () => {
+          if (screenAnnouncementTitleInput) {
+            screenAnnouncementTitleInput.value = "";
+          }
+          if (screenAnnouncementBodyInput) {
+            screenAnnouncementBodyInput.value = "";
+          }
+          saveScreenContent();
+        });
+      }
+
+      loadScreenContent();
     </script>
   </body>
 </html>

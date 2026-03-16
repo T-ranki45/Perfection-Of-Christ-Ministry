@@ -390,7 +390,12 @@ select:focus {
 
 .split-grid {
   display: grid;
-  gap: 0.8rem;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  border-radius: 16px;
+  background: rgba(6, 10, 17, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  aspect-ratio: 16 / 9;
 }
 
 .split-grid.layout-2 {
@@ -406,29 +411,43 @@ select:focus {
 }
 
 .split-tile {
+  position: relative;
   background: rgba(6, 10, 17, 0.6);
-  border-radius: 14px;
+  border-radius: 12px;
   border: 1px solid rgba(255, 255, 255, 0.08);
-  padding: 0.7rem;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
-  gap: 0.6rem;
+}
+
+.split-tile.is-live {
+  border-color: var(--accent);
+  box-shadow: 0 0 18px rgba(212, 164, 63, 0.3);
 }
 
 .split-head {
+  position: absolute;
+  top: 0.4rem;
+  left: 0.4rem;
+  right: 0.4rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 0.5rem;
+  gap: 0.4rem;
+  z-index: 2;
+  padding: 0.35rem 0.45rem;
+  border-radius: 10px;
+  background: rgba(6, 10, 17, 0.7);
+  backdrop-filter: blur(6px);
 }
 
 .split-select {
-  padding: 0.35rem 0.6rem;
+  padding: 0.3rem 0.5rem;
   border-radius: 8px;
   border: 1px solid rgba(255, 255, 255, 0.12);
   background: rgba(6, 10, 17, 0.6);
   color: var(--text);
-  font-size: 0.75rem;
+  font-size: 0.7rem;
 }
 
 .split-live {
@@ -438,8 +457,18 @@ select:focus {
   color: #1a1a1a;
   font-weight: 700;
   font-size: 0.7rem;
-  padding: 0.35rem 0.6rem;
+  padding: 0.3rem 0.55rem;
   cursor: pointer;
+}
+
+.live-badge {
+  background: rgba(212, 164, 63, 0.2);
+  color: var(--accent);
+  border: 1px solid rgba(212, 164, 63, 0.4);
+  font-size: 0.65rem;
+  padding: 0.15rem 0.4rem;
+  border-radius: 999px;
+  letter-spacing: 1px;
 }
 
 .split-preview {
@@ -457,6 +486,8 @@ select:focus {
   border: 1px solid rgba(255, 255, 255, 0.08);
   aspect-ratio: 16 / 9;
   cursor: pointer;
+  width: 100%;
+  height: 100%;
 }
 
 .split-frame iframe {

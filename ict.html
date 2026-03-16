@@ -1192,6 +1192,7 @@
         splitModes.forEach((mode, index) => {
           const tile = document.createElement("div");
           tile.className = "split-tile";
+          tile.classList.toggle("is-live", screenState.mode === mode);
 
           const head = document.createElement("div");
           head.className = "split-head";
@@ -1214,10 +1215,18 @@
           const liveBtn = document.createElement("button");
           liveBtn.type = "button";
           liveBtn.className = "split-live";
-          liveBtn.textContent = "Go Live";
+          liveBtn.textContent =
+            screenState.mode === mode ? "Live Now" : "Go Live";
           liveBtn.addEventListener("click", () => {
             saveScreenState({ mode: splitModes[index] });
           });
+
+          if (screenState.mode === mode) {
+            const badge = document.createElement("span");
+            badge.className = "live-badge";
+            badge.textContent = "LIVE";
+            head.appendChild(badge);
+          }
 
           head.appendChild(select);
           head.appendChild(liveBtn);

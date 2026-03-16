@@ -1956,9 +1956,16 @@
       async function loadBlogPosts() {
         try {
           const res = await fetch(`${API_URL}/blog`);
-          const posts = (await res.json()).sort(
-            (a, b) => new Date(b.date) - new Date(a.date),
-          );
+          if (!res.ok) {
+            throw new Error(`HTTP error! status: ${res.status}`);
+          }
+          let posts = await res.json();
+          if (!Array.isArray(posts)) {
+            console.error("API did not return an array for blog posts:", posts);
+            posts = []; // Recover
+          }
+
+          posts.sort((a, b) => new Date(b.date) - new Date(a.date));
           const container = document.getElementById("blog-list");
           container.innerHTML = ""; // Clear previous list
           posts.forEach((post) => {

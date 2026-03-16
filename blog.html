@@ -431,17 +431,24 @@
               >
             </p>
             <p><i class="fas fa-envelope"></i> info@church.com</p>
-            <p style="margin-top: 15px; display: flex; gap: 20px; align-items: center;">
+            <p
+              style="
+                margin-top: 15px;
+                display: flex;
+                gap: 20px;
+                align-items: center;
+              "
+            >
               <a
                 href="login.html"
                 title="Admin Login"
-                style="color: #333; font-size: 0.8rem; text-decoration: none;"
+                style="color: #333; font-size: 0.8rem; text-decoration: none"
                 ><i class="fas fa-lock"></i> Admin</a
               >
               <a
                 href="ict_login.html"
                 title="ICT Login"
-                style="color: #333; font-size: 0.8rem; text-decoration: none;"
+                style="color: #333; font-size: 0.8rem; text-decoration: none"
                 ><i class="fas fa-server"></i> ICT</a
               >
             </p>
@@ -685,11 +692,14 @@
       if (copyAcctNum) {
         copyAcctNum.addEventListener("click", () => {
           const num = copyAcctNum.getAttribute("data-copy");
-          navigator.clipboard.writeText(num).then(() => {
-            showToast("Account number copied to clipboard!");
-          }).catch(err => {
-            showToast("Failed to copy number.", "error");
-          });
+          navigator.clipboard
+            .writeText(num)
+            .then(() => {
+              showToast("Account number copied to clipboard!");
+            })
+            .catch((err) => {
+              showToast("Failed to copy number.", "error");
+            });
         });
       }
 
@@ -959,8 +969,17 @@
       async function loadBlogPosts() {
         try {
           const res = await fetch(`${API_URL}/blog`);
-          allPosts = await res.json();
-          // Sort posts by date, newest first
+          if (!res.ok) {
+            throw new Error(`HTTP error! status: ${res.status}`);
+          }
+          const data = await res.json();
+
+          if (!Array.isArray(data)) {
+            console.error("API did not return an array for blog posts:", data);
+            allPosts = []; // Recover by treating it as no posts
+          } else {
+            allPosts = data;
+          }
           allPosts.sort((a, b) => new Date(b.date) - new Date(a.date));
           const groupedPosts = groupPostsByMonth(allPosts);
           renderPosts(groupedPosts);

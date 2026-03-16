@@ -18,6 +18,188 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
     />
+    <style>
+      .top-bar-title {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+      }
+
+      .ict-subtitle {
+        color: #bbb;
+        font-size: 0.9rem;
+      }
+
+      .ict-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1.5rem;
+        margin-top: 1.5rem;
+      }
+
+      .ict-inline {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        flex-wrap: wrap;
+      }
+
+      .ict-checklist {
+        display: grid;
+        gap: 0.75rem;
+        margin-top: 1rem;
+      }
+
+      .ict-checklist label {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.6rem;
+        line-height: 1.4;
+        color: #ddd;
+      }
+
+      .ict-checklist input[type="checkbox"] {
+        margin-top: 0.15rem;
+        width: 18px;
+        height: 18px;
+        accent-color: var(--accent-color);
+      }
+
+      .ict-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        padding: 0.25rem 0.7rem;
+        border-radius: 999px;
+        font-size: 0.72rem;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        border: 1px solid transparent;
+      }
+
+      .ict-badge.good {
+        background: rgba(76, 175, 80, 0.15);
+        color: #97e69a;
+        border-color: rgba(76, 175, 80, 0.35);
+      }
+
+      .ict-badge.warn {
+        background: rgba(255, 152, 0, 0.15);
+        color: #ffd27f;
+        border-color: rgba(255, 152, 0, 0.35);
+      }
+
+      .ict-badge.info {
+        background: rgba(33, 150, 243, 0.15);
+        color: #9ccfff;
+        border-color: rgba(33, 150, 243, 0.35);
+      }
+
+      .ict-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        margin-top: 1rem;
+      }
+
+      .btn-secondary {
+        background: transparent;
+        color: #fff;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        padding: 0.7rem 1.6rem;
+        border-radius: 50px;
+        cursor: pointer;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: all 0.3s;
+        display: inline-block;
+      }
+
+      .btn-secondary:hover {
+        border-color: var(--accent-color);
+        box-shadow: 0 0 15px rgba(179, 135, 40, 0.35);
+      }
+
+      .ict-list {
+        list-style: none;
+        display: grid;
+        gap: 0.65rem;
+        margin-top: 1rem;
+      }
+
+      .ict-list li {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        color: #ddd;
+      }
+
+      .ict-list a {
+        color: #fff;
+        text-decoration: none;
+      }
+
+      .ict-list a:hover {
+        color: var(--accent-color);
+      }
+
+      .ict-list i {
+        color: var(--accent-color);
+      }
+
+      .ict-notes {
+        width: 100%;
+        min-height: 150px;
+        margin-top: 1rem;
+        background: rgba(0, 0, 0, 0.35);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        padding: 1rem;
+        color: #fff;
+        font-family: inherit;
+        resize: vertical;
+      }
+
+      .ict-notes:focus {
+        outline: none;
+        border-color: var(--accent-color);
+        box-shadow: 0 0 10px rgba(179, 135, 40, 0.2);
+      }
+
+      .icon-ready {
+        background: rgba(76, 175, 80, 0.2);
+        color: #9fe6a6;
+        box-shadow: 0 0 15px rgba(76, 175, 80, 0.12);
+      }
+
+      .icon-stream {
+        background: rgba(255, 152, 0, 0.2);
+        color: #ffcc80;
+        box-shadow: 0 0 15px rgba(255, 152, 0, 0.12);
+      }
+
+      .icon-audio {
+        background: rgba(33, 150, 243, 0.2);
+        color: #90caf9;
+        box-shadow: 0 0 15px rgba(33, 150, 243, 0.12);
+      }
+
+      .icon-network {
+        background: rgba(0, 150, 136, 0.2);
+        color: #80cbc4;
+        box-shadow: 0 0 15px rgba(0, 150, 136, 0.12);
+      }
+
+      @media (max-width: 900px) {
+        .top-bar {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 1rem;
+        }
+      }
+    </style>
   </head>
   <body>
     <div class="admin-container">
@@ -45,7 +227,12 @@
       <!-- Main Content -->
       <main class="main-content">
         <header class="top-bar">
-          <h1>ICT Team Dashboard</h1>
+          <div class="top-bar-title">
+            <h1>ICT Operations Hub</h1>
+            <p class="ict-subtitle">
+              Service readiness, live stream, and support overview
+            </p>
+          </div>
           <div class="user-info">
             <span>ICT Member</span>
             <div class="avatar"><i class="fas fa-user-cog"></i></div>
@@ -54,10 +241,236 @@
 
         <!-- Dashboard Section -->
         <section id="dashboard" class="content-section active">
-          <h2>Welcome, ICT Team!</h2>
-          <div class="card">
-            <p>This is the dedicated portal for the church's ICT department.</p>
-            <p>You can add tools, documentation, and other resources here.</p>
+          <h2>Today at a Glance</h2>
+
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-icon icon-ready">
+                <i class="fas fa-check-circle"></i>
+              </div>
+              <div class="stat-info">
+                <h3>Service Readiness</h3>
+                <p id="ictReadinessScore">0%</p>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon icon-stream">
+                <i class="fas fa-video"></i>
+              </div>
+              <div class="stat-info">
+                <h3>Live Stream</h3>
+                <p>Standby</p>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon icon-audio">
+                <i class="fas fa-sliders-h"></i>
+              </div>
+              <div class="stat-info">
+                <h3>Audio Console</h3>
+                <p>Ready</p>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon icon-network">
+                <i class="fas fa-network-wired"></i>
+              </div>
+              <div class="stat-info">
+                <h3>Network</h3>
+                <p>Stable</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="ict-grid">
+            <div class="card">
+              <div class="ict-inline">
+                <h3>Pre-Service Checklist</h3>
+                <span class="ict-badge info" id="ictChecklistStatus"
+                  >0/0 items complete</span
+                >
+              </div>
+              <div class="ict-checklist">
+                <label
+                  ><input type="checkbox" data-ict-check="power" />Power on
+                  mixer, amps, and monitors</label
+                >
+                <label
+                  ><input type="checkbox" data-ict-check="mics" />Confirm mic
+                  batteries and channels labeled</label
+                >
+                <label
+                  ><input type="checkbox" data-ict-check="projection" />Align
+                  projectors and test slides</label
+                >
+                <label
+                  ><input type="checkbox" data-ict-check="stream" />Run stream
+                  test (video + audio sync)</label
+                >
+                <label
+                  ><input type="checkbox" data-ict-check="recording" />Verify
+                  recording storage and backups</label
+                >
+                <label
+                  ><input type="checkbox" data-ict-check="network" />Check Wi-Fi
+                  and Ethernet uplinks</label
+                >
+              </div>
+              <div class="ict-actions">
+                <button class="btn-primary" type="button" id="ictResetChecklist">
+                  Reset Checklist
+                </button>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="ict-inline">
+                <h3>Service Schedule</h3>
+                <span class="ict-badge warn">Confirm weekly</span>
+              </div>
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Service</th>
+                    <th>Time</th>
+                    <th>Lead</th>
+                    <th>Coverage</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Sunday Celebration</td>
+                    <td>Set time</td>
+                    <td>Set lead</td>
+                    <td>Audio | Stream | Projection</td>
+                  </tr>
+                  <tr>
+                    <td>Midweek Service</td>
+                    <td>Set time</td>
+                    <td>Set lead</td>
+                    <td>Audio | Slides</td>
+                  </tr>
+                  <tr>
+                    <td>Special Programs</td>
+                    <td>Confirm</td>
+                    <td>Assign</td>
+                    <td>Full coverage</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="ict-grid">
+            <div class="card">
+              <div class="ict-inline">
+                <h3>Live Stream & Media</h3>
+                <span class="ict-badge good">Ready</span>
+              </div>
+              <ul class="ict-list">
+                <li><i class="fas fa-check"></i>Scenes loaded for the service</li>
+                <li><i class="fas fa-check"></i>Lower-thirds updated</li>
+                <li><i class="fas fa-check"></i>Recording destination selected</li>
+                <li>
+                  <i class="fas fa-check"></i>Stream key and platform verified
+                </li>
+              </ul>
+              <div class="ict-actions">
+                <a class="btn-primary" href="HYBRID_VIDEO_TEMPLATE.html"
+                  >Open Stream Template</a
+                >
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="ict-inline">
+                <h3>Audio & Projection</h3>
+                <span class="ict-badge info">Monitor</span>
+              </div>
+              <ul class="ict-list">
+                <li>
+                  <i class="fas fa-sliders-h"></i>Set gain structure and EQ
+                </li>
+                <li><i class="fas fa-volume-up"></i>Check foldback monitors</li>
+                <li>
+                  <i class="fas fa-desktop"></i>Confirm output to sanctuary screens
+                </li>
+                <li>
+                  <i class="fas fa-file-powerpoint"></i>Slides ordered for service
+                </li>
+              </ul>
+            </div>
+
+            <div class="card">
+              <div class="ict-inline">
+                <h3>Network & Backup</h3>
+                <span class="ict-badge info">On watch</span>
+              </div>
+              <ul class="ict-list">
+                <li>
+                  <i class="fas fa-network-wired"></i>Speed test and uplink check
+                </li>
+                <li>
+                  <i class="fas fa-hdd"></i>Backup recording path confirmed
+                </li>
+                <li>
+                  <i class="fas fa-plug"></i>UPS and power strips inspected
+                </li>
+                <li>
+                  <i class="fas fa-shield-alt"></i>Spare cables and adapters ready
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="ict-grid">
+            <div class="card">
+              <div class="ict-inline">
+                <h3>ICT Notes & Handover</h3>
+                <span class="ict-badge good" id="ictNotesStatus"
+                  >Autosave on</span
+                >
+              </div>
+              <textarea
+                id="ictNotes"
+                class="ict-notes"
+                placeholder="Log issues, handover notes, and service observations here."
+              ></textarea>
+              <div class="ict-actions">
+                <button class="btn-secondary" type="button" id="ictClearNotes">
+                  Clear Notes
+                </button>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="ict-inline">
+                <h3>Quick Links & Resources</h3>
+                <span class="ict-badge info">Docs</span>
+              </div>
+              <ul class="ict-list">
+                <li>
+                  <i class="fas fa-book"></i>
+                  <a href="VIDEO_QUICK_REFERENCE.md">Video Quick Reference</a>
+                </li>
+                <li>
+                  <i class="fas fa-bolt"></i>
+                  <a href="VIDEO_OPTIMIZATION_GUIDE.md"
+                    >Video Optimization Guide</a
+                  >
+                </li>
+                <li>
+                  <i class="fas fa-clipboard-check"></i>
+                  <a href="VIDEO_IMPLEMENTATION_STATUS.md"
+                    >Implementation Status</a
+                  >
+                </li>
+                <li>
+                  <i class="fas fa-cog"></i>
+                  <a href="setup_database.html">Setup Database</a>
+                </li>
+              </ul>
+            </div>
           </div>
         </section>
       </main>
@@ -74,6 +487,91 @@
         localStorage.removeItem("ict_token");
         window.location.href = "ict_login.html";
       }
+
+      const checklistBoxes = Array.from(
+        document.querySelectorAll("[data-ict-check]")
+      );
+      const checklistStatus = document.getElementById("ictChecklistStatus");
+      const readinessScore = document.getElementById("ictReadinessScore");
+      const checklistStoreKey = "ict_checklist";
+      const notesStoreKey = "ict_notes";
+      const notesField = document.getElementById("ictNotes");
+      const notesStatus = document.getElementById("ictNotesStatus");
+      const resetChecklistButton = document.getElementById("ictResetChecklist");
+      const clearNotesButton = document.getElementById("ictClearNotes");
+
+      function updateChecklistUI() {
+        const totalItems = checklistBoxes.length;
+        const completedItems = checklistBoxes.filter((box) => box.checked).length;
+        if (checklistStatus) {
+          checklistStatus.textContent = `${completedItems}/${totalItems} items complete`;
+        }
+        if (readinessScore) {
+          const percent = totalItems
+            ? Math.round((completedItems / totalItems) * 100)
+            : 0;
+          readinessScore.textContent = `${percent}%`;
+        }
+      }
+
+      function saveChecklist() {
+        const state = {};
+        checklistBoxes.forEach((box) => {
+          state[box.dataset.ictCheck] = box.checked;
+        });
+        localStorage.setItem(checklistStoreKey, JSON.stringify(state));
+        updateChecklistUI();
+      }
+
+      function loadChecklist() {
+        const stored = localStorage.getItem(checklistStoreKey);
+        if (!stored) {
+          updateChecklistUI();
+          return;
+        }
+        const state = JSON.parse(stored);
+        checklistBoxes.forEach((box) => {
+          box.checked = Boolean(state[box.dataset.ictCheck]);
+        });
+        updateChecklistUI();
+      }
+
+      checklistBoxes.forEach((box) => {
+        box.addEventListener("change", saveChecklist);
+      });
+
+      if (resetChecklistButton) {
+        resetChecklistButton.addEventListener("click", () => {
+          checklistBoxes.forEach((box) => {
+            box.checked = false;
+          });
+          saveChecklist();
+        });
+      }
+
+      if (notesField) {
+        notesField.value = localStorage.getItem(notesStoreKey) || "";
+        notesField.addEventListener("input", () => {
+          localStorage.setItem(notesStoreKey, notesField.value);
+          if (notesStatus) {
+            notesStatus.textContent = "Saved locally";
+          }
+        });
+      }
+
+      if (clearNotesButton) {
+        clearNotesButton.addEventListener("click", () => {
+          if (notesField) {
+            notesField.value = "";
+          }
+          localStorage.removeItem(notesStoreKey);
+          if (notesStatus) {
+            notesStatus.textContent = "Cleared";
+          }
+        });
+      }
+
+      loadChecklist();
     </script>
   </body>
 </html>

@@ -31,6 +31,62 @@ body.is-blank .screen-shell::after {
   opacity: 0;
 }
 
+body.embed {
+  overflow: hidden;
+}
+
+body.embed .screen-shell {
+  padding: 1rem;
+}
+
+body.embed .screen-brand {
+  display: none;
+}
+
+body.embed .mode-title {
+  font-size: 0.7rem;
+  letter-spacing: 2px;
+  margin-bottom: 0.6rem;
+}
+
+body.embed .verse-text,
+body.embed #lyricsTitle,
+body.embed #announcementTitle,
+body.embed #orderTitle {
+  font-size: clamp(1rem, 2.4vw, 1.6rem);
+  margin-bottom: 0.7rem;
+}
+
+body.embed .lyrics-body,
+body.embed .announcement-body,
+body.embed .order-list,
+body.embed .verse-ref {
+  font-size: clamp(0.75rem, 1.6vw, 1rem);
+}
+
+body.embed .countdown-display {
+  font-size: clamp(1.8rem, 4vw, 3rem);
+  margin-bottom: 0.4rem;
+}
+
+body.embed .countdown-sub {
+  font-size: 0.7rem;
+  letter-spacing: 2px;
+}
+
+body.embed .lowerthird-card {
+  padding: 1rem 1.2rem;
+}
+
+body.embed .lowerthird-name {
+  font-size: clamp(1.2rem, 3vw, 2rem);
+}
+
+body.embed .lowerthird-role,
+body.embed .lowerthird-footer {
+  font-size: 0.85rem;
+}
+
 .screen-shell {
   position: relative;
   height: 100%;

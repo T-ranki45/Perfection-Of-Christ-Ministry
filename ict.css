@@ -449,16 +449,21 @@ select:focus {
   color: var(--text);
 }
 
-.split-title {
-  font-weight: 700;
+.split-frame {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #000;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  aspect-ratio: 16 / 9;
+  cursor: pointer;
 }
 
-.split-body {
-  color: var(--muted);
-  white-space: pre-line;
-  line-height: 1.4;
-  max-height: 120px;
-  overflow: hidden;
+.split-frame iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  pointer-events: none;
 }
 
 .preview-title {

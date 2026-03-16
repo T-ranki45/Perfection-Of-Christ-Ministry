@@ -76,6 +76,16 @@
         blank: document.getElementById("mode-blank"),
       };
 
+      const params = new URLSearchParams(window.location.search);
+      const isEmbed = params.get("embed") === "1";
+      let forcedMode = params.get("mode") || params.get("previewMode");
+      if (forcedMode && !modeElements[forcedMode]) {
+        forcedMode = null;
+      }
+      if (isEmbed) {
+        document.body.classList.add("embed");
+      }
+
       const modeLabels = {
         verse: "Bible Verse",
         lyrics: "Worship Lyrics",
@@ -156,14 +166,19 @@
           if (el) el.classList.toggle("active", key === mode);
         });
         if (modeLabel) {
-          modeLabel.textContent = modeLabels[mode] || "Live Screen";
+          if (forcedMode) {
+            modeLabel.textContent = `Preview: ${modeLabels[mode] || "Live Screen"}`;
+          } else {
+            modeLabel.textContent = modeLabels[mode] || "Live Screen";
+          }
         }
         document.body.classList.toggle("is-blank", mode === "blank");
       }
 
       function applyState(state) {
         screenState = { ...stateDefaults, ...(state || {}) };
-        setMode(screenState.mode || "verse");
+        const displayMode = forcedMode || screenState.mode || "verse";
+        setMode(displayMode);
 
         if (verseText) verseText.textContent = screenState.verseText || "";
         if (verseRef) {
@@ -216,8 +231,9 @@
         }
       }
 
+      const pollInterval = isEmbed ? 5000 : 3000;
       setInterval(updateCountdownUI, 1000);
-      setInterval(loadScreenState, 3000);
+      setInterval(loadScreenState, pollInterval);
       loadScreenState();
     </script>
   </body>

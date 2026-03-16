@@ -1125,6 +1125,17 @@
         { value: "blank", label: "Blank" },
       ];
 
+      function updateSplitControls() {
+        if (!splitControls) return;
+        const buttons = splitControls.querySelectorAll(".split-btn");
+        buttons.forEach((btn) => {
+          btn.classList.toggle(
+            "active",
+            Number(btn.dataset.layout) === splitLayout,
+          );
+        });
+      }
+
       function getDefaultSplitModes(layout) {
         if (layout === 2) return ["verse", "lyrics"];
         if (layout === 4) return ["verse", "lyrics", "announcement", "order"];
@@ -1172,53 +1183,6 @@
         renderSplitGrid();
       }
 
-      function getPreviewData(mode) {
-        switch (mode) {
-          case "verse":
-            return {
-              title: screenState.verseRef || "Scripture Reading",
-              body: screenState.verseText || "No verse loaded.",
-            };
-          case "lyrics":
-            return {
-              title: screenState.lyricsTitle || "Worship Lyrics",
-              body: screenState.lyricsLines || "No lyrics loaded.",
-            };
-          case "announcement":
-            return {
-              title: screenState.announcementTitle || "Announcement",
-              body: screenState.announcementBody || "No announcement.",
-            };
-          case "order":
-            return {
-              title: screenState.orderTitle || "Order of Service",
-              body: screenState.orderItems || "No items listed.",
-            };
-          case "countdown":
-            return {
-              title: "Countdown",
-              body: `${formatCountdown(getCountdownRemaining(screenState))} - ${
-                screenState.countdownStatus || "standby"
-              }`,
-            };
-          case "lowerthird":
-            return {
-              title: screenState.lowerThirdName || "Speaker",
-              body: [
-                screenState.lowerThirdRole,
-                screenState.lowerThirdFooter,
-              ]
-                .filter(Boolean)
-                .join("\n"),
-            };
-          default:
-            return {
-              title: "Blank Screen",
-              body: "Screen will be empty.",
-            };
-        }
-      }
-
       function renderSplitGrid() {
         if (!splitGrid) return;
         splitGrid.innerHTML = "";
@@ -1259,34 +1223,28 @@
           head.appendChild(liveBtn);
 
           const preview = document.createElement("div");
-          preview.className = "split-preview";
+          preview.className = "split-frame";
+          preview.addEventListener("click", () => {
+            saveScreenState({ mode: splitModes[index] });
+          });
 
-          const data = getPreviewData(mode);
-          const title = document.createElement("div");
-          title.className = "split-title";
-          title.textContent = data.title;
-
-          const body = document.createElement("div");
-          body.className = "split-body";
-          body.textContent = data.body;
-
-          preview.appendChild(title);
-          preview.appendChild(body);
+          const iframe = document.createElement("iframe");
+          const srcBase = `screen.html?embed=1&mode=${encodeURIComponent(
+            splitModes[index],
+          )}`;
+          iframe.dataset.base = srcBase;
+          iframe.src = srcBase;
+          iframe.loading = "lazy";
+          iframe.title = `${splitModes[index]} preview`;
+          iframe.setAttribute("aria-hidden", "true");
+          preview.appendChild(iframe);
 
           tile.appendChild(head);
           tile.appendChild(preview);
           splitGrid.appendChild(tile);
         });
 
-        if (splitControls) {
-          const buttons = splitControls.querySelectorAll(".split-btn");
-          buttons.forEach((btn) => {
-            btn.classList.toggle(
-              "active",
-              Number(btn.dataset.layout) === splitLayout,
-            );
-          });
-        }
+        updateSplitControls();
       }
 
       function applyScreenState(data) {
@@ -1322,7 +1280,6 @@
         setCurrentMode(screenState.mode || "verse");
         updateLastSaved(screenState.updatedAt);
         updateCountdownUI();
-        renderSplitGrid();
       }
 
       async function loadScreenState() {
@@ -1600,7 +1557,12 @@
 
       if (refreshSplitBtn) {
         refreshSplitBtn.addEventListener("click", () => {
-          renderSplitGrid();
+          if (!splitGrid) return;
+          const frames = splitGrid.querySelectorAll("iframe");
+          frames.forEach((frame) => {
+            const base = frame.dataset.base || frame.src;
+            frame.src = `${base}${base.includes("?") ? "&" : "?"}ts=${Date.now()}`;
+          });
         });
       }
 

@@ -417,7 +417,7 @@ app.post(
   ]),
   async (req, res) => {
     try {
-      const { title, author, date, category, content } = req.body;
+      const { title, author, date, category, content, postType } = req.body;
 
       const imageFile = req.files["image"] ? req.files["image"][0] : null;
       const videoFile = req.files["video"] ? req.files["video"][0] : null;
@@ -460,6 +460,7 @@ app.post(
       const newPost = {
         title,
         author: author || "Admin",
+        postType: postType || "Announcement",
         date,
         category,
         video: videoResult

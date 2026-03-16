@@ -819,86 +819,11 @@
 
         <!-- Blog Section -->
         <section id="blog" class="content-section">
-          <h2>Manage Blog Posts</h2>
-          <!-- This form is now in a modal -->
-          <div class="card" style="display: none">
-            <p class="helper-text">
-              Create a new blog post, video entry, or gallery highlight.
-            </p>
-            <form id="add-blog-form">
-              <div class="form-group">
-                <label>Title</label>
-                <input
-                  type="text"
-                  id="blog-title"
-                  required
-                  placeholder="Post Title"
-                />
-              </div>
-              <div class="form-group">
-                <label>Author</label>
-                <input
-                  type="text"
-                  id="blog-author"
-                  required
-                  placeholder="Author Name"
-                />
-              </div>
-              <div class="form-group">
-                <label>Date</label>
-                <input type="date" id="blog-date" required />
-              </div>
-              <div class="form-group">
-                <label>Category</label>
-                <select id="blog-category" required>
-                  <option value="article">Article</option>
-                  <option value="video">Video</option>
-                  <option value="gallery">Gallery</option>
-                </select>
-              </div>
-              <div
-                class="form-group"
-                id="blog-gallery-group"
-                style="display: none"
-              >
-                <label
-                  >Gallery Images (for 'Gallery' category, multiple
-                  allowed)</label
-                >
-                <input
-                  type="file"
-                  id="blog-gallery-images"
-                  accept="image/*"
-                  multiple
-                />
-                <div id="blog-gallery-preview" class="media-preview"></div>
-              </div>
-              <div
-                class="form-group"
-                id="blog-video-group"
-                style="display: none"
-              >
-                <label>Video File (Optional, for 'Video' category)</label>
-                <input type="file" id="blog-video" accept="video/*" />
-                <div id="blog-video-preview" class="media-preview"></div>
-              </div>
-              <div class="form-group">
-                <label>Thumbnail Image</label>
-                <input type="file" id="blog-image" accept="image/*" required />
-                <div id="blog-image-preview" class="media-preview"></div>
-              </div>
-              <div class="form-group">
-                <label>Short Description / Content</label>
-                <textarea
-                  id="blog-content"
-                  rows="4"
-                  placeholder="Enter a brief description..."
-                ></textarea>
-              </div>
-              <button type="submit" class="btn-primary">Publish Post</button>
-            </form>
-          </div>
-
+          <h2>Manage Church Updates</h2>
+          <p class="helper-text">
+            Publish events, Sunday services, worship songs, testimonies, and
+            announcements for the church family.
+          </p>
           <div
             style="
               display: flex;
@@ -907,7 +832,7 @@
               margin-bottom: 1.5rem;
             "
           >
-            <h3>Recent Posts</h3>
+            <h3>Recent Updates</h3>
             <button class="btn-primary" onclick="openBlogFormModal()">
               <i class="fas fa-plus"></i> Add New Post
             </button>
@@ -1120,16 +1045,27 @@
               type="text"
               id="blog-title"
               required
-              placeholder="Post Title"
+              placeholder="e.g., Revival Night at the Cathedral"
             />
           </div>
           <div class="form-group">
-            <label>Author</label>
+            <label>Post Type</label>
+            <select id="blog-post-type" required>
+              <option value="Announcement">Announcement</option>
+              <option value="Event">Event</option>
+              <option value="Sunday Service">Sunday Service</option>
+              <option value="Worship Song">Worship Song</option>
+              <option value="Testimony">Testimony</option>
+              <option value="Devotional">Devotional</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Minister / Worship Leader / Host</label>
             <input
               type="text"
               id="blog-author"
               required
-              placeholder="Author Name"
+              placeholder="e.g., Pastor John Jeremiah"
             />
           </div>
           <div class="form-group">
@@ -1137,11 +1073,11 @@
             <input type="date" id="blog-date" required />
           </div>
           <div class="form-group">
-            <label>Category</label>
+            <label>Media Type</label>
             <select id="blog-category" required>
-              <option value="article">Article</option>
+              <option value="article">Article / Update</option>
               <option value="video">Video</option>
-              <option value="gallery">Gallery</option>
+              <option value="gallery">Photo Gallery</option>
             </select>
           </div>
           <div class="form-group" id="blog-gallery-group" style="display: none">
@@ -1180,11 +1116,11 @@
             <div id="blog-image-preview" class="media-preview"></div>
           </div>
           <div class="form-group">
-            <label>Short Description / Content</label>
+            <label>Summary / Details</label>
             <textarea
               id="blog-content"
               rows="4"
-              placeholder="Enter a brief description..."
+              placeholder="Share service theme, scripture, venue, time, or worship set list..."
             ></textarea>
           </div>
           <button type="submit" class="btn-primary">Save Post</button>
@@ -1895,6 +1831,7 @@
           submitBtn.disabled = true;
 
           const title = document.getElementById("blog-title").value;
+          const postType = document.getElementById("blog-post-type").value;
           const author = document.getElementById("blog-author").value;
           const date = document.getElementById("blog-date").value;
           const category = document.getElementById("blog-category").value;
@@ -1913,6 +1850,7 @@
           // Create FormData
           const formData = new FormData();
           formData.append("title", title);
+          formData.append("postType", postType);
           formData.append("author", author);
           formData.append("date", date);
           formData.append("category", category);
@@ -1973,13 +1911,17 @@
               post.image && post.image.url
                 ? post.image.url
                 : "./image/logo.png";
+            const postType = post.postType || "Announcement";
+            const mediaLabel = post.category
+              ? post.category.charAt(0).toUpperCase() + post.category.slice(1)
+              : "Article";
             const card = document.createElement("div");
             card.className = "admin-blog-card";
             card.innerHTML = `
                   <img src="${imgUrl}" class="card-img" alt="${post.title}">
                   <div class="card-overlay">
                       <div class="card-title">${post.title}</div>
-                      <div class="card-category">${post.category}</div>
+                      <div class="card-category">${postType} • ${mediaLabel}</div>
                   </div>
                   <div class="card-actions">
                       <button onclick="openBlogFormModal('${post._id}')" class="action-btn" title="Edit Post"><i class="fas fa-edit"></i></button>
@@ -2032,6 +1974,8 @@
             const post = await res.json();
 
             document.getElementById("blog-title").value = post.title;
+            document.getElementById("blog-post-type").value =
+              post.postType || "Announcement";
             document.getElementById("blog-author").value = post.author;
             document.getElementById("blog-date").value = new Date(post.date)
               .toISOString()

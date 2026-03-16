@@ -5,14 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta
       name="description"
-      content="Read the latest messages, articles, and view event galleries from Perfection Of Christ Ministry."
+      content="Catch up on church events, Sunday services, worship songs, testimonies, and announcements from Perfection Of Christ Ministry."
     />
     <meta
       name="keywords"
-      content="Christian Blog, Sermons, Church Events, Photo Gallery, Perfection Of Christ Ministry News"
+      content="Church Events, Sunday Services, Worship Songs, Testimonies, Announcements, Perfection Of Christ Ministry News"
     />
 
-    <title>Blog & Media | Perfection Of Christ Ministry</title>
+    <title>Media & Updates | Perfection Of Christ Ministry</title>
     <!-- Favicon -->
     <link rel="icon" href="./image/logo.png" type="image/png" />
     <link rel="apple-touch-icon" href="./image/logo.png" />
@@ -27,142 +27,6 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
     />
-    <style>
-      /* 
-        It is recommended to move these styles to blog.css and adjust them to
-        match your site's theme.
-      */
-      #blog-main .container {
-        max-width: 1200px; /* Wider container for a grid layout */
-      }
-
-      .blog-container {
-        /* This is the main wrapper for the monthly sections */
-        display: block;
-      }
-
-      .month-header {
-        font-family: "Montserrat", sans-serif;
-        font-size: 1.5rem;
-        font-weight: 700;
-        text-align: left;
-        margin: 4rem 0 1.5rem 0;
-        color: #555;
-        padding-bottom: 0.5rem;
-        border-bottom: 1px solid #eee;
-      }
-
-      .month-header::after {
-        display: none;
-      }
-
-      .blog-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-        gap: 1rem;
-        margin-bottom: 4rem;
-      }
-
-      .yearbook-card {
-        position: relative;
-        display: block;
-        overflow: hidden;
-        border-radius: 8px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        transition: box-shadow 0.3s ease;
-        cursor: pointer;
-      }
-
-      .yearbook-card:hover {
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-      }
-
-      .card-media {
-        position: relative;
-        width: 100%;
-        height: 0;
-        padding-bottom: 75%; /* 4:3 aspect ratio */
-        background-color: #eee;
-      }
-
-      .card-media img {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        transition: transform 0.4s ease;
-      }
-
-      .yearbook-card:hover .card-media img {
-        transform: scale(1.05);
-      }
-
-      .card-content {
-        display: none;
-      }
-
-      .card-date {
-        font-size: 0.75rem;
-        color: #ccc;
-      }
-
-      .card-title {
-        font-family: "Montserrat", sans-serif;
-        font-size: 0.9rem;
-        font-weight: 700;
-        margin: 0 0 0.75rem 0;
-        line-height: 1.3;
-        color: #fff;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-      }
-
-      .card-excerpt {
-        display: none;
-      }
-
-      .card-link {
-        display: none;
-      }
-
-      .card-info-overlay {
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        padding: 1.5rem 1rem 1rem;
-        background: linear-gradient(
-          to top,
-          rgba(0, 0, 0, 0.7) 0%,
-          transparent 100%
-        );
-        color: white;
-        transform: translateY(100%);
-        transition: transform 0.3s ease-in-out;
-      }
-
-      .yearbook-card:hover .card-info-overlay {
-        transform: translateY(0);
-      }
-
-      .card-category-icon {
-        position: absolute;
-        top: 0.75rem;
-        right: 0.75rem;
-        color: white;
-        font-size: 1rem;
-        text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
-        z-index: 2;
-      }
-
-      .article-modal-content {
-        max-width: 800px;
-        text-align: left;
-      }
-    </style>
   </head>
   <body>
     <header class="main-header">
@@ -195,10 +59,10 @@
       <section class="page-hero blog-hero">
         <div class="hero-overlay"></div>
         <div class="container">
-          <h1>Our Blog & Media</h1>
+          <h1>Church Media & Updates</h1>
           <p>
-            Stay connected with our latest messages, event galleries, and
-            articles.
+            Events, Sunday services, worship songs, and everything happening in
+            the ministry.
           </p>
         </div>
       </section>
@@ -206,14 +70,37 @@
       <!-- Blog Main Section -->
       <section id="blog-main">
         <div class="container">
-          <!-- Filters -->
-          <!-- Filters have been removed for a unified social feed experience -->
+          <div class="blog-intro">
+            <h2>Stay Connected</h2>
+            <p>
+              Catch up on Sunday services, upcoming events, worship songs,
+              testimonies, and weekly announcements.
+            </p>
+          </div>
+
+          <div class="blog-filters" id="blog-filters">
+            <button class="filter-btn active" data-filter="all">All</button>
+            <button class="filter-btn" data-filter="Event">Events</button>
+            <button class="filter-btn" data-filter="Sunday Service">
+              Sunday Services
+            </button>
+            <button class="filter-btn" data-filter="Worship Song">
+              Worship Songs
+            </button>
+            <button class="filter-btn" data-filter="Announcement">
+              Announcements
+            </button>
+            <button class="filter-btn" data-filter="Testimony">
+              Testimonies
+            </button>
+            <button class="filter-btn" data-filter="Devotional">
+              Devotionals
+            </button>
+          </div>
 
           <!-- Blog Container -->
           <div class="blog-container" id="blog-container">
-            <p style="text-align: center; width: 100%; padding: 2rem">
-              Loading posts...
-            </p>
+            <p class="empty-state">Loading posts...</p>
           </div>
         </div>
       </section>
@@ -845,8 +732,20 @@
       function openArticleModal(post) {
         if (!articleModal) return;
         document.getElementById("article-modal-title").innerText = post.title;
-        document.getElementById("article-modal-body").innerHTML =
-          post.content.replace(/\n/g, "<br>");
+        const postType = getPostType(post);
+        const author = post.author || "Church Media Team";
+        const dateLabel = formatPostDate(post.date);
+        const bodyContent = post.content
+          ? post.content.replace(/\n/g, "<br>")
+          : "Details will be shared soon.";
+        document.getElementById("article-modal-body").innerHTML = `
+          <div class="article-meta">
+            <span><i class="fas fa-calendar"></i> ${dateLabel}</span>
+            <span><i class="fas fa-tag"></i> ${postType}</span>
+            <span><i class="fas fa-user"></i> ${author}</span>
+          </div>
+          <div>${bodyContent}</div>
+        `;
         articleModal.style.display = "block";
         document.body.classList.add("no-scroll");
       }
@@ -962,9 +861,11 @@
         }
       });
 
-      // --- Blog "Yearbook" Logic ---
+      // --- Blog Media Hub Logic ---
       const blogContainer = document.getElementById("blog-container");
+      const filterButtons = document.querySelectorAll(".filter-btn");
       let allPosts = [];
+      let activeFilter = "all";
 
       async function loadBlogPosts() {
         try {
@@ -981,104 +882,121 @@
             allPosts = data;
           }
           allPosts.sort((a, b) => new Date(b.date) - new Date(a.date));
-          const groupedPosts = groupPostsByMonth(allPosts);
-          renderPosts(groupedPosts);
+          applyFilter(activeFilter);
         } catch (e) {
           console.error("Error loading blog posts:", e);
           if (blogContainer) {
             blogContainer.innerHTML =
-              '<p style="text-align:center; width:100%;">Unable to load posts.</p>';
+              '<p class="empty-state">Unable to load posts.</p>';
           }
         }
       }
 
-      function groupPostsByMonth(posts) {
-        const groups = {};
-        posts.forEach((post) => {
-          const date = new Date(post.date);
-          const monthYear = date.toLocaleString("en-US", {
-            month: "long",
-            year: "numeric",
-          });
-          if (!groups[monthYear]) {
-            groups[monthYear] = [];
-          }
-          groups[monthYear].push(post);
-        });
-        return groups;
+      function getPostType(post) {
+        return post.postType || post.post_type || post.type || "Announcement";
       }
 
-      function renderPosts(groupedPosts) {
+      function normalizeType(value) {
+        if (!value) return "announcement";
+        const normalized = value
+          .toString()
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, "-")
+          .replace(/(^-|-$)/g, "");
+        return normalized || "announcement";
+      }
+
+      function getMediaType(post) {
+        if (post.category) return post.category;
+        if (post.video) return "video";
+        if (post.galleryImages && post.galleryImages.length > 0) return "gallery";
+        return "article";
+      }
+
+      function formatPostDate(dateString) {
+        const date = new Date(dateString);
+        if (Number.isNaN(date.getTime())) return "Date TBD";
+        return date.toLocaleDateString("en-US", {
+          month: "short",
+          day: "numeric",
+          year: "numeric",
+        });
+      }
+
+      function getExcerpt(content, maxLength = 140) {
+        if (!content) return "Tap to view the full update.";
+        const cleanText = content.replace(/\n/g, " ").trim();
+        if (cleanText.length <= maxLength) return cleanText;
+        return `${cleanText.slice(0, maxLength).trim()}...`;
+      }
+
+      function renderPosts(posts) {
         if (!blogContainer) return;
         blogContainer.innerHTML = "";
 
-        if (Object.keys(groupedPosts).length === 0) {
+        if (posts.length === 0) {
           blogContainer.innerHTML =
-            '<p style="text-align:center; width:100%;">No posts found.</p>';
+            '<p class="empty-state">No posts found for this category.</p>';
           return;
         }
 
-        for (const monthYear in groupedPosts) {
-          const monthHeader = document.createElement("h2");
-          monthHeader.className = "month-header";
-          monthHeader.textContent = monthYear;
-          blogContainer.appendChild(monthHeader);
-
-          const monthGrid = document.createElement("div");
-          monthGrid.className = "blog-grid";
-
-          groupedPosts[monthYear].forEach((post) => {
-            const card = createPostCard(post);
-            monthGrid.appendChild(card);
-          });
-
-          blogContainer.appendChild(monthGrid);
-        }
+        const grid = document.createElement("div");
+        grid.className = "blog-grid";
+        posts.forEach((post) => {
+          const card = createPostCard(post);
+          grid.appendChild(card);
+        });
+        blogContainer.appendChild(grid);
       }
 
       function createPostCard(post) {
         const card = document.createElement("article");
-        card.className = "yearbook-card";
-        card.dataset.category = post.category;
-
+        card.className = "blog-card";
+        const postType = getPostType(post);
+        const postTypeClass = `type-${normalizeType(postType)}`;
+        const mediaType = getMediaType(post);
         const imgUrl =
-          post.image && post.image.url ? post.image.url : post.image;
+          post.image && post.image.url
+            ? post.image.url
+            : post.image || "./image/logo.png";
 
-        let categoryIcon = "";
-        if (post.category === "video") {
-          categoryIcon = `<i class="fas fa-play card-category-icon"></i>`;
-        } else if (post.category === "gallery") {
-          categoryIcon = `<i class="fas fa-images card-category-icon"></i>`;
-        } else if (post.category === "article") {
-          categoryIcon = `<i class="fas fa-file-alt card-category-icon"></i>`;
+        let mediaIcon = "fa-file-lines";
+        let mediaLabel = "Article";
+        if (mediaType === "video") {
+          mediaIcon = "fa-play";
+          mediaLabel = "Video";
+        } else if (mediaType === "gallery") {
+          mediaIcon = "fa-images";
+          mediaLabel = "Gallery";
         }
 
         card.innerHTML = `
-            <div class="card-media">
-                <img src="${imgUrl}" alt="${post.title}">
+            <div class="blog-card-thumbnail">
+              <img src="${imgUrl}" alt="${post.title}">
+              <div class="thumbnail-overlay"><i class="fas ${mediaIcon}"></i></div>
             </div>
-            ${categoryIcon}
-            <div class="card-info-overlay">
-                <h3 class="card-title">${post.title}</h3>
-                <p class="card-date">${new Date(post.date).toLocaleDateString(
-                  "en-US",
-                  {
-                    month: "short",
-                    day: "numeric",
-                    year: "numeric",
-                  },
-                )}</p>
+            <div class="blog-card-content">
+              <div class="badge-row">
+                <span class="post-type-badge ${postTypeClass}">${postType}</span>
+                <span class="card-category-badge ${mediaType}-badge">${mediaLabel}</span>
+              </div>
+              <h3>${post.title}</h3>
+              <div class="meta">${formatPostDate(post.date)} | ${
+                post.author || "Church Media Team"
+              }</div>
+              <p class="excerpt">${getExcerpt(post.content)}</p>
+              <span class="read-more">View Details <i class="fas fa-arrow-right"></i></span>
             </div>
         `;
 
         // Add click listeners
         const clickHandler = (e) => {
           e.preventDefault();
-          if (post.category === "video") {
+          if (mediaType === "video") {
             openBlogVideoModal(post);
-          } else if (post.category === "gallery") {
+          } else if (mediaType === "gallery") {
             openGalleryModal(post);
-          } else if (post.category === "article") {
+          } else if (mediaType === "article") {
             openArticleModal(post);
           } else {
             // Default action for unknown categories, maybe open as article?
@@ -1090,6 +1008,29 @@
 
         return card;
       }
+
+      function applyFilter(filter) {
+        activeFilter = filter;
+        filterButtons.forEach((btn) => {
+          btn.classList.toggle("active", btn.dataset.filter === filter);
+        });
+
+        const filterKey = filter === "all" ? "all" : normalizeType(filter);
+        const filteredPosts =
+          filterKey === "all"
+            ? allPosts
+            : allPosts.filter(
+                (post) => normalizeType(getPostType(post)) === filterKey,
+              );
+
+        renderPosts(filteredPosts);
+      }
+
+      filterButtons.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          applyFilter(btn.dataset.filter);
+        });
+      });
 
       // Load posts on start
       loadBlogPosts();

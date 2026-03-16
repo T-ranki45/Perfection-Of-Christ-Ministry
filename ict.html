@@ -92,6 +92,60 @@
 
           <section class="control-card">
             <div class="card-header">
+              <h3>Bible Lookup</h3>
+              <span class="card-note"
+                >Search scripture and load it into the live fields</span
+              >
+            </div>
+            <div class="form-grid bible-grid">
+              <label>
+                <span>Reference</span>
+                <input
+                  type="text"
+                  id="bibleReferenceInput"
+                  placeholder="e.g., John 3:16 or Psalm 23:1-6"
+                />
+              </label>
+              <label>
+                <span>Translation</span>
+                <select id="bibleTranslationInput">
+                  <option value="web">WEB (Default)</option>
+                  <option value="kjv">KJV</option>
+                  <option value="asv">ASV</option>
+                  <option value="bbe">BBE</option>
+                  <option value="darby">Darby</option>
+                  <option value="ylt">YLT</option>
+                </select>
+              </label>
+              <label>
+                <span>Apply To</span>
+                <select id="bibleTargetInput">
+                  <option value="verse">Main Verse</option>
+                  <option value="giving">Giving Scripture</option>
+                </select>
+              </label>
+            </div>
+            <div class="bible-preview">
+              <div class="preview-title" id="biblePreviewRef">
+                No verse loaded
+              </div>
+              <div class="preview-body" id="biblePreviewText">
+                Search and fetch a verse to preview it here.
+              </div>
+            </div>
+            <div class="card-actions">
+              <button class="btn-primary" id="fetchBibleBtn">
+                Fetch Verse
+              </button>
+              <button class="btn-ghost" id="applyBibleBtn">
+                Apply to Screen
+              </button>
+            </div>
+            <div class="helper-text" id="bibleStatus"></div>
+          </section>
+
+          <section class="control-card">
+            <div class="card-header">
               <h3>Verse & Giving Scripture</h3>
               <span class="card-note">Displayed in verse mode and give section</span>
             </div>
@@ -161,6 +215,59 @@
               <button class="btn-ghost" data-show="announcement">
                 Show Announcement
               </button>
+            </div>
+          </section>
+
+          <section class="control-card">
+            <div class="card-header">
+              <h3>Hymn Library (S&amp;S)</h3>
+              <span class="card-note"
+                >Search by number or title and load into worship lyrics</span
+              >
+            </div>
+            <div class="hymn-grid">
+              <label>
+                <span>Search</span>
+                <input
+                  type="text"
+                  id="hymnSearchInput"
+                  placeholder="e.g., 12 or Blessed Assurance"
+                />
+              </label>
+              <div>
+                <span class="field-label">Results</span>
+                <div class="hymn-results" id="hymnResults"></div>
+              </div>
+            </div>
+            <div class="hymn-preview">
+              <div class="hymn-preview-title" id="hymnPreviewTitle">
+                Select a hymn
+              </div>
+              <div class="hymn-preview-meta" id="hymnPreviewMeta"></div>
+              <div class="hymn-preview-lyrics" id="hymnPreviewLyrics">
+                No hymn selected yet.
+              </div>
+            </div>
+            <div class="card-actions">
+              <button class="btn-primary" id="loadHymnBtn">
+                Load to Lyrics
+              </button>
+              <button class="btn-ghost" id="refreshHymnBtn">
+                Refresh Library
+              </button>
+            </div>
+            <div class="hymn-import">
+              <label class="file-chip">
+                <input
+                  type="file"
+                  id="hymnImportInput"
+                  accept="application/json"
+                />
+                <span>Import JSON Hymn Book</span>
+              </label>
+              <div class="helper-text" id="hymnStatus">
+                Expected fields: number, title, lyrics (source optional).
+              </div>
             </div>
           </section>
 
@@ -404,6 +511,27 @@
         "lowerThirdFooterInput",
       );
 
+      const bibleReferenceInput = document.getElementById("bibleReferenceInput");
+      const bibleTranslationInput = document.getElementById(
+        "bibleTranslationInput",
+      );
+      const bibleTargetInput = document.getElementById("bibleTargetInput");
+      const biblePreviewRef = document.getElementById("biblePreviewRef");
+      const biblePreviewText = document.getElementById("biblePreviewText");
+      const bibleStatus = document.getElementById("bibleStatus");
+      const fetchBibleBtn = document.getElementById("fetchBibleBtn");
+      const applyBibleBtn = document.getElementById("applyBibleBtn");
+
+      const hymnSearchInput = document.getElementById("hymnSearchInput");
+      const hymnResults = document.getElementById("hymnResults");
+      const hymnPreviewTitle = document.getElementById("hymnPreviewTitle");
+      const hymnPreviewMeta = document.getElementById("hymnPreviewMeta");
+      const hymnPreviewLyrics = document.getElementById("hymnPreviewLyrics");
+      const hymnStatus = document.getElementById("hymnStatus");
+      const loadHymnBtn = document.getElementById("loadHymnBtn");
+      const refreshHymnBtn = document.getElementById("refreshHymnBtn");
+      const hymnImportInput = document.getElementById("hymnImportInput");
+
       const countdownMinutes = document.getElementById("countdownMinutes");
       const countdownSeconds = document.getElementById("countdownSeconds");
       const countdownRemaining = document.getElementById("countdownRemaining");
@@ -448,11 +576,21 @@
       };
 
       let screenState = { ...screenDefaults };
+      let bibleResult = null;
+      let hymnLibrary = [];
+      let activeHymn = null;
+      let hymnSearchTimer = null;
 
       function setStatus(label, type) {
         if (!screenSyncStatus) return;
         screenSyncStatus.textContent = label;
         screenSyncStatus.className = `status-pill ${type}`;
+      }
+
+      function setHelperStatus(el, message, type) {
+        if (!el) return;
+        el.textContent = message || "";
+        el.className = `helper-text${type ? ` ${type}` : ""}`;
       }
 
       function updateLastSaved(timestamp) {
@@ -521,6 +659,216 @@
           } else {
             countdownStatusLabel.textContent = "Standby";
           }
+        }
+      }
+
+      function renderBiblePreview(data) {
+        if (!biblePreviewRef || !biblePreviewText) return;
+        if (!data) {
+          biblePreviewRef.textContent = "No verse loaded";
+          biblePreviewText.textContent =
+            "Search and fetch a verse to preview it here.";
+          return;
+        }
+        biblePreviewRef.textContent = data.reference || "Reference";
+        biblePreviewText.textContent = data.text || "";
+      }
+
+      async function fetchBibleVerse() {
+        if (!bibleReferenceInput) return;
+        const reference = bibleReferenceInput.value.trim();
+        if (!reference) {
+          setHelperStatus(bibleStatus, "Enter a reference to search.", "warn");
+          return;
+        }
+        const translation = bibleTranslationInput
+          ? bibleTranslationInput.value
+          : "web";
+        setHelperStatus(bibleStatus, "Fetching verse...", "info");
+        try {
+          const res = await fetch(
+            `${API_URL}/bible?reference=${encodeURIComponent(
+              reference,
+            )}&translation=${encodeURIComponent(translation)}`,
+          );
+          const data = await res.json().catch(() => ({}));
+          if (!res.ok) {
+            setHelperStatus(
+              bibleStatus,
+              data.error || "Unable to fetch verse.",
+              "warn",
+            );
+            return;
+          }
+          bibleResult = data;
+          renderBiblePreview(data);
+          const displayRef = data.reference || reference;
+          const translationId = data.translation_id
+            ? data.translation_id.toUpperCase()
+            : translation.toUpperCase();
+          setHelperStatus(
+            bibleStatus,
+            `Loaded ${displayRef} (${translationId}).`,
+            "good",
+          );
+        } catch (error) {
+          console.error("Bible lookup error:", error);
+          setHelperStatus(
+            bibleStatus,
+            "Bible lookup failed. Check connection.",
+            "warn",
+          );
+        }
+      }
+
+      function applyBibleResult() {
+        if (!bibleResult) {
+          setHelperStatus(
+            bibleStatus,
+            "Fetch a verse before applying it.",
+            "warn",
+          );
+          return;
+        }
+        const verseText = (bibleResult.text || "").trim();
+        const verseRef = (bibleResult.reference || "").trim();
+        if (bibleTargetInput && bibleTargetInput.value === "giving") {
+          const givingText = verseRef
+            ? `${verseText}\n- ${verseRef}`
+            : verseText;
+          if (giveScriptureInput) giveScriptureInput.value = givingText;
+          saveScreenState({ giveScripture: givingText });
+          return;
+        }
+        if (verseTextInput) verseTextInput.value = verseText;
+        if (verseRefInput) verseRefInput.value = verseRef;
+        saveScreenState({ verseText, verseRef });
+      }
+
+      function updateHymnPreview(hymn) {
+        if (!hymnPreviewTitle || !hymnPreviewMeta || !hymnPreviewLyrics) return;
+        if (!hymn) {
+          hymnPreviewTitle.textContent = "Select a hymn";
+          hymnPreviewMeta.textContent = "";
+          hymnPreviewLyrics.textContent = "No hymn selected yet.";
+          return;
+        }
+        hymnPreviewTitle.textContent = hymn.title || "Untitled Hymn";
+        const metaParts = [];
+        if (hymn.number) metaParts.push(`No. ${hymn.number}`);
+        if (hymn.source) metaParts.push(hymn.source);
+        hymnPreviewMeta.textContent = metaParts.join(" | ");
+        hymnPreviewLyrics.textContent = hymn.lyrics || "No lyrics available.";
+      }
+
+      function renderHymnResults() {
+        if (!hymnResults) return;
+        hymnResults.innerHTML = "";
+        if (!hymnLibrary.length) {
+          const empty = document.createElement("div");
+          empty.className = "empty-state";
+          empty.textContent =
+            "No hymns found. Import a hymn book JSON to begin.";
+          hymnResults.appendChild(empty);
+          updateHymnPreview(null);
+          return;
+        }
+        hymnLibrary.forEach((hymn) => {
+          const btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "hymn-item";
+          btn.dataset.id = hymn.id || "";
+          const label = hymn.number
+            ? `${hymn.number}. ${hymn.title || "Untitled"}`
+            : hymn.title || "Untitled";
+          btn.textContent = label;
+          if (activeHymn && activeHymn.id === hymn.id) {
+            btn.classList.add("active");
+          }
+          btn.addEventListener("click", () => {
+            activeHymn = hymn;
+            updateHymnPreview(hymn);
+            renderHymnResults();
+          });
+          hymnResults.appendChild(btn);
+        });
+      }
+
+      async function loadHymnResults(query = "") {
+        setHelperStatus(hymnStatus, "Loading hymns...", "info");
+        try {
+          const res = await fetch(
+            `${API_URL}/hymns?q=${encodeURIComponent(query)}`,
+          );
+          const data = await res.json().catch(() => []);
+          if (!res.ok) {
+            setHelperStatus(
+              hymnStatus,
+              data.error || "Unable to load hymns.",
+              "warn",
+            );
+            return;
+          }
+          hymnLibrary = Array.isArray(data) ? data : [];
+          const stillActive =
+            activeHymn &&
+            hymnLibrary.some((hymn) => hymn.id === activeHymn.id);
+          if (!stillActive) {
+            activeHymn = hymnLibrary.length ? hymnLibrary[0] : null;
+          }
+          renderHymnResults();
+          updateHymnPreview(activeHymn);
+          setHelperStatus(
+            hymnStatus,
+            hymnLibrary.length
+              ? `${hymnLibrary.length} hymns loaded.`
+              : "No hymns found.",
+            hymnLibrary.length ? "good" : "warn",
+          );
+        } catch (error) {
+          console.error("Unable to load hymns:", error);
+          setHelperStatus(
+            hymnStatus,
+            "Hymn library unavailable. Check connection.",
+            "warn",
+          );
+        }
+      }
+
+      async function importHymnBook(file) {
+        if (!file) return;
+        setHelperStatus(hymnStatus, "Importing hymn book...", "info");
+        try {
+          const formData = new FormData();
+          formData.append("file", file);
+          const res = await fetch(`${API_URL}/hymns/import?mode=merge`, {
+            method: "POST",
+            body: formData,
+          });
+          const data = await res.json().catch(() => ({}));
+          if (!res.ok) {
+            setHelperStatus(
+              hymnStatus,
+              data.error || "Import failed.",
+              "warn",
+            );
+            return;
+          }
+          setHelperStatus(
+            hymnStatus,
+            data.message || "Hymn book imported.",
+            "good",
+          );
+          await loadHymnResults(
+            hymnSearchInput ? hymnSearchInput.value.trim() : "",
+          );
+        } catch (error) {
+          console.error("Hymn import error:", error);
+          setHelperStatus(
+            hymnStatus,
+            "Import failed. Check the file format.",
+            "warn",
+          );
         }
       }
 
@@ -675,6 +1023,68 @@
         });
       });
 
+      if (fetchBibleBtn) {
+        fetchBibleBtn.addEventListener("click", fetchBibleVerse);
+      }
+
+      if (applyBibleBtn) {
+        applyBibleBtn.addEventListener("click", applyBibleResult);
+      }
+
+      if (bibleReferenceInput) {
+        bibleReferenceInput.addEventListener("keydown", (event) => {
+          if (event.key === "Enter") {
+            event.preventDefault();
+            fetchBibleVerse();
+          }
+        });
+      }
+
+      if (hymnSearchInput) {
+        hymnSearchInput.addEventListener("input", () => {
+          if (hymnSearchTimer) {
+            clearTimeout(hymnSearchTimer);
+          }
+          hymnSearchTimer = setTimeout(() => {
+            loadHymnResults(hymnSearchInput.value.trim());
+          }, 300);
+        });
+      }
+
+      if (refreshHymnBtn) {
+        refreshHymnBtn.addEventListener("click", () => {
+          loadHymnResults(hymnSearchInput ? hymnSearchInput.value.trim() : "");
+        });
+      }
+
+      if (loadHymnBtn) {
+        loadHymnBtn.addEventListener("click", () => {
+          if (!activeHymn) {
+            setHelperStatus(
+              hymnStatus,
+              "Select a hymn before loading.",
+              "warn",
+            );
+            return;
+          }
+          const title = activeHymn.title || "Hymn";
+          const lyrics = activeHymn.lyrics || "";
+          if (lyricsTitleInput) lyricsTitleInput.value = title;
+          if (lyricsLinesInput) lyricsLinesInput.value = lyrics;
+          saveScreenState({ lyricsTitle: title, lyricsLines: lyrics });
+        });
+      }
+
+      if (hymnImportInput) {
+        hymnImportInput.addEventListener("change", (event) => {
+          const file = event.target.files ? event.target.files[0] : null;
+          if (file) {
+            importHymnBook(file);
+          }
+          event.target.value = "";
+        });
+      }
+
       if (countdownStart) {
         countdownStart.addEventListener("click", () => {
           const duration =
@@ -758,6 +1168,7 @@
 
       setInterval(updateCountdownUI, 1000);
       loadScreenState();
+      loadHymnResults("");
     </script>
   </body>
 </html>

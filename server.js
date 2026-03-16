@@ -86,6 +86,97 @@ function saveLocalData(filename, data) {
   );
 }
 
+function fetchJson(url) {
+  return new Promise((resolve, reject) => {
+    https
+      .get(url, (res) => {
+        let data = "";
+        res.on("data", (chunk) => {
+          data += chunk;
+        });
+        res.on("end", () => {
+          try {
+            const parsed = JSON.parse(data);
+            resolve(parsed);
+          } catch (error) {
+            reject(error);
+          }
+        });
+      })
+      .on("error", (error) => reject(error));
+  });
+}
+
+function normalizeLyrics(input) {
+  if (Array.isArray(input)) {
+    return input.join("\n").trim();
+  }
+  if (typeof input === "string") {
+    return input.trim();
+  }
+  return "";
+}
+
+function normalizeHymnInput(raw) {
+  if (!raw) return null;
+  const title = String(raw.title || raw.name || "").trim();
+  const number =
+    raw.number !== undefined && raw.number !== null
+      ? String(raw.number).trim()
+      : "";
+  const lyrics = normalizeLyrics(raw.lyrics || raw.lines || raw.text);
+  const source = String(raw.source || raw.book || "").trim();
+  if (!title && !lyrics) return null;
+  return { title, number, lyrics, source };
+}
+
+function buildHymnRecord(raw) {
+  const base = normalizeHymnInput(raw);
+  if (!base) return null;
+  return {
+    _id:
+      raw && raw._id
+        ? raw._id
+        : db
+          ? new ObjectId()
+          : new ObjectId().toString(),
+    title: base.title,
+    number: base.number,
+    lyrics: base.lyrics,
+    source: base.source,
+    createdAt: raw && raw.createdAt ? raw.createdAt : new Date().toISOString(),
+  };
+}
+
+function mapHymnOutput(hymn) {
+  if (!hymn) return null;
+  return {
+    id: hymn._id ? hymn._id.toString() : hymn.id || "",
+    title: hymn.title || "",
+    number: hymn.number || "",
+    lyrics: hymn.lyrics || "",
+    source: hymn.source || "",
+  };
+}
+
+async function loadHymnsRaw() {
+  if (db) {
+    return await db.collection("hymns").find({}).toArray();
+  }
+  return getLocalData("hymns", []);
+}
+
+async function saveHymnsRaw(hymns) {
+  if (db) {
+    await db.collection("hymns").deleteMany({});
+    if (hymns.length) {
+      await db.collection("hymns").insertMany(hymns);
+    }
+    return;
+  }
+  saveLocalData("hymns", hymns);
+}
+
 // Helper: Upload a file buffer to Cloudinary
 async function uploadToCloudinary(fileBuffer, folder, resourceType = "auto") {
   return new Promise((resolve, reject) => {
@@ -861,6 +952,128 @@ app.post("/api/screen-content", async (req, res) => {
     announcementBody: announcementBody ?? state.announcementBody,
   });
   return res.json({ message: "Screen content updated", data: saved });
+});
+
+// --- Bible Lookup & Hymn Library ---
+app.get("/api/bible", async (req, res) => {
+  const reference = String(req.query.reference || "").trim();
+  const translation = String(req.query.translation || "web").trim();
+  if (!reference) {
+    return res.status(400).json({ error: "Reference is required." });
+  }
+  const encodedReference = encodeURIComponent(reference).replace(/%20/g, "+");
+  const endpoint = `https://bible-api.com/${encodedReference}?translation=${encodeURIComponent(
+    translation,
+  )}`;
+  try {
+    const data = await fetchJson(endpoint);
+    if (data.error) {
+      return res.status(404).json({ error: data.error });
+    }
+    return res.json({
+      reference: data.reference || reference,
+      text: data.text || "",
+      translation_id: data.translation_id || translation,
+      translation_name: data.translation_name || "",
+    });
+  } catch (error) {
+    console.error("Bible API error:", error);
+    return res
+      .status(500)
+      .json({ error: "Unable to reach Bible lookup service." });
+  }
+});
+
+app.get("/api/hymns", async (req, res) => {
+  const query = String(req.query.q || req.query.query || "")
+    .trim()
+    .toLowerCase();
+  const limit = Math.min(Number(req.query.limit) || 50, 200);
+  try {
+    const hymns = await loadHymnsRaw();
+    let results = hymns.map(mapHymnOutput).filter(Boolean);
+    if (query) {
+      results = results.filter((hymn) => {
+        const inTitle = hymn.title.toLowerCase().includes(query);
+        const inNumber = hymn.number.toLowerCase().includes(query);
+        return inTitle || inNumber;
+      });
+    }
+    results.sort((a, b) => {
+      const numA = parseInt(a.number, 10);
+      const numB = parseInt(b.number, 10);
+      if (!Number.isNaN(numA) && !Number.isNaN(numB)) {
+        return numA - numB;
+      }
+      return a.title.localeCompare(b.title);
+    });
+    return res.json(results.slice(0, limit));
+  } catch (error) {
+    console.error("Hymn load error:", error);
+    return res.status(500).json({ error: "Unable to load hymns." });
+  }
+});
+
+app.post("/api/hymns/import", upload.single("file"), async (req, res) => {
+  const mode = String(req.query.mode || req.body.mode || "merge").toLowerCase();
+  let payload = null;
+  try {
+    if (req.file && req.file.buffer) {
+      payload = JSON.parse(req.file.buffer.toString("utf8"));
+    } else if (req.body && req.body.hymns) {
+      if (Array.isArray(req.body.hymns)) {
+        payload = req.body.hymns;
+      } else if (typeof req.body.hymns === "string") {
+        payload = JSON.parse(req.body.hymns);
+      }
+    }
+  } catch (error) {
+    return res.status(400).json({ error: "Invalid JSON format." });
+  }
+
+  if (!payload || !Array.isArray(payload)) {
+    return res.status(400).json({
+      error: "Upload a JSON array of hymns.",
+    });
+  }
+
+  const cleaned = payload.map(buildHymnRecord).filter(Boolean);
+  if (!cleaned.length) {
+    return res.status(400).json({ error: "No valid hymns found." });
+  }
+
+  try {
+    const existing = mode === "replace" ? [] : await loadHymnsRaw();
+    const existingKeys = new Map();
+    existing.forEach((hymn) => {
+      const key = `${hymn.number || ""}|${(hymn.title || "").toLowerCase()}`;
+      existingKeys.set(key, hymn);
+    });
+
+    const merged = [...existing];
+    cleaned.forEach((hymn) => {
+      const key = `${hymn.number || ""}|${(hymn.title || "").toLowerCase()}`;
+      if (!existingKeys.has(key)) {
+        merged.push(hymn);
+        existingKeys.set(key, hymn);
+      }
+    });
+
+    await saveHymnsRaw(merged);
+
+    return res.json({
+      message:
+        mode === "replace"
+          ? "Hymn book replaced successfully."
+          : "Hymn book imported successfully.",
+      count: cleaned.length,
+      total: merged.length,
+      mode,
+    });
+  } catch (error) {
+    console.error("Hymn import error:", error);
+    return res.status(500).json({ error: "Unable to import hymns." });
+  }
 });
 
 // Live Stream Routes

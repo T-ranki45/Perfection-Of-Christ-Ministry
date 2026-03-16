@@ -269,7 +269,8 @@ label span {
 }
 
 input,
-textarea {
+textarea,
+select {
   width: 100%;
   padding: 0.8rem 1rem;
   border-radius: 10px;
@@ -285,10 +286,155 @@ textarea {
 }
 
 input:focus,
-textarea:focus {
+textarea:focus,
+select:focus {
   outline: none;
   border-color: var(--accent);
   box-shadow: 0 0 10px rgba(212, 164, 63, 0.2);
+}
+
+.field-label {
+  display: block;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--accent);
+  margin-bottom: 0.4rem;
+}
+
+.helper-text {
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin-top: 0.5rem;
+}
+
+.helper-text.good {
+  color: #9af3c5;
+}
+
+.helper-text.warn {
+  color: #ffb3a8;
+}
+
+.helper-text.info {
+  color: #9cc9ff;
+}
+
+.bible-grid {
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+
+.bible-preview {
+  margin-top: 1rem;
+  padding: 1rem;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(6, 10, 17, 0.6);
+}
+
+.preview-title {
+  font-weight: 700;
+  margin-bottom: 0.35rem;
+}
+
+.preview-body {
+  color: var(--text);
+  white-space: pre-line;
+  line-height: 1.6;
+}
+
+.hymn-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+  gap: 1rem;
+  align-items: start;
+}
+
+.hymn-results {
+  display: grid;
+  gap: 0.6rem;
+  max-height: 240px;
+  overflow-y: auto;
+  padding-right: 0.2rem;
+}
+
+.hymn-item {
+  background: rgba(6, 10, 17, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  padding: 0.6rem 0.8rem;
+  text-align: left;
+  color: var(--text);
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.hymn-item:hover,
+.hymn-item.active {
+  border-color: var(--accent);
+  box-shadow: 0 0 12px rgba(212, 164, 63, 0.3);
+}
+
+.hymn-preview {
+  margin-top: 1rem;
+  padding: 1rem;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(6, 10, 17, 0.6);
+}
+
+.hymn-preview-title {
+  font-weight: 700;
+  font-size: 1.05rem;
+  margin-bottom: 0.35rem;
+}
+
+.hymn-preview-meta {
+  color: var(--muted);
+  font-size: 0.8rem;
+  margin-bottom: 0.6rem;
+}
+
+.hymn-preview-lyrics {
+  white-space: pre-line;
+  line-height: 1.6;
+  max-height: 240px;
+  overflow-y: auto;
+  padding-right: 0.2rem;
+}
+
+.hymn-import {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.file-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.6rem 1.2rem;
+  border-radius: 999px;
+  border: 1px dashed rgba(255, 255, 255, 0.2);
+  color: var(--text);
+  cursor: pointer;
+  width: fit-content;
+  transition: border-color 0.2s ease;
+}
+
+.file-chip:hover {
+  border-color: var(--accent);
+}
+
+.file-chip input {
+  display: none;
+}
+
+.empty-state {
+  color: var(--muted);
+  font-size: 0.85rem;
 }
 
 .card-actions {
@@ -438,6 +584,10 @@ textarea:focus {
 @media (max-width: 720px) {
   .mode-grid {
     grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  }
+
+  .hymn-grid {
+    grid-template-columns: 1fr;
   }
 
   .ict-top-actions {

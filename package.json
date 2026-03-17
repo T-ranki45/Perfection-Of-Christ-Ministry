@@ -5,7 +5,8 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start": "node server.js",
+    "app": "electron electron-main.js"
   },
   "repository": {
     "type": "git",
@@ -29,5 +30,8 @@
     "mongodb": "^6.21.0",
     "multer": "^1.4.5-lts.1",
     "streamifier": "^0.1.1"
+  },
+  "devDependencies": {
+    "electron": "latest"
   }
 }

@@ -24,26 +24,30 @@
 
       <div class="screen-mode" id="mode-verse">
         <p class="mode-title">Scripture Reading</p>
-        <div class="verse-text" id="verseText"></div>
+        <div class="verse-text fit-text" data-fit="0.48" id="verseText"></div>
         <div class="verse-ref" id="verseRef"></div>
       </div>
 
       <div class="screen-mode" id="mode-lyrics">
         <p class="mode-title">Worship Lyrics</p>
         <h2 id="lyricsTitle"></h2>
-        <div class="lyrics-body" id="lyricsLines"></div>
+        <div class="lyrics-body fit-text" data-fit="0.55" id="lyricsLines"></div>
       </div>
 
       <div class="screen-mode" id="mode-announcement">
         <p class="mode-title">Announcement</p>
         <h2 id="announcementTitle"></h2>
-        <div class="announcement-body" id="announcementBody"></div>
+        <div
+          class="announcement-body fit-text"
+          data-fit="0.5"
+          id="announcementBody"
+        ></div>
       </div>
 
       <div class="screen-mode" id="mode-order">
         <p class="mode-title">Order of Service</p>
         <h2 id="orderTitle"></h2>
-        <div class="order-list" id="orderItems"></div>
+        <div class="order-list fit-text" data-fit="0.52" id="orderItems"></div>
       </div>
 
       <div class="screen-mode" id="mode-countdown">
@@ -140,6 +144,10 @@
       const lowerThirdName = document.getElementById("lowerThirdName");
       const lowerThirdRole = document.getElementById("lowerThirdRole");
       const lowerThirdFooter = document.getElementById("lowerThirdFooter");
+      const fitTextElements = Array.from(
+        document.querySelectorAll(".fit-text"),
+      );
+      let fitRaf = null;
 
       function formatCountdown(seconds) {
         const safeSeconds = Math.max(0, Math.floor(seconds));
@@ -167,6 +175,55 @@
         }
 
         return Number(state.countdownDurationSeconds) || 0;
+      }
+
+      function computeMaxFitHeight(el) {
+        const ratio = Number(el.dataset.fit);
+        if (!Number.isFinite(ratio) || ratio <= 0) {
+          return window.innerHeight * 0.6;
+        }
+        return window.innerHeight * ratio;
+      }
+
+      function fitTextElement(el) {
+        if (!el) return;
+        if (!el.dataset.baseSize) {
+          const baseSize = parseFloat(getComputedStyle(el).fontSize) || 24;
+          el.dataset.baseSize = String(baseSize);
+        }
+        const baseSize = Number(el.dataset.baseSize) || 24;
+        const minSize = Number(el.dataset.minSize) || 16;
+        const maxHeight = computeMaxFitHeight(el);
+        const maxWidth = el.parentElement
+          ? el.parentElement.clientWidth
+          : window.innerWidth * 0.85;
+
+        let fontSize = baseSize;
+        el.style.maxHeight = `${Math.round(maxHeight)}px`;
+        el.style.fontSize = `${fontSize}px`;
+
+        let safety = 0;
+        while (
+          safety < 80 &&
+          (el.scrollHeight > maxHeight || el.scrollWidth > maxWidth)
+        ) {
+          fontSize -= 1;
+          if (fontSize <= minSize) break;
+          el.style.fontSize = `${fontSize}px`;
+          safety += 1;
+        }
+      }
+
+      function fitAllText() {
+        fitTextElements.forEach((el) => fitTextElement(el));
+      }
+
+      function scheduleFitText() {
+        if (fitRaf) cancelAnimationFrame(fitRaf);
+        fitRaf = requestAnimationFrame(() => {
+          fitRaf = null;
+          fitAllText();
+        });
       }
 
       function setMode(mode) {
@@ -260,6 +317,7 @@
           lowerThirdFooter.textContent = screenState.lowerThirdFooter || "";
 
         updateCountdownUI();
+        scheduleFitText();
       }
 
       function updateCountdownUI() {
@@ -303,6 +361,10 @@
       }
 
       const pollInterval = isEmbed ? 5000 : 3000;
+      window.addEventListener("resize", scheduleFitText);
+      if (document.fonts && document.fonts.ready) {
+        document.fonts.ready.then(scheduleFitText).catch(() => {});
+      }
       setInterval(updateCountdownUI, 1000);
       setInterval(loadScreenState, pollInterval);
       loadScreenState();

@@ -170,6 +170,14 @@ body.embed .lowerthird-footer {
   margin-bottom: 1.2rem;
 }
 
+.fit-text {
+  max-width: 100%;
+  overflow-wrap: break-word;
+  word-break: normal;
+  hyphens: auto;
+  white-space: pre-line;
+}
+
 .verse-text {
   font-family: "Playfair Display", serif;
   font-size: clamp(2.2rem, 4vw, 4.2rem);

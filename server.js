@@ -8,8 +8,10 @@ const cloudinary = require("cloudinary").v2;
 const streamifier = require("streamifier");
 const https = require("https");
 const path = require("path");
+const os = require("os");
 const app = express();
 const port = process.env.PORT || 3000;
+const DISABLE_DB = String(process.env.DISABLE_DB || "").toLowerCase() === "true";
 
 // Replace 'YOUR_PASSWORD_HERE' with your actual MongoDB password
 const DATABASE_URL =
@@ -193,6 +195,10 @@ async function uploadToCloudinary(fileBuffer, folder, resourceType = "auto") {
 
 async function connectToDb() {
   try {
+    if (DISABLE_DB) {
+      console.log("ℹ️  Database connection disabled (DISABLE_DB=true).");
+      return null;
+    }
     if (!DATABASE_URL) {
       const err = new Error("DATABASE_URL environment variable is not set.");
       console.error("❌", err.message);
@@ -213,6 +219,21 @@ async function connectToDb() {
 const ADMIN_PASSWORD = "Admin123";
 
 // --- ROUTES ---
+
+const webrtcRooms = {};
+
+function getWebRtcRoom(name) {
+  const roomName = name || "main";
+  if (!webrtcRooms[roomName]) {
+    webrtcRooms[roomName] = {
+      offer: null,
+      answer: null,
+      ice: { sender: [], receiver: [] },
+      updatedAt: Date.now(),
+    };
+  }
+  return webrtcRooms[roomName];
+}
 
 // Middleware to check DB connection
 app.use("/api", (req, res, next) => {
@@ -954,6 +975,68 @@ app.post("/api/screen-content", async (req, res) => {
   return res.json({ message: "Screen content updated", data: saved });
 });
 
+// --- WebRTC Mic Signaling (Local Network) ---
+app.post("/api/webrtc/offer", (req, res) => {
+  const { room, sdp, type } = req.body || {};
+  if (!sdp) {
+    return res.status(400).json({ error: "Offer SDP is required." });
+  }
+  const target = getWebRtcRoom(room);
+  target.offer = { sdp, type: type || "offer" };
+  target.answer = null;
+  target.ice = { sender: [], receiver: [] };
+  target.updatedAt = Date.now();
+  return res.json({ message: "Offer saved." });
+});
+
+app.get("/api/webrtc/offer", (req, res) => {
+  const room = req.query.room || "main";
+  const target = getWebRtcRoom(room);
+  if (!target.offer) {
+    return res.status(404).json({ error: "No offer yet." });
+  }
+  return res.json(target.offer);
+});
+
+app.post("/api/webrtc/answer", (req, res) => {
+  const { room, sdp, type } = req.body || {};
+  if (!sdp) {
+    return res.status(400).json({ error: "Answer SDP is required." });
+  }
+  const target = getWebRtcRoom(room);
+  target.answer = { sdp, type: type || "answer" };
+  target.updatedAt = Date.now();
+  return res.json({ message: "Answer saved." });
+});
+
+app.get("/api/webrtc/answer", (req, res) => {
+  const room = req.query.room || "main";
+  const target = getWebRtcRoom(room);
+  if (!target.answer) {
+    return res.status(404).json({ error: "No answer yet." });
+  }
+  return res.json(target.answer);
+});
+
+app.post("/api/webrtc/ice", (req, res) => {
+  const { room, role, candidate } = req.body || {};
+  if (!candidate) {
+    return res.status(400).json({ error: "ICE candidate is required." });
+  }
+  const target = getWebRtcRoom(room);
+  const bucket = role === "receiver" ? "receiver" : "sender";
+  target.ice[bucket].push(candidate);
+  target.updatedAt = Date.now();
+  return res.json({ message: "Candidate saved." });
+});
+
+app.get("/api/webrtc/ice", (req, res) => {
+  const room = req.query.room || "main";
+  const role = req.query.role === "receiver" ? "receiver" : "sender";
+  const target = getWebRtcRoom(room);
+  return res.json(target.ice[role] || []);
+});
+
 // --- Bible Lookup & Hymn Library ---
 app.get("/api/bible", async (req, res) => {
   const reference = String(req.query.reference || "").trim();
@@ -1126,6 +1209,28 @@ async function startServer() {
   await connectToDb();
   app.listen(port, () => {
     console.log(`Server running on port ${port}`);
+    const interfaces = os.networkInterfaces();
+    const addresses = [];
+    Object.keys(interfaces).forEach((name) => {
+      interfaces[name].forEach((info) => {
+        if (info.family === "IPv4" && !info.internal) {
+          addresses.push(info.address);
+        }
+      });
+    });
+    if (addresses.length) {
+      addresses.forEach((ip) => {
+        console.log(`ICT: http://${ip}:${port}/ict.html`);
+        console.log(`Screen: http://${ip}:${port}/screen.html`);
+        console.log(`Mic Sender: http://${ip}:${port}/mic.html#send`);
+        console.log(`Mic Listener: http://${ip}:${port}/mic.html#listen`);
+      });
+    } else {
+      console.log(`ICT: http://localhost:${port}/ict.html`);
+      console.log(`Screen: http://localhost:${port}/screen.html`);
+      console.log(`Mic Sender: http://localhost:${port}/mic.html#send`);
+      console.log(`Mic Listener: http://localhost:${port}/mic.html#listen`);
+    }
 
     // --- KEEP-ALIVE SCRIPT ---
     // Pings the server every 30 seconds to prevent Render free tier from sleeping

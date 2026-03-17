@@ -6,6 +6,8 @@
     <title>ICT Live Service Control | Perfection Of Christ Ministry</title>
     <link rel="icon" href="./image/logo.png" type="image/png" />
     <link rel="apple-touch-icon" href="./image/logo.png" />
+    <link rel="manifest" href="manifest.webmanifest" />
+    <meta name="theme-color" content="#d4a43f" />
     <link rel="stylesheet" href="ict.css" />
     <link
       href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Sora:wght@300;400;600;700&display=swap"
@@ -683,6 +685,16 @@
       function logout() {
         localStorage.removeItem("ict_token");
         window.location.href = "ict_login.html";
+      }
+
+      if ("serviceWorker" in navigator) {
+        window.addEventListener("load", () => {
+          navigator.serviceWorker
+            .register("service-worker.js")
+            .catch((error) =>
+              console.error("Service worker registration failed:", error),
+            );
+        });
       }
 
       const API_URL = "/api";

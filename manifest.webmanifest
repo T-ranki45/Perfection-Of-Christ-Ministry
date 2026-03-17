@@ -1,0 +1,21 @@
+{
+  "name": "POCM ICT Live Service Control",
+  "short_name": "POCM ICT",
+  "start_url": "ict.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0b1118",
+  "theme_color": "#d4a43f",
+  "icons": [
+    {
+      "src": "image/logo.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "image/logo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

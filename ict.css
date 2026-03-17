@@ -368,6 +368,40 @@ select:focus {
   color: #9cc9ff;
 }
 
+.hotkey-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-top: 0.5rem;
+}
+
+.hotkey-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  font-size: 0.9rem;
+}
+
+.hotkey-item:last-child {
+  border-bottom: none;
+}
+
+.hotkey-key {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 70px;
+  padding: 0.25rem 0.6rem;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(6, 10, 17, 0.6);
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
 .bible-grid {
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
 }

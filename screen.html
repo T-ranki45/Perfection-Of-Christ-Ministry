@@ -105,11 +105,15 @@
         mode: "verse",
         verseText: "",
         verseRef: "",
+        verseSlides: [],
+        verseSlideIndex: 0,
         giveScripture: "",
         announcementTitle: "",
         announcementBody: "",
         lyricsTitle: "",
         lyricsLines: "",
+        lyricsSlides: [],
+        lyricsSlideIndex: 0,
         orderTitle: "",
         orderItems: "",
         countdownStatus: "stopped",
@@ -204,14 +208,42 @@
         const displayMode = forcedMode || screenState.mode || "verse";
         setMode(displayMode);
 
-        if (verseText) verseText.textContent = screenState.verseText || "";
+        const verseSlides = Array.isArray(screenState.verseSlides)
+          ? screenState.verseSlides
+          : [];
+        const verseIndex = Number(screenState.verseSlideIndex);
+        const verseSlide =
+          verseSlides.length > 0
+            ? verseSlides[
+                Math.min(
+                  Math.max(0, Number.isNaN(verseIndex) ? 0 : verseIndex),
+                  verseSlides.length - 1,
+                )
+              ]
+            : "";
+        const verseTextValue = verseSlide || screenState.verseText || "";
+        if (verseText) verseText.textContent = verseTextValue;
         if (verseRef) {
           verseRef.textContent = screenState.verseRef || "";
           verseRef.style.display = screenState.verseRef ? "block" : "none";
         }
         if (lyricsTitle)
           lyricsTitle.textContent = screenState.lyricsTitle || "Worship Song";
-        if (lyricsLines) lyricsLines.textContent = screenState.lyricsLines || "";
+        const lyricsSlides = Array.isArray(screenState.lyricsSlides)
+          ? screenState.lyricsSlides
+          : [];
+        const lyricsIndex = Number(screenState.lyricsSlideIndex);
+        const lyricsSlide =
+          lyricsSlides.length > 0
+            ? lyricsSlides[
+                Math.min(
+                  Math.max(0, Number.isNaN(lyricsIndex) ? 0 : lyricsIndex),
+                  lyricsSlides.length - 1,
+                )
+              ]
+            : "";
+        const lyricsValue = lyricsSlide || screenState.lyricsLines || "";
+        if (lyricsLines) lyricsLines.textContent = lyricsValue;
         if (announcementTitle)
           announcementTitle.textContent =
             screenState.announcementTitle || "Announcement";

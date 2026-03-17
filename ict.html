@@ -533,6 +533,37 @@
 
             <section class="control-card">
               <div class="card-header">
+                <h3>Keyboard Shortcuts</h3>
+                <span class="card-note"
+                  >Use hotkeys for instant screen changes</span
+                >
+              </div>
+              <div class="hotkey-list">
+                <div class="hotkey-item">
+                  <span class="hotkey-key">B</span>
+                  <span>Blank Screen (panic)</span>
+                </div>
+                <div class="hotkey-item">
+                  <span class="hotkey-key">V</span>
+                  <span>Verse Mode</span>
+                </div>
+                <div class="hotkey-item">
+                  <span class="hotkey-key">L</span>
+                  <span>Lyrics Mode</span>
+                </div>
+                <div class="hotkey-item">
+                  <span class="hotkey-key">← / →</span>
+                  <span>Previous / Next slide</span>
+                </div>
+                <div class="hotkey-item">
+                  <span class="hotkey-key">↑ / ↓</span>
+                  <span>Previous / Next slide</span>
+                </div>
+              </div>
+            </section>
+
+            <section class="control-card">
+              <div class="card-header">
                 <h3>Service Checklist</h3>
                 <span class="card-note">Quick readiness checks</span>
               </div>
@@ -766,11 +797,15 @@
         mode: "verse",
         verseText: "",
         verseRef: "",
+        verseSlides: [],
+        verseSlideIndex: 0,
         giveScripture: "",
         announcementTitle: "",
         announcementBody: "",
         lyricsTitle: "",
         lyricsLines: "",
+        lyricsSlides: [],
+        lyricsSlideIndex: 0,
         orderTitle: "Order of Service",
         orderItems: "",
         countdownStatus: "stopped",
@@ -1082,6 +1117,32 @@
         biblePreviewText.textContent = data.text || "";
       }
 
+      function buildSlides(text) {
+        if (!text) return [];
+        const normalized = String(text).replace(/\r\n/g, "\n");
+        const byDivider = normalized.split(/\n\s*---\s*\n/g);
+        const slides = [];
+        byDivider.forEach((block) => {
+          const chunks = block.split(/\n\s*\n/g);
+          chunks.forEach((chunk) => {
+            const cleaned = chunk.trim();
+            if (cleaned) slides.push(cleaned);
+          });
+        });
+        return slides;
+      }
+
+      function withSlides(key, text) {
+        const slides = buildSlides(text);
+        if (key === "verse") {
+          return { verseSlides: slides, verseSlideIndex: 0 };
+        }
+        if (key === "lyrics") {
+          return { lyricsSlides: slides, lyricsSlideIndex: 0 };
+        }
+        return {};
+      }
+
       async function fetchBibleVerse() {
         const manualReference = bibleReferenceInput
           ? bibleReferenceInput.value.trim()
@@ -1158,7 +1219,12 @@
         }
         if (verseTextInput) verseTextInput.value = verseText;
         if (verseRefInput) verseRefInput.value = verseRef;
-        saveScreenState({ verseText, verseRef, mode: "verse" });
+        saveScreenState({
+          verseText,
+          verseRef,
+          mode: "verse",
+          ...withSlides("verse", verseText),
+        });
       }
 
       function updateHymnPreview(hymn) {
@@ -1510,12 +1576,14 @@
       }
 
       function collectVerseData() {
+        const verseText = verseTextInput ? verseTextInput.value.trim() : "";
         return {
-          verseText: verseTextInput ? verseTextInput.value.trim() : "",
+          verseText,
           verseRef: verseRefInput ? verseRefInput.value.trim() : "",
           giveScripture: giveScriptureInput
             ? giveScriptureInput.value.trim()
             : "",
+          ...withSlides("verse", verseText),
         };
       }
 
@@ -1531,9 +1599,11 @@
       }
 
       function collectLyricsData() {
+        const lyricsLines = lyricsLinesInput ? lyricsLinesInput.value.trim() : "";
         return {
           lyricsTitle: lyricsTitleInput ? lyricsTitleInput.value.trim() : "",
-          lyricsLines: lyricsLinesInput ? lyricsLinesInput.value.trim() : "",
+          lyricsLines,
+          ...withSlides("lyrics", lyricsLines),
         };
       }
 
@@ -1592,6 +1662,73 @@
           if (!mode) return;
           saveScreenState({ mode });
         });
+      });
+
+      function isTypingTarget(target) {
+        if (!target) return false;
+        const tag = target.tagName;
+        if (!tag) return false;
+        if (target.isContentEditable) return true;
+        return ["INPUT", "TEXTAREA", "SELECT"].includes(tag);
+      }
+
+      function adjustSlide(delta) {
+        const mode = screenState.mode;
+        if (mode !== "verse" && mode !== "lyrics") return;
+        const isVerse = mode === "verse";
+        const text = isVerse ? screenState.verseText : screenState.lyricsLines;
+        const slides =
+          (isVerse ? screenState.verseSlides : screenState.lyricsSlides) ||
+          buildSlides(text);
+        if (!slides.length) return;
+        const currentIndex = Number(
+          isVerse ? screenState.verseSlideIndex : screenState.lyricsSlideIndex,
+        );
+        const nextIndex = Math.min(
+          Math.max(0, (Number.isNaN(currentIndex) ? 0 : currentIndex) + delta),
+          slides.length - 1,
+        );
+        if (nextIndex === currentIndex) return;
+        if (isVerse) {
+          saveScreenState({
+            verseSlides: slides,
+            verseSlideIndex: nextIndex,
+          });
+        } else {
+          saveScreenState({
+            lyricsSlides: slides,
+            lyricsSlideIndex: nextIndex,
+          });
+        }
+      }
+
+      document.addEventListener("keydown", (event) => {
+        if (isTypingTarget(event.target)) return;
+        const key = event.key.toLowerCase();
+        if (key === "b") {
+          event.preventDefault();
+          saveScreenState({ mode: "blank" });
+          return;
+        }
+        if (key === "v") {
+          event.preventDefault();
+          saveScreenState({ mode: "verse" });
+          return;
+        }
+        if (key === "l") {
+          event.preventDefault();
+          saveScreenState({ mode: "lyrics" });
+          return;
+        }
+        if (event.key === "ArrowRight" || event.key === "ArrowDown") {
+          event.preventDefault();
+          adjustSlide(1);
+          return;
+        }
+        if (event.key === "ArrowLeft" || event.key === "ArrowUp") {
+          event.preventDefault();
+          adjustSlide(-1);
+        }
       });
 
       if (fetchBibleBtn) {
@@ -1682,7 +1819,12 @@
           const lyrics = activeHymn.lyrics || "";
           if (lyricsTitleInput) lyricsTitleInput.value = title;
           if (lyricsLinesInput) lyricsLinesInput.value = lyrics;
-          saveScreenState({ lyricsTitle: title, lyricsLines: lyrics });
+          saveScreenState({
+            lyricsTitle: title,
+            lyricsLines: lyrics,
+            ...withSlides("lyrics", lyrics),
+            mode: "lyrics",
+          });
         });
       }
 

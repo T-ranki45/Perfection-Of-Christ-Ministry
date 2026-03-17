@@ -15,6 +15,59 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
     />
+    <style>
+      /* Tab Styles */
+      .ict-tabs {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 15px;
+        background: rgba(255, 255, 255, 0.05);
+        padding: 10px;
+        border-radius: 8px;
+        overflow-x: auto;
+      }
+      .tab-btn {
+        flex: 1;
+        padding: 10px 15px;
+        background: transparent;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        color: #ccc;
+        cursor: pointer;
+        border-radius: 5px;
+        font-weight: 600;
+        transition: all 0.2s;
+        white-space: nowrap;
+      }
+      .tab-btn:hover {
+        background: rgba(255, 255, 255, 0.1);
+        color: #fff;
+      }
+      .tab-btn.active {
+        background: var(
+          --gold-gradient,
+          linear-gradient(to right, #bf953f, #fcf6ba, #b38728, #fbf5b7, #aa771c)
+        );
+        color: #1a1a1a;
+        border-color: transparent;
+      }
+      .tab-pane {
+        display: none;
+        animation: fadeIn 0.3s ease;
+      }
+      .tab-pane.active {
+        display: block;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(5px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+    </style>
   </head>
   <body>
     <div class="ict-app">
@@ -90,403 +143,437 @@
             </div>
           </section>
 
-          <section class="control-card">
-            <div class="card-header">
-              <h3>Bible Lookup</h3>
-              <span class="card-note"
-                >Search scripture and load it into the live fields</span
-              >
-            </div>
-            <div class="form-grid bible-grid">
-              <label>
-                <span>Book</span>
-                <select id="bibleBookInput">
-                  <option value="">Select book</option>
-                </select>
-              </label>
-              <label>
-                <span>Chapter</span>
-                <input
-                  type="number"
-                  id="bibleChapterInput"
-                  min="1"
-                  placeholder="e.g., 3"
-                />
-              </label>
-              <label>
-                <span>Verse</span>
-                <input
-                  type="number"
-                  id="bibleVerseInput"
-                  min="1"
-                  placeholder="e.g., 16"
-                />
-              </label>
-              <label>
-                <span>To (optional)</span>
-                <input
-                  type="number"
-                  id="bibleVerseEndInput"
-                  min="1"
-                  placeholder="e.g., 18"
-                />
-              </label>
-              <label class="bible-reference">
-                <span>Reference (manual)</span>
-                <input
-                  type="text"
-                  id="bibleReferenceInput"
-                  placeholder="e.g., John 3:16 or Psalm 23:1-6"
-                />
-              </label>
-              <label>
-                <span>Translation</span>
-                <select id="bibleTranslationInput">
-                  <option value="web">WEB (Default)</option>
-                  <option value="kjv">KJV</option>
-                  <option value="asv">ASV</option>
-                  <option value="bbe">BBE</option>
-                  <option value="darby">Darby</option>
-                  <option value="ylt">YLT</option>
-                </select>
-              </label>
-              <label>
-                <span>Apply To</span>
-                <select id="bibleTargetInput">
-                  <option value="verse">Main Verse</option>
-                  <option value="giving">Giving Scripture</option>
-                </select>
-              </label>
-            </div>
-            <div class="bible-preview">
-              <div class="preview-title" id="biblePreviewRef">
-                No verse loaded
+          <div class="ict-tabs">
+            <button class="tab-btn active" data-tab="bible">Scripture</button>
+            <button class="tab-btn" data-tab="worship">Worship</button>
+            <button class="tab-btn" data-tab="service">Service Info</button>
+            <button class="tab-btn" data-tab="tools">Tools</button>
+          </div>
+
+          <!-- BIBLE TAB -->
+          <div id="tab-bible" class="tab-pane active">
+            <section class="control-card">
+              <div class="card-header">
+                <h3>Bible Lookup</h3>
+                <span class="card-note"
+                  >Search scripture and load it into the live fields</span
+                >
               </div>
-              <div class="preview-body" id="biblePreviewText">
-                Search and fetch a verse to preview it here.
+              <div class="form-grid bible-grid">
+                <label>
+                  <span>Book</span>
+                  <select id="bibleBookInput">
+                    <option value="">Select book</option>
+                  </select>
+                </label>
+                <label>
+                  <span>Chapter</span>
+                  <input
+                    type="number"
+                    id="bibleChapterInput"
+                    min="1"
+                    placeholder="e.g., 3"
+                  />
+                </label>
+                <label>
+                  <span>Verse</span>
+                  <input
+                    type="number"
+                    id="bibleVerseInput"
+                    min="1"
+                    placeholder="e.g., 16"
+                  />
+                </label>
+                <label>
+                  <span>To (optional)</span>
+                  <input
+                    type="number"
+                    id="bibleVerseEndInput"
+                    min="1"
+                    placeholder="e.g., 18"
+                  />
+                </label>
+                <label class="bible-reference">
+                  <span>Reference (manual)</span>
+                  <input
+                    type="text"
+                    id="bibleReferenceInput"
+                    placeholder="e.g., John 3:16 or Psalm 23:1-6"
+                  />
+                </label>
+                <label>
+                  <span>Translation</span>
+                  <select id="bibleTranslationInput">
+                    <option value="web">WEB (Default)</option>
+                    <option value="kjv">KJV</option>
+                    <option value="asv">ASV</option>
+                    <option value="bbe">BBE</option>
+                    <option value="darby">Darby</option>
+                    <option value="ylt">YLT</option>
+                  </select>
+                </label>
+                <label>
+                  <span>Apply To</span>
+                  <select id="bibleTargetInput">
+                    <option value="verse">Main Verse</option>
+                    <option value="giving">Giving Scripture</option>
+                  </select>
+                </label>
               </div>
-            </div>
-            <div class="bible-recent">
-              <div class="preview-title">Recent Verses</div>
-              <div class="recent-list" id="recentVerses"></div>
-            </div>
-            <div class="card-actions">
-              <button class="btn-primary" id="fetchBibleBtn">
-                Fetch Verse
-              </button>
-              <button class="btn-ghost" id="applyBibleBtn">
-                Apply to Screen
-              </button>
-            </div>
-            <div class="helper-text" id="bibleStatus"></div>
-          </section>
-
-          <section class="control-card">
-            <div class="card-header">
-              <h3>Verse & Giving Scripture</h3>
-              <span class="card-note"
-                >Displayed in verse mode and give section</span
-              >
-            </div>
-            <div class="form-grid">
-              <label>
-                <span>Verse Text</span>
-                <textarea
-                  id="verseTextInput"
-                  rows="3"
-                  placeholder="Enter the Bible verse text..."
-                ></textarea>
-              </label>
-              <label>
-                <span>Verse Reference</span>
-                <input
-                  type="text"
-                  id="verseRefInput"
-                  placeholder="e.g., Psalm 23:1"
-                />
-              </label>
-              <label>
-                <span>Giving Scripture</span>
-                <textarea
-                  id="giveScriptureInput"
-                  rows="3"
-                  placeholder="Enter the giving scripture..."
-                ></textarea>
-              </label>
-            </div>
-            <div class="card-actions">
-              <button class="btn-primary" data-save="verse">Save & Sync</button>
-              <button class="btn-ghost" data-show="verse">Show Verse</button>
-            </div>
-          </section>
-
-          <section class="control-card">
-            <div class="card-header">
-              <h3>Announcement</h3>
-              <span class="card-note">Short updates for the congregation</span>
-            </div>
-            <div class="form-grid">
-              <label>
-                <span>Title</span>
-                <input
-                  type="text"
-                  id="announcementTitleInput"
-                  placeholder="e.g., Midweek Service Tonight"
-                />
-              </label>
-              <label>
-                <span>Details</span>
-                <textarea
-                  id="announcementBodyInput"
-                  rows="3"
-                  placeholder="Add short details for the screen..."
-                ></textarea>
-              </label>
-            </div>
-            <div class="card-actions">
-              <button class="btn-primary" data-save="announcement">
-                Save & Sync
-              </button>
-              <button class="btn-ghost" data-show="announcement">
-                Show Announcement
-              </button>
-            </div>
-          </section>
-
-          <section class="control-card">
-            <div class="card-header">
-              <h3>Hymn Library (S&amp;S)</h3>
-              <span class="card-note"
-                >Search by number or title and load into worship lyrics</span
-              >
-            </div>
-            <div class="hymn-grid">
-              <label>
-                <span>Search</span>
-                <input
-                  type="text"
-                  id="hymnSearchInput"
-                  placeholder="e.g., 12 or Blessed Assurance"
-                />
-              </label>
-              <div>
-                <span class="field-label">Results</span>
-                <div class="hymn-results" id="hymnResults"></div>
+              <div class="bible-preview">
+                <div class="preview-title" id="biblePreviewRef">
+                  No verse loaded
+                </div>
+                <div class="preview-body" id="biblePreviewText">
+                  Search and fetch a verse to preview it here.
+                </div>
               </div>
-            </div>
-            <div class="hymn-preview">
-              <div class="hymn-preview-title" id="hymnPreviewTitle">
-                Select a hymn
+              <div class="bible-recent">
+                <div class="preview-title">Recent Verses</div>
+                <div class="recent-list" id="recentVerses"></div>
               </div>
-              <div class="hymn-preview-meta" id="hymnPreviewMeta"></div>
-              <div class="hymn-preview-lyrics" id="hymnPreviewLyrics">
-                No hymn selected yet.
+              <div class="card-actions">
+                <button class="btn-primary" id="fetchBibleBtn">
+                  Fetch Verse
+                </button>
+                <button class="btn-ghost" id="applyBibleBtn">
+                  Apply to Screen
+                </button>
               </div>
-            </div>
-            <div class="card-actions">
-              <button class="btn-primary" id="loadHymnBtn">
-                Load to Lyrics
-              </button>
-              <button class="btn-ghost" id="refreshHymnBtn">
-                Refresh Library
-              </button>
-            </div>
-            <div class="hymn-import">
-              <label class="file-chip">
-                <input
-                  type="file"
-                  id="hymnImportInput"
-                  accept="application/json"
-                />
-                <span>Import JSON Hymn Book</span>
-              </label>
-              <div class="helper-text" id="hymnStatus">
-                Expected fields: number, title, lyrics (source optional).
+              <div class="helper-text" id="bibleStatus"></div>
+            </section>
+
+            <section class="control-card">
+              <div class="card-header">
+                <h3>Verse & Giving Scripture</h3>
+                <span class="card-note"
+                  >Displayed in verse mode and give section</span
+                >
               </div>
-            </div>
-          </section>
-
-          <section class="control-card">
-            <div class="card-header">
-              <h3>Worship Lyrics</h3>
-              <span class="card-note">Paste each line on a new line</span>
-            </div>
-            <div class="form-grid">
-              <label>
-                <span>Song Title</span>
-                <input
-                  type="text"
-                  id="lyricsTitleInput"
-                  placeholder="e.g., Way Maker"
-                />
-              </label>
-              <label>
-                <span>Lyrics</span>
-                <textarea
-                  id="lyricsLinesInput"
-                  rows="4"
-                  placeholder="Enter lyrics line by line..."
-                ></textarea>
-              </label>
-            </div>
-            <div class="card-actions">
-              <button class="btn-primary" data-save="lyrics">
-                Save & Sync
-              </button>
-              <button class="btn-ghost" data-show="lyrics">Show Lyrics</button>
-            </div>
-          </section>
-
-          <section class="control-card">
-            <div class="card-header">
-              <h3>Order of Service</h3>
-              <span class="card-note">List each item on a new line</span>
-            </div>
-            <div class="form-grid">
-              <label>
-                <span>Title</span>
-                <input
-                  type="text"
-                  id="orderTitleInput"
-                  placeholder="e.g., Sunday Celebration"
-                />
-              </label>
-              <label>
-                <span>Items</span>
-                <textarea
-                  id="orderItemsInput"
-                  rows="4"
-                  placeholder="Praise & Worship&#10;Prayer&#10;Message&#10;Offering"
-                ></textarea>
-              </label>
-            </div>
-            <div class="card-actions">
-              <button class="btn-primary" data-save="order">Save & Sync</button>
-              <button class="btn-ghost" data-show="order">Show Order</button>
-            </div>
-          </section>
-
-          <section class="control-card">
-            <div class="card-header">
-              <h3>Countdown Timer</h3>
-              <span class="card-note"
-                >Use for service start or break times</span
-              >
-            </div>
-            <div class="countdown-grid">
-              <label>
-                <span>Minutes</span>
-                <input type="number" id="countdownMinutes" min="0" value="10" />
-              </label>
-              <label>
-                <span>Seconds</span>
-                <input
-                  type="number"
-                  id="countdownSeconds"
-                  min="0"
-                  max="59"
-                  value="0"
-                />
-              </label>
-              <div class="countdown-readout">
-                <span>Remaining</span>
-                <strong id="countdownRemaining">10:00</strong>
+              <div class="form-grid">
+                <label>
+                  <span>Verse Text</span>
+                  <textarea
+                    id="verseTextInput"
+                    rows="3"
+                    placeholder="Enter the Bible verse text..."
+                  ></textarea>
+                </label>
+                <label>
+                  <span>Verse Reference</span>
+                  <input
+                    type="text"
+                    id="verseRefInput"
+                    placeholder="e.g., Psalm 23:1"
+                  />
+                </label>
+                <label>
+                  <span>Giving Scripture</span>
+                  <textarea
+                    id="giveScriptureInput"
+                    rows="3"
+                    placeholder="Enter the giving scripture..."
+                  ></textarea>
+                </label>
               </div>
-            </div>
-            <div class="card-actions">
-              <button class="btn-primary" id="countdownStart">Start</button>
-              <button class="btn-ghost" id="countdownPause">Pause</button>
-              <button class="btn-ghost" id="countdownReset">Reset</button>
-              <button class="btn-ghost" data-show="countdown">
-                Show Countdown
-              </button>
-            </div>
-          </section>
+              <div class="card-actions">
+                <button class="btn-primary" data-save="verse">
+                  Save & Sync
+                </button>
+                <button class="btn-ghost" data-show="verse">Show Verse</button>
+              </div>
+            </section>
+          </div>
 
-          <section class="control-card">
-            <div class="card-header">
-              <h3>Lower Third</h3>
-              <span class="card-note">Speaker title for the big screen</span>
-            </div>
-            <div class="form-grid">
-              <label>
-                <span>Name</span>
-                <input
-                  type="text"
-                  id="lowerThirdNameInput"
-                  placeholder="e.g., Pastor John Jeremiah"
-                />
-              </label>
-              <label>
-                <span>Role / Title</span>
-                <input
-                  type="text"
-                  id="lowerThirdRoleInput"
-                  placeholder="Lead Pastor"
-                />
-              </label>
-              <label>
-                <span>Footer</span>
-                <input
-                  type="text"
-                  id="lowerThirdFooterInput"
-                  placeholder="Perfection Of Christ Ministry"
-                />
-              </label>
-            </div>
-            <div class="card-actions">
-              <button class="btn-primary" data-save="lowerthird">
-                Save & Sync
-              </button>
-              <button class="btn-ghost" data-show="lowerthird">
-                Show Lower Third
-              </button>
-            </div>
-          </section>
+          <!-- WORSHIP TAB -->
+          <div id="tab-worship" class="tab-pane">
+            <section class="control-card">
+              <div class="card-header">
+                <h3>Hymn Library (S&amp;S)</h3>
+                <span class="card-note"
+                  >Search by number or title and load into worship lyrics</span
+                >
+              </div>
+              <div class="hymn-grid">
+                <label>
+                  <span>Search</span>
+                  <input
+                    type="text"
+                    id="hymnSearchInput"
+                    placeholder="e.g., 12 or Blessed Assurance"
+                  />
+                </label>
+                <div>
+                  <span class="field-label">Results</span>
+                  <div class="hymn-results" id="hymnResults"></div>
+                </div>
+              </div>
+              <div class="hymn-preview">
+                <div class="hymn-preview-title" id="hymnPreviewTitle">
+                  Select a hymn
+                </div>
+                <div class="hymn-preview-meta" id="hymnPreviewMeta"></div>
+                <div class="hymn-preview-lyrics" id="hymnPreviewLyrics">
+                  No hymn selected yet.
+                </div>
+              </div>
+              <div class="card-actions">
+                <button class="btn-primary" id="loadHymnBtn">
+                  Load to Lyrics
+                </button>
+                <button class="btn-ghost" id="refreshHymnBtn">
+                  Refresh Library
+                </button>
+              </div>
+              <div class="hymn-import">
+                <label class="file-chip">
+                  <input
+                    type="file"
+                    id="hymnImportInput"
+                    accept="application/json"
+                  />
+                  <span>Import JSON Hymn Book</span>
+                </label>
+                <div class="helper-text" id="hymnStatus">
+                  Expected fields: number, title, lyrics (source optional).
+                </div>
+              </div>
+            </section>
 
-          <section class="control-card">
-            <div class="card-header">
-              <h3>Service Checklist</h3>
-              <span class="card-note">Quick readiness checks</span>
-            </div>
-            <div class="checklist" id="serviceChecklist">
-              <label
-                ><input type="checkbox" data-check="audio" />Audio console
-                ready</label
-              >
-              <label
-                ><input type="checkbox" data-check="projection" />Projector
-                output verified</label
-              >
-              <label
-                ><input type="checkbox" data-check="lyrics" />Lyrics
-                loaded</label
-              >
-              <label
-                ><input type="checkbox" data-check="stream" />Stream preview
-                tested</label
-              >
-              <label
-                ><input type="checkbox" data-check="backup" />Recording backup
-                active</label
-              >
-            </div>
-          </section>
+            <section class="control-card">
+              <div class="card-header">
+                <h3>Worship Lyrics</h3>
+                <span class="card-note">Paste each line on a new line</span>
+              </div>
+              <div class="form-grid">
+                <label>
+                  <span>Song Title</span>
+                  <input
+                    type="text"
+                    id="lyricsTitleInput"
+                    placeholder="e.g., Way Maker"
+                  />
+                </label>
+                <label>
+                  <span>Lyrics</span>
+                  <textarea
+                    id="lyricsLinesInput"
+                    rows="4"
+                    placeholder="Enter lyrics line by line..."
+                  ></textarea>
+                </label>
+              </div>
+              <div class="card-actions">
+                <button class="btn-primary" data-save="lyrics">
+                  Save & Sync
+                </button>
+                <button class="btn-ghost" data-show="lyrics">
+                  Show Lyrics
+                </button>
+              </div>
+            </section>
+          </div>
 
-          <section class="control-card">
-            <div class="card-header">
-              <h3>Service Notes</h3>
-              <span class="card-note">Autosaves locally</span>
-            </div>
-            <textarea
-              class="notes-area"
-              id="serviceNotes"
-              placeholder="Write handover notes, issues, or reminders..."
-            ></textarea>
-            <div class="card-actions">
-              <button class="btn-ghost" id="clearNotesBtn">Clear Notes</button>
-            </div>
-          </section>
+          <!-- SERVICE INFO TAB -->
+          <div id="tab-service" class="tab-pane">
+            <section class="control-card">
+              <div class="card-header">
+                <h3>Announcement</h3>
+                <span class="card-note"
+                  >Short updates for the congregation</span
+                >
+              </div>
+              <div class="form-grid">
+                <label>
+                  <span>Title</span>
+                  <input
+                    type="text"
+                    id="announcementTitleInput"
+                    placeholder="e.g., Midweek Service Tonight"
+                  />
+                </label>
+                <label>
+                  <span>Details</span>
+                  <textarea
+                    id="announcementBodyInput"
+                    rows="3"
+                    placeholder="Add short details for the screen..."
+                  ></textarea>
+                </label>
+              </div>
+              <div class="card-actions">
+                <button class="btn-primary" data-save="announcement">
+                  Save & Sync
+                </button>
+                <button class="btn-ghost" data-show="announcement">
+                  Show Announcement
+                </button>
+              </div>
+            </section>
+
+            <section class="control-card">
+              <div class="card-header">
+                <h3>Order of Service</h3>
+                <span class="card-note">List each item on a new line</span>
+              </div>
+              <div class="form-grid">
+                <label>
+                  <span>Title</span>
+                  <input
+                    type="text"
+                    id="orderTitleInput"
+                    placeholder="e.g., Sunday Celebration"
+                  />
+                </label>
+                <label>
+                  <span>Items</span>
+                  <textarea
+                    id="orderItemsInput"
+                    rows="4"
+                    placeholder="Praise & Worship&#10;Prayer&#10;Message&#10;Offering"
+                  ></textarea>
+                </label>
+              </div>
+              <div class="card-actions">
+                <button class="btn-primary" data-save="order">
+                  Save & Sync
+                </button>
+                <button class="btn-ghost" data-show="order">Show Order</button>
+              </div>
+            </section>
+
+            <section class="control-card">
+              <div class="card-header">
+                <h3>Lower Third</h3>
+                <span class="card-note">Speaker title for the big screen</span>
+              </div>
+              <div class="form-grid">
+                <label>
+                  <span>Name</span>
+                  <input
+                    type="text"
+                    id="lowerThirdNameInput"
+                    placeholder="e.g., Pastor John Jeremiah"
+                  />
+                </label>
+                <label>
+                  <span>Role / Title</span>
+                  <input
+                    type="text"
+                    id="lowerThirdRoleInput"
+                    placeholder="Lead Pastor"
+                  />
+                </label>
+                <label>
+                  <span>Footer</span>
+                  <input
+                    type="text"
+                    id="lowerThirdFooterInput"
+                    placeholder="Perfection Of Christ Ministry"
+                  />
+                </label>
+              </div>
+              <div class="card-actions">
+                <button class="btn-primary" data-save="lowerthird">
+                  Save & Sync
+                </button>
+                <button class="btn-ghost" data-show="lowerthird">
+                  Show Lower Third
+                </button>
+              </div>
+            </section>
+          </div>
+
+          <!-- TOOLS TAB -->
+          <div id="tab-tools" class="tab-pane">
+            <section class="control-card">
+              <div class="card-header">
+                <h3>Countdown Timer</h3>
+                <span class="card-note"
+                  >Use for service start or break times</span
+                >
+              </div>
+              <div class="countdown-grid">
+                <label>
+                  <span>Minutes</span>
+                  <input
+                    type="number"
+                    id="countdownMinutes"
+                    min="0"
+                    value="10"
+                  />
+                </label>
+                <label>
+                  <span>Seconds</span>
+                  <input
+                    type="number"
+                    id="countdownSeconds"
+                    min="0"
+                    max="59"
+                    value="0"
+                  />
+                </label>
+                <div class="countdown-readout">
+                  <span>Remaining</span>
+                  <strong id="countdownRemaining">10:00</strong>
+                </div>
+              </div>
+              <div class="card-actions">
+                <button class="btn-primary" id="countdownStart">Start</button>
+                <button class="btn-ghost" id="countdownPause">Pause</button>
+                <button class="btn-ghost" id="countdownReset">Reset</button>
+                <button class="btn-ghost" data-show="countdown">
+                  Show Countdown
+                </button>
+              </div>
+            </section>
+
+            <section class="control-card">
+              <div class="card-header">
+                <h3>Service Checklist</h3>
+                <span class="card-note">Quick readiness checks</span>
+              </div>
+              <div class="checklist" id="serviceChecklist">
+                <label
+                  ><input type="checkbox" data-check="audio" />Audio console
+                  ready</label
+                >
+                <label
+                  ><input type="checkbox" data-check="projection" />Projector
+                  output verified</label
+                >
+                <label
+                  ><input type="checkbox" data-check="lyrics" />Lyrics
+                  loaded</label
+                >
+                <label
+                  ><input type="checkbox" data-check="stream" />Stream preview
+                  tested</label
+                >
+                <label
+                  ><input type="checkbox" data-check="backup" />Recording backup
+                  active</label
+                >
+              </div>
+            </section>
+
+            <section class="control-card">
+              <div class="card-header">
+                <h3>Service Notes</h3>
+                <span class="card-note">Autosaves locally</span>
+              </div>
+              <textarea
+                class="notes-area"
+                id="serviceNotes"
+                placeholder="Write handover notes, issues, or reminders..."
+              ></textarea>
+              <div class="card-actions">
+                <button class="btn-ghost" id="clearNotesBtn">
+                  Clear Notes
+                </button>
+              </div>
+            </section>
+          </div>
         </div>
 
         <aside class="preview-stack">
@@ -510,10 +597,6 @@
               <a class="btn-primary" href="screen.html" target="_blank"
                 >Open Full Screen</a
               >
-            </div>
-            <div class="helper-text one-laptop-note">
-              One-laptop workflow: keep this page open, open
-              "screen.html" in full screen (F11), and use Alt+Tab to switch.
             </div>
           </section>
 
@@ -633,6 +716,20 @@
       );
       const notesArea = document.getElementById("serviceNotes");
       const clearNotesBtn = document.getElementById("clearNotesBtn");
+
+      // Tab Logic
+      const tabBtns = document.querySelectorAll(".tab-btn");
+      const tabPanes = document.querySelectorAll(".tab-pane");
+
+      tabBtns.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          tabBtns.forEach((b) => b.classList.remove("active"));
+          tabPanes.forEach((p) => p.classList.remove("active"));
+          btn.classList.add("active");
+          const tabId = btn.dataset.tab;
+          document.getElementById(`tab-${tabId}`).classList.add("active");
+        });
+      });
 
       const screenDefaults = {
         mode: "verse",

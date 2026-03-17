@@ -83,6 +83,9 @@
           <a class="btn-ghost" href="screen.html" target="_blank"
             ><i class="fas fa-tv"></i> Open Screen</a
           >
+          <button class="btn-primary" id="openAudienceBtn">
+            <i class="fas fa-eye"></i> Audience View
+          </button>
           <button class="btn-ghost" id="refreshPreviewBtn">
             <i class="fas fa-rotate"></i> Refresh Preview
           </button>
@@ -598,6 +601,12 @@
                 >Open Full Screen</a
               >
             </div>
+            <div class="helper-text one-laptop-note">
+              One-laptop workflow: keep this page open, open
+              "screen.html" in full screen (F11), and use Alt+Tab to switch.
+              If the internet drops, this browser will keep the last state and
+              sync locally.
+            </div>
           </section>
 
           <section class="preview-card">
@@ -622,6 +631,19 @@
       </div>
     </div>
 
+    <div class="audience-overlay" id="audienceOverlay" aria-hidden="true">
+      <div class="audience-actions">
+        <button class="btn-ghost" id="exitAudienceBtn">
+          Exit Audience View
+        </button>
+      </div>
+      <iframe
+        id="audienceFrame"
+        src="screen.html"
+        title="Audience Screen"
+      ></iframe>
+    </div>
+
     <script>
       if (!localStorage.getItem("ict_token")) {
         window.location.href = "ict_login.html";
@@ -633,6 +655,11 @@
       }
 
       const API_URL = "/api";
+      const LOCAL_SCREEN_KEY = "ict_screen_state_cache";
+      const screenChannel =
+        "BroadcastChannel" in window
+          ? new BroadcastChannel("pocm_screen_state")
+          : null;
       const screenSyncStatus = document.getElementById("screenSyncStatus");
       const lastSavedAt = document.getElementById("lastSavedAt");
       const currentModeLabel = document.getElementById("currentModeLabel");
@@ -700,6 +727,10 @@
 
       const refreshPreviewBtn = document.getElementById("refreshPreviewBtn");
       const screenPreview = document.getElementById("screenPreview");
+      const openAudienceBtn = document.getElementById("openAudienceBtn");
+      const audienceOverlay = document.getElementById("audienceOverlay");
+      const audienceFrame = document.getElementById("audienceFrame");
+      const exitAudienceBtn = document.getElementById("exitAudienceBtn");
 
       const modeButtons = Array.from(document.querySelectorAll(".mode-btn"));
       const saveButtons = Array.from(document.querySelectorAll("[data-save]"));
@@ -771,6 +802,37 @@
         if (!el) return;
         el.textContent = message || "";
         el.className = `helper-text${type ? ` ${type}` : ""}`;
+      }
+
+      function cacheScreenState(state) {
+        try {
+          localStorage.setItem(LOCAL_SCREEN_KEY, JSON.stringify(state));
+        } catch (error) {
+          console.error("Cache screen state failed:", error);
+        }
+      }
+
+      function loadCachedScreenState() {
+        try {
+          const raw = localStorage.getItem(LOCAL_SCREEN_KEY);
+          if (!raw) return null;
+          return JSON.parse(raw);
+        } catch (error) {
+          console.error("Load cached screen state failed:", error);
+          return null;
+        }
+      }
+
+      function broadcastScreenState(state) {
+        if (!screenChannel) return;
+        try {
+          screenChannel.postMessage({
+            type: "screen-state",
+            payload: state,
+          });
+        } catch (error) {
+          console.error("Broadcast failed:", error);
+        }
       }
 
       const bibleBooks = [
@@ -1409,7 +1471,13 @@
           setStatus("Synced", "good");
         } catch (error) {
           console.error("Error loading screen state:", error);
-          setStatus("Offline", "warn");
+          const cached = loadCachedScreenState();
+          if (cached) {
+            applyScreenState(cached);
+            setStatus("Offline (local)", "warn");
+          } else {
+            setStatus("Offline", "warn");
+          }
         }
       }
 
@@ -1425,10 +1493,19 @@
           if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
           const data = await res.json();
           applyScreenState(data.data || screenState);
+          cacheScreenState(data.data || screenState);
+          broadcastScreenState(data.data || screenState);
           setStatus("Saved", "good");
         } catch (error) {
           console.error("Error saving screen state:", error);
-          setStatus("Failed", "warn");
+          const fallback = {
+            ...screenState,
+            updatedAt: new Date().toISOString(),
+          };
+          applyScreenState(fallback);
+          cacheScreenState(fallback);
+          broadcastScreenState(fallback);
+          setStatus("Offline (local)", "warn");
         }
       }
 
@@ -1661,6 +1738,33 @@
       if (refreshPreviewBtn && screenPreview) {
         refreshPreviewBtn.addEventListener("click", () => {
           screenPreview.src = "screen.html";
+        });
+      }
+
+      function setAudienceMode(isActive) {
+        if (!audienceOverlay || !audienceFrame) return;
+        document.body.classList.toggle("audience-mode", isActive);
+        audienceOverlay.setAttribute("aria-hidden", isActive ? "false" : "true");
+        if (isActive) {
+          const base = "screen.html?present=1";
+          audienceFrame.src = `${base}&ts=${Date.now()}`;
+          if (audienceOverlay.requestFullscreen) {
+            audienceOverlay.requestFullscreen().catch(() => {});
+          }
+        } else if (document.fullscreenElement) {
+          document.exitFullscreen().catch(() => {});
+        }
+      }
+
+      if (openAudienceBtn) {
+        openAudienceBtn.addEventListener("click", () => {
+          setAudienceMode(true);
+        });
+      }
+
+      if (exitAudienceBtn) {
+        exitAudienceBtn.addEventListener("click", () => {
+          setAudienceMode(false);
         });
       }
 

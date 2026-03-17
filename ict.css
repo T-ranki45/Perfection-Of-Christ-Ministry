@@ -24,6 +24,40 @@ body {
   min-height: 100vh;
 }
 
+body.audience-mode {
+  overflow: hidden;
+}
+
+body.audience-mode .ict-app {
+  visibility: hidden;
+}
+
+.audience-overlay {
+  position: fixed;
+  inset: 0;
+  background: #000;
+  display: none;
+  flex-direction: column;
+  z-index: 999;
+}
+
+.audience-overlay[aria-hidden="false"] {
+  display: flex;
+}
+
+.audience-actions {
+  padding: 1rem;
+  display: flex;
+  justify-content: flex-end;
+  background: rgba(0, 0, 0, 0.7);
+}
+
+.audience-overlay iframe {
+  flex: 1;
+  border: none;
+  width: 100%;
+}
+
 body::before,
 body::after {
   content: "";

@@ -65,6 +65,11 @@
 
     <script>
       const API_URL = "/api";
+      const LOCAL_SCREEN_KEY = "ict_screen_state_cache";
+      const screenChannel =
+        "BroadcastChannel" in window
+          ? new BroadcastChannel("pocm_screen_state")
+          : null;
       const modeLabel = document.getElementById("screen-mode-label");
       const modeElements = {
         verse: document.getElementById("mode-verse"),
@@ -175,6 +180,25 @@
         document.body.classList.toggle("is-blank", mode === "blank");
       }
 
+      function cacheScreenState(state) {
+        try {
+          localStorage.setItem(LOCAL_SCREEN_KEY, JSON.stringify(state));
+        } catch (error) {
+          console.error("Cache screen state failed:", error);
+        }
+      }
+
+      function loadCachedScreenState() {
+        try {
+          const raw = localStorage.getItem(LOCAL_SCREEN_KEY);
+          if (!raw) return null;
+          return JSON.parse(raw);
+        } catch (error) {
+          console.error("Load cached screen state failed:", error);
+          return null;
+        }
+      }
+
       function applyState(state) {
         screenState = { ...stateDefaults, ...(state || {}) };
         const displayMode = forcedMode || screenState.mode || "verse";
@@ -226,9 +250,24 @@
           if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
           const data = await res.json();
           applyState(data);
+          cacheScreenState(data);
         } catch (error) {
           console.error("Unable to load screen state:", error);
+          const cached = loadCachedScreenState();
+          if (cached) {
+            applyState(cached);
+          }
         }
+      }
+
+      if (screenChannel) {
+        screenChannel.addEventListener("message", (event) => {
+          if (!event || !event.data) return;
+          if (event.data.type !== "screen-state") return;
+          const payload = event.data.payload || {};
+          applyState(payload);
+          cacheScreenState(payload);
+        });
       }
 
       const pollInterval = isEmbed ? 5000 : 3000;

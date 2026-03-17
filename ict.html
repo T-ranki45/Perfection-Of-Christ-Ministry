@@ -184,7 +184,9 @@
           <section class="control-card">
             <div class="card-header">
               <h3>Verse & Giving Scripture</h3>
-              <span class="card-note">Displayed in verse mode and give section</span>
+              <span class="card-note"
+                >Displayed in verse mode and give section</span
+              >
             </div>
             <div class="form-grid">
               <label>
@@ -213,12 +215,8 @@
               </label>
             </div>
             <div class="card-actions">
-              <button class="btn-primary" data-save="verse">
-                Save & Sync
-              </button>
-              <button class="btn-ghost" data-show="verse">
-                Show Verse
-              </button>
+              <button class="btn-primary" data-save="verse">Save & Sync</button>
+              <button class="btn-ghost" data-show="verse">Show Verse</button>
             </div>
           </section>
 
@@ -332,10 +330,10 @@
               </label>
             </div>
             <div class="card-actions">
-              <button class="btn-primary" data-save="lyrics">Save & Sync</button>
-              <button class="btn-ghost" data-show="lyrics">
-                Show Lyrics
+              <button class="btn-primary" data-save="lyrics">
+                Save & Sync
               </button>
+              <button class="btn-ghost" data-show="lyrics">Show Lyrics</button>
             </div>
           </section>
 
@@ -364,16 +362,16 @@
             </div>
             <div class="card-actions">
               <button class="btn-primary" data-save="order">Save & Sync</button>
-              <button class="btn-ghost" data-show="order">
-                Show Order
-              </button>
+              <button class="btn-ghost" data-show="order">Show Order</button>
             </div>
           </section>
 
           <section class="control-card">
             <div class="card-header">
               <h3>Countdown Timer</h3>
-              <span class="card-note">Use for service start or break times</span>
+              <span class="card-note"
+                >Use for service start or break times</span
+              >
             </div>
             <div class="countdown-grid">
               <label>
@@ -382,7 +380,13 @@
               </label>
               <label>
                 <span>Seconds</span>
-                <input type="number" id="countdownSeconds" min="0" max="59" value="0" />
+                <input
+                  type="number"
+                  id="countdownSeconds"
+                  min="0"
+                  max="59"
+                  value="0"
+                />
               </label>
               <div class="countdown-readout">
                 <span>Remaining</span>
@@ -390,9 +394,7 @@
               </div>
             </div>
             <div class="card-actions">
-              <button class="btn-primary" id="countdownStart">
-                Start
-              </button>
+              <button class="btn-primary" id="countdownStart">Start</button>
               <button class="btn-ghost" id="countdownPause">Pause</button>
               <button class="btn-ghost" id="countdownReset">Reset</button>
               <button class="btn-ghost" data-show="countdown">
@@ -441,6 +443,50 @@
               </button>
             </div>
           </section>
+
+          <section class="control-card">
+            <div class="card-header">
+              <h3>Service Checklist</h3>
+              <span class="card-note">Quick readiness checks</span>
+            </div>
+            <div class="checklist" id="serviceChecklist">
+              <label
+                ><input type="checkbox" data-check="audio" />Audio console
+                ready</label
+              >
+              <label
+                ><input type="checkbox" data-check="projection" />Projector
+                output verified</label
+              >
+              <label
+                ><input type="checkbox" data-check="lyrics" />Lyrics
+                loaded</label
+              >
+              <label
+                ><input type="checkbox" data-check="stream" />Stream preview
+                tested</label
+              >
+              <label
+                ><input type="checkbox" data-check="backup" />Recording backup
+                active</label
+              >
+            </div>
+          </section>
+
+          <section class="control-card">
+            <div class="card-header">
+              <h3>Service Notes</h3>
+              <span class="card-note">Autosaves locally</span>
+            </div>
+            <textarea
+              class="notes-area"
+              id="serviceNotes"
+              placeholder="Write handover notes, issues, or reminders..."
+            ></textarea>
+            <div class="card-actions">
+              <button class="btn-ghost" id="clearNotesBtn">Clear Notes</button>
+            </div>
+          </section>
         </div>
 
         <aside class="preview-stack">
@@ -465,6 +511,10 @@
                 >Open Full Screen</a
               >
             </div>
+            <div class="helper-text one-laptop-note">
+              One-laptop workflow: keep this page open, open
+              "screen.html" in full screen (F11), and use Alt+Tab to switch.
+            </div>
           </section>
 
           <section class="preview-card">
@@ -483,51 +533,6 @@
               <a class="btn-primary" href="screen.html" target="_blank"
                 >Open Full Screen</a
               >
-            </div>
-          </section>
-
-          <section class="preview-card">
-            <div class="card-header">
-              <h3>Service Checklist</h3>
-              <span class="card-note">Quick readiness checks</span>
-            </div>
-            <div class="checklist" id="serviceChecklist">
-              <label
-                ><input type="checkbox" data-check="audio" />Audio console
-                ready</label
-              >
-              <label
-                ><input type="checkbox" data-check="projection" />Projector
-                output verified</label
-              >
-              <label
-                ><input type="checkbox" data-check="lyrics" />Lyrics loaded</label
-              >
-              <label
-                ><input type="checkbox" data-check="stream" />Stream preview
-                tested</label
-              >
-              <label
-                ><input type="checkbox" data-check="backup" />Recording backup
-                active</label
-              >
-            </div>
-          </section>
-
-          <section class="preview-card">
-            <div class="card-header">
-              <h3>Service Notes</h3>
-              <span class="card-note">Autosaves locally</span>
-            </div>
-            <textarea
-              class="notes-area"
-              id="serviceNotes"
-              placeholder="Write handover notes, issues, or reminders..."
-            ></textarea>
-            <div class="card-actions">
-              <button class="btn-ghost" id="clearNotesBtn">
-                Clear Notes
-              </button>
             </div>
           </section>
         </aside>
@@ -565,13 +570,19 @@
       const lyricsLinesInput = document.getElementById("lyricsLinesInput");
       const orderTitleInput = document.getElementById("orderTitleInput");
       const orderItemsInput = document.getElementById("orderItemsInput");
-      const lowerThirdNameInput = document.getElementById("lowerThirdNameInput");
-      const lowerThirdRoleInput = document.getElementById("lowerThirdRoleInput");
+      const lowerThirdNameInput = document.getElementById(
+        "lowerThirdNameInput",
+      );
+      const lowerThirdRoleInput = document.getElementById(
+        "lowerThirdRoleInput",
+      );
       const lowerThirdFooterInput = document.getElementById(
         "lowerThirdFooterInput",
       );
 
-      const bibleReferenceInput = document.getElementById("bibleReferenceInput");
+      const bibleReferenceInput = document.getElementById(
+        "bibleReferenceInput",
+      );
       const bibleBookInput = document.getElementById("bibleBookInput");
       const bibleChapterInput = document.getElementById("bibleChapterInput");
       const bibleVerseInput = document.getElementById("bibleVerseInput");
@@ -786,7 +797,10 @@
       }
 
       function saveRecentVerses() {
-        localStorage.setItem("ict_recent_verses", JSON.stringify(recentVerseList));
+        localStorage.setItem(
+          "ict_recent_verses",
+          JSON.stringify(recentVerseList),
+        );
       }
 
       function renderRecentVerses() {
@@ -1054,8 +1068,7 @@
           }
           hymnLibrary = Array.isArray(data) ? data : [];
           const stillActive =
-            activeHymn &&
-            hymnLibrary.some((hymn) => hymn.id === activeHymn.id);
+            activeHymn && hymnLibrary.some((hymn) => hymn.id === activeHymn.id);
           if (!stillActive) {
             activeHymn = hymnLibrary.length ? hymnLibrary[0] : null;
           }
@@ -1090,11 +1103,7 @@
           });
           const data = await res.json().catch(() => ({}));
           if (!res.ok) {
-            setHelperStatus(
-              hymnStatus,
-              data.error || "Import failed.",
-              "warn",
-            );
+            setHelperStatus(hymnStatus, data.error || "Import failed.", "warn");
             return;
           }
           setHelperStatus(
@@ -1271,8 +1280,10 @@
           lyricsTitleInput.value = screenState.lyricsTitle || "";
         if (lyricsLinesInput)
           lyricsLinesInput.value = screenState.lyricsLines || "";
-        if (orderTitleInput) orderTitleInput.value = screenState.orderTitle || "";
-        if (orderItemsInput) orderItemsInput.value = screenState.orderItems || "";
+        if (orderTitleInput)
+          orderTitleInput.value = screenState.orderTitle || "";
+        if (orderItemsInput)
+          orderItemsInput.value = screenState.orderItems || "";
         if (lowerThirdNameInput)
           lowerThirdNameInput.value = screenState.lowerThirdName || "";
         if (lowerThirdRoleInput)
@@ -1328,7 +1339,9 @@
         return {
           verseText: verseTextInput ? verseTextInput.value.trim() : "",
           verseRef: verseRefInput ? verseRefInput.value.trim() : "",
-          giveScripture: giveScriptureInput ? giveScriptureInput.value.trim() : "",
+          giveScripture: giveScriptureInput
+            ? giveScriptureInput.value.trim()
+            : "",
         };
       }
 
@@ -1373,8 +1386,7 @@
 
       function getDurationFromInputs() {
         const mins = Number(countdownMinutes ? countdownMinutes.value : 0) || 0;
-        const secs =
-          Number(countdownSeconds ? countdownSeconds.value : 0) || 0;
+        const secs = Number(countdownSeconds ? countdownSeconds.value : 0) || 0;
         return Math.max(0, mins * 60 + secs);
       }
 
@@ -1394,7 +1406,8 @@
             return saveScreenState(collectAnnouncementData());
           if (key === "lyrics") return saveScreenState(collectLyricsData());
           if (key === "order") return saveScreenState(collectOrderData());
-          if (key === "lowerthird") return saveScreenState(collectLowerThirdData());
+          if (key === "lowerthird")
+            return saveScreenState(collectLowerThirdData());
           return saveScreenState({});
         });
       });

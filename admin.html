@@ -613,7 +613,7 @@
             <li onclick="logout()">
               <i class="fas fa-sign-out-alt"></i> Logout
             </li>
-            <li onclick="window.location.href = 'index.html'">
+            <li onclick="window.location.href = '/'">
               <i class="fas fa-external-link-alt"></i> View Website
             </li>
           </ul>
@@ -1256,7 +1256,7 @@
 
       // --- SECURITY CHECK ---
       if (!localStorage.getItem("admin_token")) {
-        window.location.href = "login.html";
+        window.location.href = "/admin/login";
       }
 
       // Right after setting the admin token, add this:
@@ -1352,7 +1352,7 @@
 
       function logout() {
         localStorage.removeItem("admin_token");
-        window.location.href = "login.html";
+        window.location.href = "/admin/login";
       }
 
       // --- Upload Helper with Progress ---

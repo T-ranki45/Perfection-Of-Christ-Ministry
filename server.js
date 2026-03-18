@@ -43,11 +43,67 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(express.static(".")); // Serve static files from current directory
+const htmlRouteRedirects = {
+  "/index.html": "/",
+  "/about.html": "/about",
+  "/blog.html": "/blog",
+  "/login.html": "/admin/login",
+  "/admin.html": "/admin",
+  "/ict_login.html": "/ict",
+  "/ict.html": "/ict/control",
+  "/screen.html": "/screen",
+  "/mic.html": "/mic",
+};
+
+app.use((req, res, next) => {
+  const redirectTarget = htmlRouteRedirects[req.path];
+  if (redirectTarget) {
+    return res.redirect(302, redirectTarget);
+  }
+  next();
+});
+
+app.use(express.static(".", { index: false })); // Serve static files without defaulting to a random HTML entry
+
+function sendPage(res, filename) {
+  res.sendFile(path.join(__dirname, filename));
+}
+
+app.get("/", (req, res) => {
+  sendPage(res, "index.html");
+});
+
+app.get("/about", (req, res) => {
+  sendPage(res, "about.html");
+});
+
+app.get("/blog", (req, res) => {
+  sendPage(res, "blog.html");
+});
+
+app.get("/admin/login", (req, res) => {
+  sendPage(res, "login.html");
+});
 
 // Serve admin.html explicitly at /admin
 app.get("/admin", (req, res) => {
-  res.sendFile(path.join(__dirname, "admin.html"));
+  sendPage(res, "admin.html");
+});
+
+app.get("/ict", (req, res) => {
+  sendPage(res, "ict_login.html");
+});
+
+app.get("/ict/control", (req, res) => {
+  sendPage(res, "ict.html");
+});
+
+app.get("/screen", (req, res) => {
+  sendPage(res, "screen.html");
+});
+
+app.get("/mic", (req, res) => {
+  sendPage(res, "mic.html");
 });
 
 // --- DATABASE CONNECTION ---
@@ -1220,16 +1276,20 @@ async function startServer() {
     });
     if (addresses.length) {
       addresses.forEach((ip) => {
-        console.log(`ICT: http://${ip}:${port}/ict.html`);
-        console.log(`Screen: http://${ip}:${port}/screen.html`);
-        console.log(`Mic Sender: http://${ip}:${port}/mic.html#send`);
-        console.log(`Mic Listener: http://${ip}:${port}/mic.html#listen`);
+        console.log(`Website: http://${ip}:${port}/`);
+        console.log(`ICT Login: http://${ip}:${port}/ict`);
+        console.log(`ICT Control: http://${ip}:${port}/ict/control`);
+        console.log(`Screen: http://${ip}:${port}/screen`);
+        console.log(`Mic Sender: http://${ip}:${port}/mic#send`);
+        console.log(`Mic Listener: http://${ip}:${port}/mic#listen`);
       });
     } else {
-      console.log(`ICT: http://localhost:${port}/ict.html`);
-      console.log(`Screen: http://localhost:${port}/screen.html`);
-      console.log(`Mic Sender: http://localhost:${port}/mic.html#send`);
-      console.log(`Mic Listener: http://localhost:${port}/mic.html#listen`);
+      console.log(`Website: http://localhost:${port}/`);
+      console.log(`ICT Login: http://localhost:${port}/ict`);
+      console.log(`ICT Control: http://localhost:${port}/ict/control`);
+      console.log(`Screen: http://localhost:${port}/screen`);
+      console.log(`Mic Sender: http://localhost:${port}/mic#send`);
+      console.log(`Mic Listener: http://localhost:${port}/mic#listen`);
     }
 
     // --- KEEP-ALIVE SCRIPT ---

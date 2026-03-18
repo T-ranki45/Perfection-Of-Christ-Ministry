@@ -190,7 +190,7 @@
           <button type="submit" class="btn-primary">Login</button>
         </form>
         <div style="text-align: center; margin-top: 1rem">
-          <a href="index.html" class="back-link"
+          <a href="/" class="back-link"
             ><i class="fas fa-arrow-left"></i> Back to Website</a
           >
         </div>
@@ -203,7 +203,7 @@
     <script>
       // Check if already logged in
       if (localStorage.getItem("ict_token")) {
-        window.location.href = "ict.html";
+        window.location.href = "/ict/control";
       }
 
       document
@@ -219,7 +219,7 @@
             if (password === "Aces123") {
               // Developer access to the dashboard
               localStorage.setItem("ict_token", "true");
-              window.location.href = "ict.html";
+              window.location.href = "/ict/control";
             } else if (password === "ICT 123") {
               // Redirect to under construction page
               window.location.href = "under_construction.html";

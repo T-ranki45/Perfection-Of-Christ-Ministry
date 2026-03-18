@@ -4,7 +4,7 @@ const http = require("http");
 const path = require("path");
 
 const PORT = process.env.PORT || 3000;
-const BASE_URL = `http://localhost:${PORT}/ict.html`;
+const BASE_URL = `http://localhost:${PORT}/ict/control`;
 
 let serverProcess = null;
 

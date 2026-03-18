@@ -1,7 +1,7 @@
 {
   "name": "POCM ICT Live Service Control",
   "short_name": "POCM ICT",
-  "start_url": "ict.html",
+  "start_url": "/ict/control",
   "scope": "./",
   "display": "standalone",
   "background_color": "#0b1118",

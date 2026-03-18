@@ -1,12 +1,32 @@
-const CACHE_NAME = "pocm-ict-v1";
+const CACHE_NAME = "pocm-site-v2";
 const CORE_ASSETS = [
-  "ict.html",
+  "/",
+  "/about",
+  "/blog",
+  "/admin/login",
+  "/ict",
+  "/ict/control",
+  "/screen",
+  "/mic",
+  "style.css",
+  "about.css",
+  "blog.css",
   "ict.css",
-  "screen.html",
   "screen.css",
   "manifest.webmanifest",
   "image/logo.png",
 ];
+
+function getNavigationFallback(pathname) {
+  if (pathname.startsWith("/ict/control")) return "/ict/control";
+  if (pathname.startsWith("/ict")) return "/ict";
+  if (pathname.startsWith("/screen")) return "/screen";
+  if (pathname.startsWith("/mic")) return "/mic";
+  if (pathname.startsWith("/about")) return "/about";
+  if (pathname.startsWith("/blog")) return "/blog";
+  if (pathname.startsWith("/admin")) return "/admin/login";
+  return "/";
+}
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
@@ -22,7 +42,9 @@ self.addEventListener("activate", (event) => {
     caches
       .keys()
       .then((keys) =>
-        Promise.all(keys.filter((key) => key !== CACHE_NAME).map((key) => caches.delete(key))),
+        Promise.all(
+          keys.filter((key) => key !== CACHE_NAME).map((key) => caches.delete(key)),
+        ),
       )
       .then(() => self.clients.claim()),
   );
@@ -37,11 +59,15 @@ self.addEventListener("fetch", (event) => {
   if (url.pathname.startsWith("/api/")) return;
 
   if (request.mode === "navigate") {
+    const fallback = getNavigationFallback(url.pathname);
     event.respondWith(
-      caches
-        .match("ict.html")
-        .then((cached) => cached || fetch(request))
-        .catch(() => caches.match("ict.html")),
+      fetch(request)
+        .then((response) => {
+          const copy = response.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(request, copy));
+          return response;
+        })
+        .catch(() => caches.match(request).then((cached) => cached || caches.match(fallback))),
     );
     return;
   }

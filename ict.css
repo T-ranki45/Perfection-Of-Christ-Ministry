@@ -302,6 +302,109 @@ body::after {
   color: #ffb3a8;
 }
 
+.command-deck-card {
+  background: linear-gradient(
+    135deg,
+    rgba(20, 31, 48, 0.96),
+    rgba(10, 16, 26, 0.98)
+  );
+  border-color: rgba(212, 164, 63, 0.16);
+}
+
+.command-deck-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.9rem;
+}
+
+.command-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 1rem;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(6, 10, 17, 0.55);
+}
+
+.command-stat > span {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--accent);
+}
+
+.command-stat strong {
+  font-size: 1rem;
+  line-height: 1.35;
+}
+
+.command-stat small {
+  color: var(--muted);
+  line-height: 1.45;
+  min-height: 2.6em;
+}
+
+.quick-live-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 0.8rem;
+  margin-top: 1rem;
+}
+
+.quick-live-btn {
+  background: rgba(6, 10, 17, 0.72);
+  color: var(--text);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 14px;
+  padding: 0.95rem 1rem;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.35rem;
+  transition:
+    border-color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+.quick-live-btn span {
+  font-weight: 700;
+  letter-spacing: 0.2px;
+}
+
+.quick-live-btn small {
+  color: var(--muted);
+  font-size: 0.8rem;
+  line-height: 1.4;
+  text-align: left;
+}
+
+.quick-live-btn:hover,
+.quick-live-btn.is-live {
+  border-color: var(--accent);
+  transform: translateY(-1px);
+  box-shadow: 0 12px 24px rgba(212, 164, 63, 0.16);
+}
+
+.quick-live-btn.is-live {
+  background: rgba(212, 164, 63, 0.12);
+}
+
+.quick-live-btn.is-ready:not(.is-live) small {
+  color: #9af3c5;
+}
+
+.quick-live-btn.danger {
+  border-color: rgba(192, 57, 43, 0.3);
+}
+
+.quick-live-btn.danger small {
+  color: #ffb3a8;
+}
+
 .form-grid {
   display: grid;
   gap: 1rem;
@@ -739,11 +842,49 @@ select:focus {
   background: rgba(192, 57, 43, 0.3);
 }
 
+.btn-primary:disabled,
+.btn-ghost:disabled,
+.btn-danger:disabled,
+.countdown-chip:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
 .countdown-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
   gap: 1rem;
   align-items: end;
+}
+
+.countdown-presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: 1rem;
+}
+
+.countdown-chip {
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(6, 10, 17, 0.6);
+  color: var(--text);
+  border-radius: 999px;
+  padding: 0.55rem 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    transform 0.2s ease,
+    color 0.2s ease;
+}
+
+.countdown-chip:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  transform: translateY(-1px);
 }
 
 .countdown-readout {

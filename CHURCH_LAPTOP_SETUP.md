@@ -43,12 +43,12 @@ Use this when your laptop is the control panel and the church laptop drives the 
    ```
 3. On the church laptop, open:
    ```text
-   http://localhost:3000/screen.html
+   http://localhost:3000/screen
    ```
    Press F11 for full screen.
 4. On your laptop, open:
    ```text
-   http://CHURCH_LAPTOP_IP:3000/ict.html
+   http://CHURCH_LAPTOP_IP:3000/ict
    ```
 
 ### Option B: Your Laptop Hosts the Server (Control host)
@@ -59,11 +59,11 @@ Use this when your laptop is the control panel and the church laptop drives the 
    ```
 3. On your laptop, open:
    ```text
-   http://localhost:3000/ict.html
+   http://localhost:3000/ict
    ```
 4. On the church laptop, open:
    ```text
-   http://YOUR_LAPTOP_IP:3000/screen.html
+   http://YOUR_LAPTOP_IP:3000/screen
    ```
    Press F11 for full screen.
 
@@ -79,8 +79,8 @@ Use this when your laptop is the control panel and the church laptop drives the 
 If Windows asks, allow access on Private Networks.
 
 ## One-Laptop Live Usage
-- Keep ict.html open for controls.
-- Open screen.html full screen (F11) for the audience.
+- Open `/ict` to sign in, then continue into the ICT control page.
+- Open `/screen` full screen (F11) for the audience.
 - Use Alt+Tab to switch.
 - Audience View button hides controls from the congregation.
 
@@ -92,7 +92,7 @@ If Windows asks, allow access on Private Networks.
 
 ## Offline Behavior
 - The last screen state is cached locally.
-- If internet drops, ict.html and screen.html still work on the same laptop.
+- If internet drops, the ICT control route and screen route still work on the same laptop.
 - Bible lookup and hymn search need internet, but cached verses still work.
 
 ## Optional: Package as a Windows Installer

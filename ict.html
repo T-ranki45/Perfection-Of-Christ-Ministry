@@ -82,7 +82,7 @@
           </div>
         </div>
         <div class="ict-top-actions">
-          <a class="btn-ghost" href="screen.html" target="_blank"
+          <a class="btn-ghost" href="/screen" target="_blank"
             ><i class="fas fa-tv"></i> Open Screen</a
           >
           <button class="btn-primary" id="openAudienceBtn">
@@ -145,6 +145,78 @@
                 Lower Third
               </button>
               <button class="mode-btn danger" data-mode="blank">Blank</button>
+            </div>
+          </section>
+
+          <section class="control-card command-deck-card">
+            <div class="card-header">
+              <h3>Rapid Control Deck</h3>
+              <span class="card-note"
+                >Save the current editor and take it live in one tap</span
+              >
+            </div>
+            <div class="command-deck-grid">
+              <div class="command-stat">
+                <span>Live Now</span>
+                <strong id="deckLiveMode">Verse</strong>
+                <small id="deckLiveMeta">Ready on screen</small>
+              </div>
+              <div class="command-stat">
+                <span>Live Content</span>
+                <strong id="deckContentSummary">No active content yet</strong>
+                <small id="deckSlideMeta">Waiting for the first push</small>
+              </div>
+              <div class="command-stat">
+                <span>Ready Modes</span>
+                <strong id="readyModesCount">0 / 6</strong>
+                <small id="deckReadyHint">Load content for fast switching</small>
+              </div>
+              <div class="command-stat">
+                <span>Checklist</span>
+                <strong id="checklistProgressLabel">0 / 5</strong>
+                <small id="deckChecklistHint">Run the quick checks before service</small>
+              </div>
+            </div>
+            <div class="quick-live-grid">
+              <button class="quick-live-btn" data-quick-live="verse">
+                <span>Verse Live</span>
+                <small data-ready-label="verse">Empty</small>
+              </button>
+              <button class="quick-live-btn" data-quick-live="lyrics">
+                <span>Lyrics Live</span>
+                <small data-ready-label="lyrics">Empty</small>
+              </button>
+              <button class="quick-live-btn" data-quick-live="announcement">
+                <span>Announcement</span>
+                <small data-ready-label="announcement">Empty</small>
+              </button>
+              <button class="quick-live-btn" data-quick-live="order">
+                <span>Order Live</span>
+                <small data-ready-label="order">Empty</small>
+              </button>
+              <button class="quick-live-btn" data-quick-live="countdown">
+                <span>Countdown</span>
+                <small data-ready-label="countdown">Not set</small>
+              </button>
+              <button class="quick-live-btn" data-quick-live="lowerthird">
+                <span>Lower Third</span>
+                <small data-ready-label="lowerthird">Empty</small>
+              </button>
+              <button class="quick-live-btn danger" data-quick-live="blank">
+                <span>Blank Screen</span>
+                <small>Emergency cut</small>
+              </button>
+            </div>
+            <div class="card-actions">
+              <button class="btn-primary" id="restoreLastModeBtn">
+                Restore Previous
+              </button>
+              <button class="btn-ghost" id="focusLiveEditorBtn">
+                Open Active Editor
+              </button>
+            </div>
+            <div class="helper-text" id="commandDeckStatus">
+              Editors hold your local draft until you save or go live.
             </div>
           </section>
 
@@ -282,10 +354,10 @@
                 </label>
               </div>
               <div class="card-actions">
-                <button class="btn-primary" data-save="verse">
-                  Save & Sync
+                <button class="btn-primary" data-save-show="verse">
+                  Save & Go Live
                 </button>
-                <button class="btn-ghost" data-show="verse">Show Verse</button>
+                <button class="btn-ghost" data-save="verse">Save Only</button>
               </div>
             </section>
           </div>
@@ -369,12 +441,10 @@
                 </label>
               </div>
               <div class="card-actions">
-                <button class="btn-primary" data-save="lyrics">
-                  Save & Sync
+                <button class="btn-primary" data-save-show="lyrics">
+                  Save & Go Live
                 </button>
-                <button class="btn-ghost" data-show="lyrics">
-                  Show Lyrics
-                </button>
+                <button class="btn-ghost" data-save="lyrics">Save Only</button>
               </div>
             </section>
           </div>
@@ -407,11 +477,11 @@
                 </label>
               </div>
               <div class="card-actions">
-                <button class="btn-primary" data-save="announcement">
-                  Save & Sync
+                <button class="btn-primary" data-save-show="announcement">
+                  Save & Go Live
                 </button>
-                <button class="btn-ghost" data-show="announcement">
-                  Show Announcement
+                <button class="btn-ghost" data-save="announcement">
+                  Save Only
                 </button>
               </div>
             </section>
@@ -440,10 +510,10 @@
                 </label>
               </div>
               <div class="card-actions">
-                <button class="btn-primary" data-save="order">
-                  Save & Sync
+                <button class="btn-primary" data-save-show="order">
+                  Save & Go Live
                 </button>
-                <button class="btn-ghost" data-show="order">Show Order</button>
+                <button class="btn-ghost" data-save="order">Save Only</button>
               </div>
             </section>
 
@@ -479,11 +549,11 @@
                 </label>
               </div>
               <div class="card-actions">
-                <button class="btn-primary" data-save="lowerthird">
-                  Save & Sync
+                <button class="btn-primary" data-save-show="lowerthird">
+                  Save & Go Live
                 </button>
-                <button class="btn-ghost" data-show="lowerthird">
-                  Show Lower Third
+                <button class="btn-ghost" data-save="lowerthird">
+                  Save Only
                 </button>
               </div>
             </section>
@@ -508,10 +578,10 @@
                 </label>
               </div>
               <div class="card-actions">
-                <a class="btn-primary" href="mic.html#send" target="_blank"
+                <a class="btn-primary" href="/mic#send" target="_blank"
                   >Open Mic Sender</a
                 >
-                <a class="btn-ghost" href="mic.html#listen" target="_blank"
+                <a class="btn-ghost" href="/mic#listen" target="_blank"
                   >Open Mic Listener</a
                 >
               </div>
@@ -548,6 +618,20 @@
                   <span>Remaining</span>
                   <strong id="countdownRemaining">10:00</strong>
                 </div>
+              </div>
+              <div class="countdown-presets">
+                <button class="countdown-chip" data-countdown-preset="300">
+                  Start 5:00
+                </button>
+                <button class="countdown-chip" data-countdown-preset="600">
+                  Start 10:00
+                </button>
+                <button class="countdown-chip" data-countdown-preset="900">
+                  Start 15:00
+                </button>
+                <button class="countdown-chip" data-countdown-preset="1800">
+                  Start 30:00
+                </button>
               </div>
               <div class="card-actions">
                 <button class="btn-primary" id="countdownStart">Start</button>
@@ -656,13 +740,13 @@
               <button class="btn-ghost" id="refreshSplitBtn">
                 Refresh Panels
               </button>
-              <a class="btn-primary" href="screen.html" target="_blank"
+              <a class="btn-primary" href="/screen" target="_blank"
                 >Open Full Screen</a
               >
             </div>
             <div class="helper-text one-laptop-note">
               One-laptop workflow: keep this page open, open
-              "screen.html" in full screen (F11), and use Alt+Tab to switch.
+              "/screen" in full screen (F11), and use Alt+Tab to switch.
               If the internet drops, this browser will keep the last state and
               sync locally.
             </div>
@@ -676,12 +760,12 @@
             <div class="preview-frame">
               <iframe
                 id="screenPreview"
-                src="screen.html"
+                src="/screen"
                 title="Live Screen Preview"
               ></iframe>
             </div>
             <div class="card-actions">
-              <a class="btn-primary" href="screen.html" target="_blank"
+              <a class="btn-primary" href="/screen" target="_blank"
                 >Open Full Screen</a
               >
             </div>
@@ -698,19 +782,19 @@
       </div>
       <iframe
         id="audienceFrame"
-        src="screen.html"
+        src="/screen"
         title="Audience Screen"
       ></iframe>
     </div>
 
     <script>
       if (!localStorage.getItem("ict_token")) {
-        window.location.href = "ict_login.html";
+        window.location.href = "/ict";
       }
 
       function logout() {
         localStorage.removeItem("ict_token");
-        window.location.href = "ict_login.html";
+        window.location.href = "/ict";
       }
 
       if ("serviceWorker" in navigator) {
@@ -793,6 +877,9 @@
       const countdownStart = document.getElementById("countdownStart");
       const countdownPause = document.getElementById("countdownPause");
       const countdownReset = document.getElementById("countdownReset");
+      const countdownPresetButtons = Array.from(
+        document.querySelectorAll("[data-countdown-preset]"),
+      );
 
       const refreshPreviewBtn = document.getElementById("refreshPreviewBtn");
       const screenPreview = document.getElementById("screenPreview");
@@ -803,7 +890,13 @@
 
       const modeButtons = Array.from(document.querySelectorAll(".mode-btn"));
       const saveButtons = Array.from(document.querySelectorAll("[data-save]"));
+      const saveShowButtons = Array.from(
+        document.querySelectorAll("[data-save-show]"),
+      );
       const showButtons = Array.from(document.querySelectorAll("[data-show]"));
+      const quickLiveButtons = Array.from(
+        document.querySelectorAll("[data-quick-live]"),
+      );
 
       const splitGrid = document.getElementById("splitGrid");
       const splitControls = document.getElementById("splitControls");
@@ -816,18 +909,42 @@
       );
       const notesArea = document.getElementById("serviceNotes");
       const clearNotesBtn = document.getElementById("clearNotesBtn");
+      const deckLiveMode = document.getElementById("deckLiveMode");
+      const deckLiveMeta = document.getElementById("deckLiveMeta");
+      const deckContentSummary = document.getElementById("deckContentSummary");
+      const deckSlideMeta = document.getElementById("deckSlideMeta");
+      const readyModesCount = document.getElementById("readyModesCount");
+      const checklistProgressLabel = document.getElementById(
+        "checklistProgressLabel",
+      );
+      const commandDeckStatus = document.getElementById("commandDeckStatus");
+      const restoreLastModeBtn = document.getElementById("restoreLastModeBtn");
+      const focusLiveEditorBtn = document.getElementById("focusLiveEditorBtn");
+      const hotkeyList = document.querySelector(".hotkey-list");
+      const quickReadyLabels = new Map(
+        Array.from(document.querySelectorAll("[data-ready-label]")).map((el) => [
+          el.dataset.readyLabel,
+          el,
+        ]),
+      );
 
       // Tab Logic
-      const tabBtns = document.querySelectorAll(".tab-btn");
-      const tabPanes = document.querySelectorAll(".tab-pane");
+      const tabBtns = Array.from(document.querySelectorAll(".tab-btn"));
+      const tabPanes = Array.from(document.querySelectorAll(".tab-pane"));
+
+      function activateTab(tabId) {
+        if (!tabId) return;
+        tabBtns.forEach((btn) => {
+          btn.classList.toggle("active", btn.dataset.tab === tabId);
+        });
+        tabPanes.forEach((pane) => {
+          pane.classList.toggle("active", pane.id === `tab-${tabId}`);
+        });
+      }
 
       tabBtns.forEach((btn) => {
         btn.addEventListener("click", () => {
-          tabBtns.forEach((b) => b.classList.remove("active"));
-          tabPanes.forEach((p) => p.classList.remove("active"));
-          btn.classList.add("active");
-          const tabId = btn.dataset.tab;
-          document.getElementById(`tab-${tabId}`).classList.add("active");
+          activateTab(btn.dataset.tab);
         });
       });
 
@@ -864,6 +981,47 @@
       let splitLayout = 3;
       let splitModes = [];
       let recentVerseList = [];
+      let lastNonBlankMode = "verse";
+      const EDITOR_DRAFT_KEY = "ict_editor_drafts";
+      const editorFieldBindings = [
+        { key: "verseText", input: verseTextInput },
+        { key: "verseRef", input: verseRefInput },
+        { key: "giveScripture", input: giveScriptureInput },
+        { key: "announcementTitle", input: announcementTitleInput },
+        { key: "announcementBody", input: announcementBodyInput },
+        { key: "lyricsTitle", input: lyricsTitleInput },
+        { key: "lyricsLines", input: lyricsLinesInput },
+        { key: "orderTitle", input: orderTitleInput },
+        { key: "orderItems", input: orderItemsInput },
+        { key: "lowerThirdName", input: lowerThirdNameInput },
+        { key: "lowerThirdRole", input: lowerThirdRoleInput },
+        { key: "lowerThirdFooter", input: lowerThirdFooterInput },
+      ];
+      const editableModeOrder = [
+        "verse",
+        "lyrics",
+        "announcement",
+        "order",
+        "countdown",
+        "lowerthird",
+      ];
+      const modeTabs = {
+        verse: "bible",
+        lyrics: "worship",
+        announcement: "service",
+        order: "service",
+        countdown: "tools",
+        lowerthird: "service",
+      };
+      const editorTargets = {
+        verse: verseTextInput,
+        lyrics: lyricsTitleInput || lyricsLinesInput,
+        announcement: announcementTitleInput,
+        order: orderTitleInput,
+        countdown: countdownMinutes,
+        lowerthird: lowerThirdNameInput,
+      };
+      let editorDrafts = loadEditorDrafts();
 
       function setStatus(label, type) {
         if (!screenSyncStatus) return;
@@ -875,6 +1033,58 @@
         if (!el) return;
         el.textContent = message || "";
         el.className = `helper-text${type ? ` ${type}` : ""}`;
+      }
+
+      function loadEditorDrafts() {
+        try {
+          const raw = sessionStorage.getItem(EDITOR_DRAFT_KEY);
+          if (!raw) return {};
+          const parsed = JSON.parse(raw);
+          return parsed && typeof parsed === "object" ? parsed : {};
+        } catch (error) {
+          console.error("Load editor drafts failed:", error);
+          return {};
+        }
+      }
+
+      function saveEditorDrafts() {
+        try {
+          sessionStorage.setItem(EDITOR_DRAFT_KEY, JSON.stringify(editorDrafts));
+        } catch (error) {
+          console.error("Save editor drafts failed:", error);
+        }
+      }
+
+      function setEditorDraft(key, value) {
+        if (!key) return;
+        editorDrafts[key] = value;
+        saveEditorDrafts();
+      }
+
+      function getEditorValue(key, fallback = "") {
+        if (Object.prototype.hasOwnProperty.call(editorDrafts, key)) {
+          return editorDrafts[key];
+        }
+        return fallback || "";
+      }
+
+      function applyEditorValuesFromState(state) {
+        editorFieldBindings.forEach(({ key, input }) => {
+          if (!input) return;
+          input.value = getEditorValue(key, state[key] || "");
+        });
+      }
+
+      function bindEditorDrafts() {
+        editorFieldBindings.forEach(({ key, input }) => {
+          if (!input) return;
+          const persist = () => {
+            setEditorDraft(key, input.value);
+            updateCommandDeck();
+          };
+          input.addEventListener("input", persist);
+          input.addEventListener("change", persist);
+        });
       }
 
       function cacheScreenState(state) {
@@ -1141,6 +1351,392 @@
             countdownStatusLabel.textContent = "Standby";
           }
         }
+
+        if (deckSlideMeta || readyModesCount) {
+          updateCommandDeck();
+        }
+      }
+
+      function truncateText(value, maxLength = 54) {
+        const normalized = String(value || "").replace(/\s+/g, " ").trim();
+        if (!normalized) return "";
+        if (normalized.length <= maxLength) return normalized;
+        return `${normalized.slice(0, maxLength - 1)}...`;
+      }
+
+      function getModeReadiness(mode) {
+        switch (mode) {
+          case "verse": {
+            const verseText = verseTextInput ? verseTextInput.value.trim() : "";
+            const verseRef = verseRefInput ? verseRefInput.value.trim() : "";
+            const slideCount = buildSlides(verseText).length;
+            return {
+              ready: Boolean(verseText),
+              detail: verseText
+                ? verseRef || `${slideCount || 1} slide${slideCount === 1 ? "" : "s"}`
+                : "Load scripture",
+            };
+          }
+          case "lyrics": {
+            const title = lyricsTitleInput ? lyricsTitleInput.value.trim() : "";
+            const lyrics = lyricsLinesInput ? lyricsLinesInput.value.trim() : "";
+            const slideCount = buildSlides(lyrics).length;
+            return {
+              ready: Boolean(lyrics),
+              detail: lyrics
+                ? title || `${slideCount || 1} slide${slideCount === 1 ? "" : "s"}`
+                : "Paste lyrics",
+            };
+          }
+          case "announcement": {
+            const title = announcementTitleInput
+              ? announcementTitleInput.value.trim()
+              : "";
+            const body = announcementBodyInput
+              ? announcementBodyInput.value.trim()
+              : "";
+            return {
+              ready: Boolean(title || body),
+              detail: title || truncateText(body, 36) || "Add update",
+            };
+          }
+          case "order": {
+            const title = orderTitleInput ? orderTitleInput.value.trim() : "";
+            const items = orderItemsInput ? orderItemsInput.value.trim() : "";
+            const itemCount = items
+              ? items.split("\n").filter((item) => item.trim()).length
+              : 0;
+            return {
+              ready: Boolean(title || items),
+              detail:
+                title ||
+                (itemCount
+                  ? `${itemCount} item${itemCount === 1 ? "" : "s"} ready`
+                  : "Add order"),
+            };
+          }
+          case "countdown": {
+            const duration = getDurationFromInputs();
+            const remaining = getCountdownRemaining(screenState);
+            if (!duration && !remaining) {
+              return { ready: false, detail: "Set timer" };
+            }
+            if (screenState.countdownStatus === "running") {
+              return {
+                ready: true,
+                detail: `Live ${formatCountdown(remaining)}`,
+              };
+            }
+            if (screenState.countdownStatus === "paused") {
+              return {
+                ready: true,
+                detail: `Paused ${formatCountdown(remaining)}`,
+              };
+            }
+            return {
+              ready: true,
+              detail: `Ready ${formatCountdown(duration || remaining)}`,
+            };
+          }
+          case "lowerthird": {
+            const name = lowerThirdNameInput ? lowerThirdNameInput.value.trim() : "";
+            const role = lowerThirdRoleInput ? lowerThirdRoleInput.value.trim() : "";
+            return {
+              ready: Boolean(name || role),
+              detail: name || role || "Add speaker",
+            };
+          }
+          case "blank":
+            return { ready: true, detail: "Emergency cut" };
+          default:
+            return { ready: false, detail: "Not ready" };
+        }
+      }
+
+      function getActiveSlideMeta() {
+        if (screenState.mode === "verse") {
+          const slides =
+            screenState.verseSlides && screenState.verseSlides.length
+              ? screenState.verseSlides
+              : buildSlides(screenState.verseText);
+          if (!slides.length) return "Single screen";
+          const index = Math.min(
+            Math.max(0, Number(screenState.verseSlideIndex) || 0),
+            slides.length - 1,
+          );
+          return `Slide ${index + 1} of ${slides.length}`;
+        }
+        if (screenState.mode === "lyrics") {
+          const slides =
+            screenState.lyricsSlides && screenState.lyricsSlides.length
+              ? screenState.lyricsSlides
+              : buildSlides(screenState.lyricsLines);
+          if (!slides.length) return "Single screen";
+          const index = Math.min(
+            Math.max(0, Number(screenState.lyricsSlideIndex) || 0),
+            slides.length - 1,
+          );
+          return `Slide ${index + 1} of ${slides.length}`;
+        }
+        if (screenState.mode === "countdown") {
+          if (screenState.countdownStatus === "running") {
+            return `Running ${formatCountdown(getCountdownRemaining(screenState))}`;
+          }
+          if (screenState.countdownStatus === "paused") {
+            return `Paused ${formatCountdown(getCountdownRemaining(screenState))}`;
+          }
+          return `Ready ${formatCountdown(
+            Number(screenState.countdownDurationSeconds) || 0,
+          )}`;
+        }
+        if (screenState.mode === "order") {
+          const itemCount = String(screenState.orderItems || "")
+            .split("\n")
+            .filter((item) => item.trim()).length;
+          return itemCount
+            ? `${itemCount} item${itemCount === 1 ? "" : "s"} on deck`
+            : "No order items saved";
+        }
+        if (screenState.mode === "lowerthird") {
+          return screenState.lowerThirdRole
+            ? truncateText(screenState.lowerThirdRole, 44)
+            : "Speaker title card";
+        }
+        if (screenState.mode === "blank") {
+          return `Restore ${modeLabels[lastNonBlankMode] || "Verse"} when ready`;
+        }
+        return "Live on sanctuary screen";
+      }
+
+      function getActiveContentSummary() {
+        switch (screenState.mode) {
+          case "verse":
+            return (
+              screenState.verseRef ||
+              truncateText(screenState.verseText, 48) ||
+              "No verse saved"
+            );
+          case "lyrics":
+            return (
+              screenState.lyricsTitle ||
+              truncateText(screenState.lyricsLines, 48) ||
+              "No lyrics saved"
+            );
+          case "announcement":
+            return (
+              screenState.announcementTitle ||
+              truncateText(screenState.announcementBody, 48) ||
+              "No announcement saved"
+            );
+          case "order":
+            return (
+              screenState.orderTitle ||
+              truncateText(screenState.orderItems, 48) ||
+              "No order saved"
+            );
+          case "countdown":
+            return formatCountdown(getCountdownRemaining(screenState));
+          case "lowerthird":
+            return (
+              screenState.lowerThirdName ||
+              screenState.lowerThirdRole ||
+              "No lower third saved"
+            );
+          case "blank":
+            return "Screen hidden";
+          default:
+            return "Waiting for live content";
+        }
+      }
+
+      function updateCommandDeck() {
+        if (deckLiveMode) {
+          deckLiveMode.textContent = modeLabels[screenState.mode] || "Verse";
+        }
+        if (deckLiveMeta) {
+          deckLiveMeta.textContent =
+            screenState.mode === "blank"
+              ? "Audience screen is hidden"
+              : "Live on sanctuary screen";
+        }
+        if (deckContentSummary) {
+          deckContentSummary.textContent = getActiveContentSummary();
+        }
+        if (deckSlideMeta) {
+          deckSlideMeta.textContent = getActiveSlideMeta();
+        }
+
+        if (readyModesCount) {
+          const readyCount = editableModeOrder.filter(
+            (mode) => getModeReadiness(mode).ready,
+          ).length;
+          readyModesCount.textContent = `${readyCount} / ${editableModeOrder.length}`;
+        }
+
+        if (checklistProgressLabel) {
+          const completeCount = checklistInputs.filter((input) => input.checked)
+            .length;
+          checklistProgressLabel.textContent = `${completeCount} / ${checklistInputs.length}`;
+        }
+
+        quickLiveButtons.forEach((btn) => {
+          const mode = btn.dataset.quickLive;
+          const readiness = getModeReadiness(mode);
+          const statusLabel = quickReadyLabels.get(mode);
+          btn.classList.toggle("is-live", screenState.mode === mode);
+          btn.classList.toggle(
+            "is-ready",
+            mode !== "blank" && Boolean(readiness.ready),
+          );
+          btn.classList.toggle(
+            "is-empty",
+            mode !== "blank" && !Boolean(readiness.ready),
+          );
+          if (statusLabel && mode !== "blank") {
+            statusLabel.textContent = readiness.detail;
+          }
+        });
+
+        if (restoreLastModeBtn) {
+          restoreLastModeBtn.disabled =
+            screenState.mode !== "blank" || !lastNonBlankMode;
+        }
+        if (focusLiveEditorBtn) {
+          const focusMode =
+            screenState.mode === "blank" ? lastNonBlankMode : screenState.mode;
+          focusLiveEditorBtn.disabled = !modeTabs[focusMode];
+        }
+        if (commandDeckStatus) {
+          commandDeckStatus.textContent =
+            screenState.mode === "blank"
+              ? `Screen is blank. Restore ${modeLabels[lastNonBlankMode] || "Verse"} when ready.`
+              : "Editors hold your local draft until you save or go live.";
+        }
+      }
+
+      function buildModePayload(mode) {
+        if (mode === "verse") return collectVerseData();
+        if (mode === "announcement") return collectAnnouncementData();
+        if (mode === "lyrics") return collectLyricsData();
+        if (mode === "order") return collectOrderData();
+        if (mode === "lowerthird") return collectLowerThirdData();
+        if (mode === "countdown") {
+          const payload = { countdownDurationSeconds: getDurationFromInputs() };
+          if (screenState.countdownStatus === "running") {
+            return { ...payload, countdownStartedAt: screenState.countdownStartedAt };
+          }
+          if (screenState.countdownStatus === "paused") {
+            return {
+              ...payload,
+              countdownStatus: "paused",
+              countdownRemainingSeconds: getCountdownRemaining(screenState),
+            };
+          }
+          return {
+            ...payload,
+            countdownStatus: "stopped",
+            countdownStartedAt: null,
+            countdownRemainingSeconds: null,
+          };
+        }
+        return {};
+      }
+
+      function saveMode(mode, goLive = false) {
+        if (!mode) return;
+        const payload = buildModePayload(mode);
+        if (goLive) {
+          saveScreenState({ ...payload, mode });
+          return;
+        }
+        saveScreenState(payload);
+      }
+
+      function startCountdownWithSeconds(totalSeconds) {
+        const safeSeconds = Math.max(0, Number(totalSeconds) || 0);
+        if (countdownMinutes) {
+          countdownMinutes.value = Math.floor(safeSeconds / 60);
+          setEditorDraft("countdownMinutes", countdownMinutes.value);
+        }
+        if (countdownSeconds) {
+          countdownSeconds.value = safeSeconds % 60;
+          setEditorDraft("countdownSeconds", countdownSeconds.value);
+        }
+        saveScreenState({
+          countdownStatus: "running",
+          countdownDurationSeconds: safeSeconds,
+          countdownStartedAt: new Date().toISOString(),
+          countdownRemainingSeconds: null,
+          mode: "countdown",
+        });
+      }
+
+      function restorePreviousMode() {
+        if (!lastNonBlankMode) return;
+        saveScreenState({ mode: lastNonBlankMode });
+      }
+
+      function focusModeEditor(mode) {
+        const resolvedMode = mode === "blank" ? lastNonBlankMode : mode;
+        const tabId = modeTabs[resolvedMode];
+        const target = editorTargets[resolvedMode];
+        if (tabId) activateTab(tabId);
+        if (target) {
+          const card = target.closest(".control-card");
+          if (card && card.scrollIntoView) {
+            card.scrollIntoView({ behavior: "smooth", block: "start" });
+          }
+          window.setTimeout(() => {
+            target.focus({ preventScroll: true });
+          }, 120);
+        }
+      }
+
+      function ensureHotkeyShortcuts() {
+        if (!hotkeyList) return;
+        const items = hotkeyList.querySelectorAll(".hotkey-item");
+        const arrowLabels = [
+          "\u2190 / \u2192",
+          "\u2191 / \u2193",
+        ];
+        arrowLabels.forEach((label, index) => {
+          const keyEl =
+            items[index + 3] && items[index + 3].querySelector(".hotkey-key");
+          if (keyEl) keyEl.textContent = label;
+        });
+
+        const extras = [
+          {
+            id: "service-modes",
+            key: "A / O / C",
+            label: "Announcement, Order, Countdown",
+          },
+          {
+            id: "restore-mode",
+            key: "R",
+            label: "Restore the last live mode after blanking",
+          },
+        ];
+
+        extras.forEach((entry) => {
+          if (hotkeyList.querySelector(`[data-hotkey-extra="${entry.id}"]`)) {
+            return;
+          }
+          const item = document.createElement("div");
+          item.className = "hotkey-item";
+          item.dataset.hotkeyExtra = entry.id;
+
+          const key = document.createElement("span");
+          key.className = "hotkey-key";
+          key.textContent = entry.key;
+
+          const label = document.createElement("span");
+          label.textContent = entry.label;
+
+          item.appendChild(key);
+          item.appendChild(label);
+          hotkeyList.appendChild(item);
+        });
       }
 
       function renderBiblePreview(data) {
@@ -1510,7 +2106,7 @@
           });
 
           const iframe = document.createElement("iframe");
-          const srcBase = `screen.html?embed=1&mode=${encodeURIComponent(
+          const srcBase = `/screen?embed=1&mode=${encodeURIComponent(
             splitModes[index],
           )}`;
           iframe.dataset.base = srcBase;
@@ -1530,39 +2126,27 @@
 
       function applyScreenState(data) {
         screenState = { ...screenDefaults, ...(data || {}) };
-
-        if (verseTextInput) verseTextInput.value = screenState.verseText || "";
-        if (verseRefInput) verseRefInput.value = screenState.verseRef || "";
-        if (giveScriptureInput)
-          giveScriptureInput.value = screenState.giveScripture || "";
-        if (announcementTitleInput)
-          announcementTitleInput.value = screenState.announcementTitle || "";
-        if (announcementBodyInput)
-          announcementBodyInput.value = screenState.announcementBody || "";
-        if (lyricsTitleInput)
-          lyricsTitleInput.value = screenState.lyricsTitle || "";
-        if (lyricsLinesInput)
-          lyricsLinesInput.value = screenState.lyricsLines || "";
-        if (orderTitleInput)
-          orderTitleInput.value = screenState.orderTitle || "";
-        if (orderItemsInput)
-          orderItemsInput.value = screenState.orderItems || "";
-        if (lowerThirdNameInput)
-          lowerThirdNameInput.value = screenState.lowerThirdName || "";
-        if (lowerThirdRoleInput)
-          lowerThirdRoleInput.value = screenState.lowerThirdRole || "";
-        if (lowerThirdFooterInput)
-          lowerThirdFooterInput.value = screenState.lowerThirdFooter || "";
+        applyEditorValuesFromState(screenState);
 
         if (countdownMinutes && countdownSeconds) {
           const total = Number(screenState.countdownDurationSeconds) || 0;
-          countdownMinutes.value = Math.floor(total / 60);
-          countdownSeconds.value = total % 60;
+          countdownMinutes.value = getEditorValue(
+            "countdownMinutes",
+            String(Math.floor(total / 60)),
+          );
+          countdownSeconds.value = getEditorValue(
+            "countdownSeconds",
+            String(total % 60),
+          );
         }
 
+        if (screenState.mode && screenState.mode !== "blank") {
+          lastNonBlankMode = screenState.mode;
+        }
         setCurrentMode(screenState.mode || "verse");
         updateLastSaved(screenState.updatedAt);
         updateCountdownUI();
+        updateCommandDeck();
       }
 
       async function loadScreenState() {
@@ -1683,14 +2267,16 @@
       saveButtons.forEach((btn) => {
         btn.addEventListener("click", () => {
           const key = btn.dataset.save;
-          if (key === "verse") return saveScreenState(collectVerseData());
-          if (key === "announcement")
-            return saveScreenState(collectAnnouncementData());
-          if (key === "lyrics") return saveScreenState(collectLyricsData());
-          if (key === "order") return saveScreenState(collectOrderData());
-          if (key === "lowerthird")
-            return saveScreenState(collectLowerThirdData());
-          return saveScreenState({});
+          if (!key) return;
+          saveMode(key, false);
+        });
+      });
+
+      saveShowButtons.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const key = btn.dataset.saveShow;
+          if (!key) return;
+          saveMode(key, true);
         });
       });
 
@@ -1699,6 +2285,25 @@
           const mode = btn.dataset.show;
           if (!mode) return;
           saveScreenState({ mode });
+        });
+      });
+
+      quickLiveButtons.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const mode = btn.dataset.quickLive;
+          if (!mode) return;
+          if (mode === "blank") {
+            saveScreenState({ mode: "blank" });
+            return;
+          }
+          saveMode(mode, true);
+        });
+      });
+
+      countdownPresetButtons.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const totalSeconds = Number(btn.dataset.countdownPreset);
+          startCountdownWithSeconds(totalSeconds);
         });
       });
 
@@ -1756,6 +2361,26 @@
         if (key === "l") {
           event.preventDefault();
           saveScreenState({ mode: "lyrics" });
+          return;
+        }
+        if (key === "a") {
+          event.preventDefault();
+          saveScreenState({ mode: "announcement" });
+          return;
+        }
+        if (key === "o") {
+          event.preventDefault();
+          saveScreenState({ mode: "order" });
+          return;
+        }
+        if (key === "c") {
+          event.preventDefault();
+          saveScreenState({ mode: "countdown" });
+          return;
+        }
+        if (key === "r") {
+          event.preventDefault();
+          restorePreviousMode();
           return;
         }
         if (event.key === "ArrowRight" || event.key === "ArrowDown") {
@@ -1882,13 +2507,7 @@
             screenState.countdownStatus === "paused"
               ? Number(screenState.countdownRemainingSeconds) || 0
               : getDurationFromInputs();
-          saveScreenState({
-            countdownStatus: "running",
-            countdownDurationSeconds: duration,
-            countdownStartedAt: new Date().toISOString(),
-            countdownRemainingSeconds: null,
-            mode: "countdown",
-          });
+          startCountdownWithSeconds(duration);
         });
       }
 
@@ -1915,9 +2534,27 @@
         });
       }
 
+      if (countdownMinutes) {
+        const syncCountdownMinutesDraft = () => {
+          setEditorDraft("countdownMinutes", countdownMinutes.value);
+          updateCommandDeck();
+        };
+        countdownMinutes.addEventListener("input", syncCountdownMinutesDraft);
+        countdownMinutes.addEventListener("change", syncCountdownMinutesDraft);
+      }
+
+      if (countdownSeconds) {
+        const syncCountdownSecondsDraft = () => {
+          setEditorDraft("countdownSeconds", countdownSeconds.value);
+          updateCommandDeck();
+        };
+        countdownSeconds.addEventListener("input", syncCountdownSecondsDraft);
+        countdownSeconds.addEventListener("change", syncCountdownSecondsDraft);
+      }
+
       if (refreshPreviewBtn && screenPreview) {
         refreshPreviewBtn.addEventListener("click", () => {
-          screenPreview.src = "screen.html";
+          screenPreview.src = "/screen";
         });
       }
 
@@ -1926,7 +2563,7 @@
         document.body.classList.toggle("audience-mode", isActive);
         audienceOverlay.setAttribute("aria-hidden", isActive ? "false" : "true");
         if (isActive) {
-          const base = "screen.html?present=1";
+          const base = "/screen?present=1";
           audienceFrame.src = `${base}&ts=${Date.now()}`;
           if (audienceOverlay.requestFullscreen) {
             audienceOverlay.requestFullscreen().catch(() => {});
@@ -1945,6 +2582,18 @@
       if (exitAudienceBtn) {
         exitAudienceBtn.addEventListener("click", () => {
           setAudienceMode(false);
+        });
+      }
+
+      if (restoreLastModeBtn) {
+        restoreLastModeBtn.addEventListener("click", restorePreviousMode);
+      }
+
+      if (focusLiveEditorBtn) {
+        focusLiveEditorBtn.addEventListener("click", () => {
+          const activeMode =
+            screenState.mode === "blank" ? lastNonBlankMode : screenState.mode;
+          focusModeEditor(activeMode);
         });
       }
 
@@ -1976,6 +2625,7 @@
             state[item.dataset.check] = item.checked;
           });
           localStorage.setItem(checklistKey, JSON.stringify(state));
+          updateCommandDeck();
         });
       });
 
@@ -2005,6 +2655,8 @@
         });
       }
 
+      ensureHotkeyShortcuts();
+      bindEditorDrafts();
       setInterval(updateCountdownUI, 1000);
       initBibleBooks();
       loadRecentVerses();
@@ -2013,6 +2665,7 @@
       renderSplitGrid();
       loadScreenState();
       loadHymnResults("");
+      updateCommandDeck();
     </script>
   </body>
 </html>

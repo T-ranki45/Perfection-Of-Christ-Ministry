@@ -178,30 +178,53 @@
                 <strong id="checklistProgressLabel">0 / 5</strong>
                 <small id="deckChecklistHint">Run the quick checks before service</small>
               </div>
+              <div class="command-stat">
+                <span>Draft Sync</span>
+                <strong id="draftSyncLabel">All synced</strong>
+                <small id="draftSyncHint">No unsaved editor changes</small>
+              </div>
             </div>
             <div class="quick-live-grid">
               <button class="quick-live-btn" data-quick-live="verse">
-                <span>Verse Live</span>
+                <div class="quick-live-head">
+                  <span>Verse Live</span>
+                  <em class="quick-live-state" data-ready-state="verse">Empty</em>
+                </div>
                 <small data-ready-label="verse">Empty</small>
               </button>
               <button class="quick-live-btn" data-quick-live="lyrics">
-                <span>Lyrics Live</span>
+                <div class="quick-live-head">
+                  <span>Lyrics Live</span>
+                  <em class="quick-live-state" data-ready-state="lyrics">Empty</em>
+                </div>
                 <small data-ready-label="lyrics">Empty</small>
               </button>
               <button class="quick-live-btn" data-quick-live="announcement">
-                <span>Announcement</span>
+                <div class="quick-live-head">
+                  <span>Announcement</span>
+                  <em class="quick-live-state" data-ready-state="announcement">Empty</em>
+                </div>
                 <small data-ready-label="announcement">Empty</small>
               </button>
               <button class="quick-live-btn" data-quick-live="order">
-                <span>Order Live</span>
+                <div class="quick-live-head">
+                  <span>Order Live</span>
+                  <em class="quick-live-state" data-ready-state="order">Empty</em>
+                </div>
                 <small data-ready-label="order">Empty</small>
               </button>
               <button class="quick-live-btn" data-quick-live="countdown">
-                <span>Countdown</span>
+                <div class="quick-live-head">
+                  <span>Countdown</span>
+                  <em class="quick-live-state" data-ready-state="countdown">Empty</em>
+                </div>
                 <small data-ready-label="countdown">Not set</small>
               </button>
               <button class="quick-live-btn" data-quick-live="lowerthird">
-                <span>Lower Third</span>
+                <div class="quick-live-head">
+                  <span>Lower Third</span>
+                  <em class="quick-live-state" data-ready-state="lowerthird">Empty</em>
+                </div>
                 <small data-ready-label="lowerthird">Empty</small>
               </button>
               <button class="quick-live-btn danger" data-quick-live="blank">
@@ -210,6 +233,9 @@
               </button>
             </div>
             <div class="card-actions">
+              <button class="btn-primary" id="saveAllEditorsBtn">
+                Save All Editors
+              </button>
               <button class="btn-primary" id="restoreLastModeBtn">
                 Restore Previous
               </button>
@@ -398,7 +424,7 @@
               </div>
               <div class="card-actions">
                 <button class="btn-primary" id="loadHymnBtn">
-                  Load to Lyrics
+                  Load to Lyrics Editor
                 </button>
                 <button class="btn-ghost" id="refreshHymnBtn">
                   Refresh Library
@@ -937,7 +963,10 @@
       const checklistProgressLabel = document.getElementById(
         "checklistProgressLabel",
       );
+      const draftSyncLabel = document.getElementById("draftSyncLabel");
+      const draftSyncHint = document.getElementById("draftSyncHint");
       const commandDeckStatus = document.getElementById("commandDeckStatus");
+      const saveAllEditorsBtn = document.getElementById("saveAllEditorsBtn");
       const restoreLastModeBtn = document.getElementById("restoreLastModeBtn");
       const focusLiveEditorBtn = document.getElementById("focusLiveEditorBtn");
       const hotkeyList = document.querySelector(".hotkey-list");
@@ -947,13 +976,39 @@
           el,
         ]),
       );
+      const quickStateLabels = new Map(
+        Array.from(document.querySelectorAll("[data-ready-state]")).map((el) => [
+          el.dataset.readyState,
+          el,
+        ]),
+      );
 
       // Tab Logic
+      const ACTIVE_TAB_KEY = "ict_active_tab";
       const tabBtns = Array.from(document.querySelectorAll(".tab-btn"));
       const tabPanes = Array.from(document.querySelectorAll(".tab-pane"));
 
+      function persistActiveTab(tabId) {
+        if (!tabId) return;
+        try {
+          localStorage.setItem(ACTIVE_TAB_KEY, tabId);
+        } catch (error) {
+          console.error("Save active tab failed:", error);
+        }
+      }
+
+      function loadStoredTab() {
+        try {
+          return localStorage.getItem(ACTIVE_TAB_KEY);
+        } catch (error) {
+          console.error("Load active tab failed:", error);
+          return null;
+        }
+      }
+
       function activateTab(tabId) {
         if (!tabId) return;
+        persistActiveTab(tabId);
         tabBtns.forEach((btn) => {
           btn.classList.toggle("active", btn.dataset.tab === tabId);
         });
@@ -1569,7 +1624,99 @@
         }
       }
 
+      function getSavedModePayload(mode) {
+        switch (mode) {
+          case "verse":
+            return {
+              verseText: screenState.verseText || "",
+              verseRef: screenState.verseRef || "",
+              giveScripture: screenState.giveScripture || "",
+              verseSlides: Array.isArray(screenState.verseSlides)
+                ? screenState.verseSlides
+                : [],
+              verseSlideIndex: Number(screenState.verseSlideIndex) || 0,
+            };
+          case "announcement":
+            return {
+              announcementTitle: screenState.announcementTitle || "",
+              announcementBody: screenState.announcementBody || "",
+            };
+          case "lyrics":
+            return {
+              lyricsTitle: screenState.lyricsTitle || "",
+              lyricsLines: screenState.lyricsLines || "",
+              lyricsSlides: Array.isArray(screenState.lyricsSlides)
+                ? screenState.lyricsSlides
+                : [],
+              lyricsSlideIndex: Number(screenState.lyricsSlideIndex) || 0,
+            };
+          case "order":
+            return {
+              orderTitle: screenState.orderTitle || "",
+              orderItems: screenState.orderItems || "",
+            };
+          case "lowerthird":
+            return {
+              lowerThirdName: screenState.lowerThirdName || "",
+              lowerThirdRole: screenState.lowerThirdRole || "",
+              lowerThirdFooter: screenState.lowerThirdFooter || "",
+            };
+          case "countdown":
+            if (screenState.countdownStatus === "running") {
+              return {
+                countdownDurationSeconds:
+                  Number(screenState.countdownDurationSeconds) || 0,
+                countdownStartedAt: screenState.countdownStartedAt || null,
+              };
+            }
+            if (screenState.countdownStatus === "paused") {
+              return {
+                countdownDurationSeconds:
+                  Number(screenState.countdownDurationSeconds) || 0,
+                countdownStatus: "paused",
+                countdownRemainingSeconds:
+                  Number(screenState.countdownRemainingSeconds) || 0,
+              };
+            }
+            return {
+              countdownDurationSeconds:
+                Number(screenState.countdownDurationSeconds) || 0,
+              countdownStatus: "stopped",
+              countdownStartedAt: null,
+              countdownRemainingSeconds: null,
+            };
+          default:
+            return {};
+        }
+      }
+
+      function hasModeDraftChanges(mode) {
+        if (!editableModeOrder.includes(mode)) return false;
+        const draftPayload = buildModePayload(mode);
+        const savedPayload = getSavedModePayload(mode);
+        return JSON.stringify(draftPayload) !== JSON.stringify(savedPayload);
+      }
+
+      function getUnsavedModes() {
+        return editableModeOrder.filter((mode) => hasModeDraftChanges(mode));
+      }
+
+      function getQuickLiveState(mode, readiness) {
+        if (!readiness.ready) {
+          return { tone: "empty", label: "Empty" };
+        }
+        if (hasModeDraftChanges(mode)) {
+          return { tone: "draft", label: "Draft" };
+        }
+        if (screenState.mode === mode) {
+          return { tone: "live", label: "Live" };
+        }
+        return { tone: "ready", label: "Ready" };
+      }
+
       function updateCommandDeck() {
+        const unsavedModes = getUnsavedModes();
+
         if (deckLiveMode) {
           deckLiveMode.textContent = modeLabels[screenState.mode] || "Verse";
         }
@@ -1603,10 +1750,15 @@
           const mode = btn.dataset.quickLive;
           const readiness = getModeReadiness(mode);
           const statusLabel = quickReadyLabels.get(mode);
+          const stateLabel = quickStateLabels.get(mode);
           btn.classList.toggle("is-live", screenState.mode === mode);
           btn.classList.toggle(
             "is-ready",
             mode !== "blank" && Boolean(readiness.ready),
+          );
+          btn.classList.toggle(
+            "is-draft",
+            mode !== "blank" && hasModeDraftChanges(mode),
           );
           btn.classList.toggle(
             "is-empty",
@@ -1615,8 +1767,26 @@
           if (statusLabel && mode !== "blank") {
             statusLabel.textContent = readiness.detail;
           }
+          if (stateLabel && mode !== "blank") {
+            const quickState = getQuickLiveState(mode, readiness);
+            stateLabel.textContent = quickState.label;
+            stateLabel.className = `quick-live-state ${quickState.tone}`;
+          }
         });
 
+        if (draftSyncLabel) {
+          draftSyncLabel.textContent = unsavedModes.length
+            ? `${unsavedModes.length} unsaved`
+            : "All synced";
+        }
+        if (draftSyncHint) {
+          draftSyncHint.textContent = unsavedModes.length
+            ? unsavedModes.map((mode) => modeLabels[mode] || mode).join(", ")
+            : "No unsaved editor changes";
+        }
+        if (saveAllEditorsBtn) {
+          saveAllEditorsBtn.disabled = !unsavedModes.length;
+        }
         if (restoreLastModeBtn) {
           restoreLastModeBtn.disabled =
             screenState.mode !== "blank" || !lastNonBlankMode;
@@ -1630,7 +1800,9 @@
           commandDeckStatus.textContent =
             screenState.mode === "blank"
               ? `Screen is blank. Restore ${modeLabels[lastNonBlankMode] || "Verse"} when ready.`
-              : "Editors hold your local draft until you save or go live.";
+              : unsavedModes.length
+                ? `${unsavedModes.length} editor draft${unsavedModes.length === 1 ? "" : "s"} changed. Save them to keep quick switching accurate.`
+                : "Editors hold your local draft until you save or go live.";
         }
       }
 
@@ -1662,6 +1834,13 @@
         return {};
       }
 
+      function buildAllEditorPayload() {
+        return editableModeOrder.reduce(
+          (payload, mode) => ({ ...payload, ...buildModePayload(mode) }),
+          {},
+        );
+      }
+
       function saveMode(mode, goLive = false) {
         if (!mode) return;
         const payload = buildModePayload(mode);
@@ -1670,6 +1849,15 @@
           return;
         }
         saveScreenState(payload);
+      }
+
+      function saveAllEditors() {
+        const unsavedModes = getUnsavedModes();
+        if (!unsavedModes.length) {
+          updateCommandDeck();
+          return;
+        }
+        saveScreenState(buildAllEditorPayload());
       }
 
       function startCountdownWithSeconds(totalSeconds) {
@@ -1868,11 +2056,14 @@
             ? `${verseText}\n- ${verseRef}`
             : verseText;
           if (giveScriptureInput) giveScriptureInput.value = givingText;
+          setEditorDraft("giveScripture", givingText);
           saveScreenState({ giveScripture: givingText });
           return;
         }
         if (verseTextInput) verseTextInput.value = verseText;
         if (verseRefInput) verseRefInput.value = verseRef;
+        setEditorDraft("verseText", verseText);
+        setEditorDraft("verseRef", verseRef);
         saveScreenState({
           verseText,
           verseRef,
@@ -2502,12 +2693,16 @@
           const lyrics = activeHymn.lyrics || "";
           if (lyricsTitleInput) lyricsTitleInput.value = title;
           if (lyricsLinesInput) lyricsLinesInput.value = lyrics;
-          saveScreenState({
-            lyricsTitle: title,
-            lyricsLines: lyrics,
-            ...withSlides("lyrics", lyrics),
-            mode: "lyrics",
-          });
+          setEditorDraft("lyricsTitle", title);
+          setEditorDraft("lyricsLines", lyrics);
+          saveMode("lyrics", false);
+          activateTab("worship");
+          focusModeEditor("lyrics");
+          setHelperStatus(
+            hymnStatus,
+            "Loaded into the lyrics editor. Use Save & Go Live when ready.",
+            "good",
+          );
         });
       }
 
@@ -2675,12 +2870,20 @@
         });
       }
 
+      if (saveAllEditorsBtn) {
+        saveAllEditorsBtn.addEventListener("click", saveAllEditors);
+      }
+
       ensureHotkeyShortcuts();
       bindEditorDrafts();
       setInterval(updateCountdownUI, 1000);
       initBibleBooks();
       loadRecentVerses();
       renderRecentVerses();
+      const initialTab = loadStoredTab();
+      if (initialTab && tabBtns.some((btn) => btn.dataset.tab === initialTab)) {
+        activateTab(initialTab);
+      }
       loadSplitConfig();
       renderSplitGrid();
       loadScreenState();

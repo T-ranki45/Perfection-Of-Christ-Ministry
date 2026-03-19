@@ -1167,9 +1167,16 @@ body {
   .page-hero {
     background-image: url("./image/PROFILE.jpg");
     background-attachment: scroll;
-    overflow: hidden;
+    justify-content: flex-start;
+    align-items: stretch;
+    overflow: visible;
     min-height: auto;
-    padding: 7.5rem 0 4rem;
+    padding: calc(8.5rem + env(safe-area-inset-top)) 0 3.75rem;
+  }
+
+  .page-hero-content {
+    width: 100%;
+    padding: 0 1rem;
   }
 
   .page-eyebrow {
@@ -1177,12 +1184,19 @@ body {
     letter-spacing: 0.12em;
   }
 
+  .page-hero h1 {
+    font-size: clamp(2.15rem, 8.8vw, 2.95rem);
+    line-height: 1.08;
+  }
+
   .page-hero p {
-    font-size: 1rem;
+    font-size: 0.98rem;
+    line-height: 1.72;
   }
 
   .page-hero-actions {
     flex-direction: column;
+    gap: 0.8rem;
   }
 
   .page-hero-actions .button {
@@ -1191,6 +1205,12 @@ body {
 
   .page-hero-facts {
     grid-template-columns: 1fr;
+    gap: 0.75rem;
+    margin-top: 1.4rem;
+  }
+
+  .page-fact {
+    padding: 0.95rem 0.9rem;
   }
 
   .lead-couple {
@@ -1253,6 +1273,112 @@ body {
     overflow-x: hidden;
   }
 
+  #leadership,
+  #mission,
+  .team-grid,
+  .ministry-grid,
+  .team-member,
+  .ministry-card,
+  .member-image,
+  .member-image img,
+  .ministry-icon {
+    touch-action: pan-y;
+  }
+
+  .team-member,
+  .team-member *,
+  .team-member::after,
+  .member-image,
+  .member-image img {
+    pointer-events: none;
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-user-drag: none;
+  }
+
+  .ministry-card,
+  .ministry-card *,
+  .ministry-card::before,
+  .ministry-card::after,
+  .card-ring,
+  .ministry-icon {
+    pointer-events: none;
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-user-drag: none;
+  }
+
+  .team-grid,
+  .ministry-grid {
+    overscroll-behavior-x: none;
+  }
+
+  .team-member,
+  .team-member::after,
+  .team-member img,
+  .member-image img {
+    transition: none;
+  }
+
+  .ministry-card,
+  .ministry-card::before,
+  .ministry-card::after,
+  .ministry-icon,
+  .card-ring {
+    transition: none !important;
+    animation: none !important;
+  }
+
+  .team-member:hover,
+  .team-member:active {
+    transform: none;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  }
+
+  .team-member:hover::after,
+  .team-member:active::after {
+    left: -100%;
+  }
+
+  .team-member:hover img,
+  .team-member:active img,
+  .team-member:hover .member-image img,
+  .team-member:active .member-image img {
+    transform: none;
+    box-shadow: none;
+  }
+
+  .ministry-card:hover,
+  .ministry-card:active,
+  .ministry-card.is-hovered,
+  .ministry-card.active {
+    transform: none !important;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.45);
+  }
+
+  .ministry-card:hover::before,
+  .ministry-card:active::before,
+  .ministry-card:hover::after,
+  .ministry-card:active::after,
+  .ministry-card.is-hovered::after {
+    transform: none !important;
+    opacity: 0 !important;
+    animation: none !important;
+  }
+
+  .ministry-card:hover .ministry-icon,
+  .ministry-card:active .ministry-icon,
+  .ministry-card.is-hovered .ministry-icon,
+  .ministry-card.active .ministry-icon {
+    transform: none !important;
+    box-shadow: 0 6px 18px rgba(179, 135, 40, 0.2);
+    animation: none !important;
+  }
+
+  .mission-inner h2:hover::after {
+    transform: none;
+  }
+
   .team-grid,
   .ministry-grid {
     grid-template-columns: 1fr;
@@ -1276,5 +1402,41 @@ body {
   .mission-pill-row,
   .leadership-pill-row {
     justify-content: flex-start;
+  }
+}
+
+@media (max-width: 480px) {
+  .page-hero {
+    padding-top: calc(9rem + env(safe-area-inset-top));
+    padding-bottom: 3.4rem;
+  }
+
+  .page-hero-content {
+    padding: 0 0.9rem;
+  }
+
+  .page-eyebrow {
+    font-size: 0.66rem;
+    letter-spacing: 0.1em;
+    padding: 0.55rem 0.8rem;
+  }
+
+  .page-hero h1 {
+    font-size: clamp(1.95rem, 8.7vw, 2.45rem);
+  }
+
+  .page-hero p {
+    font-size: 0.92rem;
+    line-height: 1.65;
+  }
+
+  .team-member {
+    padding: 1.25rem;
+  }
+}
+
+@media (max-width: 480px) and (max-height: 760px) {
+  .page-hero {
+    padding-top: calc(9.5rem + env(safe-area-inset-top));
   }
 }

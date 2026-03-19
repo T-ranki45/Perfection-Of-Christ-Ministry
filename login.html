@@ -4,14 +4,12 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="robots" content="noindex,nofollow,noarchive" />
+    <meta name="theme-color" content="#07090d" />
     <title>Admin Login | Perfection Of Christ Ministry</title>
-    <!-- Favicon -->
-    <link rel="icon" href="./image/logo.png" type="image/png" />
-    <link rel="apple-touch-icon" href="./image/logo.png" />
-
-    <link rel="stylesheet" href="style.css" />
+    <link rel="icon" href="/image/logo.png" type="image/png" />
+    <link rel="apple-touch-icon" href="/image/logo.png" />
     <link
-      href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Montserrat:wght@400;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Montserrat:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
     <link
@@ -19,243 +17,861 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
     />
     <style>
-      /* Specific Login Styles */
+      :root {
+        --gold-gradient: linear-gradient(
+          135deg,
+          #bf953f 0%,
+          #fcf6ba 25%,
+          #b38728 50%,
+          #fbf5b7 75%,
+          #aa771c 100%
+        );
+        --page-bg: #07090d;
+        --panel-bg: rgba(9, 12, 17, 0.8);
+        --panel-border: rgba(255, 255, 255, 0.08);
+        --panel-shadow: 0 24px 60px rgba(0, 0, 0, 0.38);
+        --text-primary: #f4f5f7;
+        --text-secondary: rgba(244, 245, 247, 0.76);
+        --text-muted: rgba(244, 245, 247, 0.56);
+        --field-bg: rgba(0, 0, 0, 0.32);
+        --field-border: rgba(255, 255, 255, 0.1);
+        --accent: #d2aa55;
+        --success: #40c781;
+        --error: #f25f5c;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        min-height: 100%;
+      }
+
       body.login-body {
-        background: url("https://images.unsplash.com/photo-1438232992991-995b7058bbb3?q=80&w=2073")
-          no-repeat center center/cover;
-        height: 100vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        position: relative;
         margin: 0;
-        overflow: hidden;
+        min-height: 100dvh;
+        font-family: "Montserrat", sans-serif;
+        color: var(--text-primary);
+        background: var(--page-bg);
+        overflow-x: hidden;
+        position: relative;
+      }
+
+      body.login-body::before,
+      body.login-body::after {
+        content: "";
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
       }
 
       body.login-body::before {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.75);
-        backdrop-filter: blur(8px);
-        z-index: 0;
+        background:
+          linear-gradient(
+            180deg,
+            rgba(5, 6, 10, 0.72),
+            rgba(5, 6, 10, 0.92)
+          ),
+          url("/image/About.jpg") no-repeat center center / cover;
+        z-index: -2;
       }
 
-      .login-container {
+      body.login-body::after {
+        background:
+          radial-gradient(
+            circle at top left,
+            rgba(210, 170, 85, 0.18),
+            transparent 32%
+          ),
+          radial-gradient(
+            circle at bottom right,
+            rgba(58, 80, 107, 0.24),
+            transparent 30%
+          );
+        z-index: -1;
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      button,
+      input {
+        font: inherit;
+      }
+
+      .login-shell {
+        min-height: 100dvh;
+        padding: 1rem;
+        display: grid;
+        gap: 1rem;
+        align-items: start;
+      }
+
+      .login-brand-panel,
+      .login-form-panel {
+        border: 1px solid var(--panel-border);
+        background: var(--panel-bg);
+        backdrop-filter: blur(18px);
+        -webkit-backdrop-filter: blur(18px);
+        box-shadow: var(--panel-shadow);
+      }
+
+      .login-brand-panel {
+        order: 2;
+        border-radius: 28px;
+        padding: 1.5rem;
+        overflow: hidden;
+        position: relative;
+      }
+
+      .login-brand-panel::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background:
+          linear-gradient(
+            140deg,
+            rgba(255, 255, 255, 0.04),
+            rgba(255, 255, 255, 0.01)
+          ),
+          linear-gradient(
+            180deg,
+            rgba(210, 170, 85, 0.14),
+            transparent 45%
+          );
+        pointer-events: none;
+      }
+
+      .brand-mark,
+      .brand-copy,
+      .brand-points {
         position: relative;
         z-index: 1;
-        width: 100%;
-        max-width: 420px;
-        padding: 1rem;
+      }
+
+      .brand-mark {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.9rem;
+        margin-bottom: 1.4rem;
+      }
+
+      .brand-mark img {
+        width: 52px;
+        height: 52px;
+        object-fit: contain;
+        border-radius: 14px;
+        background: rgba(255, 255, 255, 0.06);
+        padding: 0.35rem;
+        box-shadow: 0 10px 24px rgba(0, 0, 0, 0.18);
+      }
+
+      .brand-mark span {
+        font-size: 0.98rem;
+        font-weight: 700;
+        line-height: 1.4;
+      }
+
+      .brand-badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.5rem 0.8rem;
+        border-radius: 999px;
+        font-size: 0.72rem;
+        font-weight: 800;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: #f3d897;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        margin-bottom: 1rem;
+      }
+
+      .brand-copy h1 {
+        margin: 0 0 0.85rem;
+        font-family: "Cinzel", serif;
+        font-size: clamp(2rem, 8vw, 3.35rem);
+        line-height: 1.06;
+      }
+
+      .brand-copy p {
+        margin: 0;
+        color: var(--text-secondary);
+        font-size: 0.98rem;
+        line-height: 1.8;
+        max-width: 42ch;
+      }
+
+      .brand-points {
+        display: grid;
+        gap: 0.85rem;
+        margin-top: 1.5rem;
+      }
+
+      .brand-point {
+        display: grid;
+        grid-template-columns: 42px 1fr;
+        gap: 0.9rem;
+        align-items: start;
+        padding: 0.95rem 1rem;
+        border-radius: 18px;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+      }
+
+      .brand-point-icon {
+        width: 42px;
+        height: 42px;
+        border-radius: 14px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        color: #101114;
+        background: var(--gold-gradient);
+        box-shadow: 0 10px 24px rgba(179, 135, 40, 0.2);
+      }
+
+      .brand-point strong {
+        display: block;
+        margin-bottom: 0.2rem;
+        font-size: 0.95rem;
+      }
+
+      .brand-point span {
+        color: var(--text-muted);
+        font-size: 0.9rem;
+        line-height: 1.65;
+      }
+
+      .login-form-panel {
+        order: 1;
+        border-radius: 28px;
+        padding: 1.15rem;
       }
 
       .login-card {
-        background: rgba(255, 255, 255, 0.05);
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        padding: 3rem 2.5rem;
-        border-radius: 20px;
-        border: 1px solid rgba(255, 215, 0, 0.2);
-        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
-        text-align: center;
-        animation: fadeInUp 1.5s ease-out;
+        border-radius: 22px;
+        padding: 1.5rem;
+        background:
+          linear-gradient(
+            180deg,
+            rgba(255, 255, 255, 0.04),
+            rgba(255, 255, 255, 0.015)
+          );
+        border: 1px solid rgba(255, 255, 255, 0.05);
       }
 
-      .login-header i {
-        font-size: 3.5rem;
-        margin-bottom: 1rem;
-        background: var(--gold-gradient);
-        -webkit-background-clip: text;
-        background-clip: text;
-        color: transparent;
-        filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+      .mobile-brand-bar {
+        display: none;
       }
 
-      .login-header h2 {
-        font-family: "Cinzel", serif;
-        color: #fff;
-        font-size: 2rem;
-        margin-bottom: 0.5rem;
+      .login-card-header {
+        margin-bottom: 1.6rem;
+      }
+
+      .panel-kicker {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 0.9rem;
+        color: #f0d08b;
+        font-size: 0.74rem;
+        font-weight: 800;
+        letter-spacing: 0.14em;
         text-transform: uppercase;
       }
 
-      .login-header p {
-        color: #ccc;
-        font-size: 0.95rem;
-        margin-bottom: 2.5rem;
+      .panel-kicker::before {
+        content: "";
+        width: 10px;
+        height: 10px;
+        border-radius: 999px;
+        background: linear-gradient(135deg, #f0d08b, #bf953f);
+        box-shadow: 0 0 0 6px rgba(210, 170, 85, 0.1);
+      }
+
+      .login-card-header h2 {
+        margin: 0 0 0.55rem;
+        font-family: "Cinzel", serif;
+        font-size: clamp(1.85rem, 7vw, 2.6rem);
+        line-height: 1.1;
+      }
+
+      .login-card-header p {
+        margin: 0;
+        color: var(--text-secondary);
+        line-height: 1.7;
       }
 
       .form-group {
-        margin-bottom: 1.5rem;
-        text-align: left;
+        margin-bottom: 1rem;
       }
 
       .form-group label {
-        color: #b38728;
-        font-size: 0.8rem;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        font-weight: 700;
-        margin-bottom: 0.5rem;
         display: block;
+        margin-bottom: 0.55rem;
+        color: #f3d897;
+        font-size: 0.77rem;
+        font-weight: 800;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+      }
+
+      .password-field {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        align-items: center;
+        border-radius: 16px;
+        border: 1px solid var(--field-border);
+        background: var(--field-bg);
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+        transition:
+          border-color 0.25s ease,
+          box-shadow 0.25s ease,
+          background-color 0.25s ease;
+      }
+
+      .password-field:focus-within {
+        border-color: rgba(210, 170, 85, 0.55);
+        background: rgba(0, 0, 0, 0.4);
+        box-shadow: 0 0 0 4px rgba(210, 170, 85, 0.12);
       }
 
       .form-group input {
-        background: rgba(0, 0, 0, 0.4);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        color: #fff;
-        padding: 1rem;
-        border-radius: 8px;
         width: 100%;
-        transition: all 0.3s ease;
-        font-family: "Montserrat", sans-serif;
+        border: 0;
+        outline: none;
+        background: transparent;
+        color: var(--text-primary);
+        padding: 1rem 1rem 1rem 1.05rem;
       }
 
-      .form-group input:focus {
-        border-color: #b38728;
-        box-shadow: 0 0 15px rgba(179, 135, 40, 0.2);
-        outline: none;
-        background: rgba(0, 0, 0, 0.6);
+      .form-group input::placeholder {
+        color: rgba(255, 255, 255, 0.38);
+      }
+
+      .password-toggle {
+        border: 0;
+        background: transparent;
+        color: rgba(255, 255, 255, 0.62);
+        width: 52px;
+        height: 52px;
+        cursor: pointer;
+        transition:
+          color 0.25s ease,
+          transform 0.25s ease;
+      }
+
+      .password-toggle:hover {
+        color: #fff;
+        transform: scale(1.02);
+      }
+
+      .field-note {
+        margin: 0.65rem 0 0;
+        color: var(--text-muted);
+        font-size: 0.85rem;
+        line-height: 1.6;
       }
 
       .btn-primary {
-        background: var(--gold-gradient);
-        border: none;
-        color: #1a1a1a;
-        font-weight: 800;
-        padding: 1rem;
-        border-radius: 50px;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        font-family: "Montserrat", sans-serif;
-        text-transform: uppercase;
-        letter-spacing: 1px;
         width: 100%;
-        margin-top: 1rem;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        border: 0;
+        border-radius: 999px;
+        padding: 1rem 1.2rem;
+        margin-top: 0.5rem;
+        background: var(--gold-gradient);
+        color: #111;
+        font-size: 0.95rem;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition:
+          transform 0.25s ease,
+          box-shadow 0.25s ease,
+          opacity 0.25s ease;
+        box-shadow: 0 14px 28px rgba(179, 135, 40, 0.28);
       }
 
       .btn-primary:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 10px 25px rgba(179, 135, 40, 0.4);
-        color: #000;
+        transform: translateY(-2px);
+        box-shadow: 0 18px 34px rgba(179, 135, 40, 0.35);
+      }
+
+      .btn-primary:disabled {
+        cursor: wait;
+        opacity: 0.8;
+        transform: none;
+      }
+
+      .login-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+        margin-top: 1.25rem;
+        flex-wrap: wrap;
       }
 
       .back-link {
-        color: rgba(255, 255, 255, 0.5);
-        text-decoration: none;
-        font-size: 0.9rem;
-        transition: color 0.3s;
         display: inline-flex;
         align-items: center;
-        gap: 5px;
+        gap: 0.55rem;
+        color: var(--text-secondary);
+        font-size: 0.92rem;
+        transition: color 0.25s ease;
       }
 
       .back-link:hover {
-        color: #b38728;
+        color: #fff;
       }
 
-      @keyframes fadeInUp {
-        from {
-          opacity: 0;
-          transform: translateY(30px);
+      .login-meta {
+        color: var(--text-muted);
+        font-size: 0.84rem;
+      }
+
+      #toast-container {
+        position: fixed;
+        right: 1rem;
+        bottom: 1rem;
+        display: grid;
+        gap: 0.75rem;
+        z-index: 20;
+      }
+
+      .toast {
+        min-width: min(320px, calc(100vw - 2rem));
+        padding: 0.95rem 1rem;
+        border-radius: 16px;
+        color: #fff;
+        font-size: 0.92rem;
+        line-height: 1.5;
+        background: rgba(10, 12, 18, 0.92);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
+        opacity: 0;
+        transform: translateY(10px);
+        transition:
+          opacity 0.25s ease,
+          transform 0.25s ease;
+      }
+
+      .toast.show {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .toast.success {
+        border-color: rgba(64, 199, 129, 0.35);
+      }
+
+      .toast.error {
+        border-color: rgba(242, 95, 92, 0.35);
+      }
+
+      @media (max-width: 899px) {
+        body.login-body::before {
+          background:
+            linear-gradient(
+              180deg,
+              rgba(5, 6, 10, 0.64),
+              rgba(5, 6, 10, 0.94)
+            ),
+            url("/image/PROFILE.jpg") no-repeat center top / cover;
         }
-        to {
-          opacity: 1;
-          transform: translateY(0);
+
+        .login-shell {
+          padding: 0.9rem;
+          gap: 0.9rem;
+        }
+
+        .login-brand-panel {
+          display: none;
+        }
+
+        .login-form-panel {
+          padding: 0.85rem;
+          border-radius: 24px;
+        }
+
+        .login-card {
+          padding: 1.2rem;
+          border-radius: 18px;
+        }
+
+        .mobile-brand-bar {
+          display: grid;
+          grid-template-columns: 50px minmax(0, 1fr);
+          align-items: center;
+          gap: 0.8rem;
+          margin-bottom: 1.15rem;
+          padding: 0.85rem 0.9rem;
+          border-radius: 16px;
+          background: rgba(255, 255, 255, 0.045);
+          border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .mobile-brand-bar img {
+          width: 50px;
+          height: 50px;
+          object-fit: contain;
+          border-radius: 14px;
+          background: rgba(255, 255, 255, 0.06);
+          padding: 0.35rem;
+        }
+
+        .mobile-brand-text strong {
+          display: block;
+          margin-bottom: 0.2rem;
+          font-size: 0.95rem;
+          line-height: 1.35;
+        }
+
+        .mobile-brand-text span {
+          display: block;
+          color: var(--text-muted);
+          font-size: 0.75rem;
+          font-weight: 700;
+          letter-spacing: 0.14em;
+          text-transform: uppercase;
+        }
+
+        .panel-kicker {
+          margin-bottom: 0.75rem;
+          font-size: 0.68rem;
+          letter-spacing: 0.12em;
+        }
+
+        .login-card-header {
+          margin-bottom: 1.25rem;
+        }
+
+        .login-card-header h2 {
+          font-size: clamp(1.7rem, 7.6vw, 2.15rem);
+        }
+
+        .login-card-header p {
+          font-size: 0.92rem;
+          line-height: 1.65;
+        }
+
+        .form-group label {
+          font-size: 0.72rem;
+        }
+
+        .form-group input {
+          padding: 0.95rem 0.95rem 0.95rem 1rem;
+        }
+
+        .password-toggle {
+          width: 48px;
+          height: 48px;
+        }
+
+        .field-note {
+          font-size: 0.8rem;
+        }
+
+        .btn-primary {
+          padding: 0.95rem 1.1rem;
+          font-size: 0.9rem;
+        }
+
+        .login-footer {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 0.65rem;
+        }
+
+        #toast-container {
+          left: 0.9rem;
+          right: 0.9rem;
+          bottom: 0.9rem;
+        }
+
+        .toast {
+          min-width: 0;
+          width: 100%;
+        }
+      }
+
+      @media (min-width: 900px) {
+        .login-shell {
+          grid-template-columns: minmax(0, 1.08fr) minmax(380px, 460px);
+          gap: 1.25rem;
+          padding: 1.25rem;
+          align-items: stretch;
+        }
+
+        .login-brand-panel {
+          order: 1;
+          padding: 2.25rem;
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+        }
+
+        .login-form-panel {
+          order: 2;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 1.25rem;
+        }
+
+        .login-card {
+          width: 100%;
+          padding: 2rem;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .login-shell {
+          padding: 0.75rem;
+        }
+
+        .login-form-panel {
+          border-radius: 20px;
+          padding: 0.7rem;
+        }
+
+        .login-card {
+          padding: 1.05rem;
+          border-radius: 16px;
+        }
+
+        .mobile-brand-bar {
+          grid-template-columns: 44px minmax(0, 1fr);
+          gap: 0.7rem;
+          padding: 0.75rem 0.8rem;
+          margin-bottom: 1rem;
+        }
+
+        .mobile-brand-bar img {
+          width: 44px;
+          height: 44px;
+        }
+
+        .mobile-brand-text strong {
+          font-size: 0.9rem;
+        }
+
+        .login-card-header p,
+        .field-note {
+          font-size: 0.82rem;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          animation: none !important;
+          transition: none !important;
+          scroll-behavior: auto !important;
         }
       }
     </style>
   </head>
   <body class="login-body">
-    <div class="login-container">
-      <div class="login-card">
-        <div class="login-header">
-          <i class="fas fa-church"></i>
-          <h2>Admin Portal</h2>
-          <p>Please sign in to continue</p>
-        </div>
-        <form id="login-form">
-          <div class="form-group">
-            <label for="password">Password</label>
-            <input
-              type="password"
-              id="password"
-              placeholder="Enter Admin Password"
-              required
-            />
-          </div>
-          <button type="submit" class="btn-primary">Login</button>
-        </form>
-        <div style="text-align: center; margin-top: 1rem">
-          <a href="/" class="back-link"
-            ><i class="fas fa-arrow-left"></i> Back to Website</a
-          >
-        </div>
-      </div>
-    </div>
+    <main class="login-shell">
+      <section class="login-brand-panel" aria-label="Portal overview">
+        <a href="index.html" class="brand-mark">
+          <img src="/image/logo.png" alt="Perfection Of Christ Ministry logo" />
+          <span>Perfection Of Christ Ministry</span>
+        </a>
 
-    <!-- Toast Notification Container -->
-    <div id="toast-container"></div>
+        <div class="brand-copy">
+          <span class="brand-badge">Admin Access</span>
+          <h1>Manage church activity from one secure portal.</h1>
+          <p>
+            Access the dashboard to update livestream settings, review prayer
+            requests, and manage ministry content without exposing admin tools
+            on the public website.
+          </p>
+        </div>
+
+        <div class="brand-points">
+          <article class="brand-point">
+            <div class="brand-point-icon">
+              <i class="fas fa-shield-halved"></i>
+            </div>
+            <div>
+              <strong>Protected access</strong>
+              <span>Only approved church administrators should use this page.</span>
+            </div>
+          </article>
+          <article class="brand-point">
+            <div class="brand-point-icon">
+              <i class="fas fa-signal"></i>
+            </div>
+            <div>
+              <strong>Live control</strong>
+              <span>Update service streaming details and platform visibility.</span>
+            </div>
+          </article>
+          <article class="brand-point">
+            <div class="brand-point-icon">
+              <i class="fas fa-hand-holding-heart"></i>
+            </div>
+            <div>
+              <strong>Care responses</strong>
+              <span>Track incoming prayer requests and church engagement data.</span>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="login-form-panel" aria-label="Admin sign in">
+        <div class="login-card">
+          <div class="mobile-brand-bar">
+            <img src="/image/logo.png" alt="Perfection Of Christ Ministry logo" />
+            <div class="mobile-brand-text">
+              <strong>Perfection Of Christ Ministry</strong>
+              <span>Admin Portal</span>
+            </div>
+          </div>
+
+          <div class="login-card-header">
+            <span class="panel-kicker">Authorized Staff Only</span>
+            <h2>Admin Login</h2>
+            <p>Enter the admin password to continue to the dashboard.</p>
+          </div>
+
+          <form id="login-form" novalidate>
+            <div class="form-group">
+              <label for="password">Password</label>
+              <div class="password-field">
+                <input
+                  type="password"
+                  id="password"
+                  placeholder="Enter admin password"
+                  autocomplete="current-password"
+                  required
+                />
+                <button
+                  type="button"
+                  class="password-toggle"
+                  id="password-toggle"
+                  aria-label="Show password"
+                  aria-pressed="false"
+                >
+                  <i class="fas fa-eye"></i>
+                </button>
+              </div>
+              <p class="field-note">
+                Keep this page restricted to trusted church administrators.
+              </p>
+            </div>
+
+            <button type="submit" class="btn-primary" id="login-submit">
+              Sign In
+            </button>
+          </form>
+
+          <div class="login-footer">
+            <a href="index.html" class="back-link">
+              <i class="fas fa-arrow-left"></i>
+              <span>Back to Website</span>
+            </a>
+            <span class="login-meta">Perfection Of Christ Ministry</span>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <div id="toast-container" aria-live="polite" aria-atomic="true"></div>
 
     <script>
       const API_URL = "/api";
+      const token = localStorage.getItem("admin_token");
 
-      // Check if already logged in
-      if (localStorage.getItem("admin_token")) {
+      if (token) {
         window.location.href = "/admin";
       }
 
-      document
-        .getElementById("login-form")
-        .addEventListener("submit", async (e) => {
-          e.preventDefault();
-          const password = document.getElementById("password").value;
-          const btn = e.target.querySelector("button");
+      const loginForm = document.getElementById("login-form");
+      const passwordInput = document.getElementById("password");
+      const passwordToggle = document.getElementById("password-toggle");
+      const submitButton = document.getElementById("login-submit");
 
-          btn.innerText = "Verifying...";
+      passwordInput.focus();
 
-          try {
-            const res = await fetch(`${API_URL}/login`, {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ password }),
-            });
-            const data = await res.json();
+      function setSubmitting(isSubmitting) {
+        submitButton.disabled = isSubmitting;
+        submitButton.textContent = isSubmitting ? "Verifying..." : "Sign In";
+      }
 
-            if (data.success) {
-              localStorage.setItem("admin_token", data.token);
-              window.location.href = "/admin";
-            } else {
-              showToast(data.message || "Invalid Password", "error");
-              btn.innerText = "Login";
-            }
-          } catch (err) {
-            console.error(err);
-            showToast("Server Error. Please try again.", "error");
-            btn.innerText = "Login";
+      passwordToggle.addEventListener("click", () => {
+        const shouldShow = passwordInput.type === "password";
+        passwordInput.type = shouldShow ? "text" : "password";
+        passwordToggle.setAttribute("aria-pressed", String(shouldShow));
+        passwordToggle.setAttribute(
+          "aria-label",
+          shouldShow ? "Hide password" : "Show password",
+        );
+        passwordToggle.innerHTML = shouldShow
+          ? '<i class="fas fa-eye-slash"></i>'
+          : '<i class="fas fa-eye"></i>';
+      });
+
+      loginForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+
+        const password = passwordInput.value;
+        if (!password) {
+          showToast("Enter the admin password first.", "error");
+          passwordInput.focus();
+          return;
+        }
+
+        setSubmitting(true);
+
+        try {
+          const response = await fetch(`${API_URL}/login`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ password }),
+          });
+          const data = await response.json();
+
+          if (data.success) {
+            localStorage.setItem("admin_token", data.token);
+            window.location.href = "/admin";
+            return;
           }
-        });
 
-      // --- Toast Notification Function ---
+          showToast(data.message || "Invalid password.", "error");
+          setSubmitting(false);
+        } catch (error) {
+          console.error(error);
+          showToast("Server error. Please try again.", "error");
+          setSubmitting(false);
+        }
+      });
+
       function showToast(message, type = "success") {
         const container = document.getElementById("toast-container");
         if (!container) return;
+
         const toast = document.createElement("div");
         toast.className = `toast ${type}`;
         toast.textContent = message;
         container.appendChild(toast);
 
-        // Trigger reflow to enable animation
         toast.getBoundingClientRect();
         toast.classList.add("show");
 
         setTimeout(() => {
           toast.remove();
-        }, 5000);
+        }, 4500);
       }
     </script>
   </body>

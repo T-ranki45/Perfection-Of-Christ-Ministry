@@ -41,23 +41,23 @@
   <body>
     <header class="main-header">
       <div class="container">
-        <a href="/" class="logo">
+        <a href="index.html" class="logo">
           <img src="./image/logo.png" alt="Logo" />
           <span>Perfection Of Christ Ministry</span>
         </a>
 
         <nav class="main-navigation-menu">
           <ul>
-            <li><a href="/about" class="active">About</a></li>
-            <li><a href="/blog">Blog</a></li>
-            <li><a href="/#messages">Messages</a></li>
-            <li><a href="/#events">Events</a></li>
+            <li><a href="about.html" class="active">About</a></li>
+            <li><a href="blog.html">Blog</a></li>
+            <li><a href="index.html#messages">Messages</a></li>
+            <li><a href="index.html#events">Events</a></li>
             <li class="live-nav-item">
               <a href="#" class="live-nav-link"
                 >Live <span class="live-badge-nav"></span
               ></a>
             </li>
-            <li><a href="/#visit">Visit</a></li>
+            <li><a href="index.html#visit">Visit</a></li>
             <li><a href="#" class="button open-give-modal">Give</a></li>
           </ul>
         </nav>
@@ -76,10 +76,10 @@
             family to serve Port Harcourt and beyond.
           </p>
           <div class="page-hero-actions">
-            <a href="/#visit" class="button page-hero-primary"
+            <a href="index.html#visit" class="button page-hero-primary"
               >Plan Your Visit</a
             >
-            <a href="/#messages" class="button page-hero-secondary"
+            <a href="index.html#messages" class="button page-hero-secondary"
               >Watch Messages</a
             >
           </div>
@@ -380,7 +380,7 @@
             Start with a visit, listen to a message, or reach out for prayer.
           </div>
           <div class="cta-buttons">
-            <a href="/#visit" class="button button-primary"
+            <a href="index.html#visit" class="button button-primary"
               >Visit Us This Sunday</a
             >
             <a
@@ -530,10 +530,10 @@
           <div class="footer-col">
             <h3>Quick Links</h3>
             <ul>
-              <li><a href="/about">About Us</a></li>
-              <li><a href="/blog">Blog</a></li>
-              <li><a href="/#messages">Messages</a></li>
-              <li><a href="/#events">Events</a></li>
+              <li><a href="about.html">About Us</a></li>
+              <li><a href="blog.html">Blog</a></li>
+              <li><a href="index.html#messages">Messages</a></li>
+              <li><a href="index.html#events">Events</a></li>
             </ul>
           </div>
           <div class="footer-col">
@@ -575,16 +575,16 @@
       <a href="#" class="fullscreen-nav-close">&times;</a>
       <nav>
         <ul>
-          <li><a href="/about" class="active">About</a></li>
-          <li><a href="/blog">Blog</a></li>
-          <li><a href="/#messages">Messages</a></li>
-          <li><a href="/#events">Events</a></li>
+          <li><a href="about.html" class="active">About</a></li>
+          <li><a href="blog.html">Blog</a></li>
+          <li><a href="index.html#messages">Messages</a></li>
+          <li><a href="index.html#events">Events</a></li>
           <li class="live-nav-item">
             <a href="#" class="live-nav-link"
               >Live <span class="live-badge-nav"></span
             ></a>
           </li>
-          <li><a href="/#visit">Visit</a></li>
+          <li><a href="index.html#visit">Visit</a></li>
           <li><a href="#" id="prayer-btn-mobile">Prayer</a></li>
           <li><a href="#" class="button open-give-modal">Give</a></li>
         </ul>
@@ -919,6 +919,11 @@
 
       // --- Mission cards: subtle 3D tilt on mouse move ---
       (function enableMissionTilt() {
+        const canHover = window.matchMedia(
+          "(hover: hover) and (pointer: fine)",
+        ).matches;
+        if (!canHover) return;
+
         const cards = document.querySelectorAll("#mission .ministry-card");
         if (!cards || cards.length === 0) return;
 

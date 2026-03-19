@@ -4192,11 +4192,15 @@ section h2::after {
   }
 
   #hero {
-    padding: 7.5rem 0 4.5rem;
-    min-height: auto;
+    height: auto;
+    min-height: 100svh;
+    align-items: flex-start;
+    padding: calc(8.25rem + env(safe-area-inset-top)) 0 4.5rem;
+    overflow: visible;
   }
 
   #hero .hero-content {
+    width: 100%;
     max-width: none;
     padding: 0 1.5rem;
     text-align: left;
@@ -4232,6 +4236,10 @@ section h2::after {
   .hero-info-grid {
     grid-template-columns: 1fr;
     margin-top: 1.6rem;
+  }
+
+  .scroll-indicator {
+    display: none;
   }
 
   #home-highlights {
@@ -4302,8 +4310,18 @@ section h2::after {
 }
 
 @media screen and (max-width: 480px) {
+  #hero {
+    padding-top: calc(8.75rem + env(safe-area-inset-top));
+    padding-bottom: 4rem;
+  }
+
+  #hero .hero-content {
+    padding: 0 1rem;
+  }
+
   .hero-badge-row {
     gap: 0.5rem;
+    margin-bottom: 1rem;
   }
 
   .hero-badge {
@@ -4328,6 +4346,10 @@ section h2::after {
 
   .hero-buttons .button {
     padding: 1rem 1.2rem;
+  }
+
+  .hero-description {
+    line-height: 1.68;
   }
 
   .hero-info-card strong {
@@ -4357,6 +4379,22 @@ section h2::after {
 
   .main-footer {
     padding-bottom: 7.5rem;
+  }
+}
+
+@media screen and (max-width: 480px) and (max-height: 760px) {
+  #hero {
+    padding-top: calc(9.25rem + env(safe-area-inset-top));
+  }
+
+  #hero h1 {
+    font-size: clamp(1.85rem, 9.4vw, 2.45rem);
+    max-width: 11ch;
+  }
+
+  .hero-pretitle {
+    font-size: 0.76rem;
+    letter-spacing: 0.14em;
   }
 }
 

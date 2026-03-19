@@ -297,6 +297,24 @@ section h2::after {
   width: 100%;
 }
 
+.main-navigation-menu ul li a.nav-admin-btn {
+  padding: 0.7rem 1.2rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
+  color: #111;
+  text-shadow: none;
+}
+
+.main-navigation-menu ul li a.nav-admin-btn::after {
+  display: none;
+}
+
+.main-header.scrolled .main-navigation-menu ul li a.nav-admin-btn,
+.main-navigation-menu ul li a.nav-admin-btn:hover {
+  color: #000;
+}
+
 /* Live Nav Badge */
 .main-navigation-menu ul li a.live-nav-link {
   color: #ff4d4d;

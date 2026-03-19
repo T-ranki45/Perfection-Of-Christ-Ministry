@@ -1,7 +1,7 @@
 {
   "mode": "verse",
-  "verseText": "\"For I know the plans I have for you,\" declares the Lord, \"plans to prosper you and not to harm you, plans to give you hope and a future.\" - Jeremiah 29:11",
-  "verseRef": "",
+  "verseText": "And the man said, The woman whom thou gavest\nto be with me, she gave me of the tree, and I did eat.",
+  "verseRef": "Genesis 3:12",
   "giveScripture": "\"Each of you should give what you have decided in your heart to give, not reluctantly or under compulsion, for God loves a cheerful giver.\" - 2 Corinthians 9:7",
   "announcementTitle": "",
   "announcementBody": "",
@@ -16,8 +16,10 @@
   "lowerThirdName": "",
   "lowerThirdRole": "",
   "lowerThirdFooter": "",
-  "updatedAt": "2026-03-19T14:52:43.707Z",
-  "verseSlides": [],
+  "updatedAt": "2026-03-19T15:00:43.162Z",
+  "verseSlides": [
+    "And the man said, The woman whom thou gavest\nto be with me, she gave me of the tree, and I did eat."
+  ],
   "verseSlideIndex": 0,
   "lyricsSlides": [],
   "lyricsSlideIndex": 0

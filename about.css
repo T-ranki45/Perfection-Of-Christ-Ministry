@@ -1,4 +1,23 @@
 /* --- Page Hero (Sub-pages) --- */
+html,
+body {
+  width: 100%;
+  overflow-x: hidden;
+}
+
+main,
+#our-story,
+#mission,
+#leadership {
+  overflow-x: hidden;
+}
+
+.story-grid > *,
+.team-grid > *,
+.ministry-grid > * {
+  min-width: 0;
+}
+
 .page-hero {
   position: relative;
   height: 60vh;
@@ -925,5 +944,73 @@
 .mission-filigree {
   max-width: 100%;
   height: auto;
+}
+
+@media (max-width: 767px) {
+  .page-hero {
+    background-attachment: scroll;
+    overflow: hidden;
+  }
+
+  .lead-couple {
+    overflow: hidden;
+    padding: 2rem 1rem;
+  }
+
+  .couple-photos::before {
+    width: 260px;
+    height: 260px;
+  }
+
+  .couple-photos img {
+    width: 130px;
+    height: 130px;
+  }
+
+  .couple-photos img.husband {
+    margin-right: -18px;
+  }
+
+  .story-image::before {
+    inset: 0;
+    transform: none;
+  }
+
+  .story-image:hover::before {
+    transform: none;
+  }
+
+  .story-badge {
+    right: 12px;
+    bottom: 12px;
+    width: 84px;
+    height: 84px;
+    border-width: 3px;
+  }
+
+  .story-badge strong {
+    font-size: 1.2rem;
+  }
+
+  .story-image,
+  .story-content,
+  .team-grid,
+  .ministry-grid,
+  .cta-section {
+    overflow-x: hidden;
+  }
+
+  .team-grid,
+  .ministry-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .story-features {
+    flex-direction: column;
+  }
+
+  .feature-item {
+    min-width: 0;
+  }
 }
 

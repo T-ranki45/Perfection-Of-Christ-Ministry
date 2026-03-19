@@ -802,7 +802,25 @@
       if ("serviceWorker" in navigator) {
         window.addEventListener("load", () => {
           navigator.serviceWorker
-            .register("/service-worker.js")
+            .getRegistrations()
+            .then((registrations) =>
+              Promise.all(
+                registrations.map((registration) => {
+                  if (
+                    registration.scope === `${window.location.origin}/` &&
+                    registration.active?.scriptURL.endsWith("/service-worker.js")
+                  ) {
+                    return registration.unregister();
+                  }
+                  return Promise.resolve(false);
+                }),
+              ),
+            )
+            .then(() =>
+              navigator.serviceWorker.register("/service-worker.js", {
+                scope: "/ict/",
+              }),
+            )
             .catch((error) =>
               console.error("Service worker registration failed:", error),
             );

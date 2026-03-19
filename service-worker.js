@@ -1,4 +1,4 @@
-const CACHE_NAME = "pocm-site-v2";
+const CACHE_NAME = "pocm-site-v3";
 const CORE_ASSETS = [
   "/",
   "/about",
@@ -8,14 +8,23 @@ const CORE_ASSETS = [
   "/ict/control",
   "/screen",
   "/mic",
-  "style.css",
-  "about.css",
-  "blog.css",
-  "ict.css",
-  "screen.css",
-  "manifest.webmanifest",
-  "image/logo.png",
+  "/style.css",
+  "/about.css",
+  "/blog.css",
+  "/ict.css",
+  "/screen.css",
+  "/manifest.webmanifest",
+  "/image/logo.png",
 ];
+
+function isNetworkFirstAsset(request) {
+  return (
+    request.mode === "navigate" ||
+    request.destination === "style" ||
+    request.destination === "script" ||
+    request.destination === "document"
+  );
+}
 
 function getNavigationFallback(pathname) {
   if (pathname.startsWith("/ict/control")) return "/ict/control";
@@ -58,7 +67,7 @@ self.addEventListener("fetch", (event) => {
   if (url.origin !== self.location.origin) return;
   if (url.pathname.startsWith("/api/")) return;
 
-  if (request.mode === "navigate") {
+  if (isNetworkFirstAsset(request)) {
     const fallback = getNavigationFallback(url.pathname);
     event.respondWith(
       fetch(request)
@@ -67,7 +76,13 @@ self.addEventListener("fetch", (event) => {
           caches.open(CACHE_NAME).then((cache) => cache.put(request, copy));
           return response;
         })
-        .catch(() => caches.match(request).then((cached) => cached || caches.match(fallback))),
+        .catch(() =>
+          caches.match(request).then((cached) => {
+            if (cached) return cached;
+            if (request.mode === "navigate") return caches.match(fallback);
+            return caches.match(fallback);
+          }),
+        ),
     );
     return;
   }

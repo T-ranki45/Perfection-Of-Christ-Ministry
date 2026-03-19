@@ -5,11 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="robots" content="noindex,nofollow,noarchive" />
     <title>ICT Live Service Control | Perfection Of Christ Ministry</title>
-    <link rel="icon" href="./image/logo.png" type="image/png" />
-    <link rel="apple-touch-icon" href="./image/logo.png" />
-    <link rel="manifest" href="manifest.webmanifest" />
+    <base href="/" />
+    <link rel="icon" href="/image/logo.png" type="image/png" />
+    <link rel="apple-touch-icon" href="/image/logo.png" />
+    <link rel="manifest" href="/manifest.webmanifest" />
     <meta name="theme-color" content="#d4a43f" />
-    <link rel="stylesheet" href="ict.css" />
+    <link rel="stylesheet" href="/ict.css" />
     <link
       href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Sora:wght@300;400;600;700&display=swap"
       rel="stylesheet"
@@ -76,7 +77,7 @@
     <div class="ict-app">
       <header class="ict-topbar">
         <div class="ict-brand">
-          <img src="./image/logo.png" alt="Perfection Of Christ Ministry" />
+          <img src="/image/logo.png" alt="Perfection Of Christ Ministry" />
           <div>
             <span>Perfection Of Christ Ministry</span>
             <p>ICT Live Service Control</p>
@@ -801,7 +802,7 @@
       if ("serviceWorker" in navigator) {
         window.addEventListener("load", () => {
           navigator.serviceWorker
-            .register("service-worker.js")
+            .register("/service-worker.js")
             .catch((error) =>
               console.error("Service worker registration failed:", error),
             );

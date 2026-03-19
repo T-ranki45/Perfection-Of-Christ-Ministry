@@ -1656,5 +1656,31 @@
         }
       })();
     </script>
+
+    <script>
+      (function () {
+        if (!("serviceWorker" in navigator)) return;
+        window.addEventListener("load", () => {
+          navigator.serviceWorker
+            .getRegistrations()
+            .then((registrations) =>
+              Promise.all(
+                registrations.map((registration) => {
+                  if (
+                    registration.scope === `${window.location.origin}/` &&
+                    registration.active?.scriptURL.endsWith("/service-worker.js")
+                  ) {
+                    return registration.unregister();
+                  }
+                  return Promise.resolve(false);
+                }),
+              ),
+            )
+            .catch((error) =>
+              console.error("Public page service worker cleanup failed:", error),
+            );
+        });
+      })();
+    </script>
   </body>
 </html>

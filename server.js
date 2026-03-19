@@ -66,6 +66,10 @@ app.use((req, res, next) => {
 app.use(express.static(".", { index: false })); // Serve static files without defaulting to a random HTML entry
 
 function sendPage(res, filename) {
+  res.set(
+    "Cache-Control",
+    "no-store, no-cache, must-revalidate, proxy-revalidate",
+  );
   res.sendFile(path.join(__dirname, filename));
 }
 

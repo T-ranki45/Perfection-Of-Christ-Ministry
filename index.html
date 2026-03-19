@@ -73,7 +73,7 @@
               ></a>
             </li>
             <li><a href="#visit">Visit</a></li>
-            <li><a href="#" id="prayer-btn">Prayer</a></li>
+            <li><a href="#" id="prayer-btn" class="open-prayer-modal">Prayer</a></li>
             <li><a href="/admin/login" class="button nav-admin-btn">Admin</a></li>
             <li><a href="#" class="button open-give-modal">Give</a></li>
           </ul>
@@ -99,23 +99,54 @@
         <div class="hero-overlay"></div>
         <div class="hero-content">
           <p class="hero-pretitle">Welcome to Perfection Of Christ Ministry</p>
+          <div class="hero-badge-row">
+            <span class="hero-badge">Port Harcourt, Nigeria</span>
+            <span class="hero-badge">A Home for Worship and the Word</span>
+          </div>
           <h1>
-            Faith, Hope, and<br />
+            Come Home to<br />
             <span
               class="txt-type"
               data-wait="3000"
-              data-words='["Love", "Grace", "Truth", "Miracles"]'
+              data-words='["Grace", "Truth", "Hope", "Jesus"]'
             ></span>
           </h1>
           <div class="hero-divider"></div>
-          <p>Join us for worship this Sunday at 7:00 AM</p>
+          <p class="hero-description">
+            Join a warm community centered on worship, prayer, discipleship,
+            and the transforming power of Jesus Christ.
+          </p>
           <div class="hero-buttons">
             <a href="#" class="button open-plan-visit-modal"
-              >Join Us This Sunday</a
+              >Plan Your Visit</a
             >
             <a href="#" class="button btn-live"
               ><i class="fab fa-facebook-f"></i> Watch Live</a
             >
+            <a
+              href="https://maps.app.goo.gl/ye3ZhSCveWuZTsjZ8"
+              class="button btn-outline hero-directions-btn"
+              >Get Directions</a
+            >
+          </div>
+          <div class="hero-info-grid">
+            <article class="hero-info-card">
+              <span class="hero-info-label">Sunday Services</span>
+              <strong>7:00 AM and 10:00 AM</strong>
+              <p>Come expectant for worship, prayer, and the Word.</p>
+            </article>
+            <article class="hero-info-card">
+              <span class="hero-info-label">Midweek Gathering</span>
+              <strong>Wednesday, 6:00 PM</strong>
+              <p>Bible study, encouragement, and spiritual growth.</p>
+            </article>
+            <article class="hero-info-card">
+              <span class="hero-info-label">Need Prayer?</span>
+              <strong>We Are Ready to Stand With You</strong>
+              <p>
+                Share your request and let us believe God with you in faith.
+              </p>
+            </article>
           </div>
         </div>
         <div class="scroll-indicator">
@@ -163,12 +194,67 @@
         </div>
       </div>
 
+      <section id="home-highlights">
+        <div class="container">
+          <div class="home-highlights-grid">
+            <article class="home-highlight-card reveal-up">
+              <div class="home-highlight-icon">
+                <i class="fas fa-users"></i>
+              </div>
+              <span class="home-highlight-label">First Time Here?</span>
+              <h3>We Will Help You Settle In</h3>
+              <p>
+                From the parking area to your seat, we want your first visit to
+                feel easy, warm, and memorable.
+              </p>
+              <a href="#" class="home-highlight-link open-plan-visit-modal"
+                >Plan a Visit</a
+              >
+            </article>
+            <article class="home-highlight-card reveal-up delay-100">
+              <div class="home-highlight-icon">
+                <i class="fas fa-map-marker-alt"></i>
+              </div>
+              <span class="home-highlight-label">Find Us Easily</span>
+              <h3>Rumuokwurushi, Port Harcourt</h3>
+              <p>
+                Worship with us at Rumuokwurushi Pipeline, Off MTN Mast, Port
+                Harcourt.
+              </p>
+              <a
+                href="https://maps.app.goo.gl/ye3ZhSCveWuZTsjZ8"
+                class="home-highlight-link"
+                >Open Map</a
+              >
+            </article>
+            <article class="home-highlight-card reveal-up delay-200">
+              <div class="home-highlight-icon">
+                <i class="fas fa-hands-praying"></i>
+              </div>
+              <span class="home-highlight-label">Need Support?</span>
+              <h3>Prayer and Care Are Available</h3>
+              <p>
+                No matter what season you are in, you do not have to walk
+                through it alone.
+              </p>
+              <a
+                href="#"
+                class="home-highlight-link open-prayer-modal"
+                id="hero-prayer-link"
+                >Send a Prayer Request</a
+              >
+            </article>
+          </div>
+        </div>
+      </section>
+
       <section id="welcome">
         <div class="container welcome-container">
           <div class="welcome-card reveal-scale">
             <div class="welcome-icon">
               <i class="fas fa-dove" id="perfection"></i>
             </div>
+            <span class="section-eyebrow">A Church Family for Every Season</span>
             <h2 id="welcome-to">
               Welcome to <br /><span>Perfection Of Christ Ministry</span>
             </h2>
@@ -179,6 +265,11 @@
               as we seek to grow in our relationship with God and with one
               another.
             </p>
+            <div class="welcome-pill-row">
+              <span class="welcome-pill">Bible Teaching</span>
+              <span class="welcome-pill">Passionate Worship</span>
+              <span class="welcome-pill">Prayer and Community</span>
+            </div>
           </div>
         </div>
       </section>
@@ -217,6 +308,28 @@
                 Our services are heavily loaded and include contemporary worship
                 music and a relevant message from the Bible. Come as you are!
               </p>
+              <div class="visit-feature-list">
+                <article class="visit-feature-item">
+                  <span>Sunday</span>
+                  <strong>Two worship services every week</strong>
+                </article>
+                <article class="visit-feature-item">
+                  <span>Midweek</span>
+                  <strong>Bible study and spiritual growth</strong>
+                </article>
+                <article class="visit-feature-item">
+                  <span>Atmosphere</span>
+                  <strong>Prayer, worship, teaching, and community</strong>
+                </article>
+              </div>
+              <div class="visit-actions">
+                <a href="#" class="button open-plan-visit-modal">Plan a Visit</a>
+                <a
+                  href="https://maps.app.goo.gl/ye3ZhSCveWuZTsjZ8"
+                  class="button btn-outline"
+                  >Get Directions</a
+                >
+              </div>
             </div>
             <div class="map-placeholder" id="map-container">
               <div class="map-overlay">
@@ -555,12 +668,35 @@
             ></a>
           </li>
           <li><a href="#visit">Visit</a></li>
-          <li><a href="#" id="prayer-btn-mobile">Prayer</a></li>
+          <li>
+            <a href="#" id="prayer-btn-mobile" class="open-prayer-modal"
+              >Prayer</a
+            >
+          </li>
           <li><a href="/admin/login">Admin</a></li>
           <li><a href="#" class="button open-give-modal">Give</a></li>
         </ul>
       </nav>
     </div>
+
+    <nav class="mobile-action-bar" aria-label="Quick actions">
+      <a href="#visit" class="mobile-action-link">
+        <i class="fas fa-location-dot"></i>
+        <span>Visit</span>
+      </a>
+      <a href="#messages" class="mobile-action-link">
+        <i class="fas fa-play-circle"></i>
+        <span>Messages</span>
+      </a>
+      <a href="#" class="mobile-action-link open-prayer-modal">
+        <i class="fas fa-hands-praying"></i>
+        <span>Prayer</span>
+      </a>
+      <a href="#" class="mobile-action-link mobile-action-accent open-give-modal">
+        <i class="fas fa-heart"></i>
+        <span>Give</span>
+      </a>
+    </nav>
 
     <script>
       // API Base URL
@@ -584,7 +720,7 @@
       // Active Link Highlighting
       const sections = document.querySelectorAll("section");
       const navLinks = document.querySelectorAll(
-        ".main-nav ul li a:not(.button)",
+        ".main-navigation-menu ul li a:not(.button)",
       );
 
       window.addEventListener("scroll", () => {
@@ -1183,17 +1319,19 @@
 
       // Prayer Modal Logic
       const prayerModal = document.getElementById("prayer-modal");
-      const prayerBtn = document.getElementById("prayer-btn");
+      const prayerBtns = document.querySelectorAll(".open-prayer-modal");
       const prayerCloseBtn = prayerModal
         ? prayerModal.querySelector(".close-btn")
         : null;
 
-      if (prayerBtn && prayerModal) {
-        prayerBtn.addEventListener("click", (e) => {
+      prayerBtns.forEach((btn) => {
+        btn.addEventListener("click", (e) => {
           e.preventDefault();
-          prayerModal.style.display = "block";
+          if (prayerModal) {
+            prayerModal.style.display = "block";
+          }
         });
-      }
+      });
       if (prayerCloseBtn && prayerModal) {
         prayerCloseBtn.addEventListener("click", () => {
           prayerModal.style.display = "none";
@@ -1490,16 +1628,6 @@
               link.addEventListener("click", closeMenu);
             }
           });
-
-          // Hook up mobile prayer button
-          const prayerBtnMobile = document.getElementById("prayer-btn-mobile");
-          const prayerModal = document.getElementById("prayer-modal");
-          if (prayerBtnMobile && prayerModal) {
-            prayerBtnMobile.addEventListener("click", (e) => {
-              e.preventDefault();
-              prayerModal.style.display = "block";
-            });
-          }
         }
       });
     </script>

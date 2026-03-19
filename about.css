@@ -1267,10 +1267,14 @@ body {
 
   .story-image,
   .story-content,
+  #mission,
+  #leadership,
+  .mission-inner,
+  .lead-couple,
   .team-grid,
   .ministry-grid,
   .cta-section {
-    overflow-x: hidden;
+    overflow-x: clip;
   }
 
   #leadership,
@@ -1311,6 +1315,7 @@ body {
   .team-grid,
   .ministry-grid {
     overscroll-behavior-x: none;
+    contain: layout paint;
   }
 
   .team-member,
@@ -1379,6 +1384,32 @@ body {
     transform: none;
   }
 
+  .mission-decor,
+  .mission-filigree,
+  .card-ring {
+    display: none;
+  }
+
+  .mission-inner {
+    padding: 1.35rem 0.95rem;
+    overflow-x: clip;
+  }
+
+  .mission-inner h2::after {
+    width: 100%;
+    max-width: 220px;
+  }
+
+  #mission h2,
+  #leadership h2,
+  .team-title {
+    font-size: clamp(1.7rem, 7vw, 2.1rem);
+  }
+
+  .team-title {
+    margin: 2.25rem 0 1.2rem;
+  }
+
   .team-grid,
   .ministry-grid {
     grid-template-columns: 1fr;
@@ -1394,14 +1425,63 @@ body {
 
   .mission-lead,
   .leadership-intro,
-  .team-intro {
-    font-size: 0.98rem;
-    line-height: 1.8;
+  .team-intro,
+  .couple-bio {
+    font-size: 0.92rem;
+    line-height: 1.65;
   }
 
   .mission-pill-row,
   .leadership-pill-row {
     justify-content: flex-start;
+  }
+
+  .couple-details h3 {
+    font-size: 1.35rem;
+  }
+
+  .couple-role,
+  .team-role {
+    font-size: 0.76rem;
+    letter-spacing: 0.08em;
+  }
+
+  .couple-tagline {
+    font-size: 0.92rem;
+  }
+
+  .team-member {
+    padding: 1.1rem;
+  }
+
+  .team-member h3,
+  #mission .ministry-card h3 {
+    font-size: 1.05rem;
+  }
+
+  .team-bio,
+  #mission .ministry-card p {
+    font-size: 0.88rem;
+    line-height: 1.6;
+  }
+
+  #mission .ministry-card {
+    padding: 1.35rem 1rem;
+    border-radius: 12px;
+  }
+
+  #mission .ministry-icon {
+    width: 68px;
+    height: 68px;
+    font-size: 1.35rem;
+    margin-bottom: 0.85rem;
+  }
+
+  .mission-pill,
+  .leadership-pill {
+    padding: 0.55rem 0.72rem;
+    font-size: 0.74rem;
+    letter-spacing: 0.04em;
   }
 }
 
@@ -1428,6 +1508,40 @@ body {
   .page-hero p {
     font-size: 0.92rem;
     line-height: 1.65;
+  }
+
+  #mission h2,
+  #leadership h2,
+  .team-title {
+    font-size: 1.55rem;
+  }
+
+  .mission-lead,
+  .leadership-intro,
+  .team-intro,
+  .couple-bio {
+    font-size: 0.88rem;
+  }
+
+  #mission .ministry-card {
+    padding: 1.2rem 0.9rem;
+  }
+
+  #mission .ministry-card h3,
+  .team-member h3,
+  .couple-details h3 {
+    font-size: 0.98rem;
+  }
+
+  #mission .ministry-card p,
+  .team-bio {
+    font-size: 0.84rem;
+  }
+
+  .mission-pill,
+  .leadership-pill,
+  .page-fact strong {
+    font-size: 0.7rem;
   }
 
   .team-member {

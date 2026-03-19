@@ -3,6 +3,7 @@ html,
 body {
   width: 100%;
   overflow-x: hidden;
+  overflow-y: auto;
 }
 
 main,
@@ -18,32 +19,136 @@ main,
   min-width: 0;
 }
 
+body {
+  background-attachment: scroll;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: auto;
+}
+
 .page-hero {
   position: relative;
-  height: 60vh;
+  min-height: 76vh;
+  padding: 8rem 0 5rem;
   display: flex;
   justify-content: center;
   align-items: center;
   text-align: center;
   color: var(--light-text-color);
   background: url("./image/About.jpg") no-repeat center center/cover;
-  background-attachment: fixed;
+  background-attachment: scroll;
   margin-top: 0;
   z-index: 1;
 }
 
+#our-story,
+#mission,
+#leadership,
+.cta-section {
+  position: relative;
+  overflow-x: hidden;
+}
+
+.page-hero-content {
+  position: relative;
+  z-index: 2;
+  max-width: 920px;
+}
+
+.page-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+  padding: 0.65rem 1rem;
+  border-radius: 999px;
+  background: rgba(7, 11, 16, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  color: #f5d68c;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  backdrop-filter: blur(12px);
+}
+
 .page-hero h1 {
   font-family: "Cinzel", serif;
-  font-size: 3.5rem;
+  font-size: clamp(2.9rem, 6vw, 4.6rem);
   font-weight: 900;
+  line-height: 1.05;
+  margin-bottom: 1rem;
   text-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
 }
 
 .page-hero p {
-  font-size: 1.3rem;
+  font-size: 1.15rem;
   font-weight: 500;
+  line-height: 1.8;
   text-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
   max-width: 700px;
+  margin: 0 auto;
+}
+
+.page-hero-actions {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.page-hero-actions .button {
+  min-width: 200px;
+  border-radius: 999px;
+}
+
+.page-hero-primary {
+  background: var(--gold-gradient);
+  color: #111;
+}
+
+.page-hero-secondary {
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.page-hero-secondary:hover {
+  background: rgba(255, 255, 255, 0.16);
+  color: #fff;
+}
+
+.page-hero-facts {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.page-fact {
+  padding: 1.1rem 1rem;
+  border-radius: 20px;
+  background: rgba(7, 11, 16, 0.48);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(14px);
+  box-shadow: 0 20px 36px rgba(0, 0, 0, 0.18);
+}
+
+.page-fact span {
+  display: block;
+  margin-bottom: 0.45rem;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.page-fact strong {
+  color: #fff;
+  font-family: "Cinzel", serif;
+  font-size: 1.05rem;
+  line-height: 1.4;
 }
 
 /* --- Leadership Section (Warm Charcoal + Gold theme) --- */
@@ -62,6 +167,28 @@ main,
   color: rgba(250, 245, 238, 0.98);
   padding: 5rem 0;
   position: relative;
+}
+
+.section-kicker {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+  padding: 0.5rem 0.9rem;
+  border-radius: 999px;
+  background: rgba(179, 135, 40, 0.1);
+  border: 1px solid rgba(179, 135, 40, 0.2);
+  color: #f6d992;
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.section-kicker-centered {
+  display: inline-flex;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 /* --- Lead Couple Section --- */
@@ -86,6 +213,8 @@ main,
 .couple-photos {
   position: relative;
   display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
   justify-content: center;
   align-items: center;
   margin-bottom: 1.5rem;
@@ -286,6 +415,10 @@ main,
   margin: 1rem 0 0;
 }
 
+.story-content .section-kicker {
+  margin-bottom: 0.85rem;
+}
+
 .story-content p {
   font-size: 1.1rem;
   line-height: 1.8;
@@ -438,6 +571,36 @@ main,
   display: block;
   color: #333;
   color: #ddd;
+}
+
+.mission-lead {
+  max-width: 760px;
+  margin: 0 auto 2.2rem;
+  color: rgba(238, 238, 238, 0.82);
+  font-size: 1.05rem;
+  line-height: 1.9;
+  text-align: center;
+}
+
+.mission-pill-row {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.85rem;
+  margin-top: 2rem;
+}
+
+.mission-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: 600;
 }
 
 /* --- Card List Styling ---*/
@@ -941,15 +1104,93 @@ main,
   line-height: 1.6;
 }
 
+.leadership-intro,
+.team-intro {
+  max-width: 760px;
+  margin: 0 auto 2rem;
+  text-align: center;
+  color: rgba(232, 225, 214, 0.82);
+  line-height: 1.8;
+}
+
+.team-intro {
+  color: rgba(214, 214, 214, 0.76);
+  margin-top: -0.5rem;
+}
+
+.leadership-pill-row {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1.4rem;
+}
+
+.leadership-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.65rem 0.95rem;
+  border-radius: 999px;
+  background: rgba(197, 154, 67, 0.1);
+  border: 1px solid rgba(197, 154, 67, 0.22);
+  color: #f3d28c;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.cta-note {
+  margin: -0.4rem auto 2rem;
+  max-width: 620px;
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 0.95rem;
+  letter-spacing: 0.03em;
+}
+
 .mission-filigree {
   max-width: 100%;
   height: auto;
 }
 
 @media (max-width: 767px) {
+  html,
+  body {
+    overflow-y: auto;
+  }
+
+  body {
+    background-attachment: scroll;
+  }
+
   .page-hero {
+    background-image: url("./image/PROFILE.jpg");
     background-attachment: scroll;
     overflow: hidden;
+    min-height: auto;
+    padding: 7.5rem 0 4rem;
+  }
+
+  .page-eyebrow {
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+  }
+
+  .page-hero p {
+    font-size: 1rem;
+  }
+
+  .page-hero-actions {
+    flex-direction: column;
+  }
+
+  .page-hero-actions .button {
+    width: 100%;
+  }
+
+  .page-hero-facts {
+    grid-template-columns: 1fr;
   }
 
   .lead-couple {
@@ -962,6 +1203,13 @@ main,
     height: 260px;
   }
 
+  .couple-photos {
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: center;
+  }
+
   .couple-photos img {
     width: 130px;
     height: 130px;
@@ -969,6 +1217,11 @@ main,
 
   .couple-photos img.husband {
     margin-right: -18px;
+  }
+
+  .couple-photos img.wife {
+    margin-top: 0;
+    margin-left: 0;
   }
 
   .story-image::before {
@@ -1012,5 +1265,16 @@ main,
   .feature-item {
     min-width: 0;
   }
-}
 
+  .mission-lead,
+  .leadership-intro,
+  .team-intro {
+    font-size: 0.98rem;
+    line-height: 1.8;
+  }
+
+  .mission-pill-row,
+  .leadership-pill-row {
+    justify-content: flex-start;
+  }
+}

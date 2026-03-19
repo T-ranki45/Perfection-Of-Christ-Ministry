@@ -104,17 +104,20 @@
             <span class="hero-badge">A Home for Worship and the Word</span>
           </div>
           <h1>
-            Come Home to<br />
-            <span
-              class="txt-type"
-              data-wait="3000"
-              data-words='["Grace", "Truth", "Hope", "Jesus"]'
+            A Church Family
+            <span class="hero-title-accent"
+              >Centered on
+              <span
+                class="txt-type"
+                data-wait="2200"
+                data-words='["Jesus Christ","Grace","Truth","Prayer"]'
+              ></span
             ></span>
           </h1>
           <div class="hero-divider"></div>
           <p class="hero-description">
-            Join a warm community centered on worship, prayer, discipleship,
-            and the transforming power of Jesus Christ.
+            Join us in Port Harcourt for worship, prayer, Bible teaching, and a
+            community where you can grow in faith and fellowship.
           </p>
           <div class="hero-buttons">
             <a href="#" class="button open-plan-visit-modal"
@@ -740,12 +743,6 @@
         });
       });
 
-      // TypeWriter Class
-      // Adapted from ADG-VIT/Portfolio-Website-3
-      // Original source: https://github.com/ADG-VIT/Portfolio-Website-3
-      // Licensed under MIT License
-      // Permission is hereby granted, free of charge, to use this code
-      // in accordance with the MIT License terms.
       class TypeWriter {
         constructor(txtElement, words, wait = 3000) {
           this.txtElement = txtElement;
@@ -753,11 +750,12 @@
           this.txt = "";
           this.wordIndex = 0;
           this.wait = parseInt(wait, 10);
-          this.type();
           this.isDeleting = false;
+          this.type();
         }
 
         type() {
+          if (!this.words.length) return;
           const current = this.wordIndex % this.words.length;
           const fullTxt = this.words[current];
 
@@ -769,11 +767,7 @@
 
           this.txtElement.innerHTML = `<span class="txt">${this.txt}</span>`;
 
-          let typeSpeed = 300;
-
-          if (this.isDeleting) {
-            typeSpeed /= 2;
-          }
+          let typeSpeed = this.isDeleting ? 110 : 180;
 
           if (!this.isDeleting && this.txt === fullTxt) {
             typeSpeed = this.wait;
@@ -781,14 +775,13 @@
           } else if (this.isDeleting && this.txt === "") {
             this.isDeleting = false;
             this.wordIndex++;
-            typeSpeed = 1000;
+            typeSpeed = 700;
           }
 
           setTimeout(() => this.type(), typeSpeed);
         }
       }
 
-      // Init TypeWriter
       const eventsSection = document.getElementById("events");
 
       if (eventsSection) {
@@ -1580,12 +1573,15 @@
 
       // --- Consolidated DOMContentLoaded for all page interactions ---
       document.addEventListener("DOMContentLoaded", () => {
-        // Hero TypeWriter
         const txtElement = document.querySelector(".txt-type");
         if (txtElement) {
-          const words = JSON.parse(txtElement.getAttribute("data-words"));
-          const wait = txtElement.getAttribute("data-wait");
-          new TypeWriter(txtElement, words, wait);
+          try {
+            const words = JSON.parse(txtElement.getAttribute("data-words") || "[]");
+            const wait = txtElement.getAttribute("data-wait") || "2200";
+            new TypeWriter(txtElement, words, wait);
+          } catch (error) {
+            console.error("Hero typewriter init failed:", error);
+          }
         }
 
         // Map Overlay to prevent scroll-jacking

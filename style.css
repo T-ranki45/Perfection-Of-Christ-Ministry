@@ -767,6 +767,74 @@ section h2::after {
   filter: brightness(0.92) contrast(1.03) saturate(1.03);
 }
 
+.mobile-hero-slideshow {
+  display: none;
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  overflow: hidden;
+}
+
+.mobile-hero-slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  overflow: hidden;
+  will-change: opacity;
+}
+
+.mobile-hero-slide::before,
+.mobile-hero-slide::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: var(--mobile-slide-image);
+  background-repeat: no-repeat;
+  pointer-events: none;
+}
+
+.mobile-hero-slide::before {
+  background-size: cover;
+  background-position: center center;
+  filter: blur(16px) brightness(0.42) saturate(0.9);
+  transform: scale(1.14);
+}
+
+.mobile-hero-slide::after {
+  background-size: contain;
+  background-position: center 22%;
+}
+
+.mobile-hero-slide.slide-1 {
+  --mobile-slide-image: url("./image/img.jpg");
+}
+
+.mobile-hero-slide.slide-2 {
+  --mobile-slide-image: url("./image/img2.jpg");
+}
+
+.mobile-hero-slide.slide-3 {
+  --mobile-slide-image: url("./image/img3.jpg");
+}
+
+.mobile-hero-slide.slide-4 {
+  --mobile-slide-image: url("./image/img4.jpg");
+}
+
+@keyframes mobileHeroSlideshow {
+  0%,
+  100% {
+    opacity: 0;
+  }
+  6%,
+  24% {
+    opacity: 1;
+  }
+  30% {
+    opacity: 0;
+  }
+}
+
 /* Fallback image for when video doesn't load */
 .hero-bg-fallback {
   position: absolute;
@@ -3786,10 +3854,19 @@ section h2::after {
 /* Disable animations for users who prefer reduced motion */
 @media (prefers-reduced-motion: reduce) {
   .hero-video,
+  .mobile-hero-slide,
   .scroll-indicator,
   .btn-live::before,
   .btn-live::after {
     animation: none !important;
+  }
+
+  .mobile-hero-slide {
+    opacity: 0;
+  }
+
+  .mobile-hero-slide.slide-1 {
+    opacity: 1;
   }
 }
 
@@ -4189,6 +4266,34 @@ section h2::after {
 @media (max-width: 992px) {
   body {
     padding-bottom: 6.5rem;
+  }
+
+  .hero-video {
+    display: none;
+  }
+
+  .mobile-hero-slideshow {
+    display: block;
+  }
+
+  .mobile-hero-slide {
+    animation: mobileHeroSlideshow 20s infinite;
+  }
+
+  .mobile-hero-slide.slide-1 {
+    animation-delay: 0s;
+  }
+
+  .mobile-hero-slide.slide-2 {
+    animation-delay: 5s;
+  }
+
+  .mobile-hero-slide.slide-3 {
+    animation-delay: 10s;
+  }
+
+  .mobile-hero-slide.slide-4 {
+    animation-delay: 15s;
   }
 
   #hero {

@@ -611,6 +611,9 @@
             <li onclick="showSection('testimonials-admin', this)">
               <i class="fas fa-comments"></i> Manage Testimonials
             </li>
+            <li onclick="showSection('workers-admin', this)">
+              <i class="fas fa-users"></i> Manage Workers
+            </li>
             <li onclick="logout()">
               <i class="fas fa-sign-out-alt"></i> Logout
             </li>
@@ -721,6 +724,211 @@
                 </thead>
                 <tbody id="testimonial-table-body">
                   <!-- Populated by JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <section id="workers-admin" class="content-section">
+          <div class="section-hero">
+            <div class="section-hero-copy">
+              <span class="section-kicker">Workers Access</span>
+              <h2>Manage Workers</h2>
+              <p class="section-description">
+                Register each worker with their WhatsApp number here. Until a
+                worker is added on this page, they cannot request a
+                verification code or enter the workers portal.
+              </p>
+            </div>
+            <div class="workers-summary-card">
+              <span class="hero-panel-label">Registered Workers</span>
+              <strong id="workers-summary-count">0</strong>
+              <p id="workers-summary-text">
+                No workers added yet. Register the first worker to unlock
+                access.
+              </p>
+            </div>
+          </div>
+
+          <div class="workers-admin-grid">
+            <div class="card">
+              <div class="panel-heading">
+                <div class="panel-heading-icon">
+                  <i class="fas fa-user-plus"></i>
+                </div>
+                <div>
+                  <h3>Register Worker Access</h3>
+                  <p>
+                    Add the exact WhatsApp number the worker will use to sign
+                    in. That same number is required on the workers login page.
+                  </p>
+                </div>
+              </div>
+
+              <form id="worker-admin-form" class="workers-admin-form">
+                <div class="form-group">
+                  <label for="worker-full-name">Worker Full Name</label>
+                  <input
+                    type="text"
+                    id="worker-full-name"
+                    placeholder="e.g., Daniel Moses"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="worker-department">Department</label>
+                  <input
+                    type="text"
+                    id="worker-department"
+                    placeholder="e.g., Choir, Media, Ushers"
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="worker-phone">WhatsApp Number</label>
+                  <input
+                    type="text"
+                    id="worker-phone"
+                    placeholder="e.g., +234 801 234 5678"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="worker-notes">Notes</label>
+                  <textarea
+                    id="worker-notes"
+                    rows="4"
+                    placeholder="Optional note about schedule, team role, or access context..."
+                  ></textarea>
+                </div>
+
+                <div class="form-actions workers-form-actions">
+                  <button
+                    type="submit"
+                    class="btn-primary"
+                    id="worker-admin-submit"
+                  >
+                    <i class="fas fa-user-check"></i> Register Worker
+                  </button>
+                  <a
+                    href="/workers"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="btn-secondary"
+                  >
+                    <i class="fas fa-arrow-up-right-from-square"></i> Open
+                    Workers Login
+                  </a>
+                </div>
+                <p class="helper-text workers-admin-helper">
+                  After registration, the worker can request a verification
+                  code from the workers login page using this same phone
+                  number.
+                </p>
+              </form>
+            </div>
+
+            <aside class="card">
+              <div class="panel-heading">
+                <div class="panel-heading-icon preview-icon">
+                  <i class="fas fa-shield-heart"></i>
+                </div>
+                <div>
+                  <h3>How Worker Access Works</h3>
+                  <p>
+                    The workers area uses WhatsApp verification. If WhatsApp is
+                    not fully configured yet, the page will still show a
+                    development preview code for testing.
+                  </p>
+                </div>
+              </div>
+
+              <div class="workers-guide-list">
+                <div class="workers-guide-item">
+                  <i class="fas fa-circle-check"></i>
+                  <span>
+                    Register the worker first with the exact WhatsApp number
+                    they will use.
+                  </span>
+                </div>
+                <div class="workers-guide-item">
+                  <i class="fas fa-circle-check"></i>
+                  <span>
+                    The worker goes to the login page, requests a code, and
+                    verifies it to enter the portal.
+                  </span>
+                </div>
+                <div class="workers-guide-item">
+                  <i class="fas fa-circle-check"></i>
+                  <span>
+                    You can suspend access temporarily or remove a worker
+                    completely from the list below.
+                  </span>
+                </div>
+              </div>
+
+              <div class="workers-quick-links">
+                <a
+                  href="/workers"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="btn-secondary btn-small"
+                >
+                  <i class="fas fa-mobile-screen-button"></i> Workers Login
+                </a>
+                <a
+                  href="/workers/portal"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="btn-secondary btn-small"
+                >
+                  <i class="fas fa-id-badge"></i> Workers Portal
+                </a>
+              </div>
+            </aside>
+          </div>
+
+          <div class="card no-padding">
+            <div class="workers-admin-toolbar">
+              <div>
+                <h3>Registered Workers</h3>
+                <p>
+                  Only the workers listed here can request verification codes
+                  and access the workers portal.
+                </p>
+              </div>
+              <div class="workers-toolbar-actions">
+                <span id="workers-count-badge" class="worker-count-badge"
+                  >0 Workers</span
+                >
+                <button
+                  type="button"
+                  id="workers-refresh-btn"
+                  class="btn-secondary btn-small"
+                >
+                  <i class="fas fa-rotate"></i> Refresh
+                </button>
+              </div>
+            </div>
+
+            <div class="data-table-wrapper">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Worker</th>
+                    <th>Department</th>
+                    <th>WhatsApp</th>
+                    <th>Status</th>
+                    <th>Last Login</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="workers-table-body">
+                  <tr>
+                    <td colspan="6" class="workers-empty-state">
+                      Loading workers access...
+                    </td>
+                  </tr>
                 </tbody>
               </table>
             </div>
@@ -1405,6 +1613,7 @@
       let allPrayerRequests = [];
       let prayerSortOrder = "desc"; // 'asc' or 'desc'
       let allTestimonials = [];
+      let allWorkers = [];
 
       // --- SECURITY CHECK ---
       if (!localStorage.getItem("admin_token")) {
@@ -1505,6 +1714,70 @@
       function logout() {
         localStorage.removeItem("admin_token");
         window.location.href = "/admin/login";
+      }
+
+      function escapeHtml(value) {
+        return String(value ?? "").replace(/[&<>"']/g, (char) => {
+          const map = {
+            "&": "&amp;",
+            "<": "&lt;",
+            ">": "&gt;",
+            '"': "&quot;",
+            "'": "&#39;",
+          };
+          return map[char] || char;
+        });
+      }
+
+      function getAdminToken() {
+        return localStorage.getItem("admin_token") || "";
+      }
+
+      async function fetchAdminJson(endpoint, options = {}) {
+        const token = getAdminToken();
+        if (!token) {
+          logout();
+          throw new Error("Your admin session expired. Please log in again.");
+        }
+
+        const headers = {
+          ...(options.headers || {}),
+          Authorization: `Bearer ${token}`,
+        };
+
+        let body = options.body;
+        const isPlainObjectBody =
+          body &&
+          typeof body === "object" &&
+          !(body instanceof FormData) &&
+          !(body instanceof Blob);
+
+        if (isPlainObjectBody) {
+          headers["Content-Type"] = headers["Content-Type"] || "application/json";
+          body = JSON.stringify(body);
+        }
+
+        const response = await fetch(`${API_URL}${endpoint}`, {
+          ...options,
+          headers,
+          body,
+        });
+
+        const data = await response.json().catch(() => ({}));
+
+        if (response.status === 401) {
+          const errorMessage =
+            data.error || "Your admin session expired. Please log in again.";
+          showToast(errorMessage, "error");
+          logout();
+          throw new Error(errorMessage);
+        }
+
+        if (!response.ok) {
+          throw new Error(data.error || "Request failed.");
+        }
+
+        return data;
       }
 
       // --- Upload Helper with Progress ---
@@ -1636,6 +1909,7 @@
         loadMessagesList();
         loadBlogPosts();
         loadTestimonials();
+        loadWorkersAdmin();
 
         // Initialize Media Previews
         setupPreview("msg-video", "msg-video-preview", "video");
@@ -2193,6 +2467,232 @@
         blogVideoGroup.style.display = "none";
         blogGalleryGroup.style.display = "none";
       }
+
+      // --- Worker Management Logic ---
+      function formatWorkerLastLogin(value) {
+        if (!value) return "Never";
+        const date = new Date(value);
+        if (Number.isNaN(date.getTime())) return "Never";
+        return date.toLocaleString();
+      }
+
+      function updateWorkersSummary(workers) {
+        const total = workers.length;
+        const activeCount = workers.filter((worker) => worker.active).length;
+        const summaryCount = document.getElementById("workers-summary-count");
+        const summaryText = document.getElementById("workers-summary-text");
+        const countBadge = document.getElementById("workers-count-badge");
+
+        summaryCount.textContent = String(total);
+        countBadge.textContent = `${total} ${total === 1 ? "Worker" : "Workers"}`;
+
+        if (!total) {
+          summaryText.textContent =
+            "No workers added yet. Register the first worker to unlock access.";
+          return;
+        }
+
+        summaryText.textContent =
+          activeCount === total
+            ? `All ${activeCount} registered workers can request a verification code right now.`
+            : `${activeCount} of ${total} registered workers currently have active access.`;
+      }
+
+      function renderWorkersTable(workers) {
+        const tbody = document.getElementById("workers-table-body");
+        updateWorkersSummary(workers);
+
+        if (!workers.length) {
+          tbody.innerHTML = `
+            <tr>
+              <td colspan="6" class="workers-empty-state">
+                No workers have been registered yet. Add a worker above so they can access the workers login page.
+              </td>
+            </tr>
+          `;
+          return;
+        }
+
+        tbody.innerHTML = workers
+          .map((worker) => {
+            const safeName = escapeHtml(worker.fullName || "Registered worker");
+            const safeNotes = escapeHtml(worker.notes || "");
+            const safeDepartment = escapeHtml(
+              worker.department || "General workers",
+            );
+            const safePhone = escapeHtml(worker.phone || "-");
+            const safeId = escapeHtml(worker.id || "");
+            const actionLabel = worker.active ? "Suspend" : "Restore";
+            const actionIcon = worker.active
+              ? "fa-user-slash"
+              : "fa-user-check";
+            const nextState = worker.active ? "false" : "true";
+
+            return `
+              <tr>
+                <td>
+                  <div class="worker-row-name">
+                    <strong>${safeName}</strong>
+                    <small>${safeNotes || "Workers portal access enabled from admin."}</small>
+                  </div>
+                </td>
+                <td>${safeDepartment}</td>
+                <td>${safePhone}</td>
+                <td>
+                  <span class="worker-status-pill ${worker.active ? "active" : "inactive"}">
+                    <i class="fas ${worker.active ? "fa-circle-check" : "fa-circle-pause"}"></i>
+                    ${worker.active ? "Active" : "Suspended"}
+                  </span>
+                </td>
+                <td>${escapeHtml(formatWorkerLastLogin(worker.lastLoginAt))}</td>
+                <td>
+                  <div class="worker-action-row">
+                    <button
+                      type="button"
+                      class="btn-secondary btn-small"
+                      onclick="toggleWorkerAccess('${safeId}', ${nextState})"
+                    >
+                      <i class="fas ${actionIcon}"></i> ${actionLabel}
+                    </button>
+                    <button
+                      type="button"
+                      class="btn-danger btn-small"
+                      onclick="deleteWorkerAccess('${safeId}')"
+                    >
+                      <i class="fas fa-trash"></i> Delete
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            `;
+          })
+          .join("");
+      }
+
+      async function loadWorkersAdmin() {
+        const tbody = document.getElementById("workers-table-body");
+        if (!tbody) return;
+
+        try {
+          const workers = await fetchAdminJson("/workers");
+          allWorkers = Array.isArray(workers) ? workers : [];
+          renderWorkersTable(allWorkers);
+        } catch (error) {
+          console.error("Failed to load workers:", error);
+          updateWorkersSummary([]);
+          tbody.innerHTML = `
+            <tr>
+              <td colspan="6" class="workers-empty-state">
+                Unable to load workers access right now.
+              </td>
+            </tr>
+          `;
+          showToast(error.message || "Unable to load workers.", "error");
+        }
+      }
+
+      async function toggleWorkerAccess(id, active) {
+        if (!id) return;
+
+        if (
+          active === false &&
+          !(await showConfirm(
+            "Suspend Worker Access?",
+            "This worker will no longer be able to request a verification code until you restore access.",
+          ))
+        ) {
+          return;
+        }
+
+        try {
+          const data = await fetchAdminJson(`/workers/${id}/status`, {
+            method: "PATCH",
+            body: { active },
+          });
+          showToast(
+            data.message ||
+              (active ? "Worker access restored." : "Worker access suspended."),
+          );
+          loadWorkersAdmin();
+        } catch (error) {
+          showToast(error.message || "Unable to update worker access.", "error");
+        }
+      }
+
+      async function deleteWorkerAccess(id) {
+        if (!id) return;
+        if (
+          !(await showConfirm(
+            "Delete Worker Access?",
+            "This removes the worker completely and clears any pending verification code for that number.",
+          ))
+        ) {
+          return;
+        }
+
+        try {
+          const data = await fetchAdminJson(`/workers/${id}`, {
+            method: "DELETE",
+          });
+          showToast(data.message || "Worker removed successfully.");
+          loadWorkersAdmin();
+        } catch (error) {
+          showToast(error.message || "Unable to delete worker.", "error");
+        }
+      }
+
+      document
+        .getElementById("worker-admin-form")
+        .addEventListener("submit", async (event) => {
+          event.preventDefault();
+
+          const submitBtn = document.getElementById("worker-admin-submit");
+          const fullName = document
+            .getElementById("worker-full-name")
+            .value.trim();
+          const department = document
+            .getElementById("worker-department")
+            .value.trim();
+          const phone = document.getElementById("worker-phone").value.trim();
+          const notes = document.getElementById("worker-notes").value.trim();
+
+          if (!fullName || !phone) {
+            showToast(
+              "Worker name and WhatsApp phone number are required.",
+              "error",
+            );
+            return;
+          }
+
+          const originalLabel = submitBtn.innerHTML;
+          submitBtn.disabled = true;
+          submitBtn.innerHTML =
+            '<i class="fas fa-circle-notch fa-spin"></i> Registering...';
+
+          try {
+            const data = await fetchAdminJson("/workers", {
+              method: "POST",
+              body: {
+                fullName,
+                department,
+                phone,
+                notes,
+              },
+            });
+            showToast(data.message || "Worker registered successfully.");
+            event.target.reset();
+            loadWorkersAdmin();
+          } catch (error) {
+            showToast(error.message || "Unable to register worker.", "error");
+          } finally {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalLabel;
+          }
+        });
+
+      document
+        .getElementById("workers-refresh-btn")
+        .addEventListener("click", loadWorkersAdmin);
 
       // --- Live Stream Logic ---
       function getStreamPlatformDetails(url) {

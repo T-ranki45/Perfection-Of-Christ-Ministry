@@ -1744,7 +1744,7 @@ app.post("/api/workers/request-code", async (req, res) => {
     if (!worker) {
       return res.status(404).json({
         error:
-          "No active worker access was found for that WhatsApp number. Ask the admin to register it first.",
+          "No active worker access was found for that WhatsApp number. Ask the admin to register it first in Admin > Manage Workers.",
       });
     }
 

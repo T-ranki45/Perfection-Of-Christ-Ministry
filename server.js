@@ -7,6 +7,7 @@ const multer = require("multer");
 const cloudinary = require("cloudinary").v2;
 const streamifier = require("streamifier");
 const https = require("https");
+const crypto = require("crypto");
 const path = require("path");
 const os = require("os");
 const app = express();
@@ -51,6 +52,8 @@ const htmlRouteRedirects = {
   "/admin.html": "/admin",
   "/ict_login.html": "/ict",
   "/ict.html": "/ict/control",
+  "/workers_login.html": "/workers",
+  "/workers.html": "/workers/portal",
   "/screen.html": "/screen",
   "/mic.html": "/mic",
 };
@@ -100,6 +103,14 @@ app.get("/ict", (req, res) => {
 
 app.get("/ict/control", (req, res) => {
   sendPage(res, "ict.html");
+});
+
+app.get("/workers", (req, res) => {
+  sendPage(res, "workers_login.html");
+});
+
+app.get("/workers/portal", (req, res) => {
+  sendPage(res, "workers.html");
 });
 
 app.get("/screen", (req, res) => {
@@ -276,7 +287,354 @@ async function connectToDb() {
 }
 
 // --- AUTHENTICATION ---
-const ADMIN_PASSWORD = "Admin123";
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "Admin123";
+const ADMIN_TOKEN_SECRET =
+  process.env.ADMIN_TOKEN_SECRET || "pocm-admin-secret";
+const WORKER_TOKEN_SECRET =
+  process.env.WORKER_TOKEN_SECRET || "pocm-worker-secret";
+const WORKER_OTP_TTL_MS = Number(
+  process.env.WORKER_OTP_TTL_MS || 10 * 60 * 1000,
+);
+const WORKER_SESSION_TTL_MS = Number(
+  process.env.WORKER_SESSION_TTL_MS || 7 * 24 * 60 * 60 * 1000,
+);
+const WHATSAPP_OTP_WEBHOOK_URL = String(
+  process.env.WHATSAPP_OTP_WEBHOOK_URL || "",
+).trim();
+const WHATSAPP_ACCESS_TOKEN = String(
+  process.env.WHATSAPP_ACCESS_TOKEN || "",
+).trim();
+const WHATSAPP_PHONE_NUMBER_ID = String(
+  process.env.WHATSAPP_PHONE_NUMBER_ID || "",
+).trim();
+const WHATSAPP_TEMPLATE_NAME = String(
+  process.env.WHATSAPP_TEMPLATE_NAME || "",
+).trim();
+const WHATSAPP_TEMPLATE_LANGUAGE = String(
+  process.env.WHATSAPP_TEMPLATE_LANGUAGE || "en_US",
+).trim();
+const WHATSAPP_GRAPH_VERSION = String(
+  process.env.WHATSAPP_GRAPH_VERSION || "v20.0",
+).trim();
+
+function base64UrlEncode(value) {
+  return Buffer.from(value).toString("base64url");
+}
+
+function base64UrlDecode(value) {
+  return Buffer.from(value, "base64url").toString("utf8");
+}
+
+function createSignedToken(payload, secret, ttlMs) {
+  const body = {
+    ...payload,
+    issuedAt: new Date().toISOString(),
+    expiresAt: new Date(Date.now() + ttlMs).toISOString(),
+  };
+  const encoded = base64UrlEncode(JSON.stringify(body));
+  const signature = crypto
+    .createHmac("sha256", secret)
+    .update(encoded)
+    .digest("base64url");
+  return `${encoded}.${signature}`;
+}
+
+function verifySignedToken(token, secret) {
+  if (!token || typeof token !== "string" || !token.includes(".")) {
+    return null;
+  }
+  const [encoded, signature] = token.split(".");
+  const expectedSignature = crypto
+    .createHmac("sha256", secret)
+    .update(encoded)
+    .digest("base64url");
+  if (signature !== expectedSignature) {
+    return null;
+  }
+  try {
+    const payload = JSON.parse(base64UrlDecode(encoded));
+    if (!payload?.expiresAt) return null;
+    if (new Date(payload.expiresAt).getTime() <= Date.now()) {
+      return null;
+    }
+    return payload;
+  } catch (error) {
+    return null;
+  }
+}
+
+function normalizeText(value) {
+  return String(value || "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function normalizePhoneNumber(value) {
+  let digits = String(value || "").replace(/\D/g, "");
+  if (!digits) return "";
+  if (digits.length === 11 && digits.startsWith("0")) {
+    digits = `234${digits.slice(1)}`;
+  }
+  return `+${digits}`;
+}
+
+function phoneDigits(value) {
+  return normalizePhoneNumber(value).replace(/\D/g, "");
+}
+
+function maskPhoneNumber(value) {
+  const digits = phoneDigits(value);
+  if (!digits) return "";
+  if (digits.length <= 4) return `+${digits}`;
+  const start = digits.slice(0, 3);
+  const end = digits.slice(-3);
+  const middle = "*".repeat(Math.max(2, digits.length - 6));
+  return `+${start}${middle}${end}`;
+}
+
+function createOtpCode() {
+  return String(crypto.randomInt(100000, 1000000));
+}
+
+function hashOtpCode(value) {
+  return crypto.createHash("sha256").update(String(value)).digest("hex");
+}
+
+function getRecordId(record) {
+  if (!record) return "";
+  return record._id ? record._id.toString() : String(record.id || "");
+}
+
+function isDevelopmentOtpMode() {
+  return process.env.NODE_ENV !== "production" || DISABLE_DB;
+}
+
+async function loadWorkersRaw() {
+  if (db) {
+    return await db.collection("workers").find({}).toArray();
+  }
+  return getLocalData("workers", []);
+}
+
+async function saveWorkersRaw(workers) {
+  if (db) {
+    await db.collection("workers").deleteMany({});
+    if (workers.length) {
+      await db.collection("workers").insertMany(workers);
+    }
+    return;
+  }
+  saveLocalData("workers", workers);
+}
+
+async function loadWorkerOtpsRaw() {
+  if (db) {
+    return await db.collection("workerOtps").find({}).toArray();
+  }
+  return getLocalData("workerOtps", []);
+}
+
+async function saveWorkerOtpsRaw(records) {
+  if (db) {
+    await db.collection("workerOtps").deleteMany({});
+    if (records.length) {
+      await db.collection("workerOtps").insertMany(records);
+    }
+    return;
+  }
+  saveLocalData("workerOtps", records);
+}
+
+function buildWorkerRecord(raw) {
+  const fullName = normalizeText(raw.fullName);
+  const department = normalizeText(raw.department);
+  const phone = normalizePhoneNumber(raw.phone);
+  const notes = normalizeText(raw.notes);
+  if (!fullName || !phone) return null;
+  const now = new Date().toISOString();
+  return {
+    _id:
+      raw && raw._id
+        ? raw._id
+        : db
+          ? new ObjectId()
+          : new ObjectId().toString(),
+    fullName,
+    department,
+    phone,
+    phoneDigits: phoneDigits(phone),
+    notes,
+    active: raw && typeof raw.active === "boolean" ? raw.active : true,
+    createdAt: raw && raw.createdAt ? raw.createdAt : now,
+    updatedAt: now,
+    lastLoginAt: raw && raw.lastLoginAt ? raw.lastLoginAt : null,
+  };
+}
+
+function mapWorkerOutput(worker) {
+  if (!worker) return null;
+  return {
+    id: getRecordId(worker),
+    fullName: worker.fullName || "",
+    department: worker.department || "",
+    phone: worker.phone || "",
+    maskedPhone: maskPhoneNumber(worker.phone || ""),
+    notes: worker.notes || "",
+    active: worker.active !== false,
+    createdAt: worker.createdAt || "",
+    updatedAt: worker.updatedAt || "",
+    lastLoginAt: worker.lastLoginAt || null,
+  };
+}
+
+function getApiToken(req) {
+  const header = String(req.headers.authorization || "");
+  if (header.startsWith("Bearer ")) {
+    return header.slice(7).trim();
+  }
+  return "";
+}
+
+function requireAdminAuth(req, res, next) {
+  const payload = verifySignedToken(getApiToken(req), ADMIN_TOKEN_SECRET);
+  if (!payload || payload.role !== "admin") {
+    return res
+      .status(401)
+      .json({ error: "Your admin session expired. Please log in again." });
+  }
+  req.admin = payload;
+  next();
+}
+
+function requireWorkerAuth(req, res, next) {
+  const payload = verifySignedToken(getApiToken(req), WORKER_TOKEN_SECRET);
+  if (!payload || payload.role !== "worker" || !payload.workerId) {
+    return res.status(401).json({ error: "Worker session expired." });
+  }
+  req.workerAuth = payload;
+  next();
+}
+
+function cleanupExpiredWorkerOtps(records) {
+  const now = Date.now();
+  return records.filter(
+    (record) => new Date(record.expiresAt || 0).getTime() > now,
+  );
+}
+
+function requestJson(urlString, { method = "POST", headers = {}, body } = {}) {
+  const url = new URL(urlString);
+  const options = {
+    method,
+    hostname: url.hostname,
+    path: `${url.pathname}${url.search}`,
+    port: url.port || 443,
+    headers,
+  };
+
+  return new Promise((resolve, reject) => {
+    const req = https.request(options, (res) => {
+      let raw = "";
+      res.on("data", (chunk) => {
+        raw += chunk;
+      });
+      res.on("end", () => {
+        let parsed = {};
+        if (raw) {
+          try {
+            parsed = JSON.parse(raw);
+          } catch (error) {
+            parsed = { raw };
+          }
+        }
+        if (res.statusCode >= 200 && res.statusCode < 300) {
+          resolve(parsed);
+          return;
+        }
+        const message =
+          parsed?.error?.message ||
+          parsed?.message ||
+          `Request failed with status ${res.statusCode}`;
+        const err = new Error(message);
+        err.statusCode = res.statusCode;
+        err.body = parsed;
+        reject(err);
+      });
+    });
+
+    req.on("error", reject);
+
+    if (body) {
+      req.write(body);
+    }
+
+    req.end();
+  });
+}
+
+async function sendWorkerVerificationCode(worker, code) {
+  const recipientPhone = phoneDigits(worker.phone);
+  const message = `Your Perfection Of Christ Ministry workers verification code is ${code}. It expires in 10 minutes.`;
+
+  if (WHATSAPP_OTP_WEBHOOK_URL) {
+    await requestJson(WHATSAPP_OTP_WEBHOOK_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        phone: worker.phone,
+        phoneDigits: recipientPhone,
+        fullName: worker.fullName,
+        code,
+        message,
+      }),
+    });
+    return { channel: "webhook" };
+  }
+
+  if (
+    WHATSAPP_ACCESS_TOKEN &&
+    WHATSAPP_PHONE_NUMBER_ID &&
+    WHATSAPP_TEMPLATE_NAME
+  ) {
+    await requestJson(
+      `https://graph.facebook.com/${WHATSAPP_GRAPH_VERSION}/${WHATSAPP_PHONE_NUMBER_ID}/messages`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${WHATSAPP_ACCESS_TOKEN}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          messaging_product: "whatsapp",
+          to: recipientPhone,
+          type: "template",
+          template: {
+            name: WHATSAPP_TEMPLATE_NAME,
+            language: { code: WHATSAPP_TEMPLATE_LANGUAGE },
+            components: [
+              {
+                type: "body",
+                parameters: [{ type: "text", text: code }],
+              },
+            ],
+          },
+        }),
+      },
+    );
+    return { channel: "meta" };
+  }
+
+  if (isDevelopmentOtpMode()) {
+    console.log(
+      `[Workers OTP][Mock] ${worker.fullName} (${worker.phone}) => ${code}`,
+    );
+    return { channel: "mock", previewCode: code };
+  }
+
+  throw new Error(
+    "WhatsApp delivery is not configured. Add a webhook or WhatsApp Cloud API credentials.",
+  );
+}
 
 // --- ROUTES ---
 
@@ -1258,9 +1616,294 @@ app.post("/api/livestream", async (req, res) => {
 app.post("/api/login", (req, res) => {
   const { password } = req.body;
   if (password === ADMIN_PASSWORD) {
-    res.json({ success: true, token: "secure-token-" + Date.now() });
+    const token = createSignedToken(
+      { role: "admin", scope: "dashboard" },
+      ADMIN_TOKEN_SECRET,
+      12 * 60 * 60 * 1000,
+    );
+    res.json({ success: true, token });
   } else {
     res.status(401).json({ success: false, message: "Invalid password" });
+  }
+});
+
+// Worker Management Routes
+app.get("/api/workers", requireAdminAuth, async (req, res) => {
+  try {
+    const workers = await loadWorkersRaw();
+    const sorted = workers.sort(
+      (a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0),
+    );
+    res.json(sorted.map(mapWorkerOutput));
+  } catch (error) {
+    console.error("Error loading workers:", error);
+    res.status(500).json({ error: "Unable to load workers." });
+  }
+});
+
+app.post("/api/workers", requireAdminAuth, async (req, res) => {
+  try {
+    const worker = buildWorkerRecord(req.body || {});
+    if (!worker) {
+      return res.status(400).json({
+        error: "Worker name and WhatsApp phone number are required.",
+      });
+    }
+
+    const workers = await loadWorkersRaw();
+    const duplicate = workers.find(
+      (item) => item.phoneDigits === worker.phoneDigits,
+    );
+    if (duplicate) {
+      return res.status(409).json({
+        error: "That WhatsApp number is already registered for a worker.",
+      });
+    }
+
+    workers.push(worker);
+    await saveWorkersRaw(workers);
+
+    res.status(201).json({
+      message: "Worker registered successfully.",
+      worker: mapWorkerOutput(worker),
+    });
+  } catch (error) {
+    console.error("Error creating worker:", error);
+    res.status(500).json({ error: "Unable to register worker." });
+  }
+});
+
+app.patch("/api/workers/:id/status", requireAdminAuth, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { active } = req.body || {};
+    const workers = await loadWorkersRaw();
+    const target = workers.find((worker) => getRecordId(worker) === id);
+
+    if (!target) {
+      return res.status(404).json({ error: "Worker not found." });
+    }
+
+    target.active = Boolean(active);
+    target.updatedAt = new Date().toISOString();
+    await saveWorkersRaw(workers);
+
+    res.json({
+      message: "Worker access updated.",
+      worker: mapWorkerOutput(target),
+    });
+  } catch (error) {
+    console.error("Error updating worker status:", error);
+    res.status(500).json({ error: "Unable to update worker status." });
+  }
+});
+
+app.delete("/api/workers/:id", requireAdminAuth, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const workers = await loadWorkersRaw();
+    const target = workers.find((worker) => getRecordId(worker) === id);
+
+    if (!target) {
+      return res.status(404).json({ error: "Worker not found." });
+    }
+
+    const nextWorkers = workers.filter((worker) => getRecordId(worker) !== id);
+    await saveWorkersRaw(nextWorkers);
+
+    const otps = await loadWorkerOtpsRaw();
+    const nextOtps = otps.filter(
+      (record) =>
+        record.workerId !== id && record.phoneDigits !== target.phoneDigits,
+    );
+    await saveWorkerOtpsRaw(nextOtps);
+
+    res.json({ message: "Worker removed successfully." });
+  } catch (error) {
+    console.error("Error deleting worker:", error);
+    res.status(500).json({ error: "Unable to delete worker." });
+  }
+});
+
+app.post("/api/workers/request-code", async (req, res) => {
+  try {
+    const normalizedPhone = normalizePhoneNumber(req.body?.phone);
+    if (!normalizedPhone) {
+      return res
+        .status(400)
+        .json({ error: "Enter the worker WhatsApp phone number first." });
+    }
+
+    const normalizedDigits = phoneDigits(normalizedPhone);
+    const workers = await loadWorkersRaw();
+    const worker = workers.find(
+      (item) =>
+        item.phoneDigits === normalizedDigits && item.active !== false,
+    );
+
+    if (!worker) {
+      return res.status(404).json({
+        error:
+          "No active worker access was found for that WhatsApp number. Ask the admin to register it first.",
+      });
+    }
+
+    let otps = cleanupExpiredWorkerOtps(await loadWorkerOtpsRaw()).filter(
+      (record) => record.phoneDigits !== normalizedDigits,
+    );
+
+    const code = createOtpCode();
+    const otpRecordId = db ? new ObjectId() : new ObjectId().toString();
+    const otpRecord = {
+      _id: otpRecordId,
+      workerId: getRecordId(worker),
+      phoneDigits: normalizedDigits,
+      codeHash: hashOtpCode(code),
+      attempts: 0,
+      createdAt: new Date().toISOString(),
+      expiresAt: new Date(Date.now() + WORKER_OTP_TTL_MS).toISOString(),
+    };
+
+    otps.push(otpRecord);
+    await saveWorkerOtpsRaw(otps);
+
+    try {
+      const delivery = await sendWorkerVerificationCode(worker, code);
+      const response = {
+        success: true,
+        message:
+          delivery.channel === "mock"
+            ? "Verification code generated in development mode."
+            : "Verification code sent to WhatsApp.",
+        maskedPhone: maskPhoneNumber(normalizedPhone),
+        expiresInMinutes: Math.round(WORKER_OTP_TTL_MS / 60000),
+        delivery: delivery.channel,
+      };
+      if (delivery.previewCode) {
+        response.previewCode = delivery.previewCode;
+      }
+      res.json(response);
+    } catch (error) {
+      otps = otps.filter(
+        (record) => getRecordId(record) !== getRecordId(otpRecord),
+      );
+      await saveWorkerOtpsRaw(otps);
+      throw error;
+    }
+  } catch (error) {
+    console.error("Error requesting worker code:", error);
+    res.status(500).json({
+      error:
+        error.message || "Unable to send the verification code right now.",
+    });
+  }
+});
+
+app.post("/api/workers/verify-code", async (req, res) => {
+  try {
+    const normalizedPhone = normalizePhoneNumber(req.body?.phone);
+    const code = normalizeText(req.body?.code);
+    if (!normalizedPhone || !code) {
+      return res.status(400).json({
+        error: "Enter both the WhatsApp phone number and verification code.",
+      });
+    }
+
+    const normalizedDigits = phoneDigits(normalizedPhone);
+    const workers = await loadWorkersRaw();
+    const worker = workers.find(
+      (item) =>
+        item.phoneDigits === normalizedDigits && item.active !== false,
+    );
+
+    if (!worker) {
+      return res.status(404).json({
+        error: "This worker access request is no longer active.",
+      });
+    }
+
+    let otps = cleanupExpiredWorkerOtps(await loadWorkerOtpsRaw());
+    const workerOtp = otps
+      .filter(
+        (record) =>
+          record.workerId === getRecordId(worker) &&
+          record.phoneDigits === normalizedDigits,
+      )
+      .sort(
+        (a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0),
+      )[0];
+
+    if (!workerOtp) {
+      await saveWorkerOtpsRaw(otps);
+      return res.status(400).json({
+        error: "Request a fresh verification code and try again.",
+      });
+    }
+
+    if (workerOtp.codeHash !== hashOtpCode(code)) {
+      workerOtp.attempts = Number(workerOtp.attempts || 0) + 1;
+      if (workerOtp.attempts >= 5) {
+        otps = otps.filter(
+          (record) => getRecordId(record) !== getRecordId(workerOtp),
+        );
+      }
+      await saveWorkerOtpsRaw(otps);
+      return res.status(401).json({
+        error: "That verification code is not correct.",
+      });
+    }
+
+    otps = otps.filter(
+      (record) => getRecordId(record) !== getRecordId(workerOtp),
+    );
+    await saveWorkerOtpsRaw(otps);
+
+    const targetWorker = workers.find(
+      (item) => getRecordId(item) === getRecordId(worker),
+    );
+    if (targetWorker) {
+      targetWorker.lastLoginAt = new Date().toISOString();
+      targetWorker.updatedAt = new Date().toISOString();
+      await saveWorkersRaw(workers);
+    }
+
+    const token = createSignedToken(
+      {
+        role: "worker",
+        workerId: getRecordId(worker),
+        phoneDigits: normalizedDigits,
+      },
+      WORKER_TOKEN_SECRET,
+      WORKER_SESSION_TTL_MS,
+    );
+
+    res.json({
+      success: true,
+      token,
+      worker: mapWorkerOutput(targetWorker || worker),
+    });
+  } catch (error) {
+    console.error("Error verifying worker code:", error);
+    res.status(500).json({ error: "Unable to verify that code right now." });
+  }
+});
+
+app.get("/api/workers/me", requireWorkerAuth, async (req, res) => {
+  try {
+    const workers = await loadWorkersRaw();
+    const worker = workers.find(
+      (item) =>
+        getRecordId(item) === req.workerAuth.workerId && item.active !== false,
+    );
+
+    if (!worker) {
+      return res.status(401).json({ error: "Worker session expired." });
+    }
+
+    res.json({ worker: mapWorkerOutput(worker) });
+  } catch (error) {
+    console.error("Error loading worker session:", error);
+    res.status(500).json({ error: "Unable to load worker session." });
   }
 });
 

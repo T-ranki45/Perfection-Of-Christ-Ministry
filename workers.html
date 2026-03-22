@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex,nofollow,noarchive" />
+    <title>Church Workers Hub | Perfection Of Christ Ministry</title>
+    <link rel="icon" href="/image/logo.png" type="image/png" />
+    <link rel="apple-touch-icon" href="/image/logo.png" />
+    <link rel="stylesheet" href="/workers.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Sora:wght@300;400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+  </head>
+  <body class="workers-body">
+    <main class="workers-portal-shell">
+      <header class="portal-header">
+        <a class="workers-brand" href="/">
+          <img src="/image/logo.png" alt="Perfection Of Christ Ministry" />
+          <div class="workers-brand-copy">
+            <strong>Perfection Of Christ Ministry</strong>
+            <span>Church Workers Hub</span>
+          </div>
+        </a>
+        <button type="button" class="btn-ghost" id="workerLogoutBtn">
+          <i class="fas fa-sign-out-alt"></i>
+          Logout
+        </button>
+      </header>
+
+      <section class="workers-panel portal-hero">
+        <div class="portal-copy">
+          <div class="workers-kicker">
+            <i class="fas fa-hands-praying"></i>
+            Worker access verified
+          </div>
+          <h1 id="workerGreeting">Welcome to the workers hub.</h1>
+          <p>
+            This space gives registered workers a simple, secure page for
+            church access. More worker tools can be added here as the ministry
+            grows.
+          </p>
+        </div>
+      </section>
+
+      <section class="portal-grid">
+        <article class="workers-panel portal-card">
+          <div class="portal-icon">
+            <i class="fas fa-id-badge"></i>
+          </div>
+          <h3>Worker Profile</h3>
+          <div class="worker-name" id="workerName">Loading...</div>
+          <div class="worker-badge">
+            <i class="fas fa-circle-check"></i>
+            Verified worker access
+          </div>
+          <div class="worker-meta">
+            <div class="worker-meta-item">
+              <span class="worker-meta-label">Department</span>
+              <strong id="workerDepartment">-</strong>
+            </div>
+            <div class="worker-meta-item">
+              <span class="worker-meta-label">WhatsApp</span>
+              <strong id="workerPhone">-</strong>
+            </div>
+            <div class="worker-meta-item">
+              <span class="worker-meta-label">Last Login</span>
+              <strong id="workerLastLogin">-</strong>
+            </div>
+          </div>
+        </article>
+
+        <article class="workers-panel portal-card">
+          <div class="portal-icon">
+            <i class="fas fa-clipboard-check"></i>
+          </div>
+          <h3>Worker Readiness</h3>
+          <p>Use this page as your steady point of access before service.</p>
+          <ul>
+            <li>Confirm you are logged in with the registered WhatsApp number.</li>
+            <li>Check for any ministry updates from the admin team.</li>
+            <li>Keep your phone available in case a fresh verification is needed.</li>
+          </ul>
+        </article>
+
+        <article class="workers-panel portal-card">
+          <div class="portal-icon">
+            <i class="fas fa-bullhorn"></i>
+          </div>
+          <h3>Communication Flow</h3>
+          <p>
+            The admin team controls access for registered workers. If your
+            number changes or access stops working, contact the church admin so
+            they can update your record.
+          </p>
+          <ul>
+            <li>New phone number: ask the admin to update your worker record.</li>
+            <li>Code not received: request a resend from the login page.</li>
+            <li>Access removed: only the admin can restore it.</li>
+          </ul>
+        </article>
+
+        <article class="workers-panel portal-card">
+          <div class="portal-icon">
+            <i class="fas fa-seedling"></i>
+          </div>
+          <h3>Next Build Ideas</h3>
+          <p>
+            This first version secures the workers page. We can add ministry
+            tools here next, such as duty rosters, rehearsal notes, department
+            announcements, attendance check-in, or downloadable schedules.
+          </p>
+        </article>
+      </section>
+    </main>
+
+    <script>
+      const API_URL = "/api";
+      const WORKER_TOKEN_KEY = "worker_token";
+
+      const workerGreeting = document.getElementById("workerGreeting");
+      const workerName = document.getElementById("workerName");
+      const workerDepartment = document.getElementById("workerDepartment");
+      const workerPhone = document.getElementById("workerPhone");
+      const workerLastLogin = document.getElementById("workerLastLogin");
+      const workerLogoutBtn = document.getElementById("workerLogoutBtn");
+
+      function redirectToLogin() {
+        localStorage.removeItem(WORKER_TOKEN_KEY);
+        window.location.href = "/workers";
+      }
+
+      function formatDateTime(value) {
+        if (!value) return "First verified session";
+        const date = new Date(value);
+        if (Number.isNaN(date.getTime())) return "Not available";
+        return date.toLocaleString();
+      }
+
+      function getGreetingPrefix() {
+        const hour = new Date().getHours();
+        if (hour < 12) return "Good morning";
+        if (hour < 17) return "Good afternoon";
+        return "Good evening";
+      }
+
+      async function loadWorkerProfile() {
+        const token = localStorage.getItem(WORKER_TOKEN_KEY);
+        if (!token) {
+          redirectToLogin();
+          return;
+        }
+
+        try {
+          const response = await fetch(`${API_URL}/workers/me`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          const data = await response.json().catch(() => ({}));
+          if (!response.ok) {
+            throw new Error(data.error || "Worker session expired.");
+          }
+
+          const worker = data.worker || {};
+          workerGreeting.textContent = `${getGreetingPrefix()}, ${worker.fullName || "worker"}.`;
+          workerName.textContent = worker.fullName || "Registered worker";
+          workerDepartment.textContent = worker.department || "General workers";
+          workerPhone.textContent = worker.maskedPhone || worker.phone || "-";
+          workerLastLogin.textContent = formatDateTime(worker.lastLoginAt);
+        } catch (error) {
+          console.error("Unable to load worker profile:", error);
+          redirectToLogin();
+        }
+      }
+
+      workerLogoutBtn.addEventListener("click", redirectToLogin);
+      loadWorkerProfile();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,302 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex,nofollow,noarchive" />
+    <title>Church Workers Access | Perfection Of Christ Ministry</title>
+    <link rel="icon" href="/image/logo.png" type="image/png" />
+    <link rel="apple-touch-icon" href="/image/logo.png" />
+    <link rel="stylesheet" href="/workers.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Sora:wght@300;400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+  </head>
+  <body class="workers-body">
+    <main class="workers-shell">
+      <a class="workers-brand" href="/">
+        <img src="/image/logo.png" alt="Perfection Of Christ Ministry" />
+        <div class="workers-brand-copy">
+          <strong>Perfection Of Christ Ministry</strong>
+          <span>Church Workers Access</span>
+        </div>
+      </a>
+
+      <div class="workers-auth-layout">
+        <section class="workers-panel intro">
+          <div class="workers-kicker">
+            <i class="fas fa-shield-heart"></i>
+            Verified workers hub
+          </div>
+          <h1>Church workers sign in with WhatsApp verification.</h1>
+          <p>
+            Each worker must be registered by the admin using the correct
+            WhatsApp phone number before access is allowed.
+          </p>
+
+          <div class="workers-feature-list">
+            <article class="workers-feature">
+              <i class="fas fa-user-check"></i>
+              <div>
+                <strong>Admin-approved access</strong>
+                <span
+                  >Only workers registered by the church admin can request a
+                  code.</span
+                >
+              </div>
+            </article>
+            <article class="workers-feature">
+              <i class="fab fa-whatsapp"></i>
+              <div>
+                <strong>WhatsApp verification</strong>
+                <span
+                  >A one-time code is sent to the worker's WhatsApp number
+                  before login.</span
+                >
+              </div>
+            </article>
+            <article class="workers-feature">
+              <i class="fas fa-mobile-screen-button"></i>
+              <div>
+                <strong>Built for phones</strong>
+                <span
+                  >The worker portal is optimized for quick access during
+                  ministry activities.</span
+                >
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section class="workers-panel auth">
+          <div class="workers-kicker">
+            <i class="fas fa-lock"></i>
+            Secure sign in
+          </div>
+          <h2>Login to the workers page</h2>
+          <p>
+            Enter the WhatsApp number the admin registered for you. Use the
+            full number with country code when possible.
+          </p>
+
+          <form id="workerPhoneForm" class="workers-form" novalidate>
+            <label>
+              <span>WhatsApp phone number</span>
+              <input
+                type="tel"
+                id="workerPhoneInput"
+                placeholder="e.g. +234 801 234 5678"
+                autocomplete="tel"
+                required
+              />
+            </label>
+            <div class="workers-actions">
+              <button type="submit" class="btn-primary" id="requestCodeBtn">
+                <i class="fab fa-whatsapp"></i>
+                Send Verification Code
+              </button>
+            </div>
+          </form>
+
+          <section id="workerCodeStep" class="is-hidden">
+            <p class="workers-note">
+              Enter the verification code sent to
+              <strong id="maskedPhoneLabel">your phone</strong>.
+            </p>
+
+            <form id="workerCodeForm" class="workers-form" novalidate>
+              <label>
+                <span>Verification code</span>
+                <input
+                  type="text"
+                  id="workerCodeInput"
+                  inputmode="numeric"
+                  maxlength="6"
+                  placeholder="Enter 6-digit code"
+                  autocomplete="one-time-code"
+                  required
+                />
+              </label>
+              <div class="workers-actions">
+                <button type="submit" class="btn-primary" id="verifyCodeBtn">
+                  <i class="fas fa-arrow-right-to-bracket"></i>
+                  Verify and Continue
+                </button>
+                <button type="button" class="btn-secondary" id="resendCodeBtn">
+                  <i class="fas fa-rotate"></i>
+                  Resend Code
+                </button>
+              </div>
+            </form>
+          </section>
+
+          <div class="status-box" id="workerAuthStatus">
+            Waiting for your WhatsApp number.
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <script>
+      const API_URL = "/api";
+      const WORKER_TOKEN_KEY = "worker_token";
+
+      const phoneForm = document.getElementById("workerPhoneForm");
+      const phoneInput = document.getElementById("workerPhoneInput");
+      const requestCodeBtn = document.getElementById("requestCodeBtn");
+      const codeStep = document.getElementById("workerCodeStep");
+      const maskedPhoneLabel = document.getElementById("maskedPhoneLabel");
+      const codeForm = document.getElementById("workerCodeForm");
+      const codeInput = document.getElementById("workerCodeInput");
+      const verifyCodeBtn = document.getElementById("verifyCodeBtn");
+      const resendCodeBtn = document.getElementById("resendCodeBtn");
+      const workerAuthStatus = document.getElementById("workerAuthStatus");
+
+      let currentPhone = "";
+
+      function setStatus(message, type = "") {
+        workerAuthStatus.textContent = message;
+        workerAuthStatus.className = `status-box${type ? ` ${type}` : ""}`;
+      }
+
+      function setLoading(button, label, loading) {
+        if (!button) return;
+        if (!button.dataset.defaultLabel) {
+          button.dataset.defaultLabel = button.innerHTML;
+        }
+        button.disabled = loading;
+        button.innerHTML = loading ? label : button.dataset.defaultLabel;
+      }
+
+      async function checkExistingWorkerSession() {
+        const token = localStorage.getItem(WORKER_TOKEN_KEY);
+        if (!token) return;
+        try {
+          const response = await fetch(`${API_URL}/workers/me`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          if (response.ok) {
+            window.location.href = "/workers/portal";
+            return;
+          }
+        } catch (error) {
+          console.error("Worker session check failed:", error);
+        }
+        localStorage.removeItem(WORKER_TOKEN_KEY);
+      }
+
+      async function requestCode(phone) {
+        const response = await fetch(`${API_URL}/workers/request-code`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ phone }),
+        });
+        const data = await response.json().catch(() => ({}));
+        if (!response.ok) {
+          throw new Error(data.error || "Unable to send verification code.");
+        }
+        return data;
+      }
+
+      phoneForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const phone = phoneInput.value.trim();
+        if (!phone) {
+          setStatus("Enter the WhatsApp phone number first.", "warn");
+          phoneInput.focus();
+          return;
+        }
+
+        setLoading(requestCodeBtn, "Sending...", true);
+        setStatus("Sending verification code...", "info");
+
+        try {
+          const data = await requestCode(phone);
+          currentPhone = phone;
+          maskedPhoneLabel.textContent = data.maskedPhone || phone;
+          codeStep.classList.remove("is-hidden");
+          codeInput.focus();
+          setStatus(
+            data.previewCode
+              ? `${data.message} Development preview code: ${data.previewCode}`
+              : data.message,
+            "good",
+          );
+        } catch (error) {
+          setStatus(error.message, "warn");
+        } finally {
+          setLoading(requestCodeBtn, "Sending...", false);
+        }
+      });
+
+      codeForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const code = codeInput.value.trim();
+        if (!currentPhone) {
+          setStatus("Request a verification code first.", "warn");
+          return;
+        }
+        if (!code) {
+          setStatus("Enter the verification code from WhatsApp.", "warn");
+          codeInput.focus();
+          return;
+        }
+
+        setLoading(verifyCodeBtn, "Verifying...", true);
+        setStatus("Verifying your code...", "info");
+
+        try {
+          const response = await fetch(`${API_URL}/workers/verify-code`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ phone: currentPhone, code }),
+          });
+          const data = await response.json().catch(() => ({}));
+          if (!response.ok) {
+            throw new Error(data.error || "Unable to verify code.");
+          }
+
+          localStorage.setItem(WORKER_TOKEN_KEY, data.token);
+          window.location.href = "/workers/portal";
+        } catch (error) {
+          setStatus(error.message, "warn");
+        } finally {
+          setLoading(verifyCodeBtn, "Verifying...", false);
+        }
+      });
+
+      resendCodeBtn.addEventListener("click", async () => {
+        if (!currentPhone) {
+          setStatus("Enter your phone number first.", "warn");
+          phoneInput.focus();
+          return;
+        }
+
+        setLoading(resendCodeBtn, "Resending...", true);
+        setStatus("Resending verification code...", "info");
+
+        try {
+          const data = await requestCode(currentPhone);
+          setStatus(
+            data.previewCode
+              ? `${data.message} Development preview code: ${data.previewCode}`
+              : data.message,
+            "good",
+          );
+          codeInput.focus();
+        } catch (error) {
+          setStatus(error.message, "warn");
+        } finally {
+          setLoading(resendCodeBtn, "Resending...", false);
+        }
+      });
+
+      checkExistingWorkerSession();
+    </script>
+  </body>
+</html>

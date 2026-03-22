@@ -845,43 +845,194 @@
 
         <!-- Live Stream Section -->
         <section id="livestream" class="content-section">
-          <h2>Live Stream Configuration</h2>
-          <div class="card">
-            <div id="live-status-indicator" class="live-status-admin">
-              <!-- Populated by JS -->
+          <div class="section-hero livestream-hero">
+            <div class="section-hero-copy">
+              <span class="section-kicker">Broadcast Control</span>
+              <h2>Live Stream Configuration</h2>
+              <p class="section-description">
+                Post the service link your congregation should see on the
+                website, then switch the stream to live when you are ready to
+                go on air.
+              </p>
+              <div class="livestream-tags">
+                <span><i class="fab fa-youtube"></i> YouTube Live</span>
+                <span><i class="fab fa-facebook"></i> Facebook Live</span>
+                <span><i class="fas fa-link"></i> Public browser URL only</span>
+              </div>
             </div>
-            <p class="helper-text">
-              Enter a <strong>Public</strong> YouTube or Facebook Live URL to
-              update the stream. Use the full browser link for the best results.
-            </p>
-            <form id="livestream-form">
-              <div class="form-group">
-                <label>Live Video URL (YouTube or Facebook)</label>
-                <input
-                  type="text"
-                  id="video-id"
-                  placeholder="e.g., https://www.youtube.com/watch?v=..."
-                />
-                <small>Paste the full URL of the live video.</small>
+            <div class="livestream-hero-panel">
+              <span class="hero-panel-label">Current Website Signal</span>
+              <div
+                id="live-status-indicator"
+                class="live-status-admin inactive"
+              ></div>
+            </div>
+          </div>
+
+          <div class="livestream-shell">
+            <div class="card livestream-form-card">
+              <div class="panel-heading">
+                <div class="panel-heading-icon">
+                  <i class="fas fa-satellite-dish"></i>
+                </div>
+                <div>
+                  <h3>Publish Stream Link</h3>
+                  <p>
+                    Use the full public browser link from YouTube or Facebook
+                    Live so members can join without issues.
+                  </p>
+                </div>
               </div>
-              <div class="form-group checkbox-group">
-                <input type="checkbox" id="is-live" />
-                <label for="is-live"
-                  >Mark as Currently Live (Shows "Live" badge on site)</label
-                >
+
+              <form id="livestream-form" class="livestream-form">
+                <div class="form-group livestream-url-group">
+                  <label for="video-id">Live Video URL</label>
+                  <div class="input-shell">
+                    <span class="input-shell-icon"
+                      ><i class="fas fa-link"></i
+                    ></span>
+                    <input
+                      type="url"
+                      id="video-id"
+                      placeholder="e.g., https://www.youtube.com/watch?v=..."
+                      autocomplete="off"
+                    />
+                  </div>
+                  <small>
+                    Paste the full public stream link exactly as it opens in a
+                    browser.
+                  </small>
+                </div>
+
+                <div class="livestream-meta-grid">
+                  <div class="livestream-info-card">
+                    <span class="info-card-label">Detected Platform</span>
+                    <strong id="stream-platform-label">Awaiting Link</strong>
+                    <p id="stream-platform-help">
+                      YouTube and Facebook links are supported best.
+                    </p>
+                  </div>
+
+                  <label class="live-toggle-card" for="is-live">
+                    <div class="live-toggle-copy">
+                      <span class="info-card-label">Broadcast Status</span>
+                      <strong>Mark stream as currently live</strong>
+                      <p>
+                        Turns on the live badge and points visitors to the
+                        active broadcast.
+                      </p>
+                    </div>
+                    <div class="toggle-switch">
+                      <input type="checkbox" id="is-live" />
+                      <span class="toggle-slider"></span>
+                    </div>
+                  </label>
+                </div>
+
+                <div class="form-actions livestream-actions">
+                  <button
+                    type="submit"
+                    id="livestream-submit-btn"
+                    class="btn-primary"
+                  >
+                    <i class="fas fa-broadcast-tower"></i> Update Stream
+                  </button>
+                  <a
+                    id="livestream-open-link"
+                    class="btn-secondary btn-inline-link"
+                    href="#"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style="display: none"
+                  >
+                    <i class="fas fa-arrow-up-right-from-square"></i> Preview
+                    Link
+                  </a>
+                  <button
+                    type="button"
+                    id="deactivate-stream-btn"
+                    class="btn-danger"
+                    style="display: none"
+                  >
+                    <i class="fas fa-power-off"></i> Deactivate Stream
+                  </button>
+                </div>
+              </form>
+            </div>
+
+            <aside class="card livestream-preview-card">
+              <div class="panel-heading preview-heading">
+                <div class="panel-heading-icon preview-icon">
+                  <i class="fas fa-tv"></i>
+                </div>
+                <div>
+                  <h3>Website Preview</h3>
+                  <p>
+                    See how the saved link and live state will appear to
+                    visitors before you broadcast.
+                  </p>
+                </div>
               </div>
-              <div class="form-actions" style="display: flex; gap: 10px">
-                <button type="submit" class="btn-primary">Update Stream</button>
-                <button
-                  type="button"
-                  id="deactivate-stream-btn"
-                  class="btn-danger"
-                  style="display: none"
-                >
-                  Deactivate Stream
-                </button>
+
+              <div class="stream-preview-surface">
+                <div class="preview-chip-row">
+                  <span id="stream-platform-chip" class="platform-chip neutral"
+                    >Awaiting Link</span
+                  >
+                  <span id="stream-live-chip" class="signal-chip offline"
+                    >Offline</span
+                  >
+                </div>
+
+                <div class="stream-preview-copy">
+                  <span class="info-card-label">What Members Will Experience</span>
+                  <h3 id="stream-preview-heading">
+                    Ready to publish a stream link
+                  </h3>
+                  <p id="stream-preview-summary">
+                    Add a public URL, then switch the stream live when service
+                    begins.
+                  </p>
+                </div>
+
+                <div class="stream-preview-link-box">
+                  <span class="info-card-label">Current Link</span>
+                  <a
+                    id="stream-preview-link"
+                    class="is-empty"
+                    href="#"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    No link added yet
+                  </a>
+                </div>
               </div>
-            </form>
+
+              <div class="livestream-checklist">
+                <div class="checklist-item">
+                  <i class="fas fa-circle-check"></i>
+                  <span>
+                    Use the public browser URL, not a studio or admin dashboard
+                    link.
+                  </span>
+                </div>
+                <div class="checklist-item">
+                  <i class="fas fa-circle-check"></i>
+                  <span>
+                    Keep the live toggle off until the service is actually on
+                    air.
+                  </span>
+                </div>
+                <div class="checklist-item">
+                  <i class="fas fa-circle-check"></i>
+                  <span>
+                    Use "Deactivate Stream" when the broadcast has ended and
+                    should be cleared.
+                  </span>
+                </div>
+              </div>
+            </aside>
           </div>
         </section>
 
@@ -2044,37 +2195,167 @@
       }
 
       // --- Live Stream Logic ---
+      function getStreamPlatformDetails(url) {
+        const value = (url || "").trim().toLowerCase();
+
+        if (!value) {
+          return {
+            key: "neutral",
+            label: "Awaiting Link",
+            hint: "YouTube and Facebook links are supported best.",
+          };
+        }
+
+        if (value.includes("youtube.com") || value.includes("youtu.be")) {
+          return {
+            key: "youtube",
+            label: "YouTube Live",
+            hint: "This link will open the YouTube stream for viewers.",
+          };
+        }
+
+        if (value.includes("facebook.com") || value.includes("fb.watch")) {
+          return {
+            key: "facebook",
+            label: "Facebook Live",
+            hint: "This link will open the Facebook Live broadcast for viewers.",
+          };
+        }
+
+        return {
+          key: "custom",
+          label: "Custom Link",
+          hint: "Double-check that this link is public and opens correctly for everyone.",
+        };
+      }
+
+      function renderLiveStatus(config) {
+        const statusIndicator = document.getElementById(
+          "live-status-indicator",
+        );
+        const deactivateBtn = document.getElementById(
+          "deactivate-stream-btn",
+        );
+        const hasVideo = Boolean(config.videoId);
+        const isActive = Boolean(config.isLive && config.videoId);
+
+        statusIndicator.textContent = "";
+        statusIndicator.className = `live-status-admin ${isActive ? "active" : "inactive"}`;
+
+        const statusSignal = document.createElement("span");
+        statusSignal.className = "status-signal";
+
+        const icon = document.createElement("i");
+        icon.className = isActive
+          ? "fas fa-broadcast-tower"
+          : "fas fa-power-off";
+        statusSignal.appendChild(icon);
+        statusSignal.appendChild(
+          document.createTextNode(
+            isActive ? "Live Now" : hasVideo ? "Saved but Offline" : "Offline",
+          ),
+        );
+        statusIndicator.appendChild(statusSignal);
+
+        if (hasVideo) {
+          const link = document.createElement("a");
+          link.href = config.videoId;
+          link.target = "_blank";
+          link.rel = "noopener noreferrer";
+          link.textContent = isActive ? "Open current stream" : "Open saved link";
+          statusIndicator.appendChild(link);
+        } else {
+          const note = document.createElement("small");
+          note.textContent = "No stream link is saved yet.";
+          statusIndicator.appendChild(note);
+        }
+
+        deactivateBtn.style.display = hasVideo ? "inline-flex" : "none";
+
+        document.getElementById("live-status-text").innerText = isActive
+          ? "LIVE NOW"
+          : hasVideo
+            ? "Ready"
+            : "Offline";
+        document.getElementById("live-status-text").style.color = isActive
+          ? "#ff7f7f"
+          : hasVideo
+            ? "#f5d27d"
+            : "#666";
+      }
+
+      function syncLiveStreamPreview() {
+        const videoId = document.getElementById("video-id").value.trim();
+        const isLive = document.getElementById("is-live").checked;
+        const platform = getStreamPlatformDetails(videoId);
+        const canGoLive = Boolean(videoId && isLive);
+
+        document.getElementById("stream-platform-label").innerText =
+          platform.label;
+        document.getElementById("stream-platform-help").innerText =
+          platform.hint;
+
+        const platformChip = document.getElementById("stream-platform-chip");
+        platformChip.className = `platform-chip ${platform.key}`;
+        platformChip.innerText = platform.label;
+
+        const liveChip = document.getElementById("stream-live-chip");
+        liveChip.className = `signal-chip ${canGoLive ? "live" : isLive && !videoId ? "waiting" : "offline"}`;
+        liveChip.innerText = canGoLive
+          ? "Live"
+          : isLive && !videoId
+            ? "Needs Link"
+            : "Offline";
+
+        const previewHeading = document.getElementById(
+          "stream-preview-heading",
+        );
+        const previewSummary = document.getElementById(
+          "stream-preview-summary",
+        );
+        const previewLink = document.getElementById("stream-preview-link");
+        const openLink = document.getElementById("livestream-open-link");
+        const submitBtn = document.getElementById("livestream-submit-btn");
+
+        if (!videoId) {
+          previewHeading.innerText = "Ready to publish a stream link";
+          previewSummary.innerText = isLive
+            ? "Add a public stream URL before marking the broadcast live."
+            : "Add a public URL, then switch the stream live when service begins.";
+          previewLink.innerText = "No link added yet";
+          previewLink.href = "#";
+          previewLink.classList.add("is-empty");
+          openLink.href = "#";
+          openLink.style.display = "none";
+          submitBtn.innerHTML =
+            '<i class="fas fa-broadcast-tower"></i> Update Stream';
+          return;
+        }
+
+        previewHeading.innerText = canGoLive
+          ? "The stream will appear as live"
+          : "The stream link is saved and ready";
+        previewSummary.innerText = canGoLive
+          ? `Visitors will see the live badge and can join through ${platform.label}.`
+          : `Visitors will not see a live badge yet, but this ${platform.label.toLowerCase()} link is ready for service time.`;
+        previewLink.innerText = videoId;
+        previewLink.href = videoId;
+        previewLink.classList.remove("is-empty");
+        openLink.href = videoId;
+        openLink.style.display = "inline-flex";
+        submitBtn.innerHTML = canGoLive
+          ? '<i class="fas fa-broadcast-tower"></i> Go Live Now'
+          : '<i class="fas fa-link"></i> Save Stream Link';
+      }
+
       async function loadLiveStreamConfig() {
         try {
           const res = await fetch(`${API_URL}/livestream`);
           const config = await res.json();
-          document.getElementById("video-id").value = config.videoId;
+          document.getElementById("video-id").value = config.videoId || "";
           document.getElementById("is-live").checked = config.isLive;
-
-          // Update status indicator
-          const statusIndicator = document.getElementById(
-            "live-status-indicator",
-          );
-          const deactivateBtn = document.getElementById(
-            "deactivate-stream-btn",
-          );
-          if (config.isLive && config.videoId) {
-            statusIndicator.innerHTML = `<span><i class="fas fa-broadcast-tower"></i> LIVE NOW</span> <a href="${config.videoId}" target="_blank">View Stream</a>`;
-            statusIndicator.className = "live-status-admin active";
-            deactivateBtn.style.display = "inline-block";
-          } else {
-            statusIndicator.innerHTML =
-              '<span><i class="fas fa-power-off"></i> OFFLINE</span>';
-            statusIndicator.className = "live-status-admin inactive";
-            deactivateBtn.style.display = "none";
-          }
-
-          // Update dashboard stat card
-          document.getElementById("live-status-text").innerText = config.isLive
-            ? "LIVE NOW"
-            : "Offline";
-          document.getElementById("live-status-text").style.color =
-            config.isLive ? "red" : "#666";
+          renderLiveStatus(config);
+          syncLiveStreamPreview();
         } catch (e) {
           console.error(e);
         }
@@ -2112,7 +2393,7 @@
         .getElementById("livestream-form")
         .addEventListener("submit", async (e) => {
           e.preventDefault();
-          const videoId = document.getElementById("video-id").value;
+          const videoId = document.getElementById("video-id").value.trim();
           const isLive = document.getElementById("is-live").checked;
 
           try {
@@ -2129,6 +2410,14 @@
             showToast("Failed to update stream", "error");
           }
         });
+
+      document
+        .getElementById("video-id")
+        .addEventListener("input", syncLiveStreamPreview);
+      document
+        .getElementById("is-live")
+        .addEventListener("change", syncLiveStreamPreview);
+      syncLiveStreamPreview();
 
       // --- Prayer Requests Logic ---
       async function loadPrayerRequests() {

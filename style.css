@@ -258,7 +258,7 @@ section h2::after {
 .main-navigation-menu ul {
   display: flex;
   list-style: none;
-  gap: 2rem;
+  gap: clamp(0.85rem, 1.4vw, 2rem);
   margin: 0;
   padding: 0;
 }
@@ -313,6 +313,41 @@ section h2::after {
 .main-header.scrolled .main-navigation-menu ul li a.nav-admin-btn,
 .main-navigation-menu ul li a.nav-admin-btn:hover {
   color: #000;
+}
+
+.main-navigation-menu ul li a.nav-worker-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.7rem 1.15rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
+  color: #fff;
+  text-shadow: none;
+  background: rgba(8, 18, 30, 0.82);
+  border: 1px solid rgba(212, 164, 63, 0.42);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.22);
+}
+
+.main-navigation-menu ul li a.nav-worker-btn::after {
+  display: none;
+}
+
+.main-navigation-menu ul li a.nav-worker-btn:hover,
+.main-header.scrolled .main-navigation-menu ul li a.nav-worker-btn:hover {
+  color: #fff;
+  background: rgba(179, 135, 40, 0.2);
+  border-color: rgba(252, 246, 186, 0.5);
+  box-shadow: 0 12px 30px rgba(179, 135, 40, 0.18);
+}
+
+@media (max-width: 1180px) and (min-width: 993px) {
+  .main-navigation-menu ul li a.nav-admin-btn,
+  .main-navigation-menu ul li a.nav-worker-btn {
+    padding: 0.62rem 0.95rem;
+    font-size: 0.78rem;
+  }
 }
 
 /* Live Nav Badge */
@@ -4117,7 +4152,7 @@ section h2::after {
   transform: translateX(-50%);
   width: min(520px, calc(100% - 16px));
   display: none;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 0.45rem;
   padding: 0.6rem;
   border-radius: 24px;
@@ -4163,6 +4198,15 @@ section h2::after {
 .mobile-action-link.mobile-action-accent i,
 .mobile-action-link.mobile-action-accent:hover {
   color: #111;
+}
+
+.mobile-action-link.mobile-action-worker {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(212, 164, 63, 0.2);
+}
+
+.mobile-action-link.mobile-action-worker:hover {
+  background: rgba(179, 135, 40, 0.14);
 }
 
 .mobile-menu-fab {

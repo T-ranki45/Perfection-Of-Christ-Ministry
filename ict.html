@@ -126,6 +126,14 @@
           <span>Preview</span>
           <strong>Live Feed</strong>
         </div>
+        <div class="overview-card">
+          <span>Service Flow</span>
+          <strong id="serviceFlowSummaryLabel">0 items planned</strong>
+        </div>
+        <div class="overview-card">
+          <span>Next Cue</span>
+          <strong id="serviceFlowNextLabel">Build your first cue</strong>
+        </div>
       </section>
 
       <div class="ict-layout">
@@ -251,6 +259,7 @@
           <div class="ict-tabs">
             <button class="tab-btn active" data-tab="bible">Scripture</button>
             <button class="tab-btn" data-tab="worship">Worship</button>
+            <button class="tab-btn" data-tab="flow">Service Flow</button>
             <button class="tab-btn" data-tab="service">Service Info</button>
             <button class="tab-btn" data-tab="tools">Tools</button>
           </div>
@@ -474,6 +483,135 @@
                 </button>
                 <button class="btn-ghost" data-save="lyrics">Save Only</button>
               </div>
+            </section>
+          </div>
+
+          <!-- SERVICE FLOW TAB -->
+          <div id="tab-flow" class="tab-pane">
+            <section class="control-card service-flow-card">
+              <div class="card-header">
+                <h3>Service Flow Planner</h3>
+                <span class="card-note"
+                  >Build the run sheet once, then move through the service
+                  without jumping across tabs</span
+                >
+              </div>
+
+              <div class="service-flow-stats">
+                <div class="flow-stat-card">
+                  <span>Queue Size</span>
+                  <strong id="flowItemsCount">0 items planned</strong>
+                </div>
+                <div class="flow-stat-card">
+                  <span>Active Cue</span>
+                  <strong id="flowActiveLabel">None selected</strong>
+                </div>
+                <div class="flow-stat-card">
+                  <span>Next Up</span>
+                  <strong id="flowNextCueLabel">Build your first cue</strong>
+                </div>
+              </div>
+
+              <div class="form-grid flow-meta-grid">
+                <label>
+                  <span>Flow Title</span>
+                  <input
+                    type="text"
+                    id="flowTitleInput"
+                    placeholder="e.g., Sunday Celebration Service"
+                  />
+                </label>
+                <label>
+                  <span>Date / Theme</span>
+                  <input
+                    type="text"
+                    id="flowDateInput"
+                    placeholder="e.g., Sunday 5 April 2026 • Resurrection Sunday"
+                  />
+                </label>
+              </div>
+
+              <div class="flow-template-strip">
+                <button class="countdown-chip" data-flow-template="sunday">
+                  Sunday Skeleton
+                </button>
+                <button class="countdown-chip" data-flow-template="midweek">
+                  Midweek Skeleton
+                </button>
+                <button class="countdown-chip" data-flow-template="special">
+                  Special Service
+                </button>
+              </div>
+
+              <div class="form-grid flow-builder-grid">
+                <label>
+                  <span>Capture Mode</span>
+                  <select id="flowCaptureModeInput">
+                    <option value="cue">Cue Only (no screen output)</option>
+                    <option value="verse">Verse</option>
+                    <option value="lyrics">Lyrics</option>
+                    <option value="announcement">Announcement</option>
+                    <option value="order">Order of Service</option>
+                    <option value="countdown">Countdown</option>
+                    <option value="lowerthird">Lower Third</option>
+                    <option value="blank">Blank Screen</option>
+                  </select>
+                </label>
+                <label>
+                  <span>Queue Label</span>
+                  <input
+                    type="text"
+                    id="flowItemLabelInput"
+                    placeholder="e.g., Opening Prayer or Worship Set 1"
+                  />
+                </label>
+                <label>
+                  <span>Operator Note</span>
+                  <input
+                    type="text"
+                    id="flowItemNoteInput"
+                    placeholder="Optional cue, reminder, or transition note"
+                  />
+                </label>
+              </div>
+
+              <div class="card-actions">
+                <button class="btn-primary" id="addFlowItemBtn">
+                  Add to Flow
+                </button>
+                <button class="btn-ghost" id="updateFlowItemBtn">
+                  Update Selected
+                </button>
+                <button class="btn-ghost" id="captureLiveItemBtn">
+                  Capture Live Screen
+                </button>
+                <button class="btn-ghost" id="clearFlowSelectionBtn">
+                  Clear Selection
+                </button>
+              </div>
+
+              <div class="card-actions">
+                <button class="btn-ghost" id="goPreviousFlowBtn">
+                  Previous Cue
+                </button>
+                <button class="btn-primary" id="goSelectedFlowLiveBtn">
+                  Go Selected Live
+                </button>
+                <button class="btn-primary" id="goNextFlowBtn">
+                  Next Cue Live
+                </button>
+                <button class="btn-ghost" id="saveFlowBtn">Save Flow</button>
+                <button class="btn-danger" id="clearFlowBtn">
+                  Clear Flow
+                </button>
+              </div>
+
+              <div class="helper-text" id="serviceFlowStatus">
+                Build cues from your current editors, select any item to edit
+                it, and use Next Cue Live during service.
+              </div>
+
+              <div class="service-flow-list" id="serviceFlowList"></div>
             </section>
           </div>
 
@@ -912,10 +1050,16 @@
             : null;
         const screenSyncStatus = document.getElementById("screenSyncStatus");
         const lastSavedAt = document.getElementById("lastSavedAt");
-        const currentModeLabel = document.getElementById("currentModeLabel");
-        const countdownStatusLabel = document.getElementById(
-          "countdownStatusLabel",
-        );
+      const currentModeLabel = document.getElementById("currentModeLabel");
+      const countdownStatusLabel = document.getElementById(
+        "countdownStatusLabel",
+      );
+      const serviceFlowSummaryLabel = document.getElementById(
+        "serviceFlowSummaryLabel",
+      );
+      const serviceFlowNextLabel = document.getElementById(
+        "serviceFlowNextLabel",
+      );
 
       const verseTextInput = document.getElementById("verseTextInput");
       const verseRefInput = document.getElementById("verseRefInput");
@@ -1034,6 +1178,35 @@
         ]),
       );
 
+      const flowTitleInput = document.getElementById("flowTitleInput");
+      const flowDateInput = document.getElementById("flowDateInput");
+      const flowCaptureModeInput = document.getElementById(
+        "flowCaptureModeInput",
+      );
+      const flowItemLabelInput = document.getElementById("flowItemLabelInput");
+      const flowItemNoteInput = document.getElementById("flowItemNoteInput");
+      const flowItemsCount = document.getElementById("flowItemsCount");
+      const flowActiveLabel = document.getElementById("flowActiveLabel");
+      const flowNextCueLabel = document.getElementById("flowNextCueLabel");
+      const serviceFlowStatus = document.getElementById("serviceFlowStatus");
+      const serviceFlowList = document.getElementById("serviceFlowList");
+      const addFlowItemBtn = document.getElementById("addFlowItemBtn");
+      const updateFlowItemBtn = document.getElementById("updateFlowItemBtn");
+      const captureLiveItemBtn = document.getElementById("captureLiveItemBtn");
+      const clearFlowSelectionBtn = document.getElementById(
+        "clearFlowSelectionBtn",
+      );
+      const goPreviousFlowBtn = document.getElementById("goPreviousFlowBtn");
+      const goSelectedFlowLiveBtn = document.getElementById(
+        "goSelectedFlowLiveBtn",
+      );
+      const goNextFlowBtn = document.getElementById("goNextFlowBtn");
+      const saveFlowBtn = document.getElementById("saveFlowBtn");
+      const clearFlowBtn = document.getElementById("clearFlowBtn");
+      const flowTemplateButtons = Array.from(
+        document.querySelectorAll("[data-flow-template]"),
+      );
+
       // Tab Logic
       const ACTIVE_TAB_KEY = "ict_active_tab";
       const tabBtns = Array.from(document.querySelectorAll(".tab-btn"));
@@ -1099,7 +1272,152 @@
         updatedAt: null,
       };
 
+      const SERVICE_FLOW_KEY = "ict_service_flow_cache";
+      const flowDefaults = {
+        title: "",
+        serviceDate: "",
+        activeItemId: null,
+        items: [],
+        updatedAt: null,
+      };
+      const flowModeOrder = [
+        "cue",
+        "verse",
+        "lyrics",
+        "announcement",
+        "order",
+        "countdown",
+        "lowerthird",
+        "blank",
+      ];
+      const flowTemplates = {
+        sunday: {
+          title: "Sunday Service Flow",
+          items: [
+            {
+              mode: "countdown",
+              label: "Pre-Service Countdown",
+              note: "Keep countdown live before service begins.",
+              payload: {
+                countdownStatus: "stopped",
+                countdownDurationSeconds: 900,
+              },
+            },
+            {
+              mode: "cue",
+              label: "Opening Prayer",
+              note: "Cue host and prayer lead.",
+            },
+            {
+              mode: "cue",
+              label: "Praise & Worship",
+              note: "Prepare songs in the worship editor and capture them into the queue.",
+            },
+            {
+              mode: "announcement",
+              label: "Welcome / House Notice",
+              note: "Update the announcement editor with the main notice before going live.",
+            },
+            {
+              mode: "verse",
+              label: "Offering Scripture",
+              note: "Load the offering verse into the scripture editor before service.",
+            },
+            {
+              mode: "lowerthird",
+              label: "Message Lower Third",
+              note: "Capture the preacher name and role before the sermon.",
+            },
+            {
+              mode: "cue",
+              label: "Closing Prayer / Benediction",
+              note: "Final cue without changing the congregation screen.",
+            },
+          ],
+        },
+        midweek: {
+          title: "Midweek Service Flow",
+          items: [
+            {
+              mode: "countdown",
+              label: "Start Countdown",
+              note: "Five minutes before Bible study begins.",
+              payload: {
+                countdownStatus: "stopped",
+                countdownDurationSeconds: 300,
+              },
+            },
+            {
+              mode: "cue",
+              label: "Opening Prayer",
+              note: "Call the service to order.",
+            },
+            {
+              mode: "cue",
+              label: "Worship Set",
+              note: "Queue the songs from the worship tab.",
+            },
+            {
+              mode: "verse",
+              label: "Bible Study Text",
+              note: "Capture the main study scripture from the Bible tab.",
+            },
+            {
+              mode: "announcement",
+              label: "Weekly Announcement",
+              note: "Short update before dismissal.",
+            },
+            {
+              mode: "cue",
+              label: "Closing Prayer",
+              note: "Close service cleanly without changing the screen.",
+            },
+          ],
+        },
+        special: {
+          title: "Special Service Flow",
+          items: [
+            {
+              mode: "countdown",
+              label: "Arrival Countdown",
+              note: "Welcome the congregation with a countdown.",
+              payload: {
+                countdownStatus: "stopped",
+                countdownDurationSeconds: 600,
+              },
+            },
+            {
+              mode: "cue",
+              label: "Host Welcome",
+              note: "Opening cue for the MC or service lead.",
+            },
+            {
+              mode: "lyrics",
+              label: "Special Ministration",
+              note: "Capture the prepared song into this placeholder.",
+            },
+            {
+              mode: "verse",
+              label: "Theme Scripture",
+              note: "Load the headline verse from the Bible tab.",
+            },
+            {
+              mode: "lowerthird",
+              label: "Guest Minister Title",
+              note: "Use when the minister takes the stage.",
+            },
+            {
+              mode: "announcement",
+              label: "Thanksgiving / Next Event",
+              note: "Closing notice or next-step update.",
+            },
+          ],
+        },
+      };
+
       let screenState = { ...screenDefaults };
+      let serviceFlow = { ...flowDefaults };
+      let selectedFlowItemId = null;
       let bibleResult = null;
       let hymnLibrary = [];
       let activeHymn = null;
@@ -1159,6 +1477,131 @@
         if (!el) return;
         el.textContent = message || "";
         el.className = `helper-text${type ? ` ${type}` : ""}`;
+      }
+
+      function setFlowStatus(message, type) {
+        setHelperStatus(serviceFlowStatus, message, type);
+      }
+
+      function createFlowId() {
+        return `flow_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+      }
+
+      function sanitizeFlowText(value, fallback = "") {
+        return String(value || fallback || "").trim();
+      }
+
+      function sanitizeFlowSlides(value) {
+        if (!Array.isArray(value)) return [];
+        return value
+          .map((entry) => sanitizeFlowText(entry))
+          .filter(Boolean)
+          .slice(0, 120);
+      }
+
+      function normalizeFlowPayload(raw, fallbackMode = "cue") {
+        if (!raw || typeof raw !== "object") return {};
+        const mode = flowModeOrder.includes(raw.mode) ? raw.mode : fallbackMode;
+        const payload = {};
+
+        if (mode !== "cue") {
+          payload.mode = mode;
+        }
+
+        [
+          "verseText",
+          "verseRef",
+          "giveScripture",
+          "announcementTitle",
+          "announcementBody",
+          "lyricsTitle",
+          "lyricsLines",
+          "orderTitle",
+          "orderItems",
+          "lowerThirdName",
+          "lowerThirdRole",
+          "lowerThirdFooter",
+        ].forEach((key) => {
+          if (raw[key] !== undefined) {
+            payload[key] = sanitizeFlowText(raw[key]);
+          }
+        });
+
+        if (raw.verseSlides !== undefined) {
+          payload.verseSlides = sanitizeFlowSlides(raw.verseSlides);
+        }
+        if (raw.lyricsSlides !== undefined) {
+          payload.lyricsSlides = sanitizeFlowSlides(raw.lyricsSlides);
+        }
+        if (raw.verseSlideIndex !== undefined) {
+          payload.verseSlideIndex = Math.max(0, Number(raw.verseSlideIndex) || 0);
+        }
+        if (raw.lyricsSlideIndex !== undefined) {
+          payload.lyricsSlideIndex = Math.max(
+            0,
+            Number(raw.lyricsSlideIndex) || 0,
+          );
+        }
+        if (raw.countdownDurationSeconds !== undefined) {
+          payload.countdownDurationSeconds = Math.max(
+            0,
+            Number(raw.countdownDurationSeconds) || 0,
+          );
+        }
+        if (raw.countdownRemainingSeconds !== undefined) {
+          payload.countdownRemainingSeconds = Math.max(
+            0,
+            Number(raw.countdownRemainingSeconds) || 0,
+          );
+        }
+        if (["running", "paused", "stopped"].includes(raw.countdownStatus)) {
+          payload.countdownStatus = raw.countdownStatus;
+        }
+        if (raw.countdownStartedAt) {
+          const startedAt = new Date(raw.countdownStartedAt);
+          if (!Number.isNaN(startedAt.getTime())) {
+            payload.countdownStartedAt = startedAt.toISOString();
+          }
+        }
+
+        return payload;
+      }
+
+      function normalizeFlowItem(raw, index = 0) {
+        const mode = flowModeOrder.includes(raw?.mode) ? raw.mode : "cue";
+        const nowIso = new Date().toISOString();
+        return {
+          id: sanitizeFlowText(raw?.id) || createFlowId(),
+          mode,
+          label:
+            sanitizeFlowText(raw?.label) ||
+            `${modeLabels[mode] || "Cue"} ${index + 1}`,
+          note: sanitizeFlowText(raw?.note),
+          completed: Boolean(raw?.completed),
+          payload:
+            mode === "cue"
+              ? {}
+              : normalizeFlowPayload(raw?.payload || {}, mode),
+          createdAt: raw?.createdAt || nowIso,
+          updatedAt: nowIso,
+        };
+      }
+
+      function normalizeServiceFlowData(raw) {
+        const items = Array.isArray(raw?.items)
+          ? raw.items.slice(0, 200).map((item, index) => normalizeFlowItem(item, index))
+          : [];
+        const activeItemId = sanitizeFlowText(raw?.activeItemId);
+        return {
+          ...flowDefaults,
+          title: sanitizeFlowText(raw?.title),
+          serviceDate: sanitizeFlowText(raw?.serviceDate),
+          activeItemId: items.some((item) => item.id === activeItemId)
+            ? activeItemId
+            : null,
+          items,
+          updatedAt: raw?.updatedAt || null,
+        };
       }
 
       function loadEditorDrafts() {
@@ -1228,6 +1671,25 @@
           return JSON.parse(raw);
         } catch (error) {
           console.error("Load cached screen state failed:", error);
+          return null;
+        }
+      }
+
+      function cacheServiceFlow(flow) {
+        try {
+          localStorage.setItem(SERVICE_FLOW_KEY, JSON.stringify(flow));
+        } catch (error) {
+          console.error("Cache service flow failed:", error);
+        }
+      }
+
+      function loadCachedServiceFlow() {
+        try {
+          const raw = localStorage.getItem(SERVICE_FLOW_KEY);
+          if (!raw) return null;
+          return JSON.parse(raw);
+        } catch (error) {
+          console.error("Load cached service flow failed:", error);
           return null;
         }
       }
@@ -1421,6 +1883,7 @@
       }
 
       const modeLabels = {
+        cue: "Cue",
         verse: "Verse",
         lyrics: "Lyrics",
         announcement: "Announcement",
@@ -1909,6 +2372,816 @@
           return;
         }
         saveScreenState(buildAllEditorPayload());
+      }
+
+      function getFlowItemIndex(itemId) {
+        return serviceFlow.items.findIndex((item) => item.id === itemId);
+      }
+
+      function getSelectedFlowItem() {
+        return serviceFlow.items.find((item) => item.id === selectedFlowItemId) || null;
+      }
+
+      function getActiveFlowItem() {
+        return serviceFlow.items.find((item) => item.id === serviceFlow.activeItemId) || null;
+      }
+
+      function getFlowCountdownSeconds(payload) {
+        if (!payload) return 0;
+        if (payload.countdownStatus === "paused") {
+          return Math.max(0, Number(payload.countdownRemainingSeconds) || 0);
+        }
+        if (payload.countdownStatus === "running" && payload.countdownStartedAt) {
+          const startedAt = new Date(payload.countdownStartedAt).getTime();
+          const total = Math.max(0, Number(payload.countdownDurationSeconds) || 0);
+          if (!Number.isNaN(startedAt)) {
+            const elapsed = Math.floor((Date.now() - startedAt) / 1000);
+            return Math.max(0, total - elapsed);
+          }
+        }
+        return Math.max(0, Number(payload.countdownDurationSeconds) || 0);
+      }
+
+      function hasFlowPayload(mode, payload) {
+        if (mode === "cue" || mode === "blank") return true;
+        if (!payload || typeof payload !== "object") return false;
+        switch (mode) {
+          case "verse":
+            return Boolean(payload.verseText || payload.verseRef);
+          case "lyrics":
+            return Boolean(payload.lyricsLines || payload.lyricsTitle);
+          case "announcement":
+            return Boolean(payload.announcementTitle || payload.announcementBody);
+          case "order":
+            return Boolean(payload.orderTitle || payload.orderItems);
+          case "countdown":
+            return Boolean(getFlowCountdownSeconds(payload));
+          case "lowerthird":
+            return Boolean(
+              payload.lowerThirdName ||
+                payload.lowerThirdRole ||
+                payload.lowerThirdFooter,
+            );
+          default:
+            return false;
+        }
+      }
+
+      function getDefaultFlowItemLabel(mode, payload, note = "") {
+        switch (mode) {
+          case "cue":
+            return note || "Service Cue";
+          case "verse":
+            return payload?.verseRef || "Scripture Reading";
+          case "lyrics":
+            return payload?.lyricsTitle || "Worship Song";
+          case "announcement":
+            return payload?.announcementTitle || "Announcement";
+          case "order":
+            return payload?.orderTitle || "Order of Service";
+          case "countdown":
+            return `Countdown ${formatCountdown(getFlowCountdownSeconds(payload))}`;
+          case "lowerthird":
+            return payload?.lowerThirdName || payload?.lowerThirdRole || "Lower Third";
+          case "blank":
+            return "Blank Screen";
+          default:
+            return "Flow Item";
+        }
+      }
+
+      function getFlowItemSummary(item) {
+        if (!item) return "No details available.";
+        if (item.mode === "cue") {
+          return item.note || "Cue only. This step does not change the screen.";
+        }
+        if (!hasFlowPayload(item.mode, item.payload)) {
+          return "Content not captured yet. Select this item and update it from the current editor.";
+        }
+        switch (item.mode) {
+          case "verse":
+            return (
+              item.payload.verseRef ||
+              truncateText(item.payload.verseText, 80) ||
+              "Scripture ready"
+            );
+          case "lyrics":
+            return (
+              item.payload.lyricsTitle ||
+              truncateText(item.payload.lyricsLines, 80) ||
+              "Lyrics ready"
+            );
+          case "announcement":
+            return (
+              item.payload.announcementTitle ||
+              truncateText(item.payload.announcementBody, 80) ||
+              "Announcement ready"
+            );
+          case "order": {
+            const itemCount = String(item.payload.orderItems || "")
+              .split("\n")
+              .filter((entry) => entry.trim()).length;
+            return itemCount
+              ? `${itemCount} service item${itemCount === 1 ? "" : "s"} saved`
+              : item.payload.orderTitle || "Order ready";
+          }
+          case "countdown":
+            return `Starts from ${formatCountdown(getFlowCountdownSeconds(item.payload))}`;
+          case "lowerthird":
+            return (
+              item.payload.lowerThirdName ||
+              item.payload.lowerThirdRole ||
+              "Lower third ready"
+            );
+          case "blank":
+            return "Emergency blank screen cue.";
+          default:
+            return "Ready";
+        }
+      }
+
+      function createFlowItem(data, existingItem = null) {
+        const normalizedMode = flowModeOrder.includes(data?.mode)
+          ? data.mode
+          : "cue";
+        const payload =
+          normalizedMode === "cue"
+            ? {}
+            : normalizeFlowPayload(data?.payload || {}, normalizedMode);
+        const timestamp = new Date().toISOString();
+        return normalizeFlowItem(
+          {
+            id: existingItem?.id || data?.id || createFlowId(),
+            mode: normalizedMode,
+            label:
+              sanitizeFlowText(data?.label) ||
+              getDefaultFlowItemLabel(
+                normalizedMode,
+                payload,
+                sanitizeFlowText(data?.note),
+              ),
+            note: sanitizeFlowText(data?.note),
+            completed: existingItem ? Boolean(existingItem.completed) : Boolean(data?.completed),
+            payload,
+            createdAt: existingItem?.createdAt || data?.createdAt || timestamp,
+            updatedAt: timestamp,
+          },
+          0,
+        );
+      }
+
+      function populateFlowForm(item = null) {
+        if (!flowCaptureModeInput || !flowItemLabelInput || !flowItemNoteInput) return;
+        if (!item) {
+          flowCaptureModeInput.value = "cue";
+          flowItemLabelInput.value = "";
+          flowItemNoteInput.value = "";
+          return;
+        }
+        flowCaptureModeInput.value = item.mode || "cue";
+        flowItemLabelInput.value = item.label || "";
+        flowItemNoteInput.value = item.note || "";
+      }
+
+      function selectFlowItem(itemId) {
+        selectedFlowItemId = itemId || null;
+        const selectedItem = getSelectedFlowItem();
+        populateFlowForm(selectedItem);
+        renderServiceFlow();
+      }
+
+      function updateFlowSummary() {
+        const items = serviceFlow.items;
+        const countLabel = `${items.length} item${items.length === 1 ? "" : "s"} planned`;
+        const activeItem = getActiveFlowItem();
+        const activeIndex = activeItem ? getFlowItemIndex(activeItem.id) : -1;
+        const nextItem =
+          activeIndex >= 0 && activeIndex < items.length - 1
+            ? items[activeIndex + 1]
+            : activeIndex === -1 && items.length
+              ? items[0]
+              : null;
+
+        if (serviceFlowSummaryLabel) {
+          serviceFlowSummaryLabel.textContent = countLabel;
+        }
+        if (flowItemsCount) {
+          flowItemsCount.textContent = countLabel;
+        }
+
+        const activeText = activeItem
+          ? `${activeItem.label} (${modeLabels[activeItem.mode] || "Cue"})`
+          : "None selected";
+        if (flowActiveLabel) {
+          flowActiveLabel.textContent = activeText;
+        }
+
+        const nextText = nextItem
+          ? `${nextItem.label} (${modeLabels[nextItem.mode] || "Cue"})`
+          : items.length
+            ? "End of flow"
+            : "Build your first cue";
+        if (serviceFlowNextLabel) {
+          serviceFlowNextLabel.textContent = nextText;
+        }
+        if (flowNextCueLabel) {
+          flowNextCueLabel.textContent = nextText;
+        }
+
+        if (updateFlowItemBtn) {
+          updateFlowItemBtn.disabled = !selectedFlowItemId;
+        }
+        if (goSelectedFlowLiveBtn) {
+          goSelectedFlowLiveBtn.disabled = !selectedFlowItemId;
+        }
+        if (clearFlowSelectionBtn) {
+          clearFlowSelectionBtn.disabled = !selectedFlowItemId;
+        }
+        if (goPreviousFlowBtn) {
+          goPreviousFlowBtn.disabled = items.length < 2;
+        }
+        if (goNextFlowBtn) {
+          goNextFlowBtn.disabled = !items.length;
+        }
+        if (saveFlowBtn) {
+          saveFlowBtn.disabled = !items.length && !serviceFlow.title && !serviceFlow.serviceDate;
+        }
+        if (clearFlowBtn) {
+          clearFlowBtn.disabled = !items.length && !serviceFlow.title && !serviceFlow.serviceDate;
+        }
+      }
+
+      function renderServiceFlow() {
+        if (!serviceFlowList) return;
+        serviceFlowList.innerHTML = "";
+
+        if (flowTitleInput && document.activeElement !== flowTitleInput) {
+          flowTitleInput.value = serviceFlow.title || "";
+        }
+        if (flowDateInput && document.activeElement !== flowDateInput) {
+          flowDateInput.value = serviceFlow.serviceDate || "";
+        }
+
+        if (!serviceFlow.items.length) {
+          const empty = document.createElement("div");
+          empty.className = "flow-empty-state";
+          empty.textContent =
+            "No flow items yet. Capture content from the editors or insert a template skeleton.";
+          serviceFlowList.appendChild(empty);
+          updateFlowSummary();
+          return;
+        }
+
+        serviceFlow.items.forEach((item, index) => {
+          const row = document.createElement("article");
+          row.className = "service-flow-item";
+          row.classList.toggle("is-selected", item.id === selectedFlowItemId);
+          row.classList.toggle("is-active", item.id === serviceFlow.activeItemId);
+          row.classList.toggle("is-complete", Boolean(item.completed));
+          row.addEventListener("click", () => {
+            selectFlowItem(item.id);
+          });
+
+          const number = document.createElement("div");
+          number.className = "flow-item-number";
+          number.textContent = String(index + 1).padStart(2, "0");
+
+          const body = document.createElement("div");
+          body.className = "flow-item-body";
+
+          const head = document.createElement("div");
+          head.className = "flow-item-head";
+
+          const title = document.createElement("h4");
+          title.textContent = item.label || `${modeLabels[item.mode] || "Cue"} ${index + 1}`;
+
+          const badges = document.createElement("div");
+          badges.className = "flow-item-badges";
+
+          const modeBadge = document.createElement("span");
+          modeBadge.className = `flow-badge mode-${item.mode}`;
+          modeBadge.textContent = modeLabels[item.mode] || "Cue";
+          badges.appendChild(modeBadge);
+
+          if (item.id === serviceFlow.activeItemId) {
+            const activeBadge = document.createElement("span");
+            activeBadge.className = "flow-badge flow-live-badge";
+            activeBadge.textContent = "Live";
+            badges.appendChild(activeBadge);
+          }
+
+          if (item.completed) {
+            const doneBadge = document.createElement("span");
+            doneBadge.className = "flow-badge flow-done-badge";
+            doneBadge.textContent = "Done";
+            badges.appendChild(doneBadge);
+          }
+
+          head.appendChild(title);
+          head.appendChild(badges);
+
+          const note = document.createElement("p");
+          note.className = "flow-item-note";
+          note.textContent = item.note || "No operator note.";
+
+          const summary = document.createElement("p");
+          summary.className = "flow-item-summary";
+          summary.textContent = getFlowItemSummary(item);
+
+          const actions = document.createElement("div");
+          actions.className = "flow-item-actions";
+
+          const actionConfigs = [
+            {
+              label: "Load",
+              className: "flow-action-btn",
+              handler: () => loadFlowItemToEditors(item.id),
+            },
+            {
+              label: "Live",
+              className: "flow-action-btn primary",
+              handler: () => goLiveFlowItem(item.id),
+            },
+            {
+              label: item.completed ? "Undo" : "Done",
+              className: "flow-action-btn",
+              handler: () => toggleFlowItemCompleted(item.id),
+            },
+            {
+              label: "Up",
+              className: "flow-action-btn",
+              disabled: index === 0,
+              handler: () => moveFlowItem(item.id, -1),
+            },
+            {
+              label: "Down",
+              className: "flow-action-btn",
+              disabled: index === serviceFlow.items.length - 1,
+              handler: () => moveFlowItem(item.id, 1),
+            },
+            {
+              label: "Copy",
+              className: "flow-action-btn",
+              handler: () => duplicateFlowItem(item.id),
+            },
+            {
+              label: "Delete",
+              className: "flow-action-btn danger",
+              handler: () => deleteFlowItem(item.id),
+            },
+          ];
+
+          actionConfigs.forEach((config) => {
+            const btn = document.createElement("button");
+            btn.type = "button";
+            btn.className = config.className;
+            btn.textContent = config.label;
+            btn.disabled = Boolean(config.disabled);
+            btn.addEventListener("click", (event) => {
+              event.stopPropagation();
+              config.handler();
+            });
+            actions.appendChild(btn);
+          });
+
+          body.appendChild(head);
+          body.appendChild(note);
+          body.appendChild(summary);
+          body.appendChild(actions);
+
+          row.appendChild(number);
+          row.appendChild(body);
+          serviceFlowList.appendChild(row);
+        });
+
+        updateFlowSummary();
+      }
+
+      function syncFlowMetaDraft() {
+        serviceFlow = {
+          ...serviceFlow,
+          title: sanitizeFlowText(flowTitleInput ? flowTitleInput.value : ""),
+          serviceDate: sanitizeFlowText(flowDateInput ? flowDateInput.value : ""),
+        };
+        updateFlowSummary();
+      }
+
+      function buildFlowItemFromForm(existingItem = null) {
+        const mode = flowCaptureModeInput ? flowCaptureModeInput.value : "cue";
+        const note = sanitizeFlowText(flowItemNoteInput ? flowItemNoteInput.value : "");
+        const label = sanitizeFlowText(flowItemLabelInput ? flowItemLabelInput.value : "");
+        let payload = {};
+
+        if (mode !== "cue" && mode !== "blank") {
+          const readiness = getModeReadiness(mode);
+          if (!readiness.ready) {
+            setFlowStatus(
+              `Load ${modeLabels[mode] || mode} content into the editor before adding it to the flow.`,
+              "warn",
+            );
+            return null;
+          }
+          payload = buildModePayload(mode);
+        } else if (mode === "blank") {
+          payload = { mode: "blank" };
+        }
+
+        return createFlowItem(
+          {
+            id: existingItem?.id,
+            mode,
+            label,
+            note,
+            payload,
+            completed: existingItem?.completed,
+            createdAt: existingItem?.createdAt,
+          },
+          existingItem,
+        );
+      }
+
+      async function persistServiceFlow(nextFlow, successMessage) {
+        const normalized = normalizeServiceFlowData({
+          ...serviceFlow,
+          ...nextFlow,
+          title: sanitizeFlowText(flowTitleInput ? flowTitleInput.value : nextFlow?.title),
+          serviceDate: sanitizeFlowText(
+            flowDateInput ? flowDateInput.value : nextFlow?.serviceDate,
+          ),
+        });
+
+        try {
+          const res = await fetch(`${API_URL}/service-flow`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(normalized),
+          });
+          if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+          const data = await res.json();
+          serviceFlow = normalizeServiceFlowData(data.data || normalized);
+          cacheServiceFlow(serviceFlow);
+          if (
+            selectedFlowItemId &&
+            !serviceFlow.items.some((item) => item.id === selectedFlowItemId)
+          ) {
+            selectedFlowItemId = null;
+          }
+          populateFlowForm(getSelectedFlowItem());
+          renderServiceFlow();
+          setFlowStatus(successMessage || "Service flow saved.", "good");
+        } catch (error) {
+          console.error("Service flow save failed:", error);
+          serviceFlow = {
+            ...normalized,
+            updatedAt: new Date().toISOString(),
+          };
+          cacheServiceFlow(serviceFlow);
+          if (
+            selectedFlowItemId &&
+            !serviceFlow.items.some((item) => item.id === selectedFlowItemId)
+          ) {
+            selectedFlowItemId = null;
+          }
+          populateFlowForm(getSelectedFlowItem());
+          renderServiceFlow();
+          setFlowStatus("Service flow saved locally only.", "warn");
+        }
+      }
+
+      async function loadServiceFlow() {
+        try {
+          const res = await fetch(`${API_URL}/service-flow`);
+          if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+          const data = await res.json();
+          serviceFlow = normalizeServiceFlowData(data);
+          cacheServiceFlow(serviceFlow);
+          renderServiceFlow();
+          setFlowStatus(
+            serviceFlow.items.length
+              ? "Service flow loaded."
+              : "Start by inserting a template or capturing current editors.",
+            "info",
+          );
+        } catch (error) {
+          console.error("Service flow load failed:", error);
+          const cached = loadCachedServiceFlow();
+          serviceFlow = normalizeServiceFlowData(cached || {});
+          renderServiceFlow();
+          setFlowStatus(
+            serviceFlow.items.length
+              ? "Offline service flow restored from this browser."
+              : "No saved flow found yet.",
+            serviceFlow.items.length ? "warn" : "info",
+          );
+        }
+      }
+
+      function applyFlowPayloadToEditors(mode, payload) {
+        if (mode === "verse") {
+          if (verseTextInput) verseTextInput.value = payload.verseText || "";
+          if (verseRefInput) verseRefInput.value = payload.verseRef || "";
+          if (giveScriptureInput)
+            giveScriptureInput.value = payload.giveScripture || "";
+          setEditorDraft("verseText", payload.verseText || "");
+          setEditorDraft("verseRef", payload.verseRef || "");
+          setEditorDraft("giveScripture", payload.giveScripture || "");
+          return;
+        }
+        if (mode === "lyrics") {
+          if (lyricsTitleInput) lyricsTitleInput.value = payload.lyricsTitle || "";
+          if (lyricsLinesInput) lyricsLinesInput.value = payload.lyricsLines || "";
+          setEditorDraft("lyricsTitle", payload.lyricsTitle || "");
+          setEditorDraft("lyricsLines", payload.lyricsLines || "");
+          return;
+        }
+        if (mode === "announcement") {
+          if (announcementTitleInput)
+            announcementTitleInput.value = payload.announcementTitle || "";
+          if (announcementBodyInput)
+            announcementBodyInput.value = payload.announcementBody || "";
+          setEditorDraft("announcementTitle", payload.announcementTitle || "");
+          setEditorDraft("announcementBody", payload.announcementBody || "");
+          return;
+        }
+        if (mode === "order") {
+          if (orderTitleInput) orderTitleInput.value = payload.orderTitle || "";
+          if (orderItemsInput) orderItemsInput.value = payload.orderItems || "";
+          setEditorDraft("orderTitle", payload.orderTitle || "");
+          setEditorDraft("orderItems", payload.orderItems || "");
+          return;
+        }
+        if (mode === "lowerthird") {
+          if (lowerThirdNameInput)
+            lowerThirdNameInput.value = payload.lowerThirdName || "";
+          if (lowerThirdRoleInput)
+            lowerThirdRoleInput.value = payload.lowerThirdRole || "";
+          if (lowerThirdFooterInput)
+            lowerThirdFooterInput.value = payload.lowerThirdFooter || "";
+          setEditorDraft("lowerThirdName", payload.lowerThirdName || "");
+          setEditorDraft("lowerThirdRole", payload.lowerThirdRole || "");
+          setEditorDraft("lowerThirdFooter", payload.lowerThirdFooter || "");
+          return;
+        }
+        if (mode === "countdown") {
+          const seconds = getFlowCountdownSeconds(payload);
+          if (countdownMinutes) countdownMinutes.value = Math.floor(seconds / 60);
+          if (countdownSeconds) countdownSeconds.value = seconds % 60;
+          setEditorDraft("countdownMinutes", String(Math.floor(seconds / 60)));
+          setEditorDraft("countdownSeconds", String(seconds % 60));
+        }
+      }
+
+      function loadFlowItemToEditors(itemId) {
+        const item = serviceFlow.items.find((entry) => entry.id === itemId);
+        if (!item) return;
+        selectFlowItem(item.id);
+
+        if (item.mode === "cue") {
+          setFlowStatus(
+            `"${item.label}" is a cue-only item. It will not load content to the screen editors.`,
+            "info",
+          );
+          return;
+        }
+
+        if (item.mode === "blank") {
+          setFlowStatus(
+            `"${item.label}" is a blank-screen step. Use Go Live when you need to cut the screen.`,
+            "info",
+          );
+          return;
+        }
+
+        applyFlowPayloadToEditors(item.mode, item.payload || {});
+        updateCommandDeck();
+        focusModeEditor(item.mode);
+        setFlowStatus(`Loaded "${item.label}" into the ${modeLabels[item.mode]} editor.`, "good");
+      }
+
+      function buildLivePayloadFromFlowItem(item) {
+        if (!item || item.mode === "cue") return null;
+        if (item.mode === "blank") {
+          return { mode: "blank" };
+        }
+        if (!hasFlowPayload(item.mode, item.payload)) {
+          return null;
+        }
+        if (item.mode === "countdown") {
+          const seconds = getFlowCountdownSeconds(item.payload);
+          return {
+            mode: "countdown",
+            countdownStatus: "running",
+            countdownDurationSeconds: seconds,
+            countdownRemainingSeconds: null,
+            countdownStartedAt: new Date().toISOString(),
+          };
+        }
+        return {
+          ...item.payload,
+          mode: item.mode,
+        };
+      }
+
+      async function goLiveFlowItem(itemId) {
+        const item = serviceFlow.items.find((entry) => entry.id === itemId);
+        if (!item) return;
+
+        if (item.mode !== "cue") {
+          const livePayload = buildLivePayloadFromFlowItem(item);
+          if (!livePayload) {
+            setFlowStatus(
+              `This ${modeLabels[item.mode] || item.mode} step does not have saved content yet.`,
+              "warn",
+            );
+            return;
+          }
+          await saveScreenState(livePayload);
+        }
+
+        const items = serviceFlow.items.map((entry) =>
+          entry.id === item.id
+            ? { ...entry, updatedAt: new Date().toISOString(), completed: false }
+            : entry,
+        );
+
+        selectedFlowItemId = item.id;
+        await persistServiceFlow(
+          {
+            items,
+            activeItemId: item.id,
+          },
+          item.mode === "cue"
+            ? `Cue armed: ${item.label}.`
+            : `${item.label} is now live.`,
+        );
+      }
+
+      async function moveFlowItem(itemId, delta) {
+        const index = getFlowItemIndex(itemId);
+        if (index === -1) return;
+        const targetIndex = index + delta;
+        if (targetIndex < 0 || targetIndex >= serviceFlow.items.length) return;
+        const items = [...serviceFlow.items];
+        const [item] = items.splice(index, 1);
+        items.splice(targetIndex, 0, item);
+        await persistServiceFlow({ items }, "Service flow reordered.");
+      }
+
+      async function duplicateFlowItem(itemId) {
+        const item = serviceFlow.items.find((entry) => entry.id === itemId);
+        if (!item) return;
+        const copy = createFlowItem({
+          ...item,
+          id: createFlowId(),
+          label: `${item.label} Copy`,
+          payload: item.payload || {},
+          completed: false,
+          createdAt: new Date().toISOString(),
+        });
+        const index = getFlowItemIndex(itemId);
+        const items = [...serviceFlow.items];
+        items.splice(index + 1, 0, copy);
+        selectedFlowItemId = copy.id;
+        await persistServiceFlow({ items }, "Flow item duplicated.");
+      }
+
+      async function toggleFlowItemCompleted(itemId) {
+        const items = serviceFlow.items.map((item) =>
+          item.id === itemId
+            ? {
+                ...item,
+                completed: !item.completed,
+                updatedAt: new Date().toISOString(),
+              }
+            : item,
+        );
+        await persistServiceFlow({ items }, "Flow progress updated.");
+      }
+
+      async function deleteFlowItem(itemId) {
+        const nextItems = serviceFlow.items.filter((item) => item.id !== itemId);
+        if (selectedFlowItemId === itemId) {
+          selectedFlowItemId = null;
+          populateFlowForm();
+        }
+        const nextActiveItemId =
+          serviceFlow.activeItemId === itemId ? null : serviceFlow.activeItemId;
+        await persistServiceFlow(
+          {
+            items: nextItems,
+            activeItemId: nextActiveItemId,
+          },
+          "Flow item removed.",
+        );
+      }
+
+      async function saveCurrentFlowItem() {
+        syncFlowMetaDraft();
+        const item = buildFlowItemFromForm();
+        if (!item) return;
+        selectedFlowItemId = item.id;
+        await persistServiceFlow(
+          {
+            items: [...serviceFlow.items, item],
+          },
+          "Flow item added.",
+        );
+      }
+
+      async function updateSelectedFlowItem() {
+        const currentItem = getSelectedFlowItem();
+        if (!currentItem) {
+          setFlowStatus("Select a flow item before updating it.", "warn");
+          return;
+        }
+        const updatedItem = buildFlowItemFromForm(currentItem);
+        if (!updatedItem) return;
+        const items = serviceFlow.items.map((item) =>
+          item.id === currentItem.id ? updatedItem : item,
+        );
+        selectedFlowItemId = updatedItem.id;
+        await persistServiceFlow(
+          {
+            items,
+            activeItemId:
+              serviceFlow.activeItemId === currentItem.id
+                ? updatedItem.id
+                : serviceFlow.activeItemId,
+          },
+          "Selected flow item updated.",
+        );
+      }
+
+      async function captureLiveScreenToFlow() {
+        const mode = screenState.mode || "verse";
+        if (!flowModeOrder.includes(mode)) {
+          setFlowStatus("The current live mode cannot be captured into the flow.", "warn");
+          return;
+        }
+        const payload =
+          mode === "blank" ? { mode: "blank" } : getSavedModePayload(mode);
+        const item = createFlowItem({
+          mode,
+          label: sanitizeFlowText(flowItemLabelInput ? flowItemLabelInput.value : ""),
+          note: sanitizeFlowText(flowItemNoteInput ? flowItemNoteInput.value : ""),
+          payload,
+        });
+        selectedFlowItemId = item.id;
+        await persistServiceFlow(
+          {
+            items: [...serviceFlow.items, item],
+          },
+          `Captured ${modeLabels[mode] || mode} from the live screen.`,
+        );
+      }
+
+      async function appendFlowTemplate(templateKey) {
+        const template = flowTemplates[templateKey];
+        if (!template) return;
+        const items = [
+          ...serviceFlow.items,
+          ...template.items.map((item) => createFlowItem(item)),
+        ];
+        await persistServiceFlow(
+          {
+            title: serviceFlow.title || template.title,
+            items,
+          },
+          `${template.title} inserted into the flow.`,
+        );
+      }
+
+      async function clearServiceFlow() {
+        selectedFlowItemId = null;
+        populateFlowForm();
+        await persistServiceFlow(
+          {
+            title: "",
+            serviceDate: "",
+            activeItemId: null,
+            items: [],
+          },
+          "Service flow cleared.",
+        );
+      }
+
+      async function goRelativeFlow(delta) {
+        if (!serviceFlow.items.length) {
+          setFlowStatus("Add at least one item before using Previous or Next.", "warn");
+          return;
+        }
+        const currentIndex = serviceFlow.activeItemId
+          ? getFlowItemIndex(serviceFlow.activeItemId)
+          : -1;
+        let targetIndex = currentIndex + delta;
+        if (currentIndex === -1) {
+          targetIndex = delta > 0 ? 0 : serviceFlow.items.length - 1;
+        }
+        if (targetIndex < 0 || targetIndex >= serviceFlow.items.length) {
+          setFlowStatus("There is no more cue in that direction.", "warn");
+          return;
+        }
+        await goLiveFlowItem(serviceFlow.items[targetIndex].id);
       }
 
       function startCountdownWithSeconds(totalSeconds) {
@@ -2925,6 +4198,81 @@
         saveAllEditorsBtn.addEventListener("click", saveAllEditors);
       }
 
+      if (flowTitleInput) {
+        flowTitleInput.addEventListener("input", syncFlowMetaDraft);
+      }
+
+      if (flowDateInput) {
+        flowDateInput.addEventListener("input", syncFlowMetaDraft);
+      }
+
+      if (addFlowItemBtn) {
+        addFlowItemBtn.addEventListener("click", () => {
+          saveCurrentFlowItem();
+        });
+      }
+
+      if (updateFlowItemBtn) {
+        updateFlowItemBtn.addEventListener("click", () => {
+          updateSelectedFlowItem();
+        });
+      }
+
+      if (captureLiveItemBtn) {
+        captureLiveItemBtn.addEventListener("click", () => {
+          captureLiveScreenToFlow();
+        });
+      }
+
+      if (clearFlowSelectionBtn) {
+        clearFlowSelectionBtn.addEventListener("click", () => {
+          selectedFlowItemId = null;
+          populateFlowForm();
+          renderServiceFlow();
+          setFlowStatus("Flow item selection cleared.", "info");
+        });
+      }
+
+      if (goSelectedFlowLiveBtn) {
+        goSelectedFlowLiveBtn.addEventListener("click", () => {
+          if (!selectedFlowItemId) {
+            setFlowStatus("Select a flow item before sending it live.", "warn");
+            return;
+          }
+          goLiveFlowItem(selectedFlowItemId);
+        });
+      }
+
+      if (goPreviousFlowBtn) {
+        goPreviousFlowBtn.addEventListener("click", () => {
+          goRelativeFlow(-1);
+        });
+      }
+
+      if (goNextFlowBtn) {
+        goNextFlowBtn.addEventListener("click", () => {
+          goRelativeFlow(1);
+        });
+      }
+
+      if (saveFlowBtn) {
+        saveFlowBtn.addEventListener("click", () => {
+          persistServiceFlow(serviceFlow, "Service flow saved.");
+        });
+      }
+
+      if (clearFlowBtn) {
+        clearFlowBtn.addEventListener("click", () => {
+          clearServiceFlow();
+        });
+      }
+
+      flowTemplateButtons.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          appendFlowTemplate(btn.dataset.flowTemplate);
+        });
+      });
+
         ensureHotkeyShortcuts();
         bindEditorDrafts();
         setInterval(updateCountdownUI, 1000);
@@ -2941,6 +4289,9 @@
         loadSplitConfig();
         renderSplitGrid();
         loadScreenState();
+        populateFlowForm();
+        renderServiceFlow();
+        loadServiceFlow();
         loadHymnResults("");
         updateCommandDeck();
       })();

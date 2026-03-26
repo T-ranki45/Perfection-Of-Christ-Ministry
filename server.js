@@ -12,7 +12,8 @@ const path = require("path");
 const os = require("os");
 const app = express();
 const port = process.env.PORT || 3000;
-const DISABLE_DB = String(process.env.DISABLE_DB || "").toLowerCase() === "true";
+const DISABLE_DB =
+  String(process.env.DISABLE_DB || "").toLowerCase() === "true";
 
 // Replace 'YOUR_PASSWORD_HERE' with your actual MongoDB password
 const DATABASE_URL =
@@ -298,6 +299,15 @@ const WORKER_OTP_TTL_MS = Number(
 const WORKER_SESSION_TTL_MS = Number(
   process.env.WORKER_SESSION_TTL_MS || 7 * 24 * 60 * 60 * 1000,
 );
+const WORKER_OTP_CHANNEL = String(process.env.WORKER_OTP_CHANNEL || "sms")
+  .trim()
+  .toLowerCase();
+const SMS_OTP_WEBHOOK_URL = String(
+  process.env.SMS_OTP_WEBHOOK_URL || "",
+).trim();
+const SMS_OTP_SENDER_NAME = String(
+  process.env.SMS_OTP_SENDER_NAME || "Perfection Of Christ Ministry",
+).trim();
 const WHATSAPP_OTP_WEBHOOK_URL = String(
   process.env.WHATSAPP_OTP_WEBHOOK_URL || "",
 ).trim();
@@ -380,6 +390,12 @@ function normalizePhoneNumber(value) {
 
 function phoneDigits(value) {
   return normalizePhoneNumber(value).replace(/\D/g, "");
+}
+
+function normalizeWorkerOtpChannel(value) {
+  if (value === "whatsapp") return "whatsapp";
+  if (value === "auto") return "auto";
+  return "sms";
 }
 
 function maskPhoneNumber(value) {
@@ -572,9 +588,38 @@ function requestJson(urlString, { method = "POST", headers = {}, body } = {}) {
   });
 }
 
-async function sendWorkerVerificationCode(worker, code) {
+async function sendWorkerVerificationCodeBySms(worker, code, message) {
   const recipientPhone = phoneDigits(worker.phone);
-  const message = `Your Perfection Of Christ Ministry workers verification code is ${code}. It expires in 10 minutes.`;
+
+  if (SMS_OTP_WEBHOOK_URL) {
+    await requestJson(SMS_OTP_WEBHOOK_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        channel: "sms",
+        phone: worker.phone,
+        phoneDigits: recipientPhone,
+        fullName: worker.fullName,
+        code,
+        message,
+        senderName: SMS_OTP_SENDER_NAME,
+      }),
+    });
+    return { channel: "sms", provider: "webhook", label: "SMS" };
+  } else {
+    // Log a warning if WhatsApp is requested but not configured
+    console.warn(
+      "⚠️ WhatsApp requested but Meta API credentials or Webhook URL are missing in .env",
+    );
+  }
+
+  throw new Error(
+    "SMS delivery is not configured. Add SMS_OTP_WEBHOOK_URL or switch WORKER_OTP_CHANNEL.",
+  );
+}
+
+async function sendWorkerVerificationCodeByWhatsApp(worker, code, message) {
+  const recipientPhone = phoneDigits(worker.phone);
 
   if (WHATSAPP_OTP_WEBHOOK_URL) {
     await requestJson(WHATSAPP_OTP_WEBHOOK_URL, {
@@ -588,7 +633,8 @@ async function sendWorkerVerificationCode(worker, code) {
         message,
       }),
     });
-    return { channel: "webhook" };
+    console.log(`📡 WhatsApp Webhook triggered for ${worker.fullName}`);
+    return { channel: "whatsapp", provider: "webhook", label: "WhatsApp" };
   }
 
   if (
@@ -621,18 +667,60 @@ async function sendWorkerVerificationCode(worker, code) {
         }),
       },
     );
-    return { channel: "meta" };
+    return { channel: "whatsapp", provider: "meta", label: "WhatsApp" };
+  }
+
+  throw new Error(
+    "WhatsApp delivery is not configured. Add WHATSAPP_OTP_WEBHOOK_URL or Meta Cloud API credentials.",
+  );
+}
+
+async function sendWorkerVerificationCode(worker, code) {
+  const message = `Your Perfection Of Christ Ministry workers verification code is ${code}. It expires in 10 minutes.`;
+  const deliveryMode = normalizeWorkerOtpChannel(WORKER_OTP_CHANNEL);
+  const attempts = [];
+
+  if (deliveryMode === "sms") {
+    attempts.push("sms");
+  } else if (deliveryMode === "whatsapp") {
+    attempts.push("whatsapp");
+  } else {
+    attempts.push("sms", "whatsapp");
+  }
+
+  let lastError = null;
+
+  for (const channel of attempts) {
+    try {
+      if (channel === "sms") {
+        return await sendWorkerVerificationCodeBySms(worker, code, message);
+      }
+      return await sendWorkerVerificationCodeByWhatsApp(worker, code, message);
+    } catch (error) {
+      lastError = error;
+      if (deliveryMode !== "auto") {
+        break;
+      }
+    }
   }
 
   if (isDevelopmentOtpMode()) {
     console.log(
       `[Workers OTP][Mock] ${worker.fullName} (${worker.phone}) => ${code}`,
     );
-    return { channel: "mock", previewCode: code };
+    return {
+      channel: "mock",
+      provider: "mock",
+      label: attempts[0] === "whatsapp" ? "WhatsApp" : "SMS",
+      previewCode: code,
+    };
   }
 
-  throw new Error(
-    "WhatsApp delivery is not configured. Add a webhook or WhatsApp Cloud API credentials.",
+  throw (
+    lastError ||
+    new Error(
+      "Verification delivery is not configured. Add SMS or WhatsApp delivery settings.",
+    )
   );
 }
 
@@ -1311,6 +1399,154 @@ const defaultScreenState = {
   updatedAt: null,
 };
 
+const allowedFlowModes = new Set([
+  "cue",
+  "verse",
+  "lyrics",
+  "announcement",
+  "order",
+  "countdown",
+  "lowerthird",
+  "blank",
+]);
+
+const defaultServiceFlow = {
+  title: "",
+  serviceDate: "",
+  activeItemId: null,
+  items: [],
+  updatedAt: null,
+};
+
+function sanitizeFlowText(input, maxLength = 5000) {
+  return String(input || "").trim().slice(0, maxLength);
+}
+
+function sanitizeFlowSlides(input) {
+  if (!Array.isArray(input)) return [];
+  return input
+    .map((entry) => sanitizeFlowText(entry, 4000))
+    .filter(Boolean)
+    .slice(0, 120);
+}
+
+function sanitizeFlowPayload(raw, fallbackMode = "cue") {
+  if (!raw || typeof raw !== "object") return {};
+
+  const payload = {};
+  const payloadMode = String(raw.mode || fallbackMode || "").trim().toLowerCase();
+
+  if (
+    payloadMode &&
+    payloadMode !== "cue" &&
+    allowedFlowModes.has(payloadMode)
+  ) {
+    payload.mode = payloadMode;
+  }
+
+  const stringKeys = [
+    "verseText",
+    "verseRef",
+    "giveScripture",
+    "announcementTitle",
+    "announcementBody",
+    "lyricsTitle",
+    "lyricsLines",
+    "orderTitle",
+    "orderItems",
+    "lowerThirdName",
+    "lowerThirdRole",
+    "lowerThirdFooter",
+  ];
+
+  stringKeys.forEach((key) => {
+    if (raw[key] !== undefined) {
+      payload[key] = sanitizeFlowText(raw[key], 12000);
+    }
+  });
+
+  if (raw.verseSlides !== undefined) {
+    payload.verseSlides = sanitizeFlowSlides(raw.verseSlides);
+  }
+  if (raw.lyricsSlides !== undefined) {
+    payload.lyricsSlides = sanitizeFlowSlides(raw.lyricsSlides);
+  }
+  if (raw.verseSlideIndex !== undefined) {
+    payload.verseSlideIndex = Math.max(0, Number(raw.verseSlideIndex) || 0);
+  }
+  if (raw.lyricsSlideIndex !== undefined) {
+    payload.lyricsSlideIndex = Math.max(0, Number(raw.lyricsSlideIndex) || 0);
+  }
+  if (raw.countdownDurationSeconds !== undefined) {
+    payload.countdownDurationSeconds = Math.max(
+      0,
+      Number(raw.countdownDurationSeconds) || 0,
+    );
+  }
+  if (raw.countdownRemainingSeconds !== undefined) {
+    payload.countdownRemainingSeconds = Math.max(
+      0,
+      Number(raw.countdownRemainingSeconds) || 0,
+    );
+  }
+
+  const countdownStatus = String(raw.countdownStatus || "").trim().toLowerCase();
+  if (["running", "paused", "stopped"].includes(countdownStatus)) {
+    payload.countdownStatus = countdownStatus;
+  }
+
+  if (raw.countdownStartedAt) {
+    const date = new Date(raw.countdownStartedAt);
+    if (!Number.isNaN(date.getTime())) {
+      payload.countdownStartedAt = date.toISOString();
+    }
+  }
+
+  return payload;
+}
+
+function sanitizeServiceFlowItem(raw, index = 0) {
+  const mode = allowedFlowModes.has(String(raw?.mode || "").trim().toLowerCase())
+    ? String(raw.mode).trim().toLowerCase()
+    : "cue";
+  const nowIso = new Date().toISOString();
+  const payload =
+    mode === "cue" ? {} : sanitizeFlowPayload(raw?.payload || {}, mode);
+
+  return {
+    id: sanitizeFlowText(raw?.id || "", 120) || new ObjectId().toString(),
+    mode,
+    label:
+      sanitizeFlowText(raw?.label || "", 180) ||
+      `${mode.charAt(0).toUpperCase()}${mode.slice(1)} ${index + 1}`,
+    note: sanitizeFlowText(raw?.note || "", 600),
+    completed: Boolean(raw?.completed),
+    payload,
+    createdAt: raw?.createdAt || nowIso,
+    updatedAt: nowIso,
+  };
+}
+
+function sanitizeServiceFlow(raw) {
+  const items = Array.isArray(raw?.items)
+    ? raw.items.slice(0, 200).map((item, index) => sanitizeServiceFlowItem(item, index))
+    : [];
+
+  const activeItemId = sanitizeFlowText(raw?.activeItemId || "", 120);
+  const safeActiveItemId = items.some((item) => item.id === activeItemId)
+    ? activeItemId
+    : null;
+
+  return {
+    ...defaultServiceFlow,
+    title: sanitizeFlowText(raw?.title || "", 160),
+    serviceDate: sanitizeFlowText(raw?.serviceDate || "", 160),
+    activeItemId: safeActiveItemId,
+    items,
+    updatedAt: raw?.updatedAt || null,
+  };
+}
+
 async function getConfigData(name) {
   if (db) {
     const config = await db.collection("config").findOne({ name });
@@ -1357,6 +1593,24 @@ async function saveScreenState(state) {
   return normalized;
 }
 
+async function loadServiceFlow() {
+  const flow = await getConfigData("serviceFlow");
+  return {
+    ...defaultServiceFlow,
+    ...sanitizeServiceFlow(flow || {}),
+  };
+}
+
+async function saveServiceFlow(flow) {
+  const normalized = {
+    ...defaultServiceFlow,
+    ...sanitizeServiceFlow(flow || {}),
+    updatedAt: new Date().toISOString(),
+  };
+  await saveConfigData("serviceFlow", normalized);
+  return normalized;
+}
+
 app.get("/api/screen-state", async (req, res) => {
   const state = await loadScreenState();
   return res.json(state);
@@ -1365,6 +1619,16 @@ app.get("/api/screen-state", async (req, res) => {
 app.post("/api/screen-state", async (req, res) => {
   const saved = await saveScreenState(req.body || {});
   return res.json({ message: "Screen state updated", data: saved });
+});
+
+app.get("/api/service-flow", async (req, res) => {
+  const flow = await loadServiceFlow();
+  return res.json(flow);
+});
+
+app.post("/api/service-flow", async (req, res) => {
+  const saved = await saveServiceFlow(req.body || {});
+  return res.json({ message: "Service flow updated", data: saved });
 });
 
 // Legacy alias for screen content (kept for compatibility)
@@ -1646,7 +1910,7 @@ app.post("/api/workers", requireAdminAuth, async (req, res) => {
     const worker = buildWorkerRecord(req.body || {});
     if (!worker) {
       return res.status(400).json({
-        error: "Worker name and WhatsApp phone number are required.",
+        error: "Worker name and phone number are required.",
       });
     }
 
@@ -1656,7 +1920,7 @@ app.post("/api/workers", requireAdminAuth, async (req, res) => {
     );
     if (duplicate) {
       return res.status(409).json({
-        error: "That WhatsApp number is already registered for a worker.",
+        error: "That phone number is already registered for a worker.",
       });
     }
 
@@ -1731,20 +1995,19 @@ app.post("/api/workers/request-code", async (req, res) => {
     if (!normalizedPhone) {
       return res
         .status(400)
-        .json({ error: "Enter the worker WhatsApp phone number first." });
+        .json({ error: "Enter the worker phone number first." });
     }
 
     const normalizedDigits = phoneDigits(normalizedPhone);
     const workers = await loadWorkersRaw();
     const worker = workers.find(
-      (item) =>
-        item.phoneDigits === normalizedDigits && item.active !== false,
+      (item) => item.phoneDigits === normalizedDigits && item.active !== false,
     );
 
     if (!worker) {
       return res.status(404).json({
         error:
-          "No active worker access was found for that WhatsApp number. Ask the admin to register it first in Admin > Manage Workers.",
+          "No active worker access was found for that phone number. Ask the admin to register it first in Admin > Manage Workers.",
       });
     }
 
@@ -1774,10 +2037,11 @@ app.post("/api/workers/request-code", async (req, res) => {
         message:
           delivery.channel === "mock"
             ? "Verification code generated in development mode."
-            : "Verification code sent to WhatsApp.",
+            : `Verification code sent by ${delivery.label}.`,
         maskedPhone: maskPhoneNumber(normalizedPhone),
         expiresInMinutes: Math.round(WORKER_OTP_TTL_MS / 60000),
         delivery: delivery.channel,
+        deliveryLabel: delivery.label,
       };
       if (delivery.previewCode) {
         response.previewCode = delivery.previewCode;
@@ -1793,8 +2057,7 @@ app.post("/api/workers/request-code", async (req, res) => {
   } catch (error) {
     console.error("Error requesting worker code:", error);
     res.status(500).json({
-      error:
-        error.message || "Unable to send the verification code right now.",
+      error: error.message || "Unable to send the verification code right now.",
     });
   }
 });
@@ -1805,15 +2068,14 @@ app.post("/api/workers/verify-code", async (req, res) => {
     const code = normalizeText(req.body?.code);
     if (!normalizedPhone || !code) {
       return res.status(400).json({
-        error: "Enter both the WhatsApp phone number and verification code.",
+        error: "Enter both the phone number and verification code.",
       });
     }
 
     const normalizedDigits = phoneDigits(normalizedPhone);
     const workers = await loadWorkersRaw();
     const worker = workers.find(
-      (item) =>
-        item.phoneDigits === normalizedDigits && item.active !== false,
+      (item) => item.phoneDigits === normalizedDigits && item.active !== false,
     );
 
     if (!worker) {

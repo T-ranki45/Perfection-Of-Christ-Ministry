@@ -53,7 +53,29 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
     />
   </head>
-  <body>
+  <body class="easter-season">
+    <div class="site-easter-celebration" aria-hidden="true">
+      <span class="site-easter-glow glow-left"></span>
+      <span class="site-easter-glow glow-right"></span>
+      <span class="site-easter-balloon site-balloon-left balloon-gold"></span>
+      <span class="site-easter-balloon site-balloon-right balloon-ivory"></span>
+      <span class="site-easter-balloon site-balloon-mid balloon-coral"></span>
+      <span class="site-easter-balloon site-balloon-top balloon-amber"></span>
+      <span class="site-easter-egg site-egg-left"></span>
+      <span class="site-easter-egg site-egg-right"></span>
+      <span class="site-easter-confetti site-confetti-one"></span>
+      <span class="site-easter-confetti site-confetti-two"></span>
+      <span class="site-easter-confetti site-confetti-three"></span>
+      <span class="site-easter-confetti site-confetti-four"></span>
+      <span class="site-easter-confetti site-confetti-five"></span>
+      <span class="site-easter-spark site-spark-one"></span>
+      <span class="site-easter-spark site-spark-two"></span>
+      <span class="site-easter-spark site-spark-three"></span>
+    </div>
+    <a href="#easter-template" class="site-easter-ribbon">
+      <span class="site-easter-ribbon-label">Easter Sunday</span>
+      <strong>April 5</strong>
+    </a>
     <header class="main-header">
       <div class="container">
         <a href="#" class="logo">
@@ -258,6 +280,114 @@
                 >Send a Prayer Request</a
               >
             </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="easter-template">
+        <div class="easter-celebration" aria-hidden="true">
+          <span class="easter-balloon balloon-one balloon-gold"></span>
+          <span class="easter-balloon balloon-two balloon-ivory"></span>
+          <span class="easter-balloon balloon-three balloon-coral"></span>
+          <span class="easter-balloon balloon-four balloon-amber"></span>
+          <span class="easter-streamer streamer-one"></span>
+          <span class="easter-streamer streamer-two"></span>
+          <span class="easter-confetti confetti-one"></span>
+          <span class="easter-confetti confetti-two"></span>
+          <span class="easter-confetti confetti-three"></span>
+          <span class="easter-confetti confetti-four"></span>
+          <span class="easter-confetti confetti-five"></span>
+          <span class="easter-confetti confetti-six"></span>
+          <span class="easter-spark spark-one"></span>
+          <span class="easter-spark spark-two"></span>
+          <span class="easter-spark spark-three"></span>
+          <span class="easter-spark spark-four"></span>
+        </div>
+        <div class="container">
+          <div class="easter-template-shell reveal-up">
+            <div class="easter-template-copy reveal-left">
+              <span class="easter-kicker">Easter Sunday 2026</span>
+              <h2>A Resurrection Sunday Invitation</h2>
+              <p class="easter-lead">
+                Join us on Sunday, April 5, 2026, as we celebrate the
+                resurrection of Jesus Christ with worship, thanksgiving,
+                prayer, and the Word.
+              </p>
+
+              <div class="easter-details-grid">
+                <article class="easter-detail-card">
+                  <span><i class="fas fa-calendar-day"></i> Date</span>
+                  <strong>Sunday, April 5, 2026</strong>
+                </article>
+                <article class="easter-detail-card">
+                  <span><i class="fas fa-clock"></i> Services</span>
+                  <strong>7:00 AM and 10:00 AM</strong>
+                </article>
+                <article class="easter-detail-card">
+                  <span><i class="fas fa-location-dot"></i> Venue</span>
+                  <strong
+                    >Rumuokwurushi Pipeline, Off MTN Mast, Port Harcourt</strong
+                  >
+                </article>
+              </div>
+
+              <p class="easter-note">
+                Bring your family, invite someone with you, and come expectant
+                for a day centered on the victory of Christ.
+              </p>
+
+              <div class="easter-actions">
+                <a href="#visit" class="button">Plan Your Easter Visit</a>
+                <a
+                  href="https://maps.app.goo.gl/ye3ZhSCveWuZTsjZ8"
+                  class="button btn-outline"
+                  >Get Directions</a
+                >
+              </div>
+            </div>
+
+            <div class="easter-template-poster reveal-right">
+              <div class="easter-poster-card">
+                <span class="easter-poster-pill">He Is Risen</span>
+                <p class="easter-poster-date">April 5, 2026</p>
+                <h3>Celebrate Easter With Us</h3>
+                <p class="easter-poster-text">
+                  A special Sunday of worship, thanksgiving, prayer, and the
+                  Word for the whole family.
+                </p>
+
+                <div
+                  class="easter-countdown-label"
+                  id="easter-countdown-status"
+                  aria-live="polite"
+                >
+                  Countdown to the 7:00 AM Easter service
+                </div>
+
+                <div
+                  class="easter-countdown"
+                  aria-label="Countdown to Easter Sunday"
+                >
+                  <div class="easter-countdown-item">
+                    <strong id="easter-days">00</strong>
+                    <span>Days</span>
+                  </div>
+                  <div class="easter-countdown-item">
+                    <strong id="easter-hours">00</strong>
+                    <span>Hours</span>
+                  </div>
+                  <div class="easter-countdown-item">
+                    <strong id="easter-minutes">00</strong>
+                    <span>Minutes</span>
+                  </div>
+                </div>
+
+                <div class="easter-poster-scripture">
+                  <span>Matthew 28:6</span>
+                  <p>He is risen.</p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -1321,7 +1451,57 @@
       if (messageCloseBtn)
         messageCloseBtn.addEventListener("click", closeMessageModal);
 
+      function initializeEasterCountdown() {
+        const daysEl = document.getElementById("easter-days");
+        const hoursEl = document.getElementById("easter-hours");
+        const minutesEl = document.getElementById("easter-minutes");
+        const statusEl = document.getElementById("easter-countdown-status");
+
+        if (!daysEl || !hoursEl || !minutesEl) return;
+
+        const targetDate = new Date("2026-04-05T07:00:00+01:00");
+        if (Number.isNaN(targetDate.getTime())) return;
+
+        const formatUnit = (value) => String(value).padStart(2, "0");
+
+        const updateCountdown = () => {
+          const difference = targetDate.getTime() - Date.now();
+
+          if (difference <= 0) {
+            daysEl.textContent = "00";
+            hoursEl.textContent = "00";
+            minutesEl.textContent = "00";
+
+            if (statusEl) {
+              statusEl.textContent = "Easter Sunday is here. Join us today.";
+            }
+            return;
+          }
+
+          const dayMs = 1000 * 60 * 60 * 24;
+          const hourMs = 1000 * 60 * 60;
+          const minuteMs = 1000 * 60;
+
+          const days = Math.floor(difference / dayMs);
+          const hours = Math.floor((difference % dayMs) / hourMs);
+          const minutes = Math.floor((difference % hourMs) / minuteMs);
+
+          daysEl.textContent = formatUnit(days);
+          hoursEl.textContent = formatUnit(hours);
+          minutesEl.textContent = formatUnit(minutes);
+
+          if (statusEl) {
+            statusEl.textContent =
+              "Countdown to the 7:00 AM Easter service";
+          }
+        };
+
+        updateCountdown();
+        window.setInterval(updateCountdown, 30000);
+      }
+
       // Initialize Data Loading
+      initializeEasterCountdown();
       loadScreenContent();
       loadFlyers();
       loadMessages();

@@ -189,9 +189,131 @@
           transform: rotate(360deg);
         }
       }
+
+      @media screen and (min-width: 993px) {
+        body.desktop-main-redesign .blog-hero {
+          min-height: 82vh;
+          padding: 9.75rem 0 6rem;
+          text-align: left;
+          align-items: flex-end;
+          background-attachment: scroll;
+        }
+
+        body.desktop-main-redesign .blog-hero::before {
+          content: "";
+          position: absolute;
+          inset: 5.75rem 1.5rem 1.5rem;
+          border-radius: 38px;
+          border: 1px solid rgba(255, 255, 255, 0.08);
+          background: linear-gradient(
+            135deg,
+            rgba(7, 12, 20, 0.12),
+            rgba(7, 12, 20, 0.02)
+          );
+          z-index: 1;
+        }
+
+        body.desktop-main-redesign .blog-hero .container {
+          position: relative;
+          z-index: 2;
+          text-align: left;
+        }
+
+        body.desktop-main-redesign .blog-hero h1 {
+          max-width: 8ch;
+          margin: 0 0 1rem;
+          font-size: clamp(4rem, 5.8vw, 6.1rem);
+          line-height: 0.98;
+        }
+
+        body.desktop-main-redesign .blog-hero p {
+          max-width: 38rem;
+          margin: 0;
+        }
+
+        body.desktop-main-redesign #blog-main {
+          margin-top: -4.5rem;
+          padding: 0 0 4.5rem;
+          background: transparent;
+        }
+
+        body.desktop-main-redesign #blog-main .container {
+          max-width: 1280px;
+          padding: 2.75rem 3rem 3rem;
+          border-radius: 38px;
+          background: rgba(255, 251, 243, 0.9);
+          border: 1px solid rgba(131, 98, 42, 0.12);
+          box-shadow: 0 32px 84px rgba(42, 30, 12, 0.14);
+        }
+
+        body.desktop-main-redesign .month-header {
+          margin: 3rem 0 1.4rem;
+          padding-bottom: 0.8rem;
+          color: #293343;
+          border-bottom: 1px solid rgba(131, 98, 42, 0.18);
+        }
+
+        body.desktop-main-redesign .blog-grid {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+          gap: 1.35rem;
+        }
+
+        body.desktop-main-redesign .yearbook-card {
+          border-radius: 28px;
+          background: #0f1722;
+          box-shadow: 0 24px 60px rgba(10, 14, 22, 0.18);
+          transition:
+            transform 0.3s ease,
+            box-shadow 0.3s ease;
+        }
+
+        body.desktop-main-redesign .yearbook-card:hover {
+          transform: translateY(-8px);
+          box-shadow: 0 32px 80px rgba(10, 14, 22, 0.24);
+        }
+
+        body.desktop-main-redesign .card-media {
+          padding-bottom: 72%;
+        }
+
+        body.desktop-main-redesign .card-info-overlay {
+          transform: translateY(0);
+          padding: 2.25rem 1.2rem 1.1rem;
+          background: linear-gradient(
+            to top,
+            rgba(3, 7, 13, 0.92) 0%,
+            rgba(3, 7, 13, 0.24) 74%,
+            transparent 100%
+          );
+        }
+
+        body.desktop-main-redesign .card-date {
+          display: inline-block;
+          margin-bottom: 0.45rem;
+          color: rgba(255, 255, 255, 0.78);
+        }
+
+        body.desktop-main-redesign .card-title {
+          font-size: 1rem;
+          white-space: normal;
+        }
+
+        body.desktop-main-redesign .card-category-icon {
+          top: 1rem;
+          right: 1rem;
+          width: 44px;
+          height: 44px;
+          display: grid;
+          place-items: center;
+          border-radius: 50%;
+          background: rgba(0, 0, 0, 0.24);
+          backdrop-filter: blur(10px);
+          -webkit-backdrop-filter: blur(10px);
+        }
+      }
     </style>
   </head>
-  <body class="easter-season">
+  <body class="easter-season desktop-main-redesign">
     <div class="site-easter-celebration" aria-hidden="true">
       <span class="site-easter-glow glow-left"></span>
       <span class="site-easter-glow glow-right"></span>

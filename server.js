@@ -608,8 +608,10 @@ async function sendWorkerVerificationCodeBySms(worker, code, message) {
     return { channel: "sms", provider: "webhook", label: "SMS" };
   } else {
     // Log a warning if WhatsApp is requested but not configured
+    // Log a warning if SMS is requested but not configured
     console.warn(
       "⚠️ WhatsApp requested but Meta API credentials or Webhook URL are missing in .env",
+      "⚠️ SMS requested but SMS_OTP_WEBHOOK_URL is missing in .env",
     );
   }
 
@@ -669,6 +671,10 @@ async function sendWorkerVerificationCodeByWhatsApp(worker, code, message) {
     );
     return { channel: "whatsapp", provider: "meta", label: "WhatsApp" };
   }
+
+  console.warn(
+    "⚠️ WhatsApp requested but WHATSAPP_OTP_WEBHOOK_URL or Meta API credentials (TOKEN, ID, TEMPLATE) are missing in .env",
+  );
 
   throw new Error(
     "WhatsApp delivery is not configured. Add WHATSAPP_OTP_WEBHOOK_URL or Meta Cloud API credentials.",
@@ -1419,7 +1425,9 @@ const defaultServiceFlow = {
 };
 
 function sanitizeFlowText(input, maxLength = 5000) {
-  return String(input || "").trim().slice(0, maxLength);
+  return String(input || "")
+    .trim()
+    .slice(0, maxLength);
 }
 
 function sanitizeFlowSlides(input) {
@@ -1434,7 +1442,9 @@ function sanitizeFlowPayload(raw, fallbackMode = "cue") {
   if (!raw || typeof raw !== "object") return {};
 
   const payload = {};
-  const payloadMode = String(raw.mode || fallbackMode || "").trim().toLowerCase();
+  const payloadMode = String(raw.mode || fallbackMode || "")
+    .trim()
+    .toLowerCase();
 
   if (
     payloadMode &&
@@ -1490,7 +1500,9 @@ function sanitizeFlowPayload(raw, fallbackMode = "cue") {
     );
   }
 
-  const countdownStatus = String(raw.countdownStatus || "").trim().toLowerCase();
+  const countdownStatus = String(raw.countdownStatus || "")
+    .trim()
+    .toLowerCase();
   if (["running", "paused", "stopped"].includes(countdownStatus)) {
     payload.countdownStatus = countdownStatus;
   }
@@ -1506,7 +1518,11 @@ function sanitizeFlowPayload(raw, fallbackMode = "cue") {
 }
 
 function sanitizeServiceFlowItem(raw, index = 0) {
-  const mode = allowedFlowModes.has(String(raw?.mode || "").trim().toLowerCase())
+  const mode = allowedFlowModes.has(
+    String(raw?.mode || "")
+      .trim()
+      .toLowerCase(),
+  )
     ? String(raw.mode).trim().toLowerCase()
     : "cue";
   const nowIso = new Date().toISOString();
@@ -1529,7 +1545,9 @@ function sanitizeServiceFlowItem(raw, index = 0) {
 
 function sanitizeServiceFlow(raw) {
   const items = Array.isArray(raw?.items)
-    ? raw.items.slice(0, 200).map((item, index) => sanitizeServiceFlowItem(item, index))
+    ? raw.items
+        .slice(0, 200)
+        .map((item, index) => sanitizeServiceFlowItem(item, index))
     : [];
 
   const activeItemId = sanitizeFlowText(raw?.activeItemId || "", 120);

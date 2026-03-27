@@ -5887,3 +5887,490 @@ section h2::after {
 .toast.error {
   background-color: #e74c3c;
 }
+
+/* --- Desktop Public Site Refresh --- */
+@media screen and (min-width: 993px) {
+  body.desktop-main-redesign {
+    --desktop-canvas: #f4ecde;
+    --desktop-surface: rgba(255, 248, 236, 0.82);
+    --desktop-surface-strong: rgba(9, 14, 24, 0.82);
+    --desktop-card: rgba(255, 251, 243, 0.88);
+    --desktop-card-soft: rgba(252, 246, 234, 0.72);
+    --desktop-stroke: rgba(131, 98, 42, 0.16);
+    --desktop-shadow: 0 28px 70px rgba(44, 34, 16, 0.14);
+    --desktop-ink: #1c2230;
+    background:
+      radial-gradient(
+        circle at 12% 12%,
+        rgba(214, 181, 121, 0.22) 0%,
+        transparent 18%
+      ),
+      radial-gradient(
+        circle at 86% 24%,
+        rgba(58, 80, 107, 0.12) 0%,
+        transparent 24%
+      ),
+      linear-gradient(180deg, #fbf6ed 0%, #efe4d1 46%, #fcfaf5 100%);
+    background-attachment: fixed;
+    color: var(--desktop-ink);
+  }
+
+  body.desktop-main-redesign::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(95, 73, 39, 0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(95, 73, 39, 0.04) 1px, transparent 1px);
+    background-size: 120px 120px;
+    mask-image: linear-gradient(
+      180deg,
+      rgba(0, 0, 0, 0.2),
+      rgba(0, 0, 0, 0.04) 28%,
+      transparent 72%
+    );
+    pointer-events: none;
+    z-index: -2;
+  }
+
+  body.desktop-main-redesign .container {
+    max-width: 1280px;
+  }
+
+  body.desktop-main-redesign section {
+    padding: 6rem 0;
+  }
+
+  body.desktop-main-redesign .site-easter-ribbon {
+    top: 7.6rem;
+    right: 1.6rem;
+    box-shadow: 0 18px 40px rgba(12, 14, 18, 0.22);
+  }
+
+  body.desktop-main-redesign .main-header {
+    top: 1rem;
+    padding: 0;
+    background: transparent;
+    min-height: unset;
+  }
+
+  body.desktop-main-redesign .main-header.scrolled {
+    background: transparent;
+    box-shadow: none;
+    padding: 0;
+    min-height: unset;
+    border-bottom: none;
+  }
+
+  body.desktop-main-redesign .main-header .container {
+    max-width: min(1380px, calc(100vw - 48px));
+    padding: 0.95rem 1.25rem;
+    border-radius: 30px;
+    background: rgba(7, 12, 20, 0.72);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    box-shadow: 0 24px 60px rgba(8, 12, 18, 0.22);
+    transition:
+      background 0.25s ease,
+      transform 0.25s ease,
+      box-shadow 0.25s ease;
+  }
+
+  body.desktop-main-redesign .main-header.scrolled .container {
+    background: rgba(7, 12, 20, 0.88);
+    transform: translateY(-2px);
+    box-shadow: 0 28px 65px rgba(8, 12, 18, 0.3);
+  }
+
+  body.desktop-main-redesign .logo span {
+    opacity: 1;
+    transform: none;
+    visibility: visible;
+    font-size: 1.02rem;
+    line-height: 1.2;
+    max-width: 15ch;
+  }
+
+  body.desktop-main-redesign .logo img,
+  body.desktop-main-redesign .main-header.scrolled .logo img {
+    height: 60px;
+  }
+
+  body.desktop-main-redesign .main-navigation-menu ul {
+    align-items: center;
+    gap: 0.35rem;
+  }
+
+  body.desktop-main-redesign .main-navigation-menu ul li a::after {
+    display: none;
+  }
+
+  body.desktop-main-redesign .main-navigation-menu ul li a:not(.button) {
+    padding: 0.78rem 0.92rem;
+    border-radius: 999px;
+    color: rgba(255, 255, 255, 0.78);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    text-shadow: none;
+  }
+
+  body.desktop-main-redesign .main-navigation-menu ul li a:not(.button):hover,
+  body.desktop-main-redesign .main-navigation-menu ul li a.active:not(.button) {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  body.desktop-main-redesign .main-navigation-menu ul li a.live-nav-link {
+    color: #ff7b7b;
+  }
+
+  body.desktop-main-redesign .main-navigation-menu ul li a.live-nav-link:hover {
+    color: #ffd4d4;
+  }
+
+  body.desktop-main-redesign .main-navigation-menu ul li a.nav-worker-btn,
+  body.desktop-main-redesign .main-navigation-menu ul li a.nav-admin-btn,
+  body.desktop-main-redesign .main-navigation-menu ul li a.open-give-modal {
+    padding: 0.82rem 1.1rem;
+    border-radius: 999px;
+    font-size: 0.76rem;
+    letter-spacing: 0.12em;
+    box-shadow: none;
+  }
+
+  body.desktop-main-redesign .main-navigation-menu ul li a.nav-worker-btn {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.12);
+  }
+
+  body.desktop-main-redesign .main-navigation-menu ul li a.open-give-modal {
+    color: #111;
+  }
+
+  body.desktop-main-redesign #hero {
+    min-height: 100vh;
+    padding: 8.75rem 0 5.5rem;
+    align-items: center;
+  }
+
+  body.desktop-main-redesign #hero::before {
+    content: "";
+    position: absolute;
+    inset: 5.25rem 1.5rem 1.5rem;
+    border-radius: 40px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: linear-gradient(
+      135deg,
+      rgba(7, 12, 20, 0.1),
+      rgba(7, 12, 20, 0.02)
+    );
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    z-index: 0;
+  }
+
+  body.desktop-main-redesign .hero-overlay {
+    background: linear-gradient(
+      90deg,
+      rgba(5, 10, 17, 0.88) 0%,
+      rgba(7, 12, 20, 0.72) 42%,
+      rgba(7, 12, 20, 0.26) 76%,
+      rgba(7, 12, 20, 0.48) 100%
+    );
+  }
+
+  body.desktop-main-redesign #hero .hero-content {
+    width: min(1320px, calc(100vw - 88px));
+    display: grid;
+    grid-template-columns: minmax(0, 1.12fr) minmax(320px, 0.88fr);
+    gap: 1rem 3rem;
+    align-items: center;
+    padding: 1rem 0 0;
+  }
+
+  body.desktop-main-redesign .hero-pretitle,
+  body.desktop-main-redesign .hero-badge-row,
+  body.desktop-main-redesign #hero h1,
+  body.desktop-main-redesign .hero-divider,
+  body.desktop-main-redesign .hero-description,
+  body.desktop-main-redesign .hero-buttons {
+    grid-column: 1;
+    justify-self: start;
+    text-align: left;
+  }
+
+  body.desktop-main-redesign .hero-pretitle {
+    font-size: 0.82rem;
+    letter-spacing: 0.34em;
+    margin-bottom: 0.5rem;
+  }
+
+  body.desktop-main-redesign .hero-badge-row {
+    justify-content: flex-start;
+    gap: 0.8rem;
+    margin-bottom: 0.9rem;
+  }
+
+  body.desktop-main-redesign .hero-badge {
+    background: rgba(7, 12, 20, 0.5);
+  }
+
+  body.desktop-main-redesign #hero h1 {
+    margin: 0;
+    max-width: 8.4ch;
+    font-size: clamp(4.4rem, 6vw, 6.85rem);
+    line-height: 1;
+  }
+
+  body.desktop-main-redesign .hero-divider {
+    margin: 1.6rem 0;
+  }
+
+  body.desktop-main-redesign .hero-description {
+    margin: 0 0 2rem;
+    max-width: 40rem;
+    font-size: 1.06rem;
+    line-height: 1.85;
+  }
+
+  body.desktop-main-redesign .hero-buttons {
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
+
+  body.desktop-main-redesign .hero-buttons .button {
+    padding: 1rem 1.8rem;
+  }
+
+  body.desktop-main-redesign .hero-info-grid {
+    grid-column: 2;
+    grid-row: 1 / span 6;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    margin-top: 0;
+    align-self: center;
+  }
+
+  body.desktop-main-redesign .hero-info-card {
+    padding: 1.45rem 1.45rem 1.35rem;
+    border-radius: 24px;
+    background: linear-gradient(
+      180deg,
+      rgba(10, 14, 22, 0.48),
+      rgba(10, 14, 22, 0.76)
+    );
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 22px 44px rgba(0, 0, 0, 0.26);
+  }
+
+  body.desktop-main-redesign .hero-info-card:nth-child(2) {
+    transform: translateX(18px);
+  }
+
+  body.desktop-main-redesign .hero-info-card:nth-child(3) {
+    transform: translateX(36px);
+  }
+
+  body.desktop-main-redesign .scroll-indicator {
+    bottom: 2rem;
+  }
+
+  body.desktop-main-redesign #home-highlights {
+    margin-top: -1.8rem;
+    position: relative;
+    z-index: 2;
+  }
+
+  body.desktop-main-redesign .home-highlights-grid {
+    grid-template-columns: 1.08fr 0.96fr 0.96fr;
+    gap: 1.35rem;
+  }
+
+  body.desktop-main-redesign .home-highlight-card {
+    min-height: 100%;
+    padding: 2.1rem;
+    border-radius: 30px;
+    background: var(--desktop-card);
+    border: 1px solid var(--desktop-stroke);
+    box-shadow: var(--desktop-shadow);
+  }
+
+  body.desktop-main-redesign .home-highlight-card:nth-child(2) {
+    margin-top: 1.25rem;
+  }
+
+  body.desktop-main-redesign .home-highlight-card:nth-child(3) {
+    margin-top: 2.5rem;
+  }
+
+  body.desktop-main-redesign .home-highlight-card h3 {
+    font-size: 1.6rem;
+    line-height: 1.18;
+    color: #1f2733;
+  }
+
+  body.desktop-main-redesign #easter-template .container,
+  body.desktop-main-redesign #events .container,
+  body.desktop-main-redesign #messages .container,
+  body.desktop-main-redesign #give-section .container {
+    position: relative;
+    z-index: 1;
+  }
+
+  body.desktop-main-redesign .easter-template-shell {
+    gap: 1.6rem;
+  }
+
+  body.desktop-main-redesign .easter-template-copy,
+  body.desktop-main-redesign .easter-poster-card {
+    border-radius: 34px;
+    box-shadow: 0 28px 70px rgba(42, 30, 12, 0.16);
+  }
+
+  body.desktop-main-redesign .welcome-container {
+    max-width: 1220px;
+  }
+
+  body.desktop-main-redesign .welcome-card {
+    display: grid;
+    grid-template-columns: 140px minmax(0, 1fr);
+    gap: 1rem 2.2rem;
+    align-items: start;
+    padding: 3rem 3.2rem;
+    border-radius: 36px;
+    background: var(--desktop-card);
+    border: 1px solid var(--desktop-stroke);
+    box-shadow: var(--desktop-shadow);
+    text-align: left;
+  }
+
+  body.desktop-main-redesign .welcome-icon {
+    grid-row: 1 / span 4;
+    align-self: start;
+    margin: 0;
+  }
+
+  body.desktop-main-redesign .section-eyebrow,
+  body.desktop-main-redesign #welcome h2,
+  body.desktop-main-redesign #welcome p,
+  body.desktop-main-redesign .welcome-pill-row {
+    grid-column: 2;
+  }
+
+  body.desktop-main-redesign #welcome h2,
+  body.desktop-main-redesign #visit h2,
+  body.desktop-main-redesign #events h2,
+  body.desktop-main-redesign #messages h2,
+  body.desktop-main-redesign #give-section h2 {
+    text-align: left;
+  }
+
+  body.desktop-main-redesign #welcome h2::after,
+  body.desktop-main-redesign #visit h2::after,
+  body.desktop-main-redesign #events h2::after,
+  body.desktop-main-redesign #messages h2::after,
+  body.desktop-main-redesign #give-section h2::after {
+    margin: 1rem 0 0;
+  }
+
+  body.desktop-main-redesign #welcome p {
+    max-width: 58rem;
+    color: #445062;
+  }
+
+  body.desktop-main-redesign #events .container,
+  body.desktop-main-redesign #messages .container,
+  body.desktop-main-redesign #give-section .container {
+    padding: 3rem;
+    border-radius: 36px;
+    background: var(--desktop-surface-strong);
+    box-shadow: 0 34px 90px rgba(10, 14, 22, 0.22);
+  }
+
+  body.desktop-main-redesign #events h2,
+  body.desktop-main-redesign #messages h2,
+  body.desktop-main-redesign #give-section h2,
+  body.desktop-main-redesign #give-section p,
+  body.desktop-main-redesign #events p,
+  body.desktop-main-redesign #messages p {
+    color: #fff;
+  }
+
+  body.desktop-main-redesign #visit .container {
+    padding: 3rem;
+    border-radius: 36px;
+    background: var(--desktop-surface);
+    border: 1px solid var(--desktop-stroke);
+    box-shadow: var(--desktop-shadow);
+  }
+
+  body.desktop-main-redesign .visit-content {
+    grid-template-columns: minmax(0, 0.92fr) minmax(420px, 1.08fr);
+    gap: 1.5rem;
+    align-items: stretch;
+  }
+
+  body.desktop-main-redesign .visit-info,
+  body.desktop-main-redesign .map-placeholder {
+    border-radius: 30px;
+    overflow: hidden;
+  }
+
+  body.desktop-main-redesign .visit-info {
+    padding: 2rem;
+    background: rgba(255, 255, 255, 0.5);
+    border: 1px solid rgba(131, 98, 42, 0.12);
+  }
+
+  body.desktop-main-redesign .visit-actions {
+    margin-top: 2rem;
+  }
+
+  body.desktop-main-redesign .messages-scroll-wrapper {
+    padding: 0.4rem 0 0.2rem;
+  }
+
+  body.desktop-main-redesign #new-here {
+    padding: 2rem 0 1rem;
+  }
+
+  body.desktop-main-redesign #give-section .give-content {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  body.desktop-main-redesign .giving-reasons-grid {
+    gap: 1.2rem;
+  }
+
+  body.desktop-main-redesign .give-card {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 24px;
+  }
+
+  body.desktop-main-redesign .main-footer {
+    padding: 2.4rem 0 2rem;
+    background: transparent;
+  }
+
+  body.desktop-main-redesign .main-footer .container {
+    padding: 3rem 3rem 1.6rem;
+    border-radius: 38px;
+    background: rgba(7, 12, 20, 0.92);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 30px 80px rgba(8, 12, 18, 0.26);
+  }
+
+  body.desktop-main-redesign .footer-grid {
+    gap: 2rem;
+  }
+
+  body.desktop-main-redesign .footer-bottom {
+    margin-top: 2rem;
+    padding-top: 1.2rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+  }
+}

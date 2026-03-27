@@ -1554,3 +1554,118 @@ body {
     padding-top: calc(9.5rem + env(safe-area-inset-top));
   }
 }
+
+@media screen and (min-width: 993px) {
+  body.desktop-main-redesign .page-hero {
+    min-height: 88vh;
+    padding: 9.5rem 0 6rem;
+    text-align: left;
+    align-items: flex-end;
+  }
+
+  body.desktop-main-redesign .page-hero::before {
+    content: "";
+    position: absolute;
+    inset: 5.75rem 1.5rem 1.5rem;
+    border-radius: 38px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: linear-gradient(
+      135deg,
+      rgba(7, 12, 20, 0.12),
+      rgba(7, 12, 20, 0.02)
+    );
+    z-index: 1;
+  }
+
+  body.desktop-main-redesign .page-hero-content {
+    max-width: 760px;
+    margin-left: 0;
+    text-align: left;
+  }
+
+  body.desktop-main-redesign .page-hero p {
+    margin-left: 0;
+  }
+
+  body.desktop-main-redesign .page-hero-actions {
+    justify-content: flex-start;
+  }
+
+  body.desktop-main-redesign .page-hero-facts {
+    max-width: 760px;
+  }
+
+  body.desktop-main-redesign #our-story .container,
+  body.desktop-main-redesign #leadership .container {
+    padding: 3rem;
+    border-radius: 36px;
+    box-shadow: 0 32px 84px rgba(10, 14, 22, 0.2);
+  }
+
+  body.desktop-main-redesign #our-story .container {
+    background: rgba(8, 12, 18, 0.94);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  body.desktop-main-redesign .story-grid {
+    grid-template-columns: minmax(330px, 0.9fr) minmax(0, 1.1fr);
+    gap: 4rem;
+  }
+
+  body.desktop-main-redesign .story-image {
+    position: sticky;
+    top: 8rem;
+  }
+
+  body.desktop-main-redesign .story-content p,
+  body.desktop-main-redesign .team-bio {
+    font-size: 1.02rem;
+  }
+
+  body.desktop-main-redesign .story-features {
+    gap: 1rem;
+  }
+
+  body.desktop-main-redesign .feature-item {
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  body.desktop-main-redesign .mission-inner {
+    padding: 3.1rem 3rem;
+    border-radius: 38px;
+    box-shadow: 0 32px 84px rgba(10, 14, 22, 0.18);
+  }
+
+  body.desktop-main-redesign .mission-pill-row {
+    justify-content: flex-start;
+  }
+
+  body.desktop-main-redesign #leadership .container {
+    background: linear-gradient(180deg, #0b0f12 0%, #11161d 100%);
+    border: 1px solid rgba(197, 154, 67, 0.08);
+  }
+
+  body.desktop-main-redesign .lead-couple {
+    padding: 2.6rem 2.2rem;
+    border-radius: 28px;
+  }
+
+  body.desktop-main-redesign .team-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.35rem;
+  }
+
+  body.desktop-main-redesign .team-member {
+    min-height: 100%;
+  }
+
+  body.desktop-main-redesign #cta-section .container {
+    padding: 3rem 3.2rem;
+    border-radius: 36px;
+    background: rgba(7, 12, 20, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 30px 80px rgba(8, 12, 18, 0.22);
+  }
+}

@@ -1,4 +1,4 @@
-const CACHE_NAME = "pocm-site-v3";
+const CACHE_NAME = "pocm-site-v4";
 const CORE_ASSETS = [
   "/",
   "/about",

@@ -20,32 +20,206 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
     />
     <style>
-      /* Tab Styles */
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+      }
+
+      body {
+        overflow-x: hidden;
+        overflow-y: auto;
+      }
+
+      .ict-app {
+        min-height: 100dvh;
+        height: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+        background:
+          radial-gradient(circle at top, #162236 0%, #0a1018 52%, #07090d 100%);
+        max-width: 100% !important;
+        padding: 0 !important;
+      }
+
+      .ict-topbar {
+        padding: 0.85rem 1.15rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        background: rgba(4, 8, 14, 0.92);
+      }
+
+      .ict-hero {
+        padding: 1rem 1.15rem;
+        border-radius: 0;
+        border: none;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        background: linear-gradient(
+          90deg,
+          rgba(7, 11, 18, 0.92),
+          rgba(12, 18, 27, 0.82)
+        );
+      }
+
+      .ict-hero h1 {
+        font-size: 1.45rem;
+        margin: 0 0 0.35rem;
+      }
+
+      .ict-hero p {
+        margin: 0;
+        max-width: 760px;
+        font-size: 0.88rem;
+        opacity: 0.82;
+      }
+
+      .ict-overview {
+        display: grid;
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: 1px;
+        padding: 0;
+        background: rgba(255, 255, 255, 0.08);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      }
+
+      .overview-card {
+        min-width: 0;
+        border: none;
+        border-radius: 0;
+        background: #0d141e;
+        padding: 0.8rem 0.95rem;
+      }
+
+      .overview-card strong {
+        color: #f3d180;
+        font-size: 0.92rem;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .ict-layout {
+        flex: 0 0 auto;
+        min-height: auto;
+        display: grid;
+        grid-template-columns: minmax(315px, 360px) minmax(500px, 1fr) minmax(340px, 400px);
+        gap: 1px;
+        background: rgba(255, 255, 255, 0.08);
+        align-items: start;
+      }
+
+      .resource-stack,
+      .schedule-stack,
+      .preview-stack {
+        min-height: auto;
+        overflow: visible;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        background: #0b1118;
+        padding: 1rem;
+      }
+
+      .preview-stack {
+        position: static;
+        top: auto;
+        max-height: none;
+        padding-right: 1rem;
+      }
+
+      .column-label {
+        position: sticky;
+        top: -1rem;
+        z-index: 3;
+        margin: -1rem -1rem 0;
+        padding: 0.9rem 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.55rem;
+        background: rgba(8, 12, 19, 0.94);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        font-size: 0.72rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.16em;
+        color: #8d97a8;
+      }
+
+      .column-label i {
+        color: #d4a43f;
+      }
+
+      .control-card,
+      .preview-card {
+        margin-bottom: 0;
+        padding: 1rem;
+        border-radius: 18px;
+        background: linear-gradient(
+          180deg,
+          rgba(14, 22, 34, 0.96),
+          rgba(10, 16, 26, 0.92)
+        );
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+      }
+
+      .card-header.compact {
+        margin-bottom: 0.85rem;
+      }
+
+      .card-header.compact h3 {
+        font-size: 1.08rem;
+        margin-bottom: 0.25rem;
+      }
+
+      .card-header.compact .card-note {
+        font-size: 0.78rem;
+        line-height: 1.5;
+      }
+
+      .workspace-mode-card .mode-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .editor-stack-card,
+      .schedule-workspace,
+      .ops-notes-card {
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
+      }
+
       .ict-tabs {
         display: flex;
-        gap: 10px;
-        margin-bottom: 15px;
-        background: rgba(255, 255, 255, 0.05);
-        padding: 10px;
-        border-radius: 8px;
+        gap: 0.45rem;
+        margin-bottom: 1rem;
+        padding: 0;
+        background: transparent;
+        border-radius: 0;
         overflow-x: auto;
       }
+
       .tab-btn {
         flex: 1;
-        padding: 10px 15px;
+        padding: 0.72rem 0.88rem;
         background: transparent;
         border: 1px solid rgba(255, 255, 255, 0.1);
         color: #ccc;
         cursor: pointer;
-        border-radius: 5px;
-        font-weight: 600;
+        border-radius: 999px;
+        font-size: 0.76rem;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
         transition: all 0.2s;
         white-space: nowrap;
       }
+
       .tab-btn:hover {
-        background: rgba(255, 255, 255, 0.1);
+        background: rgba(255, 255, 255, 0.08);
         color: #fff;
       }
+
       .tab-btn.active {
         background: var(
           --gold-gradient,
@@ -54,13 +228,18 @@
         color: #1a1a1a;
         border-color: transparent;
       }
+
       .tab-pane {
         display: none;
         animation: fadeIn 0.3s ease;
       }
+
       .tab-pane.active {
-        display: block;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
       }
+
       @keyframes fadeIn {
         from {
           opacity: 0;
@@ -69,6 +248,243 @@
         to {
           opacity: 1;
           transform: translateY(0);
+        }
+      }
+
+      .editor-pane {
+        display: flex;
+        flex-direction: column;
+        gap: 0.85rem;
+        padding: 1rem;
+        border-radius: 16px;
+        background: rgba(6, 10, 17, 0.56);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+      }
+
+      .editor-pane-head {
+        display: flex;
+        flex-direction: column;
+        gap: 0.2rem;
+      }
+
+      .editor-pane-head strong {
+        font-size: 0.94rem;
+      }
+
+      .editor-pane-head span {
+        color: var(--muted);
+        font-size: 0.78rem;
+        line-height: 1.5;
+      }
+
+      .card-actions.slim {
+        gap: 0.55rem;
+        margin-top: 0;
+      }
+
+      .card-actions.slim .btn-primary,
+      .card-actions.slim .btn-ghost,
+      .card-actions.slim .btn-danger {
+        padding: 0.62rem 0.95rem;
+        font-size: 0.72rem;
+      }
+
+      .schedule-workspace .service-flow-list {
+        flex: 0 0 auto;
+        min-height: 280px;
+        overflow: visible;
+      }
+
+      .flow-transport-bar {
+        position: static;
+        margin-top: auto;
+        padding-top: 0.8rem;
+        background: transparent;
+      }
+
+      .live-preview-card .preview-frame {
+        margin-bottom: 0;
+        background: #000;
+        box-shadow: 0 18px 40px rgba(0, 0, 0, 0.32);
+      }
+
+      .command-deck-card .command-deck-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .quick-live-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .split-toolbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+        margin-bottom: 0.8rem;
+      }
+
+      .split-controls {
+        margin-bottom: 0;
+      }
+
+      .split-grid {
+        aspect-ratio: 16 / 10;
+      }
+
+      .ops-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.9rem;
+      }
+
+      .ops-pane {
+        padding: 0.95rem;
+        border-radius: 14px;
+        background: rgba(6, 10, 17, 0.48);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+      }
+
+      .ops-subtitle-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.75rem;
+        margin-bottom: 0.75rem;
+      }
+
+      .ops-subtitle {
+        color: var(--accent);
+        font-size: 0.78rem;
+        font-weight: 800;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      .notes-panel {
+        margin-top: 1rem;
+        padding-top: 1rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+      }
+
+      .notes-area {
+        min-height: 140px;
+      }
+
+      .countdown-grid.compact {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .hymn-results {
+        max-height: 170px;
+      }
+
+      .hymn-preview-lyrics {
+        max-height: 180px;
+      }
+
+      .bible-preview,
+      .bible-recent,
+      .hymn-preview,
+      .countdown-readout {
+        margin-top: 0;
+      }
+
+      .btn-inline {
+        padding: 0.55rem 0.9rem;
+        font-size: 0.72rem;
+      }
+
+      ::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+      }
+
+      ::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.12);
+        border-radius: 999px;
+      }
+
+      @media (max-width: 1460px) {
+        .ict-layout {
+          grid-template-columns: minmax(300px, 340px) minmax(440px, 1fr) minmax(320px, 370px);
+        }
+      }
+
+      @media (max-width: 1200px) {
+        body {
+          overflow: auto;
+        }
+
+        .ict-app {
+          height: auto;
+          min-height: 100vh;
+        }
+
+        .ict-overview {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          gap: 1rem;
+          padding: 1rem;
+          background: transparent;
+          border-bottom: none;
+        }
+
+        .overview-card {
+          border-radius: 16px;
+          background: var(--panel);
+        }
+
+        .ict-layout {
+          grid-template-columns: 1fr;
+          gap: 1rem;
+          background: transparent;
+          padding: 0 1rem 1rem;
+        }
+
+        .resource-stack,
+        .schedule-stack,
+        .preview-stack {
+          overflow: visible;
+          padding: 0;
+          background: transparent;
+        }
+
+        .column-label {
+          position: static;
+          margin: 0 0 0.5rem;
+          padding: 0.7rem 0.9rem;
+          border: 1px solid rgba(255, 255, 255, 0.08);
+          border-radius: 999px;
+          background: rgba(8, 12, 19, 0.9);
+        }
+      }
+
+      @media (max-width: 720px) {
+        .ict-topbar,
+        .ict-hero {
+          padding: 1rem;
+        }
+
+        .ict-overview {
+          grid-template-columns: 1fr;
+          padding: 1rem;
+        }
+
+        .ict-layout {
+          padding: 0 1rem 1rem;
+        }
+
+        .tab-btn {
+          flex: none;
+          min-width: max-content;
+        }
+
+        .command-deck-card .command-deck-grid,
+        .quick-live-grid,
+        .ops-grid,
+        .countdown-grid.compact {
+          grid-template-columns: 1fr;
         }
       }
     </style>
@@ -87,12 +503,9 @@
           <a class="btn-ghost" href="/screen" target="_blank"
             ><i class="fas fa-tv"></i> Open Screen</a
           >
-          <button class="btn-primary" id="openAudienceBtn">
-            <i class="fas fa-eye"></i> Audience View
-          </button>
-          <button class="btn-ghost" id="refreshPreviewBtn">
-            <i class="fas fa-rotate"></i> Refresh Preview
-          </button>
+          <a class="btn-ghost" href="/mic" target="_blank"
+            ><i class="fas fa-headphones"></i> Mic Monitor</a
+          >
           <button class="btn-danger" onclick="logout()">
             <i class="fas fa-sign-out-alt"></i> Logout
           </button>
@@ -101,10 +514,10 @@
 
       <section class="ict-hero">
         <div>
-          <h1>Run the sanctuary screens in real time</h1>
+          <h1>Run service flow, preview, and live output from one desk</h1>
           <p>
-            Control Bible verses, worship lyrics, announcements, service order,
-            countdowns, and lower-thirds during live services.
+            Build resources on the left, run the service queue in the center,
+            and watch the live congregation output on the right.
           </p>
         </div>
         <div class="hero-status">
@@ -137,11 +550,17 @@
       </section>
 
       <div class="ict-layout">
-        <div class="control-stack">
-          <section class="control-card">
-            <div class="card-header">
-              <h3>Live Screen Modes</h3>
-              <span class="card-note">Choose what is live on the screen</span>
+        <aside class="resource-stack">
+          <div class="column-label">
+            <i class="fas fa-layer-group"></i> Resources
+          </div>
+
+          <section class="control-card workspace-mode-card">
+            <div class="card-header compact">
+              <h3>Live Modes</h3>
+              <span class="card-note"
+                >Choose the output family or blank the screen immediately.</span
+              >
             </div>
             <div class="mode-grid">
               <button class="mode-btn" data-mode="verse">Verse</button>
@@ -158,18 +577,420 @@
             </div>
           </section>
 
-          <section class="control-card command-deck-card">
-            <div class="card-header">
-              <h3>Rapid Control Deck</h3>
+          <section class="control-card editor-stack-card">
+            <div class="card-header compact">
+              <h3>Resource Editors</h3>
               <span class="card-note"
-                >Save the current editor and take it live in one tap</span
+                >Prepare content here, then save it, show it, or capture it
+                into the service flow.</span
               >
+            </div>
+
+            <div class="ict-tabs">
+              <button class="tab-btn active" data-tab="bible">Scripture</button>
+              <button class="tab-btn" data-tab="worship">Worship</button>
+              <button class="tab-btn" data-tab="service">Service Info</button>
+              <button class="tab-btn" data-tab="tools">Tools</button>
+            </div>
+
+            <div id="tab-bible" class="tab-pane active">
+              <div class="editor-pane">
+                <div class="editor-pane-head">
+                  <strong>Scripture Lookup</strong>
+                  <span
+                    >Search by book, chapter, verse, or full manual reference
+                    before loading into the verse editor.</span
+                  >
+                </div>
+                <div class="form-grid bible-grid">
+                  <label>
+                    <span>Book</span>
+                    <select id="bibleBookInput">
+                      <option value="">Select book</option>
+                    </select>
+                  </label>
+                  <label>
+                    <span>Chapter</span>
+                    <input type="number" id="bibleChapterInput" min="1" placeholder="3" />
+                  </label>
+                  <label>
+                    <span>Verse</span>
+                    <input type="number" id="bibleVerseInput" min="1" placeholder="16" />
+                  </label>
+                  <label>
+                    <span>To</span>
+                    <input type="number" id="bibleVerseEndInput" min="1" placeholder="18" />
+                  </label>
+                  <label class="bible-reference">
+                    <span>Manual Reference</span>
+                    <input type="text" id="bibleReferenceInput" placeholder="John 3:16 or Psalm 23:1-6" />
+                  </label>
+                  <label>
+                    <span>Translation</span>
+                    <select id="bibleTranslationInput">
+                      <option value="web">WEB</option>
+                      <option value="kjv">KJV</option>
+                      <option value="asv">ASV</option>
+                      <option value="bbe">BBE</option>
+                      <option value="darby">Darby</option>
+                      <option value="ylt">YLT</option>
+                    </select>
+                  </label>
+                  <label>
+                    <span>Apply To</span>
+                    <select id="bibleTargetInput">
+                      <option value="verse">Main Verse</option>
+                      <option value="giving">Giving Scripture</option>
+                    </select>
+                  </label>
+                </div>
+                <div class="card-actions slim">
+                  <button class="btn-primary" id="fetchBibleBtn">Fetch Verse</button>
+                  <button class="btn-ghost" id="applyBibleBtn">Load Into Editor</button>
+                </div>
+                <div class="bible-preview">
+                  <div class="preview-title" id="biblePreviewRef">No verse loaded</div>
+                  <div class="preview-body" id="biblePreviewText">Search and preview the selected scripture here.</div>
+                </div>
+                <div class="bible-recent">
+                  <div class="preview-title">Recent References</div>
+                  <div class="recent-list" id="recentVerses"></div>
+                </div>
+                <div class="helper-text" id="bibleStatus"></div>
+              </div>
+
+              <div class="editor-pane">
+                <div class="editor-pane-head">
+                  <strong>Verse Editor</strong>
+                  <span>Prepare the main scripture slide and the giving scripture separately.</span>
+                </div>
+                <div class="form-grid">
+                  <label>
+                    <span>Verse Text</span>
+                    <textarea id="verseTextInput" rows="3" placeholder="Enter the Bible verse text..."></textarea>
+                  </label>
+                  <label>
+                    <span>Verse Reference</span>
+                    <input type="text" id="verseRefInput" placeholder="Psalm 23:1" />
+                  </label>
+                  <label>
+                    <span>Giving Scripture</span>
+                    <textarea id="giveScriptureInput" rows="3" placeholder="Enter the giving scripture..."></textarea>
+                  </label>
+                </div>
+                <div class="card-actions slim">
+                  <button class="btn-ghost" data-save="verse">Save Only</button>
+                  <button class="btn-ghost" data-show="verse">Show Saved</button>
+                  <button class="btn-primary" data-save-show="verse">Save &amp; Go Live</button>
+                </div>
+              </div>
+            </div>
+
+            <div id="tab-worship" class="tab-pane">
+              <div class="editor-pane">
+                <div class="editor-pane-head">
+                  <strong>Hymn Library</strong>
+                  <span>Search, preview, and load songs into the lyrics editor before service.</span>
+                </div>
+                <div class="hymn-grid">
+                  <label>
+                    <span>Search</span>
+                    <input type="text" id="hymnSearchInput" placeholder="12 or Blessed Assurance" />
+                  </label>
+                  <div>
+                    <span class="field-label">Results</span>
+                    <div class="hymn-results" id="hymnResults"></div>
+                  </div>
+                </div>
+                <div class="hymn-preview">
+                  <div class="hymn-preview-title" id="hymnPreviewTitle">Select a hymn</div>
+                  <div class="hymn-preview-meta" id="hymnPreviewMeta"></div>
+                  <div class="hymn-preview-lyrics" id="hymnPreviewLyrics">No hymn selected yet.</div>
+                </div>
+                <div class="card-actions slim">
+                  <button class="btn-primary" id="loadHymnBtn">Load to Lyrics Editor</button>
+                  <button class="btn-ghost" id="refreshHymnBtn">Refresh Library</button>
+                </div>
+                <div class="hymn-import">
+                  <label class="file-chip">
+                    <input type="file" id="hymnImportInput" accept="application/json" />
+                    <span>Import JSON Hymn Book</span>
+                  </label>
+                  <div class="helper-text" id="hymnStatus">Expected fields: number, title, lyrics.</div>
+                </div>
+              </div>
+
+              <div class="editor-pane">
+                <div class="editor-pane-head">
+                  <strong>Lyrics Editor</strong>
+                  <span>Paste the prepared lyrics here and send them live when ready.</span>
+                </div>
+                <div class="form-grid">
+                  <label>
+                    <span>Song Title</span>
+                    <input type="text" id="lyricsTitleInput" placeholder="Way Maker" />
+                  </label>
+                  <label>
+                    <span>Lyrics</span>
+                    <textarea id="lyricsLinesInput" rows="5" placeholder="Enter lyrics line by line..."></textarea>
+                  </label>
+                </div>
+                <div class="card-actions slim">
+                  <button class="btn-ghost" data-save="lyrics">Save Only</button>
+                  <button class="btn-ghost" data-show="lyrics">Show Saved</button>
+                  <button class="btn-primary" data-save-show="lyrics">Save &amp; Go Live</button>
+                </div>
+              </div>
+            </div>
+
+            <div id="tab-service" class="tab-pane">
+              <div class="editor-pane">
+                <div class="editor-pane-head">
+                  <strong>Announcement</strong>
+                  <span>Use this for welcome notices, reminders, and short service updates.</span>
+                </div>
+                <div class="form-grid">
+                  <label>
+                    <span>Title</span>
+                    <input type="text" id="announcementTitleInput" placeholder="Midweek Service Tonight" />
+                  </label>
+                  <label>
+                    <span>Body</span>
+                    <textarea id="announcementBodyInput" rows="3" placeholder="Add the short notice for the screen..."></textarea>
+                  </label>
+                </div>
+                <div class="card-actions slim">
+                  <button class="btn-ghost" data-save="announcement">Save Only</button>
+                  <button class="btn-ghost" data-show="announcement">Show Saved</button>
+                  <button class="btn-primary" data-save-show="announcement">Save &amp; Go Live</button>
+                </div>
+              </div>
+
+              <div class="editor-pane">
+                <div class="editor-pane-head">
+                  <strong>Order of Service</strong>
+                  <span>List each service item on a new line for display or reference.</span>
+                </div>
+                <div class="form-grid">
+                  <label>
+                    <span>Title</span>
+                    <input type="text" id="orderTitleInput" placeholder="Sunday Celebration" />
+                  </label>
+                  <label>
+                    <span>Items</span>
+                    <textarea id="orderItemsInput" rows="4" placeholder="Praise & Worship&#10;Prayer&#10;Message&#10;Offering"></textarea>
+                  </label>
+                </div>
+                <div class="card-actions slim">
+                  <button class="btn-ghost" data-save="order">Save Only</button>
+                  <button class="btn-ghost" data-show="order">Show Saved</button>
+                  <button class="btn-primary" data-save-show="order">Save &amp; Go Live</button>
+                </div>
+              </div>
+
+              <div class="editor-pane">
+                <div class="editor-pane-head">
+                  <strong>Lower Third</strong>
+                  <span>Display the speaker name, role, and footer without changing the main slide content.</span>
+                </div>
+                <div class="form-grid">
+                  <label>
+                    <span>Name</span>
+                    <input type="text" id="lowerThirdNameInput" placeholder="Pastor John Jeremiah" />
+                  </label>
+                  <label>
+                    <span>Role / Title</span>
+                    <input type="text" id="lowerThirdRoleInput" placeholder="Lead Pastor" />
+                  </label>
+                  <label>
+                    <span>Footer</span>
+                    <input type="text" id="lowerThirdFooterInput" placeholder="Perfection Of Christ Ministry" />
+                  </label>
+                </div>
+                <div class="card-actions slim">
+                  <button class="btn-ghost" data-save="lowerthird">Save Only</button>
+                  <button class="btn-ghost" data-show="lowerthird">Show Saved</button>
+                  <button class="btn-primary" data-save-show="lowerthird">Save &amp; Go Live</button>
+                </div>
+              </div>
+            </div>
+
+            <div id="tab-tools" class="tab-pane">
+              <div class="editor-pane">
+                <div class="editor-pane-head">
+                  <strong>Countdown Control</strong>
+                  <span>Use this for pre-service, intermission, or timed transitions.</span>
+                </div>
+                <div class="countdown-grid compact">
+                  <label>
+                    <span>Minutes</span>
+                    <input type="number" id="countdownMinutes" min="0" value="10" />
+                  </label>
+                  <label>
+                    <span>Seconds</span>
+                    <input type="number" id="countdownSeconds" min="0" max="59" value="0" />
+                  </label>
+                  <div class="countdown-readout">
+                    <span>Remaining</span>
+                    <strong id="countdownRemaining">10:00</strong>
+                  </div>
+                </div>
+                <div class="countdown-presets">
+                  <button class="countdown-chip" data-countdown-preset="300">5 min</button>
+                  <button class="countdown-chip" data-countdown-preset="600">10 min</button>
+                  <button class="countdown-chip" data-countdown-preset="900">15 min</button>
+                </div>
+                <div class="card-actions slim">
+                  <button class="btn-primary" id="countdownStart">Start</button>
+                  <button class="btn-ghost" id="countdownPause">Pause</button>
+                  <button class="btn-ghost" id="countdownReset">Reset</button>
+                  <button class="btn-primary" data-show="countdown">Show Countdown</button>
+                </div>
+              </div>
+            </div>
+          </section>
+        </aside>
+
+        <main class="schedule-stack">
+          <div class="column-label">
+            <i class="fas fa-list-ol"></i> Schedule
+          </div>
+          <section class="control-card service-flow-card schedule-workspace">
+            <div class="card-header compact">
+              <h3>Service Flow Planner</h3>
+              <span class="card-note"
+                >This is the main run sheet. Queue the service here and walk
+                through it cue by cue.</span
+              >
+            </div>
+
+            <div class="service-flow-stats">
+              <div class="flow-stat-card">
+                <span>Queue Size</span>
+                <strong id="flowItemsCount">0 items planned</strong>
+              </div>
+              <div class="flow-stat-card">
+                <span>Active Cue</span>
+                <strong id="flowActiveLabel">None selected</strong>
+              </div>
+              <div class="flow-stat-card">
+                <span>Next Up</span>
+                <strong id="flowNextCueLabel">Build your first cue</strong>
+              </div>
+            </div>
+
+            <div class="form-grid flow-meta-grid">
+              <label>
+                <span>Flow Title</span>
+                <input type="text" id="flowTitleInput" placeholder="Sunday Celebration Service" />
+              </label>
+              <label>
+                <span>Date / Theme</span>
+                <input type="text" id="flowDateInput" placeholder="Sunday 5 April 2026 • Resurrection Sunday" />
+              </label>
+            </div>
+
+            <div class="flow-template-strip">
+              <button class="countdown-chip" data-flow-template="sunday">
+                Sunday Skeleton
+              </button>
+              <button class="countdown-chip" data-flow-template="midweek">
+                Midweek Skeleton
+              </button>
+              <button class="countdown-chip" data-flow-template="special">
+                Special Service
+              </button>
+            </div>
+
+            <div class="editor-pane">
+              <div class="editor-pane-head">
+                <strong>Selected Cue Builder</strong>
+                <span
+                  >Capture the current editor into the flow or update the
+                  selected queue item.</span
+                >
+              </div>
+              <div class="form-grid flow-builder-grid">
+                <label>
+                  <span>Capture Mode</span>
+                  <select id="flowCaptureModeInput">
+                    <option value="cue">Cue Only (no screen output)</option>
+                    <option value="verse">Verse</option>
+                    <option value="lyrics">Lyrics</option>
+                    <option value="announcement">Announcement</option>
+                    <option value="order">Order</option>
+                    <option value="countdown">Countdown</option>
+                    <option value="lowerthird">Lower Third</option>
+                    <option value="blank">Blank</option>
+                  </select>
+                </label>
+                <label>
+                  <span>Queue Label</span>
+                  <input type="text" id="flowItemLabelInput" placeholder="Opening Prayer or Worship Set 1" />
+                </label>
+                <label>
+                  <span>Operator Note</span>
+                  <input type="text" id="flowItemNoteInput" placeholder="Transition note or reminder" />
+                </label>
+              </div>
+              <div class="card-actions slim">
+                <button class="btn-primary" id="addFlowItemBtn">Add to Flow</button>
+                <button class="btn-ghost" id="updateFlowItemBtn">Update Selected</button>
+                <button class="btn-ghost" id="captureLiveItemBtn">Capture Live</button>
+                <button class="btn-ghost" id="clearFlowSelectionBtn">Clear Selection</button>
+              </div>
+            </div>
+
+            <div class="helper-text" id="serviceFlowStatus">
+              Build cues from the editors, then run the service from this queue.
+            </div>
+
+            <div class="service-flow-list" id="serviceFlowList"></div>
+
+            <div class="card-actions flow-transport-bar">
+              <button class="btn-ghost" id="goPreviousFlowBtn">Previous Cue</button>
+              <button class="btn-primary" id="goSelectedFlowLiveBtn">Go Selected Live</button>
+              <button class="btn-primary" id="goNextFlowBtn">Next Cue Live</button>
+              <button class="btn-ghost" id="saveFlowBtn">Save Flow</button>
+              <button class="btn-danger" id="clearFlowBtn">Clear Flow</button>
+            </div>
+          </section>
+        </main>
+
+        <aside class="preview-stack">
+          <div class="column-label">
+            <i class="fas fa-desktop"></i> Preview & Live
+          </div>
+
+          <section class="preview-card live-preview-card">
+            <div class="card-header compact">
+              <h3>Live Screen Preview</h3>
+              <span class="card-note">This is the congregation output in real time.</span>
+            </div>
+            <div class="preview-frame">
+              <iframe
+                id="screenPreview"
+                src="/screen"
+                title="Live Screen Preview"
+              ></iframe>
+            </div>
+            <div class="card-actions slim">
+              <button class="btn-ghost" id="refreshPreviewBtn">Refresh Preview</button>
+              <button class="btn-primary" id="openAudienceBtn">Audience View</button>
+              <a class="btn-ghost" href="/screen" target="_blank">Open Full Screen</a>
+            </div>
+          </section>
+
+          <section class="control-card command-deck-card">
+            <div class="card-header compact">
+              <h3>Operator Deck</h3>
+              <span class="card-note">Monitor live status, armed content, and recovery actions.</span>
             </div>
             <div class="command-deck-grid">
               <div class="command-stat">
-                <span>Live Now</span>
+                <span>Live Screen</span>
                 <strong id="deckLiveMode">Verse</strong>
-                <small id="deckLiveMeta">Ready on screen</small>
+                <small id="deckLiveMeta">No live change yet</small>
               </div>
               <div class="command-stat">
                 <span>Live Content</span>
@@ -179,12 +1000,12 @@
               <div class="command-stat">
                 <span>Ready Modes</span>
                 <strong id="readyModesCount">0 / 6</strong>
-                <small id="deckReadyHint">Load content for fast switching</small>
+                <small>How many editors already have saved content</small>
               </div>
               <div class="command-stat">
                 <span>Checklist</span>
                 <strong id="checklistProgressLabel">0 / 5</strong>
-                <small id="deckChecklistHint">Run the quick checks before service</small>
+                <small>Final technical checks before service begins</small>
               </div>
               <div class="command-stat">
                 <span>Draft Sync</span>
@@ -241,699 +1062,98 @@
               </button>
             </div>
             <div class="card-actions">
-              <button class="btn-primary" id="saveAllEditorsBtn">
-                Save All Editors
-              </button>
-              <button class="btn-primary" id="restoreLastModeBtn">
-                Restore Previous
-              </button>
-              <button class="btn-ghost" id="focusLiveEditorBtn">
-                Open Active Editor
-              </button>
+              <button class="btn-primary" id="saveAllEditorsBtn">Save All Editors</button>
+              <button class="btn-primary" id="restoreLastModeBtn">Restore Previous</button>
+              <button class="btn-ghost" id="focusLiveEditorBtn">Open Active Editor</button>
             </div>
             <div class="helper-text" id="commandDeckStatus">
               Editors hold your local draft until you save or go live.
             </div>
           </section>
 
-          <div class="ict-tabs">
-            <button class="tab-btn active" data-tab="bible">Scripture</button>
-            <button class="tab-btn" data-tab="worship">Worship</button>
-            <button class="tab-btn" data-tab="flow">Service Flow</button>
-            <button class="tab-btn" data-tab="service">Service Info</button>
-            <button class="tab-btn" data-tab="tools">Tools</button>
-          </div>
-
-          <!-- BIBLE TAB -->
-          <div id="tab-bible" class="tab-pane active">
-            <section class="control-card">
-              <div class="card-header">
-                <h3>Bible Lookup</h3>
-                <span class="card-note"
-                  >Search scripture and load it into the live fields</span
-                >
-              </div>
-              <div class="form-grid bible-grid">
-                <label>
-                  <span>Book</span>
-                  <select id="bibleBookInput">
-                    <option value="">Select book</option>
-                  </select>
-                </label>
-                <label>
-                  <span>Chapter</span>
-                  <input
-                    type="number"
-                    id="bibleChapterInput"
-                    min="1"
-                    placeholder="e.g., 3"
-                  />
-                </label>
-                <label>
-                  <span>Verse</span>
-                  <input
-                    type="number"
-                    id="bibleVerseInput"
-                    min="1"
-                    placeholder="e.g., 16"
-                  />
-                </label>
-                <label>
-                  <span>To (optional)</span>
-                  <input
-                    type="number"
-                    id="bibleVerseEndInput"
-                    min="1"
-                    placeholder="e.g., 18"
-                  />
-                </label>
-                <label class="bible-reference">
-                  <span>Reference (manual)</span>
-                  <input
-                    type="text"
-                    id="bibleReferenceInput"
-                    placeholder="e.g., John 3:16 or Psalm 23:1-6"
-                  />
-                </label>
-                <label>
-                  <span>Translation</span>
-                  <select id="bibleTranslationInput">
-                    <option value="web">WEB (Default)</option>
-                    <option value="kjv">KJV</option>
-                    <option value="asv">ASV</option>
-                    <option value="bbe">BBE</option>
-                    <option value="darby">Darby</option>
-                    <option value="ylt">YLT</option>
-                  </select>
-                </label>
-                <label>
-                  <span>Apply To</span>
-                  <select id="bibleTargetInput">
-                    <option value="verse">Main Verse</option>
-                    <option value="giving">Giving Scripture</option>
-                  </select>
-                </label>
-              </div>
-              <div class="bible-preview">
-                <div class="preview-title" id="biblePreviewRef">
-                  No verse loaded
-                </div>
-                <div class="preview-body" id="biblePreviewText">
-                  Search and fetch a verse to preview it here.
-                </div>
-              </div>
-              <div class="bible-recent">
-                <div class="preview-title">Recent Verses</div>
-                <div class="recent-list" id="recentVerses"></div>
-              </div>
-              <div class="card-actions">
-                <button class="btn-primary" id="fetchBibleBtn">
-                  Fetch Verse
-                </button>
-                <button class="btn-ghost" id="applyBibleBtn">
-                  Apply to Screen
-                </button>
-              </div>
-              <div class="helper-text" id="bibleStatus"></div>
-            </section>
-
-            <section class="control-card">
-              <div class="card-header">
-                <h3>Verse & Giving Scripture</h3>
-                <span class="card-note"
-                  >Displayed in verse mode and give section</span
-                >
-              </div>
-              <div class="form-grid">
-                <label>
-                  <span>Verse Text</span>
-                  <textarea
-                    id="verseTextInput"
-                    rows="3"
-                    placeholder="Enter the Bible verse text..."
-                  ></textarea>
-                </label>
-                <label>
-                  <span>Verse Reference</span>
-                  <input
-                    type="text"
-                    id="verseRefInput"
-                    placeholder="e.g., Psalm 23:1"
-                  />
-                </label>
-                <label>
-                  <span>Giving Scripture</span>
-                  <textarea
-                    id="giveScriptureInput"
-                    rows="3"
-                    placeholder="Enter the giving scripture..."
-                  ></textarea>
-                </label>
-              </div>
-              <div class="card-actions">
-                <button class="btn-primary" data-save-show="verse">
-                  Save & Go Live
-                </button>
-                <button class="btn-ghost" data-save="verse">Save Only</button>
-              </div>
-            </section>
-          </div>
-
-          <!-- WORSHIP TAB -->
-          <div id="tab-worship" class="tab-pane">
-            <section class="control-card">
-              <div class="card-header">
-                <h3>Hymn Library (S&amp;S)</h3>
-                <span class="card-note"
-                  >Search by number or title and load into worship lyrics</span
-                >
-              </div>
-              <div class="hymn-grid">
-                <label>
-                  <span>Search</span>
-                  <input
-                    type="text"
-                    id="hymnSearchInput"
-                    placeholder="e.g., 12 or Blessed Assurance"
-                  />
-                </label>
-                <div>
-                  <span class="field-label">Results</span>
-                  <div class="hymn-results" id="hymnResults"></div>
-                </div>
-              </div>
-              <div class="hymn-preview">
-                <div class="hymn-preview-title" id="hymnPreviewTitle">
-                  Select a hymn
-                </div>
-                <div class="hymn-preview-meta" id="hymnPreviewMeta"></div>
-                <div class="hymn-preview-lyrics" id="hymnPreviewLyrics">
-                  No hymn selected yet.
-                </div>
-              </div>
-              <div class="card-actions">
-                <button class="btn-primary" id="loadHymnBtn">
-                  Load to Lyrics Editor
-                </button>
-                <button class="btn-ghost" id="refreshHymnBtn">
-                  Refresh Library
-                </button>
-              </div>
-              <div class="hymn-import">
-                <label class="file-chip">
-                  <input
-                    type="file"
-                    id="hymnImportInput"
-                    accept="application/json"
-                  />
-                  <span>Import JSON Hymn Book</span>
-                </label>
-                <div class="helper-text" id="hymnStatus">
-                  Expected fields: number, title, lyrics (source optional).
-                </div>
-              </div>
-            </section>
-
-            <section class="control-card">
-              <div class="card-header">
-                <h3>Worship Lyrics</h3>
-                <span class="card-note">Paste each line on a new line</span>
-              </div>
-              <div class="form-grid">
-                <label>
-                  <span>Song Title</span>
-                  <input
-                    type="text"
-                    id="lyricsTitleInput"
-                    placeholder="e.g., Way Maker"
-                  />
-                </label>
-                <label>
-                  <span>Lyrics</span>
-                  <textarea
-                    id="lyricsLinesInput"
-                    rows="4"
-                    placeholder="Enter lyrics line by line..."
-                  ></textarea>
-                </label>
-              </div>
-              <div class="card-actions">
-                <button class="btn-primary" data-save-show="lyrics">
-                  Save & Go Live
-                </button>
-                <button class="btn-ghost" data-save="lyrics">Save Only</button>
-              </div>
-            </section>
-          </div>
-
-          <!-- SERVICE FLOW TAB -->
-          <div id="tab-flow" class="tab-pane">
-            <section class="control-card service-flow-card">
-              <div class="card-header">
-                <h3>Service Flow Planner</h3>
-                <span class="card-note"
-                  >Build the run sheet once, then move through the service
-                  without jumping across tabs</span
-                >
-              </div>
-
-              <div class="service-flow-stats">
-                <div class="flow-stat-card">
-                  <span>Queue Size</span>
-                  <strong id="flowItemsCount">0 items planned</strong>
-                </div>
-                <div class="flow-stat-card">
-                  <span>Active Cue</span>
-                  <strong id="flowActiveLabel">None selected</strong>
-                </div>
-                <div class="flow-stat-card">
-                  <span>Next Up</span>
-                  <strong id="flowNextCueLabel">Build your first cue</strong>
-                </div>
-              </div>
-
-              <div class="form-grid flow-meta-grid">
-                <label>
-                  <span>Flow Title</span>
-                  <input
-                    type="text"
-                    id="flowTitleInput"
-                    placeholder="e.g., Sunday Celebration Service"
-                  />
-                </label>
-                <label>
-                  <span>Date / Theme</span>
-                  <input
-                    type="text"
-                    id="flowDateInput"
-                    placeholder="e.g., Sunday 5 April 2026 • Resurrection Sunday"
-                  />
-                </label>
-              </div>
-
-              <div class="flow-template-strip">
-                <button class="countdown-chip" data-flow-template="sunday">
-                  Sunday Skeleton
-                </button>
-                <button class="countdown-chip" data-flow-template="midweek">
-                  Midweek Skeleton
-                </button>
-                <button class="countdown-chip" data-flow-template="special">
-                  Special Service
-                </button>
-              </div>
-
-              <div class="form-grid flow-builder-grid">
-                <label>
-                  <span>Capture Mode</span>
-                  <select id="flowCaptureModeInput">
-                    <option value="cue">Cue Only (no screen output)</option>
-                    <option value="verse">Verse</option>
-                    <option value="lyrics">Lyrics</option>
-                    <option value="announcement">Announcement</option>
-                    <option value="order">Order of Service</option>
-                    <option value="countdown">Countdown</option>
-                    <option value="lowerthird">Lower Third</option>
-                    <option value="blank">Blank Screen</option>
-                  </select>
-                </label>
-                <label>
-                  <span>Queue Label</span>
-                  <input
-                    type="text"
-                    id="flowItemLabelInput"
-                    placeholder="e.g., Opening Prayer or Worship Set 1"
-                  />
-                </label>
-                <label>
-                  <span>Operator Note</span>
-                  <input
-                    type="text"
-                    id="flowItemNoteInput"
-                    placeholder="Optional cue, reminder, or transition note"
-                  />
-                </label>
-              </div>
-
-              <div class="card-actions">
-                <button class="btn-primary" id="addFlowItemBtn">
-                  Add to Flow
-                </button>
-                <button class="btn-ghost" id="updateFlowItemBtn">
-                  Update Selected
-                </button>
-                <button class="btn-ghost" id="captureLiveItemBtn">
-                  Capture Live Screen
-                </button>
-                <button class="btn-ghost" id="clearFlowSelectionBtn">
-                  Clear Selection
-                </button>
-              </div>
-
-              <div class="card-actions">
-                <button class="btn-ghost" id="goPreviousFlowBtn">
-                  Previous Cue
-                </button>
-                <button class="btn-primary" id="goSelectedFlowLiveBtn">
-                  Go Selected Live
-                </button>
-                <button class="btn-primary" id="goNextFlowBtn">
-                  Next Cue Live
-                </button>
-                <button class="btn-ghost" id="saveFlowBtn">Save Flow</button>
-                <button class="btn-danger" id="clearFlowBtn">
-                  Clear Flow
-                </button>
-              </div>
-
-              <div class="helper-text" id="serviceFlowStatus">
-                Build cues from your current editors, select any item to edit
-                it, and use Next Cue Live during service.
-              </div>
-
-              <div class="service-flow-list" id="serviceFlowList"></div>
-            </section>
-          </div>
-
-          <!-- SERVICE INFO TAB -->
-          <div id="tab-service" class="tab-pane">
-            <section class="control-card">
-              <div class="card-header">
-                <h3>Announcement</h3>
-                <span class="card-note"
-                  >Short updates for the congregation</span
-                >
-              </div>
-              <div class="form-grid">
-                <label>
-                  <span>Title</span>
-                  <input
-                    type="text"
-                    id="announcementTitleInput"
-                    placeholder="e.g., Midweek Service Tonight"
-                  />
-                </label>
-                <label>
-                  <span>Details</span>
-                  <textarea
-                    id="announcementBodyInput"
-                    rows="3"
-                    placeholder="Add short details for the screen..."
-                  ></textarea>
-                </label>
-              </div>
-              <div class="card-actions">
-                <button class="btn-primary" data-save-show="announcement">
-                  Save & Go Live
-                </button>
-                <button class="btn-ghost" data-save="announcement">
-                  Save Only
-                </button>
-              </div>
-            </section>
-
-            <section class="control-card">
-              <div class="card-header">
-                <h3>Order of Service</h3>
-                <span class="card-note">List each item on a new line</span>
-              </div>
-              <div class="form-grid">
-                <label>
-                  <span>Title</span>
-                  <input
-                    type="text"
-                    id="orderTitleInput"
-                    placeholder="e.g., Sunday Celebration"
-                  />
-                </label>
-                <label>
-                  <span>Items</span>
-                  <textarea
-                    id="orderItemsInput"
-                    rows="4"
-                    placeholder="Praise & Worship&#10;Prayer&#10;Message&#10;Offering"
-                  ></textarea>
-                </label>
-              </div>
-              <div class="card-actions">
-                <button class="btn-primary" data-save-show="order">
-                  Save & Go Live
-                </button>
-                <button class="btn-ghost" data-save="order">Save Only</button>
-              </div>
-            </section>
-
-            <section class="control-card">
-              <div class="card-header">
-                <h3>Lower Third</h3>
-                <span class="card-note">Speaker title for the big screen</span>
-              </div>
-              <div class="form-grid">
-                <label>
-                  <span>Name</span>
-                  <input
-                    type="text"
-                    id="lowerThirdNameInput"
-                    placeholder="e.g., Pastor John Jeremiah"
-                  />
-                </label>
-                <label>
-                  <span>Role / Title</span>
-                  <input
-                    type="text"
-                    id="lowerThirdRoleInput"
-                    placeholder="Lead Pastor"
-                  />
-                </label>
-                <label>
-                  <span>Footer</span>
-                  <input
-                    type="text"
-                    id="lowerThirdFooterInput"
-                    placeholder="Perfection Of Christ Ministry"
-                  />
-                </label>
-              </div>
-              <div class="card-actions">
-                <button class="btn-primary" data-save-show="lowerthird">
-                  Save & Go Live
-                </button>
-                <button class="btn-ghost" data-save="lowerthird">
-                  Save Only
-                </button>
-              </div>
-            </section>
-          </div>
-
-          <!-- TOOLS TAB -->
-          <div id="tab-tools" class="tab-pane">
-            <section class="control-card">
-              <div class="card-header">
-                <h3>Mic Monitor</h3>
-                <span class="card-note"
-                  >Send pastor audio from the church laptop to the ICT room</span
-                >
-              </div>
-              <div class="form-grid">
-                <label>
-                  <span>How to Use</span>
-                  <div class="helper-text">
-                    Open Mic Sender on the church laptop (connected to the sound
-                    board). Open Mic Listener on the ICT laptop to hear audio.
-                  </div>
-                </label>
-              </div>
-              <div class="card-actions">
-                <a class="btn-primary" href="/mic#send" target="_blank"
-                  >Open Mic Sender</a
-                >
-                <a class="btn-ghost" href="/mic#listen" target="_blank"
-                  >Open Mic Listener</a
-                >
-              </div>
-            </section>
-
-            <section class="control-card">
-              <div class="card-header">
-                <h3>Countdown Timer</h3>
-                <span class="card-note"
-                  >Use for service start or break times</span
-                >
-              </div>
-              <div class="countdown-grid">
-                <label>
-                  <span>Minutes</span>
-                  <input
-                    type="number"
-                    id="countdownMinutes"
-                    min="0"
-                    value="10"
-                  />
-                </label>
-                <label>
-                  <span>Seconds</span>
-                  <input
-                    type="number"
-                    id="countdownSeconds"
-                    min="0"
-                    max="59"
-                    value="0"
-                  />
-                </label>
-                <div class="countdown-readout">
-                  <span>Remaining</span>
-                  <strong id="countdownRemaining">10:00</strong>
-                </div>
-              </div>
-              <div class="countdown-presets">
-                <button class="countdown-chip" data-countdown-preset="300">
-                  Start 5:00
-                </button>
-                <button class="countdown-chip" data-countdown-preset="600">
-                  Start 10:00
-                </button>
-                <button class="countdown-chip" data-countdown-preset="900">
-                  Start 15:00
-                </button>
-                <button class="countdown-chip" data-countdown-preset="1800">
-                  Start 30:00
-                </button>
-              </div>
-              <div class="card-actions">
-                <button class="btn-primary" id="countdownStart">Start</button>
-                <button class="btn-ghost" id="countdownPause">Pause</button>
-                <button class="btn-ghost" id="countdownReset">Reset</button>
-                <button class="btn-ghost" data-show="countdown">
-                  Show Countdown
-                </button>
-              </div>
-            </section>
-
-            <section class="control-card">
-              <div class="card-header">
-                <h3>Keyboard Shortcuts</h3>
-                <span class="card-note"
-                  >Use hotkeys for instant screen changes</span
-                >
-              </div>
-              <div class="hotkey-list">
-                <div class="hotkey-item">
-                  <span class="hotkey-key">B</span>
-                  <span>Blank Screen (panic)</span>
-                </div>
-                <div class="hotkey-item">
-                  <span class="hotkey-key">V</span>
-                  <span>Verse Mode</span>
-                </div>
-                <div class="hotkey-item">
-                  <span class="hotkey-key">L</span>
-                  <span>Lyrics Mode</span>
-                </div>
-                <div class="hotkey-item">
-                  <span class="hotkey-key">← / →</span>
-                  <span>Previous / Next slide</span>
-                </div>
-                <div class="hotkey-item">
-                  <span class="hotkey-key">↑ / ↓</span>
-                  <span>Previous / Next slide</span>
-                </div>
-              </div>
-            </section>
-
-            <section class="control-card">
-              <div class="card-header">
-                <h3>Service Checklist</h3>
-                <span class="card-note">Quick readiness checks</span>
-              </div>
-              <div class="checklist" id="serviceChecklist">
-                <label
-                  ><input type="checkbox" data-check="audio" />Audio console
-                  ready</label
-                >
-                <label
-                  ><input type="checkbox" data-check="projection" />Projector
-                  output verified</label
-                >
-                <label
-                  ><input type="checkbox" data-check="lyrics" />Lyrics
-                  loaded</label
-                >
-                <label
-                  ><input type="checkbox" data-check="stream" />Stream preview
-                  tested</label
-                >
-                <label
-                  ><input type="checkbox" data-check="backup" />Recording backup
-                  active</label
-                >
-              </div>
-            </section>
-
-            <section class="control-card">
-              <div class="card-header">
-                <h3>Service Notes</h3>
-                <span class="card-note">Autosaves locally</span>
-              </div>
-              <textarea
-                class="notes-area"
-                id="serviceNotes"
-                placeholder="Write handover notes, issues, or reminders..."
-              ></textarea>
-              <div class="card-actions">
-                <button class="btn-ghost" id="clearNotesBtn">
-                  Clear Notes
-                </button>
-              </div>
-            </section>
-          </div>
-        </div>
-
-        <aside class="preview-stack">
-          <section class="preview-card">
-            <div class="card-header">
-              <h3>Multi View Switcher</h3>
-              <span class="card-note"
-                >Split into 2, 3, or 4 panels and tap to go live</span
-              >
+          <section class="control-card">
+            <div class="card-header compact">
+              <h3>Preview Matrix</h3>
+              <span class="card-note">Preview multiple sources before changing the live output.</span>
             </div>
-            <div class="split-controls" id="splitControls">
-              <button class="split-btn" data-layout="2">2</button>
-              <button class="split-btn" data-layout="3">3</button>
-              <button class="split-btn" data-layout="4">4</button>
+            <div class="split-toolbar">
+              <div class="split-controls" id="splitControls">
+                <button class="split-btn" data-layout="2">2-Up</button>
+                <button class="split-btn active" data-layout="3">3-Up</button>
+                <button class="split-btn" data-layout="4">4-Up</button>
+              </div>
+              <button class="btn-ghost btn-inline" id="refreshSplitBtn">Refresh Tiles</button>
             </div>
             <div class="split-grid layout-3" id="splitGrid"></div>
-            <div class="card-actions">
-              <button class="btn-ghost" id="refreshSplitBtn">
-                Refresh Panels
-              </button>
-              <a class="btn-primary" href="/screen" target="_blank"
-                >Open Full Screen</a
-              >
-            </div>
-            <div class="helper-text one-laptop-note">
-              One-laptop workflow: keep this page open, open
-              "/screen" in full screen (F11), and use Alt+Tab to switch.
-              If the internet drops, this browser will keep the last state and
-              sync locally.
-            </div>
           </section>
 
-          <section class="preview-card">
-            <div class="card-header">
-              <h3>Live Screen Preview</h3>
-              <span class="card-note">What the congregation sees</span>
+          <section class="control-card ops-notes-card">
+            <div class="card-header compact">
+              <h3>Service Desk</h3>
+              <span class="card-note">Keep checklist items, shortcuts, and running notes visible during service.</span>
             </div>
-            <div class="preview-frame">
-              <iframe
-                id="screenPreview"
-                src="/screen"
-                title="Live Screen Preview"
-              ></iframe>
+            <div class="ops-grid">
+              <div class="ops-pane">
+                <div class="ops-subtitle-row">
+                  <strong class="ops-subtitle">Checklist</strong>
+                  <span class="helper-text">Before service</span>
+                </div>
+                <div class="checklist">
+                  <label><input type="checkbox" data-check="screen" /> Screen output confirmed</label>
+                  <label><input type="checkbox" data-check="audio" /> Audio link / mic monitor checked</label>
+                  <label><input type="checkbox" data-check="verses" /> Main scripture and songs loaded</label>
+                  <label><input type="checkbox" data-check="flow" /> Service flow reviewed with the team</label>
+                  <label><input type="checkbox" data-check="backup" /> Backup blank / restore path ready</label>
+                </div>
+              </div>
+
+              <div class="ops-pane">
+                <div class="ops-subtitle-row">
+                  <strong class="ops-subtitle">Hotkeys</strong>
+                  <span class="helper-text">Keyboard control</span>
+                </div>
+                <div class="hotkey-list">
+                  <div class="hotkey-item">
+                    <span>Blank screen</span>
+                    <span class="hotkey-key">B</span>
+                  </div>
+                  <div class="hotkey-item">
+                    <span>Verse mode</span>
+                    <span class="hotkey-key">V</span>
+                  </div>
+                  <div class="hotkey-item">
+                    <span>Lyrics mode</span>
+                    <span class="hotkey-key">L</span>
+                  </div>
+                  <div class="hotkey-item">
+                    <span>Announcement mode</span>
+                    <span class="hotkey-key">A</span>
+                  </div>
+                  <div class="hotkey-item">
+                    <span>Order mode</span>
+                    <span class="hotkey-key">O</span>
+                  </div>
+                  <div class="hotkey-item">
+                    <span>Countdown mode</span>
+                    <span class="hotkey-key">C</span>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div class="card-actions">
-              <a class="btn-primary" href="/screen" target="_blank"
-                >Open Full Screen</a
-              >
+
+            <div class="notes-panel">
+              <div class="ops-subtitle-row">
+                <strong class="ops-subtitle">Service Notes</strong>
+                <span class="helper-text">Operator reminders</span>
+              </div>
+              <textarea
+                id="serviceNotes"
+                class="notes-area"
+                placeholder="Write reminders, last-minute changes, or handover notes here..."
+              ></textarea>
+              <div class="card-actions slim">
+                <button class="btn-ghost" id="clearNotesBtn">Clear Notes</button>
+              </div>
             </div>
           </section>
         </aside>
@@ -1208,7 +1428,7 @@
       );
 
       // Tab Logic
-      const ACTIVE_TAB_KEY = "ict_active_tab";
+      const ACTIVE_TAB_KEY = "ict_active_tab_v2";
       const tabBtns = Array.from(document.querySelectorAll(".tab-btn"));
       const tabPanes = Array.from(document.querySelectorAll(".tab-pane"));
 
@@ -4279,7 +4499,7 @@
         initBibleBooks();
         loadRecentVerses();
         renderRecentVerses();
-        const initialTab = loadStoredTab();
+        const initialTab = loadStoredTab() || "bible";
         if (
           initialTab &&
           tabBtns.some((btn) => btn.dataset.tab === initialTab)

@@ -2192,6 +2192,7 @@ async function startServer() {
   await connectToDb();
   app.listen(port, () => {
     console.log(`Server running on port ${port}`);
+    // Dynamically determine network addresses for local access
     const interfaces = os.networkInterfaces();
     const addresses = [];
     Object.keys(interfaces).forEach((name) => {
@@ -2201,6 +2202,9 @@ async function startServer() {
         }
       });
     });
+
+    // Log access URLs
+    console.log("\nAccess URLs:");
     if (addresses.length) {
       addresses.forEach((ip) => {
         console.log(`Website: http://${ip}:${port}/`);
@@ -2219,19 +2223,24 @@ async function startServer() {
       console.log(`Mic Listener: http://localhost:${port}/mic#listen`);
     }
 
-    // --- KEEP-ALIVE SCRIPT ---
-    // Pings the server every 30 seconds to prevent Render free tier from sleeping
+    // --- KEEP-ALIVE SCRIPT (to prevent free-tier services from sleeping) ---
+    // Pings the server every 30 seconds to keep the instance active.
     setInterval(() => {
       const host =
         process.env.RENDER_EXTERNAL_HOSTNAME ||
         "perfection-of-christ-ministry.onrender.com";
+      // Ensure the ping URL uses HTTPS
+      const pingUrl = `https://${host}/api/flyers`;
+
       https
-        .get(`https://${host}/api/flyers`, (res) => {
+        .get(pingUrl, (res) => {
           res.on("data", () => {}); // Consume response
-          console.log(`✅ Keep-alive ping to ${host}: ${res.statusCode}`);
+          console.log(`✅ Keep-alive ping to ${pingUrl}: ${res.statusCode}`);
         })
         .on("error", (err) => {
-          console.error(`❌ Keep-alive ping failed: ${err.message}`);
+          console.error(
+            `❌ Keep-alive ping to ${pingUrl} failed: ${err.message}`,
+          );
         });
     }, 30 * 1000); // 30 seconds
   });

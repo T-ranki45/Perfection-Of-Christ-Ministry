@@ -1018,6 +1018,11 @@ select:focus {
   border-color: rgba(46, 204, 113, 0.28);
 }
 
+.flow-badge.mode-points {
+  color: #ffcf8d;
+  border-color: rgba(255, 159, 67, 0.3);
+}
+
 .flow-badge.mode-announcement,
 .flow-badge.mode-blank {
   color: #9cc9ff;

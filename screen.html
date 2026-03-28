@@ -25,30 +25,67 @@
 
       <div class="screen-mode" id="mode-verse">
         <p class="mode-title">Scripture Reading</p>
-        <div class="verse-text fit-text" data-fit="0.48" id="verseText"></div>
-        <div class="verse-ref" id="verseRef"></div>
+        <div
+          class="verse-text fit-text"
+          data-fit="0.42"
+          data-min-size="20"
+          id="verseText"
+        ></div>
+        <div
+          class="verse-ref fit-text"
+          data-fit="0.07"
+          data-min-size="14"
+          id="verseRef"
+        ></div>
       </div>
 
       <div class="screen-mode" id="mode-lyrics">
         <p class="mode-title">Worship Lyrics</p>
-        <h2 id="lyricsTitle"></h2>
-        <div class="lyrics-body fit-text" data-fit="0.55" id="lyricsLines"></div>
+        <h2 class="fit-text" data-fit="0.11" data-min-size="18" id="lyricsTitle"></h2>
+        <div
+          class="lyrics-body fit-text"
+          data-fit="0.46"
+          data-min-size="16"
+          id="lyricsLines"
+        ></div>
       </div>
 
       <div class="screen-mode" id="mode-announcement">
         <p class="mode-title">Announcement</p>
-        <h2 id="announcementTitle"></h2>
+        <h2
+          class="fit-text"
+          data-fit="0.11"
+          data-min-size="18"
+          id="announcementTitle"
+        ></h2>
         <div
           class="announcement-body fit-text"
-          data-fit="0.5"
+          data-fit="0.4"
+          data-min-size="15"
           id="announcementBody"
+        ></div>
+      </div>
+
+      <div class="screen-mode points-mode" id="mode-points">
+        <p class="mode-title">Preaching Points</p>
+        <h2 class="fit-text" data-fit="0.11" data-min-size="18" id="pointsTitle"></h2>
+        <div
+          class="points-list fit-text"
+          data-fit="0.42"
+          data-min-size="14"
+          id="pointsBody"
         ></div>
       </div>
 
       <div class="screen-mode" id="mode-order">
         <p class="mode-title">Order of Service</p>
-        <h2 id="orderTitle"></h2>
-        <div class="order-list fit-text" data-fit="0.52" id="orderItems"></div>
+        <h2 class="fit-text" data-fit="0.11" data-min-size="18" id="orderTitle"></h2>
+        <div
+          class="order-list fit-text"
+          data-fit="0.42"
+          data-min-size="15"
+          id="orderItems"
+        ></div>
       </div>
 
       <div class="screen-mode" id="mode-countdown">
@@ -59,9 +96,24 @@
 
       <div class="screen-mode lowerthird-mode" id="mode-lowerthird">
         <div class="lowerthird-card">
-          <div class="lowerthird-name" id="lowerThirdName"></div>
-          <div class="lowerthird-role" id="lowerThirdRole"></div>
-          <div class="lowerthird-footer" id="lowerThirdFooter"></div>
+          <div
+            class="lowerthird-name fit-text"
+            data-fit="0.12"
+            data-min-size="18"
+            id="lowerThirdName"
+          ></div>
+          <div
+            class="lowerthird-role fit-text"
+            data-fit="0.07"
+            data-min-size="14"
+            id="lowerThirdRole"
+          ></div>
+          <div
+            class="lowerthird-footer fit-text"
+            data-fit="0.06"
+            data-min-size="12"
+            id="lowerThirdFooter"
+          ></div>
         </div>
       </div>
 
@@ -80,14 +132,17 @@
         verse: document.getElementById("mode-verse"),
         lyrics: document.getElementById("mode-lyrics"),
         announcement: document.getElementById("mode-announcement"),
+        points: document.getElementById("mode-points"),
         order: document.getElementById("mode-order"),
         countdown: document.getElementById("mode-countdown"),
         lowerthird: document.getElementById("mode-lowerthird"),
         blank: document.getElementById("mode-blank"),
       };
-
+wwwwwwwww
       const params = new URLSearchParams(window.location.search);
       const isEmbed = params.get("embed") === "1";
+      const fitMode = params.get("fit") || "";
+      const isControlPreview = fitMode === "control";
       let forcedMode = params.get("mode") || params.get("previewMode");
       if (forcedMode && !modeElements[forcedMode]) {
         forcedMode = null;
@@ -95,11 +150,15 @@
       if (isEmbed) {
         document.body.classList.add("embed");
       }
+      if (isControlPreview) {
+        document.body.classList.add("preview-control");
+      }
 
       const modeLabels = {
         verse: "Bible Verse",
         lyrics: "Worship Lyrics",
         announcement: "Announcement",
+        points: "Preaching Points",
         order: "Order of Service",
         countdown: "Countdown",
         lowerthird: "Lower Third",
@@ -115,6 +174,8 @@
         giveScripture: "",
         announcementTitle: "",
         announcementBody: "",
+        pointsTitle: "",
+        pointsBody: "",
         lyricsTitle: "",
         lyricsLines: "",
         lyricsSlides: [],
@@ -138,6 +199,8 @@
       const lyricsLines = document.getElementById("lyricsLines");
       const announcementTitle = document.getElementById("announcementTitle");
       const announcementBody = document.getElementById("announcementBody");
+      const pointsTitle = document.getElementById("pointsTitle");
+      const pointsBody = document.getElementById("pointsBody");
       const orderTitle = document.getElementById("orderTitle");
       const orderItems = document.getElementById("orderItems");
       const countdownDisplay = document.getElementById("countdownDisplay");
@@ -180,10 +243,11 @@
 
       function computeMaxFitHeight(el) {
         const ratio = Number(el.dataset.fit);
+        const previewTightness = isControlPreview ? 0.82 : isEmbed ? 0.92 : 1;
         if (!Number.isFinite(ratio) || ratio <= 0) {
-          return window.innerHeight * 0.6;
+          return window.innerHeight * 0.6 * previewTightness;
         }
-        return window.innerHeight * ratio;
+        return window.innerHeight * ratio * previewTightness;
       }
 
       function fitTextElement(el) {
@@ -307,6 +371,38 @@
             screenState.announcementTitle || "Announcement";
         if (announcementBody)
           announcementBody.textContent = screenState.announcementBody || "";
+        if (pointsTitle)
+          pointsTitle.textContent = screenState.pointsTitle || "Message Highlights";
+        if (pointsBody) {
+          pointsBody.innerHTML = "";
+          const lines = String(screenState.pointsBody || "")
+            .split("\n")
+            .map((entry) => entry.trim())
+            .filter(Boolean);
+          if (!lines.length) {
+            const fallback = document.createElement("div");
+            fallback.className = "points-item";
+            fallback.textContent = "Add preaching points from ICT control.";
+            pointsBody.appendChild(fallback);
+          } else {
+            lines.forEach((line) => {
+              const item = document.createElement("div");
+              item.className = "points-item";
+
+              const bullet = document.createElement("span");
+              bullet.className = "points-bullet";
+              bullet.textContent = "•";
+
+              const text = document.createElement("span");
+              text.className = "points-text";
+              text.textContent = line;
+
+              item.appendChild(bullet);
+              item.appendChild(text);
+              pointsBody.appendChild(item);
+            });
+          }
+        }
         if (orderTitle)
           orderTitle.textContent = screenState.orderTitle || "Order of Service";
         if (orderItems) orderItems.textContent = screenState.orderItems || "";

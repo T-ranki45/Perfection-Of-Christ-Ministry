@@ -1,5 +1,5 @@
 {
-  "mode": "announcement",
+  "mode": "verse",
   "verseText": "And the man said, The woman whom thou gavest\nto be with me, she gave me of the tree, and I did eat.",
   "verseRef": "Genesis 3:12",
   "giveScripture": "\"Each of you should give what you have decided in your heart to give, not reluctantly or under compulsion, for God loves a cheerful giver.\" - 2 Corinthians 9:7",
@@ -13,12 +13,12 @@
   "orderItems": "Message",
   "countdownStatus": "running",
   "countdownDurationSeconds": 300,
-  "countdownStartedAt": "2026-03-27T22:12:11.312Z",
+  "countdownStartedAt": "2026-03-28T16:38:17.739Z",
   "countdownRemainingSeconds": null,
   "lowerThirdName": "Pastor John Jeremiah",
   "lowerThirdRole": "Senior Pastor",
   "lowerThirdFooter": "Perfection of Christ Ministry",
-  "updatedAt": "2026-03-27T22:17:10.593Z",
+  "updatedAt": "2026-03-28T16:38:41.977Z",
   "verseSlides": [
     "And the man said, The woman whom thou gavest\nto be with me, she gave me of the tree, and I did eat."
   ],
@@ -36,5 +36,5 @@
     "Way maker, miracle worker, promise keeper\nLight in the darkness, my God\nThat is who You are\nWay maker, miracle worker, promise keeper\nLight in the darkness, my God\nThat is who You are",
     "You are here touching every life\nI worship You, I worship You\nYou are here meeting every need\nI worship You, I worship You"
   ],
-  "lyricsSlideIndex": 4
+  "lyricsSlideIndex": 0
 }

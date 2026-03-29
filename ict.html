@@ -688,30 +688,102 @@
         color: var(--muted);
       }
 
-      .schedule-builder-shell {
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        border-radius: 18px;
-        background: rgba(6, 10, 17, 0.42);
-        overflow: hidden;
+      .schedule-builder-launch {
+        margin-top: 0.8rem;
       }
 
-      .schedule-builder-shell summary {
-        list-style: none;
-        cursor: pointer;
+      .schedule-builder-trigger {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
         padding: 0.95rem 1rem;
+        border-radius: 18px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        background: rgba(6, 10, 17, 0.42);
+        color: #f3d180;
+        cursor: pointer;
+        text-align: left;
+      }
+
+      .schedule-builder-trigger strong {
+        display: block;
         font-size: 0.82rem;
         font-weight: 800;
         letter-spacing: 0.08em;
         text-transform: uppercase;
+      }
+
+      .schedule-builder-trigger small {
+        display: block;
+        margin-top: 0.3rem;
+        color: var(--muted);
+        font-size: 0.78rem;
+        letter-spacing: normal;
+        text-transform: none;
+        line-height: 1.5;
+      }
+
+      .schedule-builder-trigger i {
+        font-size: 1rem;
         color: #f3d180;
       }
 
-      .schedule-builder-shell summary::-webkit-details-marker {
-        display: none;
+      body.schedule-builder-open {
+        overflow: hidden;
       }
 
-      .schedule-builder-shell[open] summary {
-        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      .schedule-builder-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 1180;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 1.5rem;
+        background: rgba(3, 6, 10, 0.76);
+        backdrop-filter: blur(10px);
+      }
+
+      .schedule-builder-overlay.active {
+        display: flex;
+      }
+
+      .schedule-builder-dialog {
+        width: min(760px, 100%);
+        max-height: min(88vh, 920px);
+        overflow: auto;
+        padding: 1.1rem;
+        border-radius: 24px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        background: linear-gradient(
+          180deg,
+          rgba(12, 19, 29, 0.98),
+          rgba(8, 13, 20, 0.96)
+        );
+        box-shadow: 0 26px 80px rgba(0, 0, 0, 0.42);
+      }
+
+      .schedule-builder-head {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 1rem;
+        margin-bottom: 1rem;
+      }
+
+      .schedule-builder-head h3 {
+        margin: 0.2rem 0 0;
+        font-size: 1.16rem;
+      }
+
+      .schedule-builder-kicker {
+        font-size: 0.74rem;
+        font-weight: 800;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--accent);
       }
 
       .schedule-builder-body {
@@ -1083,6 +1155,22 @@
           align-items: stretch;
         }
 
+        .schedule-builder-overlay {
+          padding: 0.85rem;
+          align-items: flex-end;
+        }
+
+        .schedule-builder-dialog {
+          width: 100%;
+          max-height: 92vh;
+          border-radius: 24px 24px 18px 18px;
+        }
+
+        .schedule-builder-head {
+          flex-direction: column;
+          align-items: stretch;
+        }
+
         .flow-edit-overlay {
           padding: 0.85rem;
           align-items: flex-end;
@@ -1212,62 +1300,22 @@
                 <strong id="flowNextCueLabel">Build your first cue</strong>
               </div>
             </div>
-            <details class="schedule-builder-shell" id="scheduleBuilderPanel">
-              <summary>Plan &amp; Capture Panel</summary>
-              <div class="schedule-builder-body">
-                <div class="form-grid flow-meta-grid">
-                  <label>
-                    <span>Flow Title</span>
-                    <input type="text" id="flowTitleInput" placeholder="Sunday Celebration Service" />
-                  </label>
-                  <label>
-                    <span>Date / Theme</span>
-                    <input type="text" id="flowDateInput" placeholder="Sunday 5 April 2026 / Resurrection Sunday" />
-                  </label>
-                </div>
-                <div class="flow-template-strip">
-                  <button class="countdown-chip" data-flow-template="sunday">Sunday Skeleton</button>
-                  <button class="countdown-chip" data-flow-template="midweek">Midweek Skeleton</button>
-                  <button class="countdown-chip" data-flow-template="special">Special Service</button>
-                </div>
-                <div class="editor-pane schedule-capture-pane">
-                  <div class="editor-pane-head">
-                    <strong>Selected Cue Builder</strong>
-                    <span>Capture the current editor into the schedule or update the selected queue item.</span>
-                  </div>
-                  <div class="form-grid flow-builder-grid">
-                    <label>
-                      <span>Capture Mode</span>
-                      <select id="flowCaptureModeInput">
-                        <option value="cue">Cue Only (no screen output)</option>
-                    <option value="verse">Verse</option>
-                    <option value="lyrics">Lyrics</option>
-                    <option value="announcement">Announcement</option>
-                    <option value="points">Preaching Points</option>
-                    <option value="order">Order</option>
-                    <option value="countdown">Countdown</option>
-                    <option value="lowerthird">Lower Third</option>
-                        <option value="blank">Blank</option>
-                      </select>
-                    </label>
-                    <label>
-                      <span>Queue Label</span>
-                      <input type="text" id="flowItemLabelInput" placeholder="Opening Prayer or Worship Set 1" />
-                    </label>
-                    <label>
-                      <span>Operator Note</span>
-                      <input type="text" id="flowItemNoteInput" placeholder="Transition note or reminder" />
-                    </label>
-                  </div>
-                  <div class="card-actions slim">
-                    <button class="btn-primary" id="addFlowItemBtn">Add to Flow</button>
-                    <button class="btn-ghost" id="updateFlowItemBtn">Update Selected</button>
-                    <button class="btn-ghost" id="captureLiveItemBtn">Capture Live</button>
-                    <button class="btn-ghost" id="clearFlowSelectionBtn">Clear Selection</button>
-                  </div>
-                </div>
-              </div>
-            </details>
+            <div class="schedule-builder-launch">
+              <button
+                class="schedule-builder-trigger"
+                type="button"
+                id="openScheduleBuilderBtn"
+              >
+                <span>
+                  <strong>Plan &amp; Capture Panel</strong>
+                  <small
+                    >Open the service title, templates, and cue builder in a
+                    focused popup for easier viewing.</small
+                  >
+                </span>
+                <i class="fas fa-up-right-and-down-left-from-center"></i>
+              </button>
+            </div>
             <div class="helper-text" id="serviceFlowStatus">
               Build cues from the editors, then run the service from this queue.
             </div>
@@ -1281,6 +1329,88 @@
             </div>
           </section>
         </main>
+
+        <div
+          class="schedule-builder-overlay"
+          id="scheduleBuilderPanel"
+          aria-hidden="true"
+        >
+          <div
+            class="schedule-builder-dialog"
+            id="scheduleBuilderDialog"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="scheduleBuilderTitle"
+            tabindex="-1"
+          >
+            <div class="schedule-builder-head">
+              <div>
+                <span class="schedule-builder-kicker">Schedule Builder</span>
+                <h3 id="scheduleBuilderTitle">Plan &amp; Capture Panel</h3>
+                <p class="card-note">
+                  Build the service title, apply a skeleton, and capture or
+                  update queue items without squeezing the main schedule.
+                </p>
+              </div>
+              <button class="btn-ghost" type="button" id="closeScheduleBuilderBtn">
+                Close
+              </button>
+            </div>
+            <div class="schedule-builder-body">
+              <div class="form-grid flow-meta-grid">
+                <label>
+                  <span>Flow Title</span>
+                  <input type="text" id="flowTitleInput" placeholder="Sunday Celebration Service" />
+                </label>
+                <label>
+                  <span>Date / Theme</span>
+                  <input type="text" id="flowDateInput" placeholder="Sunday 5 April 2026 / Resurrection Sunday" />
+                </label>
+              </div>
+              <div class="flow-template-strip">
+                <button class="countdown-chip" data-flow-template="sunday">Sunday Skeleton</button>
+                <button class="countdown-chip" data-flow-template="midweek">Midweek Skeleton</button>
+                <button class="countdown-chip" data-flow-template="special">Special Service</button>
+              </div>
+              <div class="editor-pane schedule-capture-pane">
+                <div class="editor-pane-head">
+                  <strong>Selected Cue Builder</strong>
+                  <span>Capture the current editor into the schedule or update the selected queue item.</span>
+                </div>
+                <div class="form-grid flow-builder-grid">
+                  <label>
+                    <span>Capture Mode</span>
+                    <select id="flowCaptureModeInput">
+                      <option value="cue">Cue Only (no screen output)</option>
+                      <option value="verse">Verse</option>
+                      <option value="lyrics">Lyrics</option>
+                      <option value="announcement">Announcement</option>
+                      <option value="points">Preaching Points</option>
+                      <option value="order">Order</option>
+                      <option value="countdown">Countdown</option>
+                      <option value="lowerthird">Lower Third</option>
+                      <option value="blank">Blank</option>
+                    </select>
+                  </label>
+                  <label>
+                    <span>Queue Label</span>
+                    <input type="text" id="flowItemLabelInput" placeholder="Opening Prayer or Worship Set 1" />
+                  </label>
+                  <label>
+                    <span>Operator Note</span>
+                    <input type="text" id="flowItemNoteInput" placeholder="Transition note or reminder" />
+                  </label>
+                </div>
+                <div class="card-actions slim">
+                  <button class="btn-primary" id="addFlowItemBtn">Add to Flow</button>
+                  <button class="btn-ghost" id="updateFlowItemBtn">Update Selected</button>
+                  <button class="btn-ghost" id="captureLiveItemBtn">Capture Live</button>
+                  <button class="btn-ghost" id="clearFlowSelectionBtn">Clear Selection</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
 
         <aside class="preview-stack">
           <div class="column-label">
@@ -2076,8 +2206,17 @@
       );
       const flowItemLabelInput = document.getElementById("flowItemLabelInput");
       const flowItemNoteInput = document.getElementById("flowItemNoteInput");
+      const openScheduleBuilderBtn = document.getElementById(
+        "openScheduleBuilderBtn",
+      );
       const scheduleBuilderPanel = document.getElementById(
         "scheduleBuilderPanel",
+      );
+      const scheduleBuilderDialog = document.getElementById(
+        "scheduleBuilderDialog",
+      );
+      const closeScheduleBuilderBtn = document.getElementById(
+        "closeScheduleBuilderBtn",
       );
       const flowItemsCount = document.getElementById("flowItemsCount");
       const flowActiveLabel = document.getElementById("flowActiveLabel");
@@ -3525,6 +3664,28 @@
         flowItemNoteInput.value = item.note || "";
       }
 
+      function openScheduleBuilder() {
+        if (!scheduleBuilderPanel) return;
+        scheduleBuilderPanel.classList.add("active");
+        scheduleBuilderPanel.setAttribute("aria-hidden", "false");
+        document.body.classList.add("schedule-builder-open");
+        window.requestAnimationFrame(() => {
+          const target = flowTitleInput || flowCaptureModeInput || scheduleBuilderDialog;
+          if (!target || !target.focus) return;
+          target.focus({ preventScroll: true });
+          if ("select" in target && typeof target.select === "function") {
+            target.select();
+          }
+        });
+      }
+
+      function closeScheduleBuilder() {
+        if (!scheduleBuilderPanel) return;
+        scheduleBuilderPanel.classList.remove("active");
+        scheduleBuilderPanel.setAttribute("aria-hidden", "true");
+        document.body.classList.remove("schedule-builder-open");
+      }
+
       function setFlowEditStatus(message, type) {
         setHelperStatus(flowEditStatus, message, type);
       }
@@ -4467,9 +4628,7 @@
         const item = serviceFlow.items.find((entry) => entry.id === itemId);
         if (!item) return;
         selectFlowItem(item.id);
-        if (scheduleBuilderPanel) {
-          scheduleBuilderPanel.open = true;
-        }
+        openScheduleBuilder();
 
         if (item.mode === "cue") {
           setFlowStatus(
@@ -5431,6 +5590,13 @@
           }
           return;
         }
+        if (scheduleBuilderPanel?.classList.contains("active")) {
+          if (event.key === "Escape") {
+            event.preventDefault();
+            closeScheduleBuilder();
+          }
+          return;
+        }
         if (isTypingTarget(event.target)) return;
         const key = event.key.toLowerCase();
         if (key === "b") {
@@ -5746,6 +5912,26 @@
 
       if (saveAllEditorsBtn) {
         saveAllEditorsBtn.addEventListener("click", saveAllEditors);
+      }
+
+      if (openScheduleBuilderBtn) {
+        openScheduleBuilderBtn.addEventListener("click", () => {
+          openScheduleBuilder();
+        });
+      }
+
+      if (closeScheduleBuilderBtn) {
+        closeScheduleBuilderBtn.addEventListener("click", () => {
+          closeScheduleBuilder();
+        });
+      }
+
+      if (scheduleBuilderPanel) {
+        scheduleBuilderPanel.addEventListener("click", (event) => {
+          if (event.target === scheduleBuilderPanel) {
+            closeScheduleBuilder();
+          }
+        });
       }
 
       if (flowTitleInput) {

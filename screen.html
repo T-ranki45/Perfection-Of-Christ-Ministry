@@ -169,6 +169,7 @@
         verseText: "",
         verseRef: "",
         verseSlides: [],
+        verseSlideRefs: [],
         verseSlideIndex: 0,
         giveScripture: "",
         announcementTitle: "",
@@ -332,21 +333,27 @@
         const verseSlides = Array.isArray(screenState.verseSlides)
           ? screenState.verseSlides
           : [];
+        const verseSlideRefs = Array.isArray(screenState.verseSlideRefs)
+          ? screenState.verseSlideRefs
+          : [];
         const verseIndex = Number(screenState.verseSlideIndex);
+        const safeVerseIndex = Math.min(
+          Math.max(0, Number.isNaN(verseIndex) ? 0 : verseIndex),
+          Math.max(verseSlides.length - 1, 0),
+        );
         const verseSlide =
           verseSlides.length > 0
-            ? verseSlides[
-                Math.min(
-                  Math.max(0, Number.isNaN(verseIndex) ? 0 : verseIndex),
-                  verseSlides.length - 1,
-                )
-              ]
+            ? verseSlides[safeVerseIndex]
             : "";
         const verseTextValue = verseSlide || screenState.verseText || "";
+        const verseRefValue =
+          verseSlideRefs.length > safeVerseIndex
+            ? verseSlideRefs[safeVerseIndex] || screenState.verseRef || ""
+            : screenState.verseRef || "";
         if (verseText) verseText.textContent = verseTextValue;
         if (verseRef) {
-          verseRef.textContent = screenState.verseRef || "";
-          verseRef.style.display = screenState.verseRef ? "block" : "none";
+          verseRef.textContent = verseRefValue;
+          verseRef.style.display = verseRefValue ? "block" : "none";
         }
         if (lyricsTitle)
           lyricsTitle.textContent = screenState.lyricsTitle || "Worship Song";

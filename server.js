@@ -1387,6 +1387,7 @@ const defaultScreenState = {
   verseText:
     '"For I know the plans I have for you," declares the Lord, "plans to prosper you and not to harm you, plans to give you hope and a future." - Jeremiah 29:11',
   verseRef: "",
+  verseSlideRefs: [],
   giveScripture:
     '"Each of you should give what you have decided in your heart to give, not reluctantly or under compulsion, for God loves a cheerful giver." - 2 Corinthians 9:7',
   announcementTitle: "",
@@ -1482,6 +1483,9 @@ function sanitizeFlowPayload(raw, fallbackMode = "cue") {
 
   if (raw.verseSlides !== undefined) {
     payload.verseSlides = sanitizeFlowSlides(raw.verseSlides);
+  }
+  if (raw.verseSlideRefs !== undefined) {
+    payload.verseSlideRefs = sanitizeFlowSlides(raw.verseSlideRefs);
   }
   if (raw.lyricsSlides !== undefined) {
     payload.lyricsSlides = sanitizeFlowSlides(raw.lyricsSlides);
@@ -1761,6 +1765,19 @@ app.get("/api/bible", async (req, res) => {
     return res.json({
       reference: data.reference || reference,
       text: data.text || "",
+      verses: Array.isArray(data.verses)
+        ? data.verses
+            .map((verse) => ({
+              book_name: sanitizeFlowText(verse?.book_name || verse?.book || ""),
+              chapter: Math.max(0, Number(verse?.chapter) || 0),
+              verse: Math.max(
+                0,
+                Number(verse?.verse || verse?.verse_nr || verse?.verseNumber) || 0,
+              ),
+              text: sanitizeFlowText(verse?.text || "", 12000),
+            }))
+            .filter((verse) => verse.text)
+        : [],
       translation_id: data.translation_id || translation,
       translation_name: data.translation_name || "",
     });

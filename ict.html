@@ -2295,6 +2295,7 @@
         verseText: "",
         verseRef: "",
         verseSlides: [],
+        verseSlideRefs: [],
         verseSlideIndex: 0,
         giveScripture: "",
         announcementTitle: "",
@@ -2599,6 +2600,9 @@
 
         if (raw.verseSlides !== undefined) {
           payload.verseSlides = sanitizeFlowSlides(raw.verseSlides);
+        }
+        if (raw.verseSlideRefs !== undefined) {
+          payload.verseSlideRefs = sanitizeFlowSlides(raw.verseSlideRefs);
         }
         if (raw.lyricsSlides !== undefined) {
           payload.lyricsSlides = sanitizeFlowSlides(raw.lyricsSlides);
@@ -3247,6 +3251,9 @@
               giveScripture: screenState.giveScripture || "",
               verseSlides: Array.isArray(screenState.verseSlides)
                 ? screenState.verseSlides
+                : [],
+              verseSlideRefs: Array.isArray(screenState.verseSlideRefs)
+                ? screenState.verseSlideRefs
                 : [],
               verseSlideIndex: Number(screenState.verseSlideIndex) || 0,
             };
@@ -3951,16 +3958,23 @@
             const verseText = sanitizeFlowText(
               getFlowEditField("flowEditVerseText")?.value || "",
             );
+            const verseRef = sanitizeFlowText(
+              getFlowEditField("flowEditVerseRef")?.value || "",
+            );
+            const existingSlideRefs = Array.isArray(flowEditDrafts.verse?.verseSlideRefs)
+              ? flowEditDrafts.verse.verseSlideRefs
+              : [];
             return normalizeFlowPayload(
               {
                 verseText,
-                verseRef: sanitizeFlowText(
-                  getFlowEditField("flowEditVerseRef")?.value || "",
-                ),
+                verseRef,
                 giveScripture: sanitizeFlowText(
                   getFlowEditField("flowEditGiveScripture")?.value || "",
                 ),
-                ...withSlides("verse", verseText),
+                ...withSlides("verse", verseText, {
+                  reference: verseRef,
+                  slideRefs: existingSlideRefs,
+                }),
               },
               mode,
             );
@@ -4993,10 +5007,62 @@
         return slides;
       }
 
-      function withSlides(key, text) {
+      function buildVerseSlidesFromBibleResult(result) {
+        if (!result || !Array.isArray(result.verses)) return null;
+        const verses = result.verses
+          .map((verse) => {
+            const text = sanitizeFlowText(verse?.text || "");
+            const book = sanitizeFlowText(verse?.book_name || verse?.book || "");
+            const chapter = Math.max(0, Number(verse?.chapter) || 0);
+            const verseNumber = Math.max(
+              0,
+              Number(verse?.verse || verse?.verse_nr || verse?.verseNumber) || 0,
+            );
+            return {
+              text,
+              ref:
+                book && chapter && verseNumber
+                  ? `${book} ${chapter}:${verseNumber}`
+                  : sanitizeFlowText(result.reference || ""),
+            };
+          })
+          .filter((entry) => entry.text);
+        if (!verses.length) return null;
+        return {
+          verseSlides: verses.map((entry) => entry.text),
+          verseSlideRefs: verses.map((entry) => entry.ref),
+          verseSlideIndex: 0,
+        };
+      }
+
+      function withSlides(key, text, options = {}) {
         const slides = buildSlides(text);
         if (key === "verse") {
-          return { verseSlides: slides, verseSlideIndex: 0 };
+          let refs = Array.isArray(options.slideRefs)
+            ? options.slideRefs.map((entry) => sanitizeFlowText(entry))
+            : [];
+          if (!refs.length && slides.length) {
+            const currentSlides = Array.isArray(screenState.verseSlides)
+              ? screenState.verseSlides
+              : [];
+            const currentRefs = Array.isArray(screenState.verseSlideRefs)
+              ? screenState.verseSlideRefs.map((entry) => sanitizeFlowText(entry))
+              : [];
+            const sameSlides =
+              currentSlides.length === slides.length &&
+              currentSlides.every((entry, index) => entry === slides[index]);
+            if (sameSlides && currentRefs.length === slides.length) {
+              refs = currentRefs;
+            } else {
+              const reference = sanitizeFlowText(options.reference || "");
+              refs = Array.from({ length: slides.length }, () => reference);
+            }
+          }
+          return {
+            verseSlides: slides,
+            verseSlideRefs: refs.slice(0, slides.length),
+            verseSlideIndex: 0,
+          };
         }
         if (key === "lyrics") {
           return { lyricsSlides: slides, lyricsSlideIndex: 0 };
@@ -5083,11 +5149,14 @@
         if (verseRefInput) verseRefInput.value = verseRef;
         setEditorDraft("verseText", verseText);
         setEditorDraft("verseRef", verseRef);
+        const verseSlideState =
+          buildVerseSlidesFromBibleResult(bibleResult) ||
+          withSlides("verse", verseText, { reference: verseRef });
         saveScreenState({
           verseText,
           verseRef,
           mode: "verse",
-          ...withSlides("verse", verseText),
+          ...verseSlideState,
         });
       }
 
@@ -5430,13 +5499,14 @@
 
       function collectVerseData() {
         const verseText = verseTextInput ? verseTextInput.value.trim() : "";
+        const verseRef = verseRefInput ? verseRefInput.value.trim() : "";
         return {
           verseText,
-          verseRef: verseRefInput ? verseRefInput.value.trim() : "",
+          verseRef,
           giveScripture: giveScriptureInput
             ? giveScriptureInput.value.trim()
             : "",
-          ...withSlides("verse", verseText),
+          ...withSlides("verse", verseText, { reference: verseRef }),
         };
       }
 

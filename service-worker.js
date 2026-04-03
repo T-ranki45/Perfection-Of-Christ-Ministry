@@ -1,12 +1,10 @@
-const CACHE_NAME = "pocm-site-v4";
+const CACHE_NAME = "pocm-site-v11";
 const CORE_ASSETS = [
   "/",
   "/about",
   "/blog",
   "/admin/login",
   "/ict",
-  "/ict/control",
-  "/screen",
   "/mic",
   "/style.css",
   "/about.css",
@@ -35,6 +33,16 @@ function getNavigationFallback(pathname) {
   if (pathname.startsWith("/blog")) return "/blog";
   if (pathname.startsWith("/admin")) return "/admin/login";
   return "/";
+}
+
+function shouldBypassCache(pathname) {
+  return (
+    pathname === "/service-worker.js" ||
+    pathname === "/ict/control" ||
+    pathname === "/ict.html" ||
+    pathname === "/screen" ||
+    pathname === "/screen.html"
+  );
 }
 
 self.addEventListener("install", (event) => {
@@ -66,6 +74,13 @@ self.addEventListener("fetch", (event) => {
   const url = new URL(request.url);
   if (url.origin !== self.location.origin) return;
   if (url.pathname.startsWith("/api/")) return;
+
+  if (shouldBypassCache(url.pathname)) {
+    event.respondWith(
+      fetch(request, { cache: "no-store" }).catch(() => caches.match(request)),
+    );
+    return;
+  }
 
   if (isNetworkFirstAsset(request)) {
     const fallback = getNavigationFallback(url.pathname);

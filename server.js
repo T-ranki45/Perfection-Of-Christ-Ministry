@@ -4,14 +4,27 @@ const fs = require("fs");
 const cors = require("cors");
 const { MongoClient, ObjectId } = require("mongodb");
 const multer = require("multer");
+const http = require("http");
+const { Server } = require("socket.io");
 const cloudinary = require("cloudinary").v2;
 const streamifier = require("streamifier");
 const https = require("https");
 const crypto = require("crypto");
 const path = require("path");
 const os = require("os");
+const songController = require("./controllers/song.controller");
 const app = express();
 const port = process.env.PORT || 3000;
+const httpServer = http.createServer(app);
+const io = new Server(httpServer, {
+  cors: {
+    origin: true,
+    methods: ["GET", "POST"],
+  },
+  transports: ["websocket", "polling"],
+  pingInterval: 25000,
+  pingTimeout: 20000,
+});
 const DISABLE_DB =
   String(process.env.DISABLE_DB || "").toLowerCase() === "true";
 
@@ -65,6 +78,16 @@ app.use((req, res, next) => {
     return res.redirect(302, redirectTarget);
   }
   next();
+});
+
+app.get("/service-worker.js", (req, res) => {
+  res.set(
+    "Cache-Control",
+    "no-store, no-cache, must-revalidate, proxy-revalidate",
+  );
+  res.set("Service-Worker-Allowed", "/");
+  res.type("application/javascript");
+  res.sendFile(path.join(__dirname, "service-worker.js"));
 });
 
 app.use(express.static(".", { index: false })); // Serve static files without defaulting to a random HTML entry
@@ -122,14 +145,63 @@ app.get("/mic", (req, res) => {
   sendPage(res, "mic.html");
 });
 
+app.use("/api/ict/songs", songController);
+
+function sanitizeSocketText(value, maxLength = 12000) {
+  return String(value || "")
+    .trim()
+    .slice(0, maxLength);
+}
+
+function sanitizeProjectorPayload(payload) {
+  const slideText = sanitizeSocketText(payload?.slideText || payload?.text || "");
+  const backgroundType = sanitizeSocketText(
+    payload?.backgroundType || payload?.background || "default",
+    80,
+  );
+
+  return {
+    slideText,
+    backgroundType: backgroundType || "default",
+  };
+}
+
+io.on("connection", (socket) => {
+  const address = socket.handshake.address || "unknown";
+  console.log(`Socket connected: ${socket.id} (${address})`);
+
+  socket.on("push_live_slide", (payload = {}) => {
+    const projectorPayload = sanitizeProjectorPayload(payload);
+
+    if (!projectorPayload.slideText) {
+      socket.emit("socket_error", {
+        event: "push_live_slide",
+        message: "slideText is required.",
+      });
+      return;
+    }
+
+    socket.broadcast.emit("update_projector", projectorPayload);
+  });
+
+  socket.on("clear_screen", () => {
+    io.emit("clear_screen");
+  });
+
+  socket.on("disconnect", (reason) => {
+    console.log(`Socket disconnected: ${socket.id} (${reason})`);
+  });
+});
+
 // --- DATABASE CONNECTION ---
 let db;
 
 // --- LOCAL DATABASE FOLDER SETUP ---
 const DATA_DIR = path.join(__dirname, "storage", "data"); // Keep JSON data separate
+const ICT_GALLERY_DIR = path.join(__dirname, "storage", "ict-gallery");
 
 // Ensure storage directories exist
-[path.join(__dirname, "storage"), DATA_DIR].forEach((dir) => {
+[path.join(__dirname, "storage"), DATA_DIR, ICT_GALLERY_DIR].forEach((dir) => {
   if (!fs.existsSync(dir)) {
     fs.mkdirSync(dir, { recursive: true });
   }
@@ -158,6 +230,65 @@ function saveLocalData(filename, data) {
     path.join(DATA_DIR, `${filename}.json`),
     JSON.stringify(data, null, 2),
   );
+}
+
+const ICT_GALLERY_EXTENSIONS = new Set([
+  ".jpg",
+  ".jpeg",
+  ".png",
+  ".webp",
+  ".gif",
+  ".avif",
+]);
+
+function sanitizeFilenameBase(name) {
+  return (
+    String(name || "image")
+      .replace(/\.[^/.]+$/, "")
+      .replace(/[^a-z0-9_-]+/gi, "-")
+      .replace(/^-+|-+$/g, "")
+      .slice(0, 80) || "image"
+  );
+}
+
+function getImageExtension(file) {
+  const extension = path.extname(file?.originalname || "").toLowerCase();
+  if (ICT_GALLERY_EXTENSIONS.has(extension)) {
+    return extension === ".jpeg" ? ".jpg" : extension;
+  }
+  const mime = String(file?.mimetype || "").toLowerCase();
+  if (mime.includes("png")) return ".png";
+  if (mime.includes("webp")) return ".webp";
+  if (mime.includes("gif")) return ".gif";
+  if (mime.includes("avif")) return ".avif";
+  return ".jpg";
+}
+
+function listIctGalleryImages() {
+  if (!fs.existsSync(ICT_GALLERY_DIR)) return [];
+  return fs
+    .readdirSync(ICT_GALLERY_DIR, { withFileTypes: true })
+    .filter((entry) => entry.isFile())
+    .map((entry) => {
+      const filename = entry.name;
+      const extension = path.extname(filename).toLowerCase();
+      if (!ICT_GALLERY_EXTENSIONS.has(extension)) return null;
+      const filePath = path.join(ICT_GALLERY_DIR, filename);
+      const stats = fs.statSync(filePath);
+      const rawName = filename
+        .replace(/^\d+-[a-z0-9]+-/i, "")
+        .replace(extension, "")
+        .replace(/[-_]+/g, " ")
+        .trim();
+      return {
+        id: filename,
+        name: sanitizeFlowText(rawName || filename, 120),
+        url: `/storage/ict-gallery/${encodeURIComponent(filename)}`,
+        uploadedAt: stats.mtime.toISOString(),
+      };
+    })
+    .filter(Boolean)
+    .sort((a, b) => new Date(b.uploadedAt) - new Date(a.uploadedAt));
 }
 
 function fetchJson(url) {
@@ -1381,9 +1512,76 @@ app.patch("/api/prayer-requests/:id/read", async (req, res) => {
   return res.status(404).json({ error: "Request not found" });
 });
 
+app.get("/api/ict-gallery", (req, res) => {
+  return res.json({ items: listIctGalleryImages() });
+});
+
+app.post("/api/ict-gallery", upload.array("images", 20), (req, res) => {
+  try {
+    const files = Array.isArray(req.files) ? req.files : [];
+    if (!files.length) {
+      return res.status(400).json({ error: "No gallery images uploaded." });
+    }
+
+    const uploaded = [];
+    files.forEach((file) => {
+      if (!String(file?.mimetype || "").toLowerCase().startsWith("image/")) {
+        return;
+      }
+      const filename = `${Date.now()}-${crypto.randomBytes(3).toString("hex")}-${sanitizeFilenameBase(
+        file.originalname || "gallery-image",
+      )}${getImageExtension(file)}`;
+      fs.writeFileSync(path.join(ICT_GALLERY_DIR, filename), file.buffer);
+      uploaded.push(filename);
+    });
+
+    if (!uploaded.length) {
+      return res.status(400).json({ error: "Only image files are allowed." });
+    }
+
+    return res.json({
+      message: `${uploaded.length} gallery image${uploaded.length === 1 ? "" : "s"} uploaded.`,
+      items: listIctGalleryImages(),
+    });
+  } catch (error) {
+    console.error("ICT gallery upload failed:", error);
+    return res.status(500).json({ error: "Failed to upload gallery images." });
+  }
+});
+
+app.delete("/api/ict-gallery/:id", (req, res) => {
+  try {
+    const fileId = path.basename(decodeURIComponent(req.params.id || ""));
+    if (!fileId) {
+      return res.status(400).json({ error: "Gallery image id is required." });
+    }
+    const filePath = path.join(ICT_GALLERY_DIR, fileId);
+    if (!fs.existsSync(filePath)) {
+      return res.status(404).json({ error: "Gallery image not found." });
+    }
+    fs.unlinkSync(filePath);
+    return res.json({
+      message: "Gallery image removed.",
+      items: listIctGalleryImages(),
+    });
+  } catch (error) {
+    console.error("ICT gallery delete failed:", error);
+    return res.status(500).json({ error: "Failed to delete gallery image." });
+  }
+});
+
 // --- Screen State Routes ---
 const defaultScreenState = {
   mode: "verse",
+  cueTitle: "",
+  cueBody: "",
+  galleryTitle: "",
+  galleryCaption: "",
+  galleryItems: [],
+  galleryIndex: 0,
+  ambientPreset: "worship",
+  ambientTitle: "",
+  ambientSubtitle: "",
   verseText:
     '"For I know the plans I have for you," declares the Lord, "plans to prosper you and not to harm you, plans to give you hope and a future." - Jeremiah 29:11',
   verseRef: "",
@@ -1410,6 +1608,8 @@ const defaultScreenState = {
 
 const allowedFlowModes = new Set([
   "cue",
+  "gallery",
+  "ambient",
   "verse",
   "lyrics",
   "announcement",
@@ -1459,6 +1659,13 @@ function sanitizeFlowPayload(raw, fallbackMode = "cue") {
   }
 
   const stringKeys = [
+    "cueTitle",
+    "cueBody",
+    "galleryTitle",
+    "galleryCaption",
+    "ambientPreset",
+    "ambientTitle",
+    "ambientSubtitle",
     "verseText",
     "verseRef",
     "giveScripture",
@@ -1484,11 +1691,26 @@ function sanitizeFlowPayload(raw, fallbackMode = "cue") {
   if (raw.verseSlides !== undefined) {
     payload.verseSlides = sanitizeFlowSlides(raw.verseSlides);
   }
+  if (raw.galleryItems !== undefined) {
+    payload.galleryItems = Array.isArray(raw.galleryItems)
+      ? raw.galleryItems
+          .map((entry) => ({
+            id: sanitizeFlowText(entry?.id || "", 160),
+            name: sanitizeFlowText(entry?.name || "", 160),
+            url: sanitizeFlowText(entry?.url || "", 2000),
+          }))
+          .filter((entry) => entry.url)
+          .slice(0, 40)
+      : [];
+  }
   if (raw.verseSlideRefs !== undefined) {
     payload.verseSlideRefs = sanitizeFlowSlides(raw.verseSlideRefs);
   }
   if (raw.lyricsSlides !== undefined) {
     payload.lyricsSlides = sanitizeFlowSlides(raw.lyricsSlides);
+  }
+  if (raw.galleryIndex !== undefined) {
+    payload.galleryIndex = Math.max(0, Number(raw.galleryIndex) || 0);
   }
   if (raw.verseSlideIndex !== undefined) {
     payload.verseSlideIndex = Math.max(0, Number(raw.verseSlideIndex) || 0);
@@ -1535,8 +1757,7 @@ function sanitizeServiceFlowItem(raw, index = 0) {
     ? String(raw.mode).trim().toLowerCase()
     : "cue";
   const nowIso = new Date().toISOString();
-  const payload =
-    mode === "cue" ? {} : sanitizeFlowPayload(raw?.payload || {}, mode);
+  const payload = sanitizeFlowPayload(raw?.payload || {}, mode);
 
   return {
     id: sanitizeFlowText(raw?.id || "", 120) || new ObjectId().toString(),
@@ -2212,7 +2433,7 @@ app.get("/api/workers/me", requireWorkerAuth, async (req, res) => {
 // Start Server
 async function startServer() {
   await connectToDb();
-  app.listen(port, () => {
+  httpServer.listen(port, () => {
     console.log(`Server running on port ${port}`);
     // Dynamically determine network addresses for local access
     const interfaces = os.networkInterfaces();

@@ -23,6 +23,51 @@
         </div>
       </div>
 
+      <div class="live-clock" id="liveClock" aria-hidden="true">
+        <span class="live-clock-time" id="liveClockTime">00:00</span>
+      </div>
+
+      <div class="screen-mode cue-mode" id="mode-cue">
+        <p class="mode-title">Service Cue</p>
+        <h2 class="fit-text" data-fit="0.11" data-min-size="18" id="cueTitle"></h2>
+        <div
+          class="cue-body fit-text"
+          data-fit="0.4"
+          data-min-size="15"
+          id="cueBody"
+        ></div>
+      </div>
+
+      <div class="screen-mode gallery-mode" id="mode-gallery">
+        <div class="gallery-stage">
+          <img id="galleryImage" alt="Gallery slide" />
+        </div>
+      </div>
+
+      <div class="screen-mode ambient-mode" id="mode-ambient">
+        <div class="ambient-scene" id="ambientScene" data-preset="worship">
+          <div class="ambient-aurora aurora-a"></div>
+          <div class="ambient-aurora aurora-b"></div>
+          <div class="ambient-ray ray-a"></div>
+          <div class="ambient-ray ray-b"></div>
+          <div class="ambient-ray ray-c"></div>
+          <div class="ambient-praise-crowd"></div>
+          <div class="ambient-symbol symbol-a"></div>
+          <div class="ambient-symbol symbol-b"></div>
+          <div class="ambient-symbol symbol-c"></div>
+          <div class="ambient-orb orb-a"></div>
+          <div class="ambient-orb orb-b"></div>
+          <div class="ambient-orb orb-c"></div>
+          <div class="ambient-wave wave-a"></div>
+          <div class="ambient-wave wave-b"></div>
+          <div class="ambient-particle particle-a"></div>
+          <div class="ambient-particle particle-b"></div>
+          <div class="ambient-particle particle-c"></div>
+          <div class="ambient-pulse pulse-a"></div>
+          <div class="ambient-pulse pulse-b"></div>
+        </div>
+      </div>
+
       <div class="screen-mode" id="mode-verse">
         <p class="mode-title">Scripture Reading</p>
         <div
@@ -129,6 +174,9 @@
           : null;
       const modeLabel = document.getElementById("screen-mode-label");
       const modeElements = {
+        cue: document.getElementById("mode-cue"),
+        gallery: document.getElementById("mode-gallery"),
+        ambient: document.getElementById("mode-ambient"),
         verse: document.getElementById("mode-verse"),
         lyrics: document.getElementById("mode-lyrics"),
         announcement: document.getElementById("mode-announcement"),
@@ -154,6 +202,9 @@
       }
 
       const modeLabels = {
+        cue: "Service Cue",
+        gallery: "Media Gallery",
+        ambient: "Ambient Motion",
         verse: "Bible Verse",
         lyrics: "Worship Lyrics",
         announcement: "Announcement",
@@ -166,6 +217,15 @@
 
       const stateDefaults = {
         mode: "verse",
+        cueTitle: "",
+        cueBody: "",
+        galleryTitle: "",
+        galleryCaption: "",
+        galleryItems: [],
+        galleryIndex: 0,
+        ambientPreset: "worship",
+        ambientTitle: "",
+        ambientSubtitle: "",
         verseText: "",
         verseRef: "",
         verseSlides: [],
@@ -193,6 +253,14 @@
 
       let screenState = { ...stateDefaults };
 
+      const cueTitle = document.getElementById("cueTitle");
+      const cueBody = document.getElementById("cueBody");
+      const galleryImage = document.getElementById("galleryImage");
+      const galleryTitle = document.getElementById("galleryTitle");
+      const galleryCaption = document.getElementById("galleryCaption");
+      const ambientScene = document.getElementById("ambientScene");
+      const ambientTitle = document.getElementById("ambientTitle");
+      const ambientSubtitle = document.getElementById("ambientSubtitle");
       const verseText = document.getElementById("verseText");
       const verseRef = document.getElementById("verseRef");
       const lyricsTitle = document.getElementById("lyricsTitle");
@@ -208,10 +276,19 @@
       const lowerThirdName = document.getElementById("lowerThirdName");
       const lowerThirdRole = document.getElementById("lowerThirdRole");
       const lowerThirdFooter = document.getElementById("lowerThirdFooter");
+      const liveClockTime = document.getElementById("liveClockTime");
       const fitTextElements = Array.from(
         document.querySelectorAll(".fit-text"),
       );
       let fitRaf = null;
+
+      function updateLiveClock() {
+        if (!liveClockTime) return;
+        liveClockTime.textContent = new Date().toLocaleTimeString([], {
+          hour: "numeric",
+          minute: "2-digit",
+        });
+      }
 
       function formatCountdown(seconds) {
         const safeSeconds = Math.max(0, Math.floor(seconds));
@@ -296,6 +373,10 @@
           const el = modeElements[key];
           if (el) el.classList.toggle("active", key === mode);
         });
+        document.body.classList.toggle(
+          "media-clean-mode",
+          mode === "gallery" || mode === "ambient" || mode === "video",
+        );
         if (modeLabel) {
           if (forcedMode) {
             modeLabel.textContent = `Preview: ${modeLabels[mode] || "Live Screen"}`;
@@ -329,6 +410,51 @@
         screenState = { ...stateDefaults, ...(state || {}) };
         const displayMode = forcedMode || screenState.mode || "verse";
         setMode(displayMode);
+
+        if (cueTitle) cueTitle.textContent = screenState.cueTitle || "Service Cue";
+        if (cueBody) {
+          cueBody.textContent =
+            screenState.cueBody || "Prepare a cue in ICT control to display it here.";
+        }
+
+        const galleryItems = Array.isArray(screenState.galleryItems)
+          ? screenState.galleryItems.filter((item) => item?.url)
+          : [];
+        const galleryIndex = Number(screenState.galleryIndex);
+        const safeGalleryIndex = Math.min(
+          Math.max(0, Number.isNaN(galleryIndex) ? 0 : galleryIndex),
+          Math.max(galleryItems.length - 1, 0),
+        );
+        const activeGalleryItem = galleryItems[safeGalleryIndex] || null;
+        if (galleryImage) {
+          galleryImage.src = activeGalleryItem?.url || "";
+          galleryImage.alt = activeGalleryItem?.name || "Gallery slide";
+          galleryImage.style.display = activeGalleryItem ? "block" : "none";
+        }
+        if (galleryTitle) {
+          galleryTitle.textContent =
+            screenState.galleryTitle || activeGalleryItem?.name || "Media Gallery";
+        }
+        if (galleryCaption) {
+          galleryCaption.textContent =
+            screenState.galleryCaption ||
+            (galleryItems.length
+              ? `Image ${safeGalleryIndex + 1} of ${galleryItems.length}`
+              : "Upload and send gallery images from ICT control.");
+        }
+
+        if (ambientScene) {
+          ambientScene.dataset.preset = screenState.ambientPreset || "worship";
+        }
+        if (ambientTitle) {
+          ambientTitle.textContent =
+            screenState.ambientTitle || modeLabels.ambient;
+        }
+        if (ambientSubtitle) {
+          ambientSubtitle.textContent =
+            screenState.ambientSubtitle ||
+            "Keep the sanctuary screen moving gently during worship and transitions.";
+        }
 
         const verseSlides = Array.isArray(screenState.verseSlides)
           ? screenState.verseSlides
@@ -468,6 +594,8 @@
       if (document.fonts && document.fonts.ready) {
         document.fonts.ready.then(scheduleFitText).catch(() => {});
       }
+      updateLiveClock();
+      setInterval(updateLiveClock, 1000);
       setInterval(updateCountdownUI, 1000);
       setInterval(loadScreenState, pollInterval);
       loadScreenState();

@@ -131,7 +131,7 @@
         flex: 0 0 auto;
         min-height: auto;
         display: grid;
-        grid-template-columns: minmax(430px, 520px) minmax(0, 1fr);
+        grid-template-columns: minmax(470px, 580px) minmax(0, 1fr);
         grid-template-areas:
           "schedule preview"
           "resources resources";
@@ -1352,18 +1352,24 @@
       }
 
       .inline-flow-manager {
-        margin-top: 1rem;
+        margin-top: 0.9rem;
       }
 
       .inline-flow-manager .schedule-builder-flow-panel {
-        padding: 0.95rem 1rem 1rem;
-        border-radius: 20px;
+        padding: 1.1rem 1.1rem 1.15rem;
+        border-radius: 22px;
       }
 
       .inline-flow-manager .schedule-builder-flow-list {
-        min-height: auto;
+        min-height: 460px;
         overflow: visible;
         padding-right: 0;
+      }
+
+      .schedule-secondary-pane {
+        display: grid;
+        gap: 0.55rem;
+        padding: 0 1rem 1rem;
       }
 
       .mini-live-card {
@@ -3098,7 +3104,7 @@
 
         .schedule-workspace {
           display: grid;
-          grid-template-rows: auto minmax(0, 1fr);
+          grid-template-rows: minmax(0, 1fr);
           min-height: 0;
           height: 100%;
           overflow: hidden;
@@ -3159,14 +3165,52 @@
         .schedule-quickbar,
         .service-flow-stats,
         .schedule-builder-launch,
-        .service-flow-list {
+        .service-flow-list,
+        .inline-flow-manager {
           padding-left: 1rem;
           padding-right: 1rem;
         }
 
+        .schedule-builder-launch {
+          margin-top: 0;
+          padding-top: 1rem;
+          padding-bottom: 0.9rem;
+        }
+
+        .schedule-builder-trigger {
+          align-items: flex-start;
+          min-height: 104px;
+          padding: 1.05rem 1.05rem 1rem;
+          border-radius: 18px;
+          border: 1px solid rgba(245, 158, 11, 0.2);
+          background:
+            linear-gradient(180deg, rgba(35, 28, 12, 0.34), rgba(14, 18, 26, 0.94)),
+            radial-gradient(circle at top right, rgba(245, 158, 11, 0.14), transparent 34%);
+          color: #f8fafc;
+          box-shadow: inset 0 1px 0 rgba(245, 158, 11, 0.08);
+        }
+
+        .schedule-builder-trigger strong {
+          font-size: 0.9rem;
+          letter-spacing: 0.08em;
+        }
+
+        .schedule-builder-trigger small {
+          display: block;
+          margin-top: 0.45rem;
+          color: #cbd5e1;
+          font-size: 0.78rem;
+          line-height: 1.45;
+        }
+
+        .schedule-builder-trigger i {
+          margin-top: 0.15rem;
+          font-size: 1.06rem;
+        }
+
         .schedule-quickbar {
           margin: 0;
-          padding-top: 0.9rem;
+          padding-top: 0.15rem;
           padding-bottom: 0.7rem;
           display: grid;
           gap: 0.55rem;
@@ -3223,23 +3267,6 @@
           color: #7f8aa0;
         }
 
-        .schedule-builder-launch {
-          margin-top: 0;
-          padding-bottom: 0.9rem;
-        }
-
-        .schedule-builder-trigger {
-          border-radius: 16px;
-          border: 1px solid rgba(245, 158, 11, 0.2);
-          background: linear-gradient(180deg, rgba(35, 28, 12, 0.28), rgba(14, 18, 26, 0.92));
-          color: #f8fafc;
-          box-shadow: inset 0 1px 0 rgba(245, 158, 11, 0.08);
-        }
-
-        .schedule-builder-trigger small {
-          color: #94a3b8;
-        }
-
         .helper-text#serviceFlowStatus {
           display: none;
         }
@@ -3253,6 +3280,61 @@
           flex-direction: column;
           gap: 0.8rem;
           flex: 0 0 auto;
+        }
+
+        .inline-flow-manager {
+          margin-top: 0;
+          padding-bottom: 0.8rem;
+        }
+
+        .inline-flow-manager .schedule-builder-flow-panel {
+          padding: 1.15rem 1.15rem 1.2rem;
+          border-radius: 22px;
+        }
+
+        .inline-flow-manager .schedule-builder-flow-list {
+          min-height: 560px;
+        }
+
+        .schedule-builder-launch {
+          padding-bottom: 0.65rem;
+        }
+
+        .schedule-builder-trigger {
+          min-height: 76px;
+          align-items: center;
+          padding: 0.95rem 1rem;
+        }
+
+        .schedule-quickbar {
+          padding-top: 0;
+          padding-bottom: 0.7rem;
+          border-bottom: none;
+        }
+
+        .schedule-quickbar-note {
+          display: none;
+        }
+
+        .schedule-secondary-pane {
+          gap: 0.65rem;
+          padding-top: 0.1rem;
+        }
+
+        .schedule-secondary-pane .service-flow-stats,
+        .schedule-secondary-pane .helper-text#serviceFlowStatus {
+          display: none;
+        }
+
+        .schedule-secondary-pane .service-flow-list {
+          max-height: 190px;
+          min-height: 0;
+          margin-top: 0;
+          padding-top: 0;
+          padding-bottom: 0;
+          overflow-y: auto;
+          overflow-x: hidden;
+          scrollbar-width: thin;
         }
 
         .service-flow-item {
@@ -3946,25 +4028,21 @@
 
       <div class="ict-layout">
         <main class="schedule-stack">
-          <div class="column-label">
-            <i class="fas fa-list-ol"></i> 1. Schedule Area
-          </div>
           <section class="control-card service-flow-card schedule-workspace">
-            <div class="card-header compact schedule-pane-head">
-              <div class="schedule-pane-copy">
-                <h3>Service Run Sheet</h3>
-                <span class="card-note"
-                  >Keep the full service order here and move through it calmly
-                  during worship, preaching, and transitions.</span
-                >
-              </div>
-              <div class="schedule-pane-meta">
-                <span>Church Flow</span>
-                <strong>Live Run Desk</strong>
-              </div>
-            </div>
-
             <div class="schedule-scroll-region">
+              <div class="schedule-builder-launch">
+                <button
+                  class="schedule-builder-trigger"
+                  type="button"
+                  id="openScheduleBuilderBtn"
+                >
+                  <span>
+                    <strong>Plan &amp; Capture Panel</strong>
+                  </span>
+                  <i class="fas fa-up-right-and-down-left-from-center"></i>
+                </button>
+              </div>
+
               <div class="schedule-quickbar">
                 <div class="schedule-quickbar-actions">
                   <button class="btn-ghost btn-inline" id="editSelectedFlowBtn">
@@ -3981,42 +4059,6 @@
                   >Compact queue for faster live operation.</span
                 >
               </div>
-
-              <div class="service-flow-stats">
-                <div class="flow-stat-card">
-                  <span>Queue Size</span>
-                  <strong id="flowItemsCount">0 items planned</strong>
-                </div>
-                <div class="flow-stat-card">
-                  <span>Active Cue</span>
-                  <strong id="flowActiveLabel">None selected</strong>
-                </div>
-                <div class="flow-stat-card">
-                  <span>Next Up</span>
-                  <strong id="flowNextCueLabel">Build your first cue</strong>
-                </div>
-              </div>
-              <div class="schedule-builder-launch">
-                <button
-                  class="schedule-builder-trigger"
-                  type="button"
-                  id="openScheduleBuilderBtn"
-                >
-                  <span>
-                    <strong>Plan &amp; Capture Panel</strong>
-                    <small
-                      >Open the service title, templates, and cue builder in a
-                      focused popup for easier viewing.</small
-                    >
-                  </span>
-                  <i class="fas fa-up-right-and-down-left-from-center"></i>
-                </button>
-              </div>
-              <div class="helper-text" id="serviceFlowStatus">
-                Build cues from the editors, then run the service from this
-                queue.
-              </div>
-              <div class="service-flow-list" id="serviceFlowList"></div>
               <div class="inline-flow-manager">
                 <div class="schedule-builder-flow-panel">
                   <div class="schedule-builder-flow-head">
@@ -4048,6 +4090,27 @@
                     id="inlineFlowManagerList"
                   ></div>
                 </div>
+              </div>
+              <div class="schedule-secondary-pane">
+                <div class="service-flow-stats">
+                  <div class="flow-stat-card">
+                    <span>Queue Size</span>
+                    <strong id="flowItemsCount">0 items planned</strong>
+                  </div>
+                  <div class="flow-stat-card">
+                    <span>Active Cue</span>
+                    <strong id="flowActiveLabel">None selected</strong>
+                  </div>
+                  <div class="flow-stat-card">
+                    <span>Next Up</span>
+                    <strong id="flowNextCueLabel">Build your first cue</strong>
+                  </div>
+                </div>
+                <div class="helper-text" id="serviceFlowStatus">
+                  Build cues from the editors, then run the service from this
+                  queue.
+                </div>
+                <div class="service-flow-list" id="serviceFlowList"></div>
               </div>
             </div>
           </section>

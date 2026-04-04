@@ -25,14 +25,11 @@ body.is-blank {
   background: #000;
 }
 
-body.is-blank .screen-brand,
-body.is-blank .live-clock,
 body.is-blank .screen-shell::before,
 body.is-blank .screen-shell::after {
   opacity: 0;
 }
 
-body.media-clean-mode .screen-brand,
 body.media-clean-mode .screen-shell::before,
 body.media-clean-mode .screen-shell::after {
   opacity: 0;
@@ -225,6 +222,22 @@ body.preview-control .gallery-copy,
 body.preview-control .ambient-copy {
   max-width: min(68%, 560px);
   padding: 1rem;
+}
+
+body:not(.embed):not(.preview-control) .mode-title {
+  display: none;
+}
+
+body:not(.embed):not(.preview-control) .screen-shell {
+  padding: 2.75vh 3vw;
+}
+
+body:not(.embed):not(.preview-control) .screen-mode {
+  max-width: min(94vw, 1520px);
+}
+
+body:not(.embed):not(.preview-control) .points-mode {
+  max-width: min(96vw, 1600px);
 }
 
 body.media-clean-mode .screen-shell,

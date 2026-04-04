@@ -1367,37 +1367,44 @@
       }
 
       .mini-live-card {
-        display: grid;
-        grid-template-rows: auto minmax(0, 1fr);
+        display: flex;
         min-height: 0;
+        isolation: isolate;
+        padding: 0;
+        overflow: hidden;
       }
 
       .mini-live-body {
-        display: grid;
-        grid-template-columns: minmax(0, 1.2fr) minmax(220px, 0.8fr);
-        gap: 0.9rem;
-        min-height: 0;
-        padding: 1rem;
+        display: block;
+        min-height: 100%;
+        width: 100%;
+        padding: 0;
       }
 
       .mini-live-frame {
-        min-height: 0;
+        position: relative;
+        aspect-ratio: auto;
+        min-height: 320px;
+        width: 100%;
+        height: 100%;
         border-radius: 18px;
-        border: 1px solid rgba(255, 255, 255, 0.08);
+        border: 0;
         overflow: hidden;
         background: #000;
+        box-shadow: none;
       }
 
       .mini-live-frame iframe {
         width: 100%;
         height: 100%;
-        min-height: 200px;
+        min-height: 320px;
         border: 0;
         display: block;
       }
 
       .mini-live-meta {
         display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
         align-content: start;
         gap: 0.75rem;
       }
@@ -1428,6 +1435,10 @@
       @media (max-width: 1100px) {
         .schedule-builder-body,
         .mini-live-body {
+          grid-template-columns: 1fr;
+        }
+
+        .mini-live-meta {
           grid-template-columns: 1fr;
         }
 
@@ -3352,35 +3363,28 @@
         }
 
         .preview-stack > .flow-transport-dock {
-          grid-column: 1 / -1;
-          border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-          background: linear-gradient(180deg, rgba(16, 20, 29, 0.98), rgba(11, 14, 20, 0.98));
+          grid-column: 2;
+          grid-row: 3;
+          display: flex;
+          align-items: stretch;
+          min-height: 0;
+          padding: 1rem;
+          border-top: 1px solid rgba(255, 255, 255, 0.08);
+          border-left: 1px solid rgba(255, 255, 255, 0.08);
+          background: #0d1219;
         }
 
         .flow-transport-dock .card-header.compact {
-          padding-bottom: 0.6rem;
-          border-bottom: none;
-          background: transparent;
-        }
-
-        .flow-transport-copy strong {
-          font-size: 0.84rem;
-          letter-spacing: 0.14em;
-          text-transform: uppercase;
-          color: #f8fafc;
-        }
-
-        .flow-transport-copy span {
-          font-size: 0.73rem;
-          line-height: 1.45;
-          color: #8fa0b8;
+          display: none;
         }
 
         .flow-transport-dock .flow-transport-bar {
+          flex: 1 1 auto;
           display: grid;
-          grid-template-columns: repeat(5, minmax(120px, 1fr));
-          gap: 0.65rem;
-          padding: 0 1rem 1rem;
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          align-content: start;
+          gap: 0.75rem;
+          padding: 0;
           background: transparent;
           border-top: none;
         }
@@ -3388,11 +3392,22 @@
         .flow-transport-dock .flow-transport-bar .btn-primary,
         .flow-transport-dock .flow-transport-bar .btn-ghost,
         .flow-transport-dock .flow-transport-bar .btn-danger {
-          min-height: 40px;
-          border-radius: 12px;
-          font-size: 0.7rem;
+          min-height: 56px;
+          border-radius: 14px;
+          font-size: 0.74rem;
           letter-spacing: 0.06em;
           text-transform: uppercase;
+        }
+
+        #goPreviousFlowBtn,
+        #goSelectedFlowLiveBtn,
+        #goNextFlowBtn,
+        #saveFlowBtn {
+          grid-column: auto;
+        }
+
+        #clearFlowBtn {
+          grid-column: 1 / -1;
         }
 
         .ew-screen-grid {
@@ -3481,6 +3496,7 @@
 
         .workspace-mode-card {
           grid-column: 1;
+          grid-row: 3;
           border-top: 1px solid rgba(255, 255, 255, 0.08);
           border-right: 1px solid rgba(255, 255, 255, 0.08);
         }
@@ -3500,7 +3516,8 @@
         }
 
         .command-deck-card {
-          grid-column: 2;
+          grid-column: 1 / -1;
+          grid-row: 4;
           display: grid;
           grid-template-rows: auto auto minmax(0, 1fr) auto auto;
           min-height: 0;
@@ -4297,13 +4314,6 @@
             </section>
           </div>
           <section class="control-card workspace-mode-card mini-live-card">
-            <div class="card-header compact">
-              <h3>Live Snapshot</h3>
-              <span class="card-note"
-                >A smaller confidence monitor showing exactly what the church
-                screen is carrying right now.</span
-              >
-            </div>
             <div class="mini-live-body">
               <div class="mini-live-frame">
                 <iframe
@@ -4311,20 +4321,6 @@
                   src="/screen?embed=1&fit=control"
                   title="Mini Live Screen Preview"
                 ></iframe>
-              </div>
-              <div class="mini-live-meta">
-                <div class="mini-live-chip">
-                  <span>Live Mode</span>
-                  <strong id="miniLiveModeLabel">Verse</strong>
-                </div>
-                <div class="mini-live-chip">
-                  <span>Live Content</span>
-                  <strong id="miniLiveSummary">No active content yet</strong>
-                </div>
-                <div class="mini-live-chip">
-                  <span>Current Slide</span>
-                  <strong id="miniLiveMeta">Waiting for first push</strong>
-                </div>
               </div>
             </div>
           </section>

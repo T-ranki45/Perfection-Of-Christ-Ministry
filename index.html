@@ -53,7 +53,35 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
     />
   </head>
-  <body class="easter-season desktop-main-redesign">
+  <body class="easter-season desktop-main-redesign page-loader-active">
+    <div class="page-loader" id="pageLoader" aria-hidden="true">
+      <div class="page-loader-stage">
+        <span class="page-loader-glow"></span>
+        <span class="page-loader-ring ring-one"></span>
+        <span class="page-loader-ring ring-two"></span>
+        <span class="page-loader-ray ray-one"></span>
+        <span class="page-loader-ray ray-two"></span>
+        <span class="page-loader-ray ray-three"></span>
+        <span class="page-loader-particle particle-one"></span>
+        <span class="page-loader-particle particle-two"></span>
+        <span class="page-loader-particle particle-three"></span>
+        <div class="page-loader-figure">
+          <span class="page-loader-halo"></span>
+          <span class="page-loader-head"></span>
+          <span class="page-loader-hair"></span>
+          <span class="page-loader-arm arm-left"></span>
+          <span class="page-loader-arm arm-right"></span>
+          <span class="page-loader-torso"></span>
+          <span class="page-loader-robe"></span>
+          <span class="page-loader-sash"></span>
+        </div>
+      </div>
+      <div class="page-loader-copy">
+        <span class="page-loader-kicker">Easter Week 2026</span>
+        <strong>Jesus Christ Is Risen</strong>
+        <p>Preparing the worship experience...</p>
+      </div>
+    </div>
     <div class="site-easter-celebration" aria-hidden="true">
       <span class="site-easter-glow glow-left"></span>
       <span class="site-easter-glow glow-right"></span>
@@ -306,22 +334,29 @@
         <div class="container">
           <div class="easter-template-shell reveal-up">
             <div class="easter-template-copy reveal-left">
-              <span class="easter-kicker">Easter Sunday 2026</span>
-              <h2>A Resurrection Sunday Invitation</h2>
+              <span class="easter-kicker"
+                >Easter Sunday Is Tomorrow • Sunday, April 5, 2026</span
+              >
+              <h2>Jesus Christ Is Risen</h2>
               <p class="easter-lead">
-                Join us on Sunday, April 5, 2026, as we celebrate the
-                resurrection of Jesus Christ with worship, thanksgiving,
-                prayer, and the Word.
+                Tomorrow, Sunday, April 5, 2026, we gather as a church family
+                to celebrate the resurrection of Jesus Christ. Throughout this
+                Easter week, we are lifting up His victory, His love, and the
+                new life we have in Him.
               </p>
 
               <div class="easter-details-grid">
                 <article class="easter-detail-card">
                   <span><i class="fas fa-calendar-day"></i> Date</span>
-                  <strong>Sunday, April 5, 2026</strong>
+                  <strong>Tomorrow, Sunday, April 5, 2026</strong>
                 </article>
                 <article class="easter-detail-card">
                   <span><i class="fas fa-clock"></i> Services</span>
                   <strong>7:00 AM and 10:00 AM</strong>
+                </article>
+                <article class="easter-detail-card">
+                  <span><i class="fas fa-sun"></i> Easter Week</span>
+                  <strong>Resurrection, Worship, Prayer, and Thanksgiving</strong>
                 </article>
                 <article class="easter-detail-card">
                   <span><i class="fas fa-location-dot"></i> Venue</span>
@@ -333,7 +368,8 @@
 
               <p class="easter-note">
                 Bring your family, invite someone with you, and come expectant
-                for a day centered on the victory of Christ.
+                for a worship gathering centered on the finished work and
+                victory of Jesus Christ.
               </p>
 
               <div class="easter-actions">
@@ -347,44 +383,69 @@
             </div>
 
             <div class="easter-template-poster reveal-right">
-              <div class="easter-poster-card">
-                <span class="easter-poster-pill">He Is Risen</span>
-                <p class="easter-poster-date">April 5, 2026</p>
-                <h3>Celebrate Easter With Us</h3>
-                <p class="easter-poster-text">
-                  A special Sunday of worship, thanksgiving, prayer, and the
-                  Word for the whole family.
-                </p>
-
-                <div
-                  class="easter-countdown-label"
-                  id="easter-countdown-status"
-                  aria-live="polite"
-                >
-                  Countdown to the 7:00 AM Easter service
-                </div>
-
-                <div
-                  class="easter-countdown"
-                  aria-label="Countdown to Easter Sunday"
-                >
-                  <div class="easter-countdown-item">
-                    <strong id="easter-days">00</strong>
-                    <span>Days</span>
-                  </div>
-                  <div class="easter-countdown-item">
-                    <strong id="easter-hours">00</strong>
-                    <span>Hours</span>
-                  </div>
-                  <div class="easter-countdown-item">
-                    <strong id="easter-minutes">00</strong>
-                    <span>Minutes</span>
+              <div class="easter-poster-card easter-resurrection-card">
+                <div class="easter-jesus-scene" aria-hidden="true">
+                  <span class="easter-scene-glow"></span>
+                  <span class="easter-scene-ring ring-one"></span>
+                  <span class="easter-scene-ring ring-two"></span>
+                  <span class="easter-scene-ray ray-one"></span>
+                  <span class="easter-scene-ray ray-two"></span>
+                  <span class="easter-scene-ray ray-three"></span>
+                  <span class="easter-scene-particle particle-one"></span>
+                  <span class="easter-scene-particle particle-two"></span>
+                  <span class="easter-scene-particle particle-three"></span>
+                  <span class="easter-scene-particle particle-four"></span>
+                  <div class="easter-jesus-figure">
+                    <span class="easter-jesus-halo"></span>
+                    <span class="easter-jesus-head"></span>
+                    <span class="easter-jesus-hair"></span>
+                    <span class="easter-jesus-arm arm-left"></span>
+                    <span class="easter-jesus-arm arm-right"></span>
+                    <span class="easter-jesus-torso"></span>
+                    <span class="easter-jesus-robe"></span>
+                    <span class="easter-jesus-sash"></span>
                   </div>
                 </div>
 
-                <div class="easter-poster-scripture">
-                  <span>Matthew 28:6</span>
-                  <p>He is risen.</p>
+                <div class="easter-poster-copy">
+                  <span class="easter-poster-pill">He Is Risen</span>
+                  <p class="easter-poster-date">Easter Sunday • April 5, 2026</p>
+                  <h3>Resurrection Morning</h3>
+                  <p class="easter-poster-text">
+                    A Christ-centered Easter gathering for worship,
+                    thanksgiving, prayer, and the Word.
+                  </p>
+
+                  <div
+                    class="easter-countdown-label"
+                    id="easter-countdown-status"
+                    aria-live="polite"
+                  >
+                    Countdown to the 7:00 AM Easter service
+                  </div>
+
+                  <div
+                    class="easter-countdown"
+                    aria-label="Countdown to Easter Sunday"
+                  >
+                    <div class="easter-countdown-item">
+                      <strong id="easter-days">00</strong>
+                      <span>Days</span>
+                    </div>
+                    <div class="easter-countdown-item">
+                      <strong id="easter-hours">00</strong>
+                      <span>Hours</span>
+                    </div>
+                    <div class="easter-countdown-item">
+                      <strong id="easter-minutes">00</strong>
+                      <span>Minutes</span>
+                    </div>
+                  </div>
+
+                  <div class="easter-poster-scripture">
+                    <span>John 11:25</span>
+                    <p>I am the resurrection and the life.</p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -1460,12 +1521,14 @@
         if (!daysEl || !hoursEl || !minutesEl) return;
 
         const targetDate = new Date("2026-04-05T07:00:00+01:00");
+        const targetDayStart = new Date("2026-04-05T00:00:00+01:00");
         if (Number.isNaN(targetDate.getTime())) return;
 
         const formatUnit = (value) => String(value).padStart(2, "0");
 
         const updateCountdown = () => {
-          const difference = targetDate.getTime() - Date.now();
+          const now = Date.now();
+          const difference = targetDate.getTime() - now;
 
           if (difference <= 0) {
             daysEl.textContent = "00";
@@ -1491,8 +1554,16 @@
           minutesEl.textContent = formatUnit(minutes);
 
           if (statusEl) {
-            statusEl.textContent =
-              "Countdown to the 7:00 AM Easter service";
+            if (now >= targetDayStart.getTime()) {
+              statusEl.textContent =
+                "Easter Sunday is today. Countdown to the 7:00 AM service.";
+            } else if (days === 0) {
+              statusEl.textContent =
+                "Easter Sunday is tomorrow. Final countdown to the 7:00 AM service.";
+            } else {
+              statusEl.textContent =
+                "Countdown to the 7:00 AM Easter service";
+            }
           }
         };
 
@@ -1823,6 +1894,41 @@
           });
         }
       });
+    </script>
+
+    <script>
+      (function () {
+        const loader = document.getElementById("pageLoader");
+        if (!loader) return;
+
+        const body = document.body;
+        let dismissed = false;
+
+        const dismissLoader = () => {
+          if (dismissed) return;
+          dismissed = true;
+          loader.classList.add("is-hidden");
+          body.classList.remove("page-loader-active");
+          window.setTimeout(() => {
+            loader.remove();
+          }, 900);
+        };
+
+        const reducedMotion = window.matchMedia(
+          "(prefers-reduced-motion: reduce)",
+        ).matches;
+        const revealDelay = reducedMotion ? 320 : 1400;
+
+        window.addEventListener(
+          "load",
+          () => {
+            window.setTimeout(dismissLoader, revealDelay);
+          },
+          { once: true },
+        );
+
+        window.setTimeout(dismissLoader, 4200);
+      })();
     </script>
 
     <script>

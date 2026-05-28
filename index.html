@@ -44,10 +44,13 @@
     <link rel="apple-touch-icon" href="./image/logo.png" />
 
     <link rel="stylesheet" href="style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Montserrat:wght@400;700;900&display=swap"
       rel="stylesheet"
     />
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin />
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
@@ -144,7 +147,8 @@
           muted
           loop
           playsinline
-          preload="metadata"
+          preload="none"
+          fetchpriority="low"
           poster="./image/About.jpg"
           class="hero-video"
         >
@@ -1180,7 +1184,7 @@
           let html = "";
           flyers.forEach((flyer) => {
             const imgUrl = flyer.image_url || flyer.image;
-            html += `<div class="flyer-card flyer-enter"><img src="${imgUrl}" alt="Service Flyer"></div>`;
+            html += `<div class="flyer-card flyer-enter"><img src="${imgUrl}" loading="lazy" decoding="async" alt="Service Flyer"></div>`;
           });
           stackContainer.innerHTML = html;
 
@@ -1424,7 +1428,7 @@
             return `
               <div class="message-card">
                 <div class="message-thumbnail">
-                    <img src="${imgUrl}" alt="${msg.title}" />
+                    <img src="${imgUrl}" loading="lazy" decoding="async" alt="${msg.title}" />
                     <a href="#" class="play-overlay open-message-modal" data-videourl="${vidUrl}" data-title="${msg.title}"><i class="fas fa-play"></i></a>
                 </div>
                 <div class="message-content">
@@ -2032,7 +2036,7 @@
         const v = document.getElementById("hero-video");
         if (!v) return;
         try {
-          v.preload = "auto";
+          v.preload = "none";
           // Use a slightly slower playbackRate for cinematic motion
           v.playbackRate = 0.78;
           // Apply subtle color/contrast tweak to improve perceived quality

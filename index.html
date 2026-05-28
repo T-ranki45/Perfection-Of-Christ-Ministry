@@ -53,7 +53,7 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
     />
   </head>
-  <body class="easter-season desktop-main-redesign page-loader-active">
+  <body class="desktop-main-redesign page-loader-active">
     <div class="page-loader" id="pageLoader" aria-hidden="true">
       <div class="page-loader-stage">
         <span class="page-loader-glow"></span>
@@ -77,9 +77,9 @@
         </div>
       </div>
       <div class="page-loader-copy">
-        <span class="page-loader-kicker">Easter Week 2026</span>
-        <strong>Jesus Christ Is Risen</strong>
-        <p>Preparing the worship experience...</p>
+        <span class="page-loader-kicker">Children's Day 2026</span>
+        <strong>Family Worship and Joy</strong>
+        <p>Join us for a special Children’s Day celebration this Sunday.</p>
       </div>
     </div>
     <div class="site-easter-celebration" aria-hidden="true">
@@ -101,8 +101,8 @@
       <span class="site-easter-spark site-spark-three"></span>
     </div>
     <a href="#easter-template" class="site-easter-ribbon">
-      <span class="site-easter-ribbon-label">Easter Sunday</span>
-      <strong>April 5</strong>
+      <span class="site-easter-ribbon-label">Children's Day</span>
+      <strong>May 31</strong>
     </a>
     <header class="main-header">
       <div class="container">
@@ -335,28 +335,27 @@
           <div class="easter-template-shell reveal-up">
             <div class="easter-template-copy reveal-left">
               <span class="easter-kicker"
-                >Easter Sunday Is Tomorrow • Sunday, April 5, 2026</span
+                >Children's Day Is This Sunday • Sunday, May 31, 2026</span
               >
-              <h2>Jesus Christ Is Risen</h2>
+              <h2>Children's Day Celebration</h2>
               <p class="easter-lead">
-                Tomorrow, Sunday, April 5, 2026, we gather as a church family
-                to celebrate the resurrection of Jesus Christ. Throughout this
-                Easter week, we are lifting up His victory, His love, and the
-                new life we have in Him.
+                This Sunday, May 31, 2026, we are hosting a special Children’s
+                Day worship service for kids, families, and friends. Join us for
+                joyful praise, teaching, and family-friendly ministry.
               </p>
 
               <div class="easter-details-grid">
                 <article class="easter-detail-card">
                   <span><i class="fas fa-calendar-day"></i> Date</span>
-                  <strong>Tomorrow, Sunday, April 5, 2026</strong>
+                  <strong>Sunday, May 31, 2026</strong>
                 </article>
                 <article class="easter-detail-card">
                   <span><i class="fas fa-clock"></i> Services</span>
                   <strong>7:00 AM and 10:00 AM</strong>
                 </article>
                 <article class="easter-detail-card">
-                  <span><i class="fas fa-sun"></i> Easter Week</span>
-                  <strong>Resurrection, Worship, Prayer, and Thanksgiving</strong>
+                  <span><i class="fas fa-sun"></i> Children’s Day</span>
+                  <strong>Kids worship, family fellowship, and fun activities</strong>
                 </article>
                 <article class="easter-detail-card">
                   <span><i class="fas fa-location-dot"></i> Venue</span>
@@ -367,13 +366,12 @@
               </div>
 
               <p class="easter-note">
-                Bring your family, invite someone with you, and come expectant
-                for a worship gathering centered on the finished work and
-                victory of Jesus Christ.
+                Bring the whole family and invite children from your community
+                to a joyful worship celebration built for kids and families.
               </p>
 
               <div class="easter-actions">
-                <a href="#visit" class="button">Plan Your Easter Visit</a>
+                <a href="#visit" class="button">Plan Your Children's Day Visit</a>
                 <a
                   href="https://maps.app.goo.gl/ye3ZhSCveWuZTsjZ8"
                   class="button btn-outline"
@@ -408,12 +406,12 @@
                 </div>
 
                 <div class="easter-poster-copy">
-                  <span class="easter-poster-pill">He Is Risen</span>
-                  <p class="easter-poster-date">Easter Sunday • April 5, 2026</p>
-                  <h3>Resurrection Morning</h3>
+                  <span class="easter-poster-pill">Children's Day</span>
+                  <p class="easter-poster-date">Sunday • May 31, 2026</p>
+                  <h3>Family Celebration</h3>
                   <p class="easter-poster-text">
-                    A Christ-centered Easter gathering for worship,
-                    thanksgiving, prayer, and the Word.
+                    A joyful Children's Day service with worship, kids ministry,
+                    and family fellowship.
                   </p>
 
                   <div
@@ -421,12 +419,12 @@
                     id="easter-countdown-status"
                     aria-live="polite"
                   >
-                    Countdown to the 7:00 AM Easter service
+                    Countdown to the 7:00 AM Children's Day service
                   </div>
 
                   <div
                     class="easter-countdown"
-                    aria-label="Countdown to Easter Sunday"
+                    aria-label="Countdown to Children's Day"
                   >
                     <div class="easter-countdown-item">
                       <strong id="easter-days">00</strong>
@@ -1512,7 +1510,7 @@
       if (messageCloseBtn)
         messageCloseBtn.addEventListener("click", closeMessageModal);
 
-      function initializeEasterCountdown() {
+      function initializeChildrensDayCountdown() {
         const daysEl = document.getElementById("easter-days");
         const hoursEl = document.getElementById("easter-hours");
         const minutesEl = document.getElementById("easter-minutes");
@@ -1520,8 +1518,8 @@
 
         if (!daysEl || !hoursEl || !minutesEl) return;
 
-        const targetDate = new Date("2026-04-05T07:00:00+01:00");
-        const targetDayStart = new Date("2026-04-05T00:00:00+01:00");
+        const targetDate = new Date("2026-05-31T07:00:00+01:00");
+        const targetDayStart = new Date("2026-05-31T00:00:00+01:00");
         if (Number.isNaN(targetDate.getTime())) return;
 
         const formatUnit = (value) => String(value).padStart(2, "0");
@@ -1536,7 +1534,7 @@
             minutesEl.textContent = "00";
 
             if (statusEl) {
-              statusEl.textContent = "Easter Sunday is here. Join us today.";
+              statusEl.textContent = "Children's Day is here. Join us today.";
             }
             return;
           }
@@ -1556,13 +1554,13 @@
           if (statusEl) {
             if (now >= targetDayStart.getTime()) {
               statusEl.textContent =
-                "Easter Sunday is today. Countdown to the 7:00 AM service.";
+                "Children's Day is today. Countdown to the 7:00 AM service.";
             } else if (days === 0) {
               statusEl.textContent =
-                "Easter Sunday is tomorrow. Final countdown to the 7:00 AM service.";
+                "Children's Day is tomorrow. Final countdown to the 7:00 AM service.";
             } else {
               statusEl.textContent =
-                "Countdown to the 7:00 AM Easter service";
+                "Countdown to the 7:00 AM Children's Day service";
             }
           }
         };
@@ -1572,7 +1570,7 @@
       }
 
       // Initialize Data Loading
-      initializeEasterCountdown();
+      initializeChildrensDayCountdown();
       loadScreenContent();
       loadFlyers();
       loadMessages();

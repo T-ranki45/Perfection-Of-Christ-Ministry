@@ -1,10 +1,10 @@
 {
   "title": "",
   "serviceDate": "",
-  "activeItemId": "flow_1774643046211_n0yzgk",
+  "activeItemId": null,
   "items": [
     {
-      "id": "flow_1774643044150_matt0m",
+      "id": "flow_1785276871699_svl9qd",
       "mode": "countdown",
       "label": "Start Countdown",
       "note": "Five minutes before Bible study begins.",
@@ -14,35 +14,31 @@
         "countdownDurationSeconds": 300,
         "countdownStatus": "stopped"
       },
-      "createdAt": "2026-03-27T20:24:04.148Z",
-      "updatedAt": "2026-04-03T16:23:11.655Z"
+      "createdAt": "2026-07-28T22:14:31.699Z",
+      "updatedAt": "2026-07-28T22:14:41.922Z"
     },
     {
-      "id": "flow_1774643044150_cgwpa1",
+      "id": "flow_1785276871699_zj84y3",
       "mode": "cue",
       "label": "Opening Prayer",
       "note": "Call the service to order.",
       "completed": false,
       "payload": {},
-      "createdAt": "2026-03-27T20:24:04.150Z",
-      "updatedAt": "2026-04-03T16:23:11.655Z"
+      "createdAt": "2026-07-28T22:14:31.699Z",
+      "updatedAt": "2026-07-28T22:14:41.922Z"
     },
     {
-      "id": "flow_1774643044150_1rsbwf",
-      "mode": "order",
-      "label": "Order of service",
-      "note": "Service Order",
+      "id": "flow_1785276871699_clrdaq",
+      "mode": "cue",
+      "label": "Worship Set",
+      "note": "Queue the songs from the worship tab.",
       "completed": false,
-      "payload": {
-        "mode": "order",
-        "orderTitle": "Sunday First Service",
-        "orderItems": "Opening Prayer\nHyme \nWorship & Praise \nAnnouncement\nWord Charge Manual\nChoir Ministration"
-      },
-      "createdAt": "2026-03-27T20:24:04.150Z",
-      "updatedAt": "2026-04-03T16:23:11.655Z"
+      "payload": {},
+      "createdAt": "2026-07-28T22:14:31.699Z",
+      "updatedAt": "2026-07-28T22:14:41.922Z"
     },
     {
-      "id": "flow_1774643044150_mhvg83",
+      "id": "flow_1785276871699_786f2o",
       "mode": "verse",
       "label": "Bible Study Text",
       "note": "Capture the main study scripture from the Bible tab.",
@@ -50,113 +46,56 @@
       "payload": {
         "mode": "verse"
       },
-      "createdAt": "2026-03-27T20:24:04.150Z",
-      "updatedAt": "2026-04-03T16:23:11.655Z"
+      "createdAt": "2026-07-28T22:14:31.699Z",
+      "updatedAt": "2026-07-28T22:14:41.922Z"
     },
     {
-      "id": "flow_1774643044150_f57eiu",
+      "id": "flow_1785276871699_qa4nxo",
+      "mode": "points",
+      "label": "Teaching Points",
+      "note": "Show the major teaching points from the message outline.",
+      "completed": false,
+      "payload": {
+        "mode": "points"
+      },
+      "createdAt": "2026-07-28T22:14:31.699Z",
+      "updatedAt": "2026-07-28T22:14:41.922Z"
+    },
+    {
+      "id": "flow_1785276871699_5z2buq",
       "mode": "announcement",
-      "label": "Meeting Announcement",
+      "label": "Weekly Announcement",
       "note": "Short update before dismissal.",
       "completed": false,
       "payload": {
-        "mode": "announcement",
-        "announcementTitle": "Teenagers Meeting",
-        "announcementBody": "Every Teen should wait behind in church after service"
+        "mode": "announcement"
       },
-      "createdAt": "2026-03-27T20:24:04.150Z",
-      "updatedAt": "2026-04-03T16:23:11.655Z"
+      "createdAt": "2026-07-28T22:14:31.699Z",
+      "updatedAt": "2026-07-28T22:14:41.922Z"
     },
     {
-      "id": "flow_1774643044150_5fere9",
+      "id": "flow_1785276871699_95xxkl",
       "mode": "cue",
       "label": "Closing Prayer",
       "note": "Close service cleanly without changing the screen.",
       "completed": false,
       "payload": {},
-      "createdAt": "2026-03-27T20:24:04.150Z",
-      "updatedAt": "2026-04-03T16:23:11.655Z"
+      "createdAt": "2026-07-28T22:14:31.699Z",
+      "updatedAt": "2026-07-28T22:14:41.922Z"
     },
     {
-      "id": "flow_1774643046211_73jwn3",
-      "mode": "countdown",
-      "label": "Pre-Service Countdown",
-      "note": "Keep countdown live before service begins.",
-      "completed": false,
-      "payload": {
-        "mode": "countdown",
-        "countdownDurationSeconds": 900,
-        "countdownStatus": "stopped"
-      },
-      "createdAt": "2026-03-27T20:24:06.211Z",
-      "updatedAt": "2026-04-03T16:23:11.655Z"
-    },
-    {
-      "id": "flow_1774643046211_6w3o9w",
-      "mode": "cue",
-      "label": "Opening Prayer",
-      "note": "Cue host and prayer lead.",
-      "completed": false,
-      "payload": {},
-      "createdAt": "2026-03-27T20:24:06.211Z",
-      "updatedAt": "2026-04-03T16:23:11.655Z"
-    },
-    {
-      "id": "flow_1774643046211_n0yzgk",
-      "mode": "cue",
-      "label": "Praise & Worship",
-      "note": "Prepare songs in the worship editor and capture them into the queue.",
-      "completed": false,
-      "payload": {},
-      "createdAt": "2026-03-27T20:24:06.211Z",
-      "updatedAt": "2026-04-03T16:23:11.655Z"
-    },
-    {
-      "id": "flow_1774643046211_8wev7b",
-      "mode": "announcement",
-      "label": "Welcome / House Notice",
-      "note": "Update the announcement editor with the main notice before going live.",
-      "completed": false,
-      "payload": {
-        "mode": "announcement"
-      },
-      "createdAt": "2026-03-27T20:24:06.211Z",
-      "updatedAt": "2026-04-03T16:23:11.655Z"
-    },
-    {
-      "id": "flow_1774643046211_83p725",
-      "mode": "verse",
-      "label": "Offering Scripture",
-      "note": "Load the offering verse into the scripture editor before service.",
-      "completed": false,
-      "payload": {
-        "mode": "verse"
-      },
-      "createdAt": "2026-03-27T20:24:06.211Z",
-      "updatedAt": "2026-04-03T16:23:11.655Z"
-    },
-    {
-      "id": "flow_1774643046211_4afgi7",
-      "mode": "lowerthird",
-      "label": "Message Lower Third",
-      "note": "Capture the preacher name and role before the sermon.",
-      "completed": false,
-      "payload": {
-        "mode": "lowerthird"
-      },
-      "createdAt": "2026-03-27T20:24:06.211Z",
-      "updatedAt": "2026-04-03T16:23:11.655Z"
-    },
-    {
-      "id": "flow_1774643046211_5hei3j",
+      "id": "flow_1785276881919_ngshm3",
       "mode": "cue",
       "label": "Closing Prayer / Benediction",
-      "note": "Final cue without changing the congregation screen.",
+      "note": "",
       "completed": false,
-      "payload": {},
-      "createdAt": "2026-03-27T20:24:06.211Z",
-      "updatedAt": "2026-04-03T16:23:11.656Z"
+      "payload": {
+        "cueTitle": "Closing Prayer / Benediction",
+        "cueBody": "Final cue without changing the congregation screen."
+      },
+      "createdAt": "2026-07-28T22:14:41.919Z",
+      "updatedAt": "2026-07-28T22:14:41.922Z"
     }
   ],
-  "updatedAt": "2026-04-03T16:23:11.656Z"
+  "updatedAt": "2026-07-28T22:14:41.922Z"
 }

@@ -262,6 +262,21 @@ body.preview-control.media-clean-mode .ambient-scene {
   border-radius: 0;
 }
 
+body.media-clean-mode .screen-shell,
+body.preview-control.media-clean-mode .screen-shell,
+body.embed.media-clean-mode .screen-shell {
+  padding: 0;
+}
+
+body.media-clean-mode .screen-brand,
+body.preview-control.media-clean-mode .screen-brand,
+body.embed.media-clean-mode .screen-brand,
+body.media-clean-mode .live-clock,
+body.preview-control.media-clean-mode .live-clock,
+body.embed.media-clean-mode .live-clock {
+  display: none !important;
+}
+
 body.media-clean-mode .gallery-shade,
 body.media-clean-mode .gallery-copy,
 body.media-clean-mode .ambient-copy,
@@ -578,7 +593,7 @@ body.preview-control.media-clean-mode .ambient-copy {
   max-width: 100%;
   max-height: 100%;
   display: block;
-  object-fit: contain;
+  object-fit: cover;
   object-position: center;
   animation: none;
 }

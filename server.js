@@ -170,6 +170,16 @@ io.on("connection", (socket) => {
   const address = socket.handshake.address || "unknown";
   console.log(`Socket connected: ${socket.id} (${address})`);
 
+  socket.on("join_screen_sync", ({ room = "ict-screen-sync" } = {}) => {
+    socket.join(room);
+    socket.emit("screen_sync_ready", { room });
+  });
+
+  socket.on("screen_state_sync", ({ room = "ict-screen-sync", state = null } = {}) => {
+    if (!state || typeof state !== "object") return;
+    io.to(room).emit("screen_state_sync", { state, from: socket.id });
+  });
+
   socket.on("push_live_slide", (payload = {}) => {
     const projectorPayload = sanitizeProjectorPayload(payload);
 

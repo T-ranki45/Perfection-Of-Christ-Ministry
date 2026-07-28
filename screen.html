@@ -12,6 +12,7 @@
       href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Sora:wght@300;400;600;700&display=swap"
       rel="stylesheet"
     />
+    <script src="/socket.io/socket.io.js"></script>
   </head>
   <body>
     <div class="screen-shell">
@@ -41,6 +42,11 @@
       <div class="screen-mode gallery-mode" id="mode-gallery">
         <div class="gallery-stage">
           <img id="galleryImage" alt="Gallery slide" />
+          <div class="gallery-shade"></div>
+          <div class="gallery-copy">
+            <h2 class="fit-text" data-fit="0.11" data-min-size="18" id="galleryTitle"></h2>
+            <p class="gallery-caption" id="galleryCaption"></p>
+          </div>
         </div>
       </div>
 
@@ -173,6 +179,20 @@
           ? new BroadcastChannel("pocm_screen_state")
           : null;
       const modeLabel = document.getElementById("screen-mode-label");
+      const SYNC_ROOM = "ict-screen-sync";
+      const syncHostParam = new URLSearchParams(window.location.search).get(
+        "syncHost",
+      );
+      const syncHost =
+        localStorage.getItem("ict_sync_host") ||
+        syncHostParam ||
+        window.location.hostname ||
+        "localhost";
+      const syncPort = Number(
+        new URLSearchParams(window.location.search).get("syncPort") || 3000,
+      );
+      let syncSocket = null;
+      let syncSocketReady = false;
       const modeElements = {
         cue: document.getElementById("mode-cue"),
         gallery: document.getElementById("mode-gallery"),
@@ -385,6 +405,40 @@
           }
         }
         document.body.classList.toggle("is-blank", mode === "blank");
+      }
+
+      function initLocalScreenSync() {
+        if (!window.io || syncSocket) return;
+        try {
+          syncSocket = window.io(`http://${syncHost}:${syncPort}`, {
+            transports: ["websocket", "polling"],
+            reconnection: true,
+            reconnectionAttempts: 10,
+            reconnectionDelay: 1000,
+          });
+          syncSocket.on("connect", () => {
+            syncSocketReady = true;
+            syncSocket.emit("join_screen_sync", { room: SYNC_ROOM });
+          });
+          syncSocket.on("disconnect", () => {
+            syncSocketReady = false;
+          });
+          syncSocket.on("screen_state_sync", ({ state } = {}) => {
+            if (!state || typeof state !== "object") return;
+            if (
+              state.updatedAt &&
+              screenState.updatedAt &&
+              new Date(state.updatedAt).getTime() <
+                new Date(screenState.updatedAt).getTime()
+            ) {
+              return;
+            }
+            applyState({ ...screenState, ...state });
+            cacheScreenState({ ...screenState, ...state });
+          });
+        } catch (error) {
+          console.error("Local screen sync init failed:", error);
+        }
       }
 
       function cacheScreenState(state) {

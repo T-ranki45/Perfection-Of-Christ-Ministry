@@ -19,6 +19,7 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
     />
+    <script src="/socket.io/socket.io.js"></script>
     <style>
       html,
       body {
@@ -384,149 +385,47 @@
         font-size: 0.72rem;
       }
 
-      .file-chip {
+      .media-quick-add {
         position: relative;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 0.45rem;
-        padding: 0.72rem 1rem;
-        border-radius: 14px;
-        border: 1px dashed rgba(212, 164, 63, 0.5);
-        background: rgba(212, 164, 63, 0.08);
-        color: #f5d991;
-        cursor: pointer;
-        font-size: 0.78rem;
-        font-weight: 700;
-        letter-spacing: 0.04em;
-      }
-
-      .file-chip input {
-        position: absolute;
-        inset: 0;
-        opacity: 0;
-        cursor: pointer;
-      }
-
-      .gallery-toolbar {
         display: flex;
-        align-items: center;
-        gap: 0.7rem;
-        flex-wrap: wrap;
-      }
-
-      .gallery-selection-bar {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 0.8rem;
-        flex-wrap: wrap;
-        padding: 0.8rem 0.9rem;
-        border-radius: 14px;
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        background: rgba(6, 10, 17, 0.42);
-        font-size: 0.78rem;
-        color: var(--muted);
-      }
-
-      .gallery-selection-bar strong {
-        color: #f5d991;
-        font-size: 0.82rem;
-      }
-
-      .ict-gallery-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-        gap: 0.75rem;
-        max-height: 360px;
-        overflow: auto;
-        padding-right: 0.2rem;
-      }
-
-      .gallery-card {
-        position: relative;
-        overflow: hidden;
+        flex-direction: column;
+        gap: 0.85rem;
+        min-height: 420px;
+        padding: 1rem 1rem 5.2rem;
         border-radius: 16px;
+        background: rgba(6, 10, 17, 0.56);
         border: 1px solid rgba(255, 255, 255, 0.08);
-        background: rgba(6, 10, 17, 0.58);
-        cursor: pointer;
-        transition:
-          transform 0.18s ease,
-          border-color 0.18s ease,
-          box-shadow 0.18s ease;
+        overflow: hidden;
       }
 
-      .gallery-card:hover {
-        transform: translateY(-2px);
-        border-color: rgba(212, 164, 63, 0.42);
+      .media-queue-shell {
+        flex: 1;
+        min-height: 0;
       }
 
-      .gallery-card.is-selected {
-        border-color: rgba(212, 164, 63, 0.84);
-        box-shadow: 0 14px 28px rgba(0, 0, 0, 0.24);
-      }
-
-      .gallery-card img {
-        width: 100%;
-        height: 128px;
-        object-fit: cover;
-        display: block;
-      }
-
-      .gallery-card-body {
-        display: flex;
-        align-items: flex-start;
-        justify-content: space-between;
-        gap: 0.65rem;
-        padding: 0.7rem 0.78rem 0.82rem;
-      }
-
-      .gallery-card-meta {
-        min-width: 0;
-      }
-
-      .gallery-card-name {
-        display: block;
-        font-size: 0.8rem;
-        font-weight: 700;
-        color: #f6f3eb;
-      }
-
-      .gallery-card-date {
-        display: block;
-        margin-top: 0.18rem;
-        font-size: 0.68rem;
-        color: var(--muted);
-      }
-
-      .gallery-card-remove,
-      .gallery-card-check {
+      .media-add-btn {
         position: absolute;
-        top: 0.55rem;
-        width: 30px;
-        height: 30px;
-        border-radius: 999px;
-        border: 1px solid rgba(255, 255, 255, 0.12);
+        left: 1rem;
+        bottom: 1rem;
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        background: rgba(5, 8, 14, 0.82);
-        color: #f8f4eb;
-      }
-
-      .gallery-card-check {
-        left: 0.55rem;
-      }
-
-      .gallery-card-remove {
-        right: 0.55rem;
+        width: 3.25rem;
+        height: 3.25rem;
+        border: 1px solid rgba(212, 164, 63, 0.45);
+        border-radius: 50%;
+        background: linear-gradient(135deg, #d4a43f 0%, #8b5e1f 100%);
+        color: #fff;
+        font-size: 1.45rem;
         cursor: pointer;
+        box-shadow: 0 10px 24px rgba(0, 0, 0, 0.24);
+        transition: transform 0.18s ease, box-shadow 0.18s ease;
+        z-index: 2;
       }
 
-      .gallery-card.is-selected .gallery-card-check {
-        border-color: rgba(212, 164, 63, 0.88);
-        background: rgba(212, 164, 63, 0.24);
-        color: #f5d991;
+      .media-add-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 14px 28px rgba(0, 0, 0, 0.28);
       }
 
       .gallery-empty {
@@ -540,41 +439,71 @@
 
       .gallery-queue-preview {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
         gap: 0.7rem;
+        align-content: start;
+        height: 100%;
+        overflow: auto;
+        padding-right: 0.2rem;
       }
 
       .gallery-queue-item {
         position: relative;
-        display: grid;
-        gap: 0.28rem;
-        padding: 0.8rem 0.85rem;
-        border-radius: 14px;
+        display: flex;
+        flex-direction: column;
+        gap: 0.45rem;
+        padding: 0;
+        border-radius: 16px;
         border: 1px solid rgba(255, 255, 255, 0.08);
         background: rgba(6, 10, 17, 0.48);
+        overflow: hidden;
+        cursor: pointer;
+        transition: transform 0.18s ease, border-color 0.18s ease;
+      }
+
+      .gallery-queue-item:hover {
+        transform: translateY(-2px);
+        border-color: rgba(212, 164, 63, 0.42);
+      }
+
+      .gallery-queue-thumb {
+        width: 100%;
+        height: 110px;
+        object-fit: cover;
+        display: block;
+        background: rgba(4, 8, 14, 0.64);
+      }
+
+      .gallery-queue-info {
+        display: flex;
+        flex-direction: column;
+        gap: 0.22rem;
+        padding: 0.7rem 0.78rem 0.82rem;
       }
 
       .gallery-queue-item strong {
         display: block;
-        font-size: 0.78rem;
+        font-size: 0.76rem;
+        color: #f6f3eb;
       }
 
       .gallery-queue-item small {
         display: block;
-        margin-top: 0.2rem;
         color: var(--muted);
-        font-size: 0.68rem;
+        font-size: 0.67rem;
+        line-height: 1.4;
       }
 
       .gallery-queue-item.is-live {
         border-color: rgba(212, 164, 63, 0.74);
-        background: rgba(212, 164, 63, 0.1);
+        box-shadow: inset 0 0 0 1px rgba(212, 164, 63, 0.24);
+        background: rgba(212, 164, 63, 0.12);
       }
 
       .gallery-queue-remove {
         position: absolute;
-        top: 0.55rem;
-        right: 0.55rem;
+        top: 0.48rem;
+        right: 0.48rem;
         width: 28px;
         height: 28px;
         border-radius: 999px;
@@ -585,6 +514,11 @@
         align-items: center;
         justify-content: center;
         cursor: pointer;
+      }
+
+      .media-quick-add .helper-text {
+        margin-top: auto;
+        padding: 0 0.1rem;
       }
 
       .ambient-preview-strip {
@@ -1364,12 +1298,6 @@
         min-height: 460px;
         overflow: visible;
         padding-right: 0;
-      }
-
-      .schedule-secondary-pane {
-        display: grid;
-        gap: 0.55rem;
-        padding: 0 1rem 1rem;
       }
 
       .mini-live-card {
@@ -3316,27 +3244,6 @@
           display: none;
         }
 
-        .schedule-secondary-pane {
-          gap: 0.65rem;
-          padding-top: 0.1rem;
-        }
-
-        .schedule-secondary-pane .service-flow-stats,
-        .schedule-secondary-pane .helper-text#serviceFlowStatus {
-          display: none;
-        }
-
-        .schedule-secondary-pane .service-flow-list {
-          max-height: 190px;
-          min-height: 0;
-          margin-top: 0;
-          padding-top: 0;
-          padding-bottom: 0;
-          overflow-y: auto;
-          overflow-x: hidden;
-          scrollbar-width: thin;
-        }
-
         .service-flow-item {
           align-items: start;
           grid-template-columns: 42px minmax(0, 1fr);
@@ -4091,27 +3998,6 @@
                   ></div>
                 </div>
               </div>
-              <div class="schedule-secondary-pane">
-                <div class="service-flow-stats">
-                  <div class="flow-stat-card">
-                    <span>Queue Size</span>
-                    <strong id="flowItemsCount">0 items planned</strong>
-                  </div>
-                  <div class="flow-stat-card">
-                    <span>Active Cue</span>
-                    <strong id="flowActiveLabel">None selected</strong>
-                  </div>
-                  <div class="flow-stat-card">
-                    <span>Next Up</span>
-                    <strong id="flowNextCueLabel">Build your first cue</strong>
-                  </div>
-                </div>
-                <div class="helper-text" id="serviceFlowStatus">
-                  Build cues from the editors, then run the service from this
-                  queue.
-                </div>
-                <div class="service-flow-list" id="serviceFlowList"></div>
-              </div>
             </div>
           </section>
         </main>
@@ -4746,8 +4632,8 @@
                       <button class="btn-primary" id="fetchBibleBtn">
                         Fetch Verse
                       </button>
-                      <button class="btn-ghost" id="applyBibleBtn">
-                        Load Into Editor
+                      <button class="btn-primary" id="applyBibleBtn">
+                        Go Live Now
                       </button>
                     </div>
                     <div class="bible-preview">
@@ -4765,52 +4651,6 @@
                     <div class="helper-text" id="bibleStatus"></div>
                   </div>
 
-                  <div class="editor-pane">
-                    <div class="editor-pane-head">
-                      <strong>Verse Editor</strong>
-                      <span
-                        >Prepare the main scripture slide and the giving
-                        scripture separately.</span
-                      >
-                    </div>
-                    <div class="form-grid">
-                      <label>
-                        <span>Verse Text</span>
-                        <textarea
-                          id="verseTextInput"
-                          rows="3"
-                          placeholder="Enter the Bible verse text..."
-                        ></textarea>
-                      </label>
-                      <label>
-                        <span>Verse Reference</span>
-                        <input
-                          type="text"
-                          id="verseRefInput"
-                          placeholder="Psalm 23:1"
-                        />
-                      </label>
-                      <label>
-                        <span>Giving Scripture</span>
-                        <textarea
-                          id="giveScriptureInput"
-                          rows="3"
-                          placeholder="Enter the giving scripture..."
-                        ></textarea>
-                      </label>
-                    </div>
-                    <div class="card-actions slim">
-                      <button class="btn-ghost" data-save="verse">
-                        Save Only
-                      </button>
-                      <button class="btn-ghost" data-show="verse">
-                        Show Saved
-                      </button>
-                      <button class="btn-primary" data-save-show="verse">
-                        Save &amp; Go Live
-                      </button>
-                    </div>
-                  </div>
                 </div>
 
                 <div id="tab-worship" class="tab-pane">
@@ -5185,205 +5025,27 @@
                 </div>
 
                 <div id="tab-media" class="tab-pane">
-                  <div class="editor-pane">
-                    <div class="editor-pane-head">
-                      <strong>Image Gallery</strong>
-                      <span
-                        >Upload ministry photos, event flyers, choir shots, or
-                        themed backgrounds, then build the live image playlist
-                        from the gallery below.</span
-                      >
+                  <div class="media-quick-add">
+                    <div class="media-queue-shell">
+                      <div class="gallery-queue-preview" id="galleryQueuePreview"></div>
                     </div>
-                    <div class="gallery-toolbar">
-                      <label class="file-chip">
-                        <input
-                          type="file"
-                          id="galleryUploadInput"
-                          accept="image/*"
-                          multiple
-                        />
-                        <span>Upload Images</span>
-                      </label>
-                      <button
-                        class="btn-ghost btn-inline"
-                        id="refreshGalleryBtn"
-                        type="button"
-                      >
-                        Refresh Gallery
-                      </button>
-                      <button
-                        class="btn-ghost btn-inline"
-                        id="clearGallerySelectionBtn"
-                        type="button"
-                      >
-                        Clear Selection
-                      </button>
-                    </div>
-                    <div class="gallery-selection-bar">
-                      <strong id="gallerySelectionCount"
-                        >0 images selected</strong
-                      >
-                      <span
-                        >Select one image for a still screen or several for a
-                        slideshow you can move through with the arrow
-                        keys.</span
-                      >
-                    </div>
-                    <div class="ict-gallery-grid" id="ictGalleryGrid"></div>
+                    <button
+                      class="media-add-btn"
+                      id="mediaQuickAddBtn"
+                      type="button"
+                      aria-label="Add images"
+                    >
+                      <i class="fas fa-plus"></i>
+                    </button>
+                    <input
+                      type="file"
+                      id="galleryUploadInput"
+                      accept="image/*"
+                      multiple
+                      hidden
+                    />
                     <div class="helper-text" id="galleryStatus">
-                      Upload images here, then click them to add them to the
-                      live gallery set.
-                    </div>
-                  </div>
-
-                  <div class="editor-pane">
-                    <div class="editor-pane-head">
-                      <strong>Gallery Live Editor</strong>
-                      <span
-                        >Build a clean full-screen image output. Any label or
-                        note here stays inside ICT only and does not show on
-                        the audience screen.</span
-                      >
-                    </div>
-                    <div class="form-grid">
-                      <label>
-                        <span>Desk Label</span>
-                        <input
-                          type="text"
-                          id="galleryTitleInput"
-                          placeholder="Easter Photo Set"
-                        />
-                      </label>
-                      <label>
-                        <span>Operator Note</span>
-                        <textarea
-                          id="galleryCaptionInput"
-                          rows="3"
-                          placeholder="Optional internal note for the ICT team only."
-                        ></textarea>
-                      </label>
-                    </div>
-                    <div
-                      class="gallery-queue-preview"
-                      id="galleryQueuePreview"
-                    ></div>
-                    <div class="card-actions slim">
-                      <button
-                        class="btn-ghost"
-                        type="button"
-                        id="galleryPrevBtn"
-                      >
-                        Previous Image
-                      </button>
-                      <button
-                        class="btn-ghost"
-                        type="button"
-                        id="galleryNextBtn"
-                      >
-                        Next Image
-                      </button>
-                      <button class="btn-ghost" data-save="gallery">
-                        Save Only
-                      </button>
-                      <button class="btn-ghost" data-show="gallery">
-                        Show Saved
-                      </button>
-                      <button class="btn-primary" data-save-show="gallery">
-                        Save &amp; Go Live
-                      </button>
-                    </div>
-                  </div>
-
-                  <div class="editor-pane">
-                    <div class="editor-pane-head">
-                      <strong>Ambient Motion</strong>
-                      <span
-                        >Use this when nothing specific needs to be on screen,
-                        but you still want a beautiful moving background during
-                        praise, worship, waiting moments, or ministry
-                        transitions. Any label here stays in ICT only.</span
-                      >
-                    </div>
-                    <div class="form-grid">
-                      <label>
-                        <span>Motion Preset</span>
-                        <select id="ambientPresetInput">
-                          <option value="praise">Praise Burst</option>
-                          <option value="worship">Worship Glow</option>
-                          <option value="reverence">Reverence Drift</option>
-                          <option value="holding">Holding Screen</option>
-                        </select>
-                      </label>
-                      <label>
-                        <span>Desk Label</span>
-                        <input
-                          type="text"
-                          id="ambientTitleInput"
-                          placeholder="Praise Flow"
-                        />
-                      </label>
-                      <label>
-                        <span>Operator Note</span>
-                        <input
-                          type="text"
-                          id="ambientSubtitleInput"
-                          placeholder="Optional internal reminder only."
-                        />
-                      </label>
-                    </div>
-                    <div class="ambient-preview-strip">
-                      <button
-                        class="ambient-preset-card"
-                        type="button"
-                        data-ambient-preset="praise"
-                      >
-                        <strong>Praise Burst</strong>
-                        <span>Fast stage-light motion for energetic praise</span>
-                      </button>
-                      <button
-                        class="ambient-preset-card"
-                        type="button"
-                        data-ambient-preset="worship"
-                      >
-                        <strong>Worship Glow</strong>
-                        <span>Soft gold motion for songs and quiet focus</span>
-                      </button>
-                      <button
-                        class="ambient-preset-card"
-                        type="button"
-                        data-ambient-preset="reverence"
-                      >
-                        <strong>Reverence Drift</strong>
-                        <span
-                          >Slow elegant movement for prayer and
-                          ministration</span
-                        >
-                      </button>
-                      <button
-                        class="ambient-preset-card"
-                        type="button"
-                        data-ambient-preset="holding"
-                      >
-                        <strong>Holding Screen</strong>
-                        <span
-                          >Gentle motion for pauses and waiting moments</span
-                        >
-                      </button>
-                    </div>
-                    <div class="helper-text" id="ambientStatus">
-                      Choose a preset, then use Save &amp; Go Live when you
-                      want only the motion background on the sanctuary display.
-                    </div>
-                    <div class="card-actions slim">
-                      <button class="btn-ghost" data-save="ambient">
-                        Save Only
-                      </button>
-                      <button class="btn-ghost" data-show="ambient">
-                        Show Saved
-                      </button>
-                      <button class="btn-primary" data-save-show="ambient">
-                        Save &amp; Go Live
-                      </button>
+                      Tap the plus button to add images.
                     </div>
                   </div>
                 </div>
@@ -5560,6 +5222,20 @@
           "BroadcastChannel" in window
             ? new BroadcastChannel("pocm_screen_state")
             : null;
+        const SYNC_ROOM = "ict-screen-sync";
+        const syncHostParam = new URLSearchParams(window.location.search).get(
+          "syncHost",
+        );
+        const syncHost =
+          localStorage.getItem("ict_sync_host") ||
+          syncHostParam ||
+          window.location.hostname ||
+          "localhost";
+        const syncPort = Number(
+          new URLSearchParams(window.location.search).get("syncPort") || 3000,
+        );
+        let syncSocket = null;
+        let syncSocketReady = false;
         const screenSyncStatus = document.getElementById("screenSyncStatus");
         const lastSavedAt = document.getElementById("lastSavedAt");
         const currentModeLabel = document.getElementById("currentModeLabel");
@@ -5585,6 +5261,7 @@
         );
         const galleryUploadInput =
           document.getElementById("galleryUploadInput");
+        const mediaQuickAddBtn = document.getElementById("mediaQuickAddBtn");
         const refreshGalleryBtn = document.getElementById("refreshGalleryBtn");
         const clearGallerySelectionBtn = document.getElementById(
           "clearGallerySelectionBtn",
@@ -5795,11 +5472,11 @@
         const inlineFlowManagerList = document.getElementById(
           "inlineFlowManagerList",
         );
-        const flowItemsCount = document.getElementById("flowItemsCount");
-        const flowActiveLabel = document.getElementById("flowActiveLabel");
-        const flowNextCueLabel = document.getElementById("flowNextCueLabel");
-        const serviceFlowStatus = document.getElementById("serviceFlowStatus");
-        const serviceFlowList = document.getElementById("serviceFlowList");
+        const serviceFlowList = inlineFlowManagerList;
+        const serviceFlowStatus = null;
+        const flowItemsCount = inlineFlowManagerCount;
+        const flowActiveLabel = inlineFlowManagerSelected;
+        const flowNextCueLabel = inlineFlowManagerLive;
         const addFlowItemBtn = document.getElementById("addFlowItemBtn");
         const updateFlowItemBtn = document.getElementById("updateFlowItemBtn");
         const captureLiveItemBtn =
@@ -6385,13 +6062,58 @@
           }
         }
 
-        function broadcastScreenState(state) {
-          if (!screenChannel) return;
+        function initLocalScreenSync() {
+          if (!window.io || syncSocket) return;
           try {
-            screenChannel.postMessage({
-              type: "screen-state",
-              payload: state,
+            syncSocket = window.io(`http://${syncHost}:${syncPort}`, {
+              transports: ["websocket", "polling"],
+              reconnection: true,
+              reconnectionAttempts: 10,
+              reconnectionDelay: 1000,
             });
+            syncSocket.on("connect", () => {
+              syncSocketReady = true;
+              syncSocket.emit("join_screen_sync", { room: SYNC_ROOM });
+              syncSocket.emit("screen_state_sync", {
+                room: SYNC_ROOM,
+                state: screenState,
+              });
+            });
+            syncSocket.on("disconnect", () => {
+              syncSocketReady = false;
+            });
+            syncSocket.on("screen_state_sync", ({ state } = {}) => {
+              if (!state || typeof state !== "object") return;
+              if (
+                state.updatedAt &&
+                screenState.updatedAt &&
+                new Date(state.updatedAt).getTime() <
+                  new Date(screenState.updatedAt).getTime()
+              ) {
+                return;
+              }
+              applyScreenState({ ...screenState, ...state });
+              cacheScreenState({ ...screenState, ...state });
+            });
+          } catch (error) {
+            console.error("Local screen sync init failed:", error);
+          }
+        }
+
+        function broadcastScreenState(state) {
+          try {
+            if (screenChannel) {
+              screenChannel.postMessage({
+                type: "screen-state",
+                payload: state,
+              });
+            }
+            if (syncSocketReady && syncSocket?.connected) {
+              syncSocket.emit("screen_state_sync", {
+                room: SYNC_ROOM,
+                state,
+              });
+            }
           } catch (error) {
             console.error("Broadcast failed:", error);
           }
@@ -6779,8 +6501,7 @@
           if (!galleryDraftItems.length) {
             const empty = document.createElement("div");
             empty.className = "gallery-empty";
-            empty.textContent =
-              "No gallery images selected yet. Upload or click images above to build the live set.";
+            empty.textContent = "No images yet. Add a few and double-tap one to send it live.";
             galleryQueuePreview.appendChild(empty);
             return;
           }
@@ -6791,13 +6512,24 @@
             if (screenState.mode === "gallery" && index === liveIndex) {
               card.classList.add("is-live");
             }
+
+            const preview = document.createElement("img");
+            preview.className = "gallery-queue-thumb";
+            preview.src = item.url;
+            preview.alt = item.name || `Image ${index + 1}`;
+            preview.loading = "lazy";
+
+            const info = document.createElement("div");
+            info.className = "gallery-queue-info";
             const title = document.createElement("strong");
             title.textContent = item.name || `Image ${index + 1}`;
             const meta = document.createElement("small");
             meta.textContent =
               screenState.mode === "gallery" && index === liveIndex
-                ? "Currently live"
-                : `Queue ${index + 1}`;
+                ? "Live now"
+                : "Double-tap to go live";
+            info.appendChild(title);
+            info.appendChild(meta);
 
             const remove = document.createElement("button");
             remove.type = "button";
@@ -6809,8 +6541,23 @@
               await removeGalleryDraftItem(item.id);
             });
 
-            card.appendChild(title);
-            card.appendChild(meta);
+            card.addEventListener("dblclick", async (event) => {
+              event.preventDefault();
+              event.stopPropagation();
+              await saveScreenState({
+                mode: "gallery",
+                galleryItems: galleryDraftItems.map((entry) => ({ ...entry })),
+                galleryIndex: index,
+              });
+              setHelperStatus(
+                galleryStatus,
+                `${item.name || "Image"} is now live.`,
+                "good",
+              );
+            });
+
+            card.appendChild(preview);
+            card.appendChild(info);
             card.appendChild(remove);
             galleryQueuePreview.appendChild(card);
           });
@@ -6974,14 +6721,22 @@
             if (!res.ok) {
               throw new Error(data.error || "Upload failed");
             }
-            ictGalleryLibrary = Array.isArray(data.items)
+            const uploadedItems = Array.isArray(data.items)
               ? data.items.map(normalizeGalleryItem).filter(Boolean)
               : [];
+            ictGalleryLibrary = uploadedItems;
+            const nextDraftItems = [...galleryDraftItems];
+            uploadedItems.forEach((item) => {
+              if (!nextDraftItems.some((entry) => entry.id === item.id)) {
+                nextDraftItems.push(item);
+              }
+            });
+            galleryDraftItems = nextDraftItems;
             syncGalleryDraftItemsWithLibrary();
             refreshGalleryWorkspace();
             setHelperStatus(
               galleryStatus,
-              data.message || "Gallery images uploaded.",
+              data.message || "Images added to the deck.",
               "good",
             );
           } catch (error) {
@@ -9641,7 +9396,7 @@
           if (!bibleResult) {
             setHelperStatus(
               bibleStatus,
-              "Fetch a verse before applying it.",
+              "Fetch a verse before sending it live.",
               "warn",
             );
             return;
@@ -9654,7 +9409,12 @@
               : verseText;
             if (giveScriptureInput) giveScriptureInput.value = givingText;
             setEditorDraft("giveScripture", givingText);
-            saveScreenState({ giveScripture: givingText });
+            setHelperStatus(
+              bibleStatus,
+              "Giving scripture loaded and sent live.",
+              "good",
+            );
+            saveScreenState({ giveScripture: givingText, mode: "verse" });
             return;
           }
           if (verseTextInput) verseTextInput.value = verseText;
@@ -9670,6 +9430,11 @@
             mode: "verse",
             ...verseSlideState,
           });
+          setHelperStatus(
+            bibleStatus,
+            `${verseRef || "Verse"} is now live.`,
+            "good",
+          );
         }
 
         function updateHymnPreview(hymn) {
@@ -9971,6 +9736,7 @@
         }
 
         async function loadScreenState() {
+          initLocalScreenSync();
           try {
             setStatus("Syncing...", "info");
             const res = await fetch(`${API_URL}/screen-state`);
@@ -9992,6 +9758,7 @@
 
         async function saveScreenState(partial) {
           screenState = { ...screenState, ...(partial || {}) };
+          initLocalScreenSync();
           try {
             setStatus("Saving...", "info");
             const res = await fetch(`${API_URL}/screen-state`, {
@@ -10439,6 +10206,14 @@
               importHymnBook(file);
             }
             event.target.value = "";
+          });
+        }
+
+        if (mediaQuickAddBtn) {
+          mediaQuickAddBtn.addEventListener("click", () => {
+            if (galleryUploadInput) {
+              galleryUploadInput.click();
+            }
           });
         }
 
